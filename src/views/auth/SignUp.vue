@@ -1,128 +1,216 @@
 <template>
     <div class="row g-0">
-    <div class="col-xl-8 col-lg-8 col-sm-6">
-        <div class="mx-auto w-50 mt-20">
-            <img src="@/assets/billfin.svg" alt="Logo" />
-            <p class="fs-1 mt-2 fw-bolder">Thanks for your interest in BillFin</p>
-            <p class="fs-5 w-75 pe-5 text-muted lh-base">Powerful billing and invoicing for the modern RIA and financial advisor, designed to be ridiculously simple to use.</p>
-            <img src="@/assets/signup.png" class="w-75 mt-8" alt="Sign up image">
+        <div class="col-xl-8 col-lg-8 col-sm-6">
+            <div class="mx-auto w-75 mt-20">
+                <img src="@/assets/billfin.svg" alt="Logo" />
+                <p class="fs-1 mt-2 fw-bolder">Thanks for your interest in BillFin</p>
+                <p class="fs-5 w-50 pe-6 text-muted lh-base">Powerful billing and invoicing for the modern RIA and financial advisor, designed to be ridiculously simple to use.</p>
+                <img src="@/assets/signup.png" class="w-75 mt-8" alt="Sign up image">
+            </div>
         </div>
-    </div>
-    <div class="col-xl-4 col-lg-4 col-sm-6">
-        <div class="w-75 mt-20">
-            <p class="fs-1 mt-2 fw-bolder mb-0 text-center">14 Days Fre Trial</p>
-            <p class="fs-7 text-muted text-center">Have questions? <a href="#">Chat with sales</a></p>
-            <form>
+        <div class="col-xl-4 col-lg-4 col-sm-6">
+            <div class="w-75 mt-20">
+                <p class="fs-1 mt-2 fw-bolder mb-0 text-center">14 Days Free Trial</p>
+                <p class="fs-7 text-muted text-center">Have questions? <a href="#" class="fw-bolder">Chat with sales</a></p>
+                <form @submit.prevent="signUp">
 
-                <div class="row mt-10">
-                    <div class="col-6">
-                        <label for="firstname" class="form-label">Firstname</label>
-                        <div class="input-group input-group-solid mb-3">
-                            <input type="text" class="form-control text-start" id="firstname">
+                    <div class="row mt-10 mb-2">
+                        <div class="col-6">
+                            <label for="firstname" class="form-label fw-bolder">First Name</label>
+                            <div class="input-group input-group-solid">
+                                <input type="text" class="form-control text-start" id="firstname" v-model="v$.request.firstName.$model">
+                            </div>
+                            <div class="invalid-feedback" v-if="v$.request.firstName.$dirty && v$.request.firstName.$invalid">First name is required</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="lastname" class="form-label fw-bolder">Lastname</label>
+                            <div class="input-group input-group-solid">
+                                <input type="text" class="form-control text-start" id="lastname" v-model="request.lastName">
+                            </div>
+                            <div class="invalid-feedback" v-if="v$.request.lastName.$dirty && v$.request.lastName.$invalid">Last name is required</div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <label for="lastname" class="form-label">Lastname</label>
-                        <div class="input-group input-group-solid mb-3">
-                            <input type="text" class="form-control text-start" id="lastname">
+
+                    <label for="company" class="form-label fw-bolder mt-4">Company</label>
+                    <div class="input-group input-group-solid mb-2">
+                        <input type="text" class="form-control text-start" id="company" v-model="v$.request.company.$model">
+                    </div>
+                    <div class="invalid-feedback" v-if="v$.request.company.$dirty && v$.request.company.$invalid">Company is required</div>
+
+                    <div class="row mt-6 mb-2">
+                        <div class="col-6">
+                            <label for="phoneNo" class="form-label fw-bolder">Phone number</label>
+                            <div class="input-group input-group-solid">
+                                <input type="text" class="form-control text-start" id="phoneNo" v-model="v$.request.phoneNo.$model" maxlength="10">
+                            </div>
+                            <div class="invalid-feedback" v-if="v$.request.phoneNo.$dirty && v$.request.phoneNo.$invalid">Phone number is required</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="aum" class="form-label fw-bolder">AUM</label>
+                            <select class="form-select form-select-solid" aria-label="Default select example"  v-model="v$.request.aum.$model">
+                                <option selected value="">$</option>
+                                <option v-for="(item, i) in aum" :key="i" :value="item">{{item}}</option>
+                            </select>                        
+                            <div class="invalid-feedback" v-if="v$.request.aum.$dirty && v$.request.aum.$invalid">AUM is required</div>
                         </div>
                     </div>
-                </div>
 
-                <label for="company" class="form-label">Company</label>
-                <div class="input-group input-group-solid mb-3">
-                    <input type="text" class="form-control text-start" id="company">
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                        <label for="phoneNo" class="form-label">Phone number</label>
-                        <div class="input-group input-group-solid mb-3">
-                            <input type="text" class="form-control text-start" id="phoneNo">
+                    <label for="company" class="form-label fw-bolder mt-4 mb-4">Where do you custody? <span class="text-muted">Check all that apply</span></label>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div 
+                            class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill-basic"
+                            v-for="(item, i) in custodian"
+                            :key="i"
+                        >
+                            <input class="form-check-input" type="checkbox" :value="item" @change="updateCustodian($event.target.value)">
+                            <label class="fs-7 form-check-label" v-bind:for="item">{{item}}</label>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <label for="aum" class="form-label">AUM</label>
-                        <select class="form-select form-select-solid" aria-label="Default select example">
-                            <option selected>$</option>
-                            <option value="1">One</option>
-                        </select>                        
-                    </div>
-                </div>
+                    <div class="invalid-feedback" v-if="v$.request.$dirty && request.custodian.length == 0">Custodian selection is required</div>
 
-                <label for="company" class="form-label mb-3">Where do you custody? <span class="text-muted">Check all that apply</span></label>
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Fidelity" value="Fidelity">
-                        <label class="fs-7 form-check-label" for="Fidelity">Fidelity</label>
+                    <label for="company" class="form-label fw-bolder mt-4">Work email</label>
+                    <div class="input-group input-group-solid mb-2">
+                        <input type="text" class="form-control text-start" id="work-email" v-model="v$.request.email.$model">
                     </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="LPL" value="LPL">
-                        <label class="fs-7 form-check-label" for="LPL">LPL</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Schwab/TD" value="Schwab/TD">
-                        <label class="fs-7 form-check-label" for="Schwab/TD">Schwab/TD</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Folio/Goldman" value="Folio/Goldman">
-                        <label class="fs-7 form-check-label" for="Folio/Goldman">Folio/Goldman</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Pershing" value="Pershing">
-                        <label class="fs-7 form-check-label" for="Pershing">Pershing</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="SSG" value="SSG">
-                        <label class="fs-7 form-check-label" for="SSG">SSG</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Interactive Brokers" value="Interactive Brokers">
-                        <label class="fs-7 form-check-label" for="Interactive Brokers">Interactive Brokers</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Raymond James" value="Raymond James">
-                        <label class="fs-7 form-check-label" for="Raymond James">Raymond James</label>
-                    </div>
-                    <div class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill">
-                        <input class="form-check-input" type="checkbox" id="Other" value="Other">
-                        <label class="fs-7 form-check-label" for="Other">Other</label>
-                    </div>
-                </div>
+                    <div class="invalid-feedback" v-if="v$.request.email.$dirty && v$.request.email.required.$invalid">Email is required</div>
+                    <div class="invalid-feedback" v-if="v$.request.email.$dirty && !v$.request.email.required.$invalid && v$.request.email.email.$invalid">Please enter a valid email address</div>
 
-                <label for="company" class="form-label">Work email</label>
-                <div class="input-group input-group-solid mb-3">
-                    <input type="text" class="form-control text-start" id="work-email">
-                </div>
-
-                <label for="company" class="form-label">Password</label>
-                <div class="input-group input-group-solid mb-3">
-                    <input type="password" class="form-control text-start" id="password">
-                    <span class="input-group-text">
+                    <label for="company" class="form-label fw-bolder mt-4">Password</label>
+                    <div class="input-group input-group-solid mb-2">
+                        <input type="password" class="form-control text-start" id="password" v-model="v$.request.password.$model">
                         <i class="fa fa-eye-slash"></i>
-                    </span>
-                </div>
+                    </div>
+                    <div class="d-flex mt-2 mb-2">
+                        <div 
+                            class="card bg-secondary w-25 h-25 p-1 me-4"
+                            :class="{
+                                'bg-success': v$.request.password.$dirty && !v$.request.password.required.$invalid
+                            }"
+                        >
+                        </div>
+                        <div class="card bg-secondary w-25 h-25 p-1 me-4"></div>
+                        <div class="card bg-secondary w-25 h-25 p-1 me-4"></div>
+                        <div class="card bg-secondary w-25 h-25 p-1"></div>
+                    </div>
+                    <p class="fs-8 text-muted">Use 8 or more characters with a mix of letters, numbers & symbols.</p>
 
-                <label for="company" class="form-label">Confirm password</label>
-                <div class="input-group input-group-solid mb-3">
-                    <input type="password" class="form-control text-start" id="confirm-password">
-                </div>
+                    <label for="company" class="form-label fw-bolder mt-4">Confirm password</label>
+                    <div class="input-group input-group-solid mb-2">
+                        <input type="password" class="form-control text-start" id="confirm-password" v-model="v$.request.confirmPassword.$model">
+                    </div>
 
-                <p class="fs-5 text-muted text-center mt-10">I Agree to the BillFin <a href="#">Terms & Conditions</a></p>
+                    <p class="form-check form-check-solid form-check-inline fs-5 text-muted text-center mt-6">
+                        <input class="form-check-input" type="checkbox" v-model="termsAndConditions">
+                        I Agree to the BillFin 
+                        <a href="https://www.redi2.com/billfin/terms" target="_blank" class="fw-bolder">Terms & Conditions</a>
+                    </p>
 
-                <div class="text-center mt-10 mb-10">
-                    <button type="button" class="btn btn-primary">Create Account</button>
-                </div>
+                    <p class="invalid-feedback" v-if="v$.request.$dirty && !termsAndConditions">You must agree to terms and conditions to create an account.</p>
 
-            </form>
+                    <div class="text-center mt-6 mb-6">
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
-  </div>
 </template>
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, Options, setup } from 'vue-class-component';
+import useVuelidate from '@vuelidate/core';
+import { 
+    required, 
+    email, 
+    sameAs, 
+    numeric,
+    minLength,
+    maxLength 
+} from '@vuelidate/validators';
 
+import { signUpRequest } from "@/model";
+
+@Options({
+    validations: {
+        request: {
+            firstName: { required },
+            lastName: { required },
+            company:  { required },
+            phoneNo:  { 
+                required,
+                numeric,
+                minLength: minLength(10),
+                maxLength: maxLength(10),
+            },
+            aum: { required },
+            email: { 
+                required,
+                email: (value: string) => {
+                    const validation = value.indexOf("@") != -1;
+                    return validation;
+                }
+            },
+            password: { 
+                required,
+                minLength: (value: any) => {
+                    let validation = false;
+                    if(value && value != '' && value.length >= 8 )  validation = true;
+                    return validation;
+                },
+                uppercase: (value: any) => {
+                    let validation = false;
+                    if(value && value != '')  validation = /^(?=.*?[A-Z])/.test(value);
+                    return validation;
+                },
+                lowercase: (value: any) => {
+                    let validation = false;
+                    if(value && value != '')  validation = /^(?=.*?[a-z])/.test(value);
+                    return validation;
+                },
+                number: (value: any) => {
+                    let validation = false;
+                    if(value && value != '')  validation = /[0-9]/.test(value);
+                    return validation;
+                },
+                special: (value: any) => {
+                    let validation = false;
+                    if(value && value != '')  validation = /[#?!@$%^&*-]/.test(value);
+                    return validation;
+                }
+            },
+            confirmPassword: { 
+                required,
+                matchText: sameAs('request.password')
+            }
+        }
+    }
+})
 export default class SignUp extends Vue {
+
+    public request = new signUpRequest();
+
+    public aum: Array<string> = ['Under $25M', '$26M - $50M', '$51M - $100M', '$101M to $250M', '$251M to $500M', 'Above $500M'];
+    public custodian: Array<string> = ['Fidelity', 'LPL', 'Schwab/TD', 'Folio/Goldman', 'Pershing', 'SSG', 'Interactive Brokers', 'Raymond James', 'Others'];
+    public v$ = setup(() => this.validate());
+
+    public termsAndConditions: boolean = false;
+
+    validate() { return useVuelidate(); }
+
+    public updateCustodian(value: any) {
+        if (this.request.custodian.includes(value)) this.request.custodian.splice(this.request.custodian.indexOf(value), 1)
+        else  this.request.custodian.push(value);
+    }
+
+    public signUp() {
+        this.v$.$touch();
+        if (
+            !this.v$.$invalid &&
+            this.termsAndConditions
+        ) {
+            console.log(this.request);
+        }
+    }
 
 }
 </script>
