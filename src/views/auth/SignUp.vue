@@ -1,15 +1,15 @@
 <template>
     <div class="row g-0">
-        <div class="col-xl-8 col-lg-8 col-sm-6">
+        <div class="col-xl-7 col-lg-7 col-sm-6">
             <div class="mx-auto w-75 mt-20">
                 <img src="@/assets/billfin.svg" alt="Logo" />
                 <p class="fs-1 mt-2 fw-bolder">Thanks for your interest in BillFin</p>
-                <p class="fs-5 w-50 pe-6 text-muted lh-base">Powerful billing and invoicing for the modern RIA and financial advisor, designed to be ridiculously simple to use.</p>
+                <p class="fs-5 w-75 text-muted lh-base" style="padding-right: 10.5rem">Powerful billing and invoicing for the modern RIA and financial advisor, designed to be ridiculously simple to use.</p>
                 <img src="@/assets/signup.png" class="w-75 mt-8" alt="Sign up image">
             </div>
         </div>
-        <div class="col-xl-4 col-lg-4 col-sm-6">
-            <div class="w-75 mt-20">
+        <div class="col-xl-5 col-lg-5 col-sm-6">
+            <div class="card mt-20" style="max-width: 450px;">
                 <p class="fs-1 mt-2 fw-bolder mb-0 text-center">14 Days Free Trial</p>
                 <p class="fs-7 text-muted text-center">Have questions? <a href="#" class="fw-bolder">Chat with sales</a></p>
                 <form @submit.prevent="signUp">
@@ -74,10 +74,15 @@
                     </div>
                     <div class="invalid-feedback" v-if="v$.request.email.$dirty && v$.request.email.required.$invalid">Email is required</div>
                     <div class="invalid-feedback" v-if="v$.request.email.$dirty && !v$.request.email.required.$invalid && v$.request.email.email.$invalid">Please enter a valid email address</div>
+                    <div class="invalid-feedback" v-if="v$.request.email.$dirty && !v$.request.email.required.$invalid && v$.request.email.gmail.$invalid">
+                        Please enter your business email. Don't have one? 
+                        <a href="#" class="border-bottom border-primary"> Contact us</a>
+                    </div>
+
 
                     <label for="company" class="form-label fw-bolder mt-4">Password</label>
                     <div class="input-group input-group-solid mb-2">
-                        <input type="password" class="form-control text-start" id="password" v-model="v$.request.password.$model">
+                        <input type="password" class="form-control text-start" id="password" v-model="v$.request.password.$model" ref="password">
                         <i class="fa fa-eye-slash"></i>
                     </div>
                     <div class="d-flex mt-2 mb-2">
@@ -88,7 +93,16 @@
                             }"
                         >
                         </div>
-                        <div class="card bg-secondary w-25 h-25 p-1 me-4"></div>
+                        <div 
+                            class="card bg-secondary w-25 h-25 p-1 me-4"
+                            :class="{
+                                'bg-success': v$.request.password.$dirty && 
+                                !v$.request.password.uppercase.$invalid &&
+                                !v$.request.password.lowercase.$invalid &&
+                                !v$.request.password.number.$invalid
+                            }"
+                        >
+                        </div>
                         <div class="card bg-secondary w-25 h-25 p-1 me-4"></div>
                         <div class="card bg-secondary w-25 h-25 p-1"></div>
                     </div>
@@ -97,6 +111,12 @@
                     <label for="company" class="form-label fw-bolder mt-4">Confirm password</label>
                     <div class="input-group input-group-solid mb-2">
                         <input type="password" class="form-control text-start" id="confirm-password" v-model="v$.request.confirmPassword.$model">
+                    </div>
+                    <div 
+                        class="invalid-feedback" 
+                        v-if="v$.request.confirmPassword.$dirty && v$.request.password.$model != v$.request.confirmPassword.$model"
+                    >
+                        Password and Confirmation password does't match.
                     </div>
 
                     <p class="form-check form-check-solid form-check-inline fs-5 text-muted text-center mt-6">
@@ -121,7 +141,6 @@ import { Vue, Options, setup } from 'vue-class-component';
 import useVuelidate from '@vuelidate/core';
 import { 
     required, 
-    email, 
     sameAs, 
     numeric,
     minLength,
@@ -129,6 +148,7 @@ import {
 } from '@vuelidate/validators';
 
 import { signUpRequest } from "@/model";
+
 
 @Options({
     validations: {
@@ -147,6 +167,16 @@ import { signUpRequest } from "@/model";
                 required,
                 email: (value: string) => {
                     const validation = value.indexOf("@") != -1;
+                    return validation;
+                },
+                gmail: (value: string) => {
+                    const validation = value.indexOf("gmail") == -1 && 
+                        value.indexOf("yahoo") == -1 && 
+                        value.indexOf("hotmail") == -1 && 
+                        value.indexOf("aol") == -1 && 
+                        value.indexOf("outlook") == -1 && 
+                        value.indexOf("protonmail") == -1 &&
+                        value.indexOf("icloud") == -1;
                     return validation;
                 }
             },
@@ -179,8 +209,7 @@ import { signUpRequest } from "@/model";
                 }
             },
             confirmPassword: { 
-                required,
-                matchText: sameAs('request.password')
+                required
             }
         }
     }
@@ -188,12 +217,11 @@ import { signUpRequest } from "@/model";
 export default class SignUp extends Vue {
 
     public request = new signUpRequest();
-
+    public termsAndConditions: boolean = false;
     public aum: Array<string> = ['Under $25M', '$26M - $50M', '$51M - $100M', '$101M to $250M', '$251M to $500M', 'Above $500M'];
     public custodian: Array<string> = ['Fidelity', 'LPL', 'Schwab/TD', 'Folio/Goldman', 'Pershing', 'SSG', 'Interactive Brokers', 'Raymond James', 'Others'];
-    public v$ = setup(() => this.validate());
 
-    public termsAndConditions: boolean = false;
+    public v$ = setup(() => this.validate());
 
     validate() { return useVuelidate(); }
 
@@ -206,7 +234,9 @@ export default class SignUp extends Vue {
         this.v$.$touch();
         if (
             !this.v$.$invalid &&
-            this.termsAndConditions
+            this.request.custodian.length > 0 &&
+            this.request.password == this.request.confirmPassword &&
+            this.termsAndConditions 
         ) {
             console.log(this.request);
         }
