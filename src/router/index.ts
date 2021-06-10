@@ -1,15 +1,18 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
+import store from '@/store';
+
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: () => import('@/views/home/Index.vue'),
   },
   {
-    path: '/',
+    path: '/sign-up',
     name: 'SignUp',
-    component: () => import('@/views/auth/SignUp.vue')
+    component: () => import('@/views/auth/SignUp.vue'),
+    meta: { anonymous: true }
   }
 ]
 
@@ -19,3 +22,16 @@ const router = createRouter({
 })
 
 export default router
+
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => !record.meta.anonymous)) {
+    if (store.getters.isLoggedIn) {
+      next()
+      return
+    }
+    next('/sign-up')
+  } else {
+    next()
+  }
+})
