@@ -17,70 +17,219 @@
 
                         <div class="row mt-10 mb-2">
                             <div class="col-6">
-                                <label for="firstname" class="form-label fw-bolder">First Name</label>
+                                <label 
+                                    for="firstname" 
+                                    class="form-label fw-bolder"
+                                >
+                                    First Name
+                                </label>
                                 <div class="input-group input-group-solid">
-                                    <input type="text" class="form-control text-start" id="firstname" v-model="v$.request.firstName.$model">
+                                    <input 
+                                        type="text" 
+                                        class="form-control text-start" 
+                                        id="firstname" 
+                                        v-model="v$.request.firstName.$model"
+                                    />
                                 </div>
-                                <div class="invalid-feedback" v-if="v$.request.firstName.$dirty && v$.request.firstName.$invalid">First name is required</div>
+                                <div 
+                                    class="invalid-feedback" 
+                                    v-if="v$.request.firstName.$dirty && v$.request.firstName.$invalid"
+                                >
+                                    First name is required
+                                </div>
                             </div>
                             <div class="col-6">
-                                <label for="lastname" class="form-label fw-bolder">Lastname</label>
+                                <label 
+                                    for="lastname" 
+                                    class="form-label fw-bolder"
+                                >
+                                    Lastname
+                                </label>
                                 <div class="input-group input-group-solid">
-                                    <input type="text" class="form-control text-start" id="lastname" v-model="request.lastName">
+                                    <input 
+                                        type="text" 
+                                        class="form-control text-start" 
+                                        id="lastname" 
+                                        v-model="request.lastName"
+                                    />
                                 </div>
-                                <div class="invalid-feedback" v-if="v$.request.lastName.$dirty && v$.request.lastName.$invalid">Last name is required</div>
+                                <div 
+                                    class="invalid-feedback" 
+                                    v-if="v$.request.lastName.$dirty && v$.request.lastName.$invalid"
+                                >
+                                    Last name is required
+                                </div>
                             </div>
                         </div>
 
-                        <label for="company" class="form-label fw-bolder mt-4">Company</label>
+                        <label 
+                            for="company" 
+                            class="form-label fw-bolder mt-4"
+                        >
+                            Company
+                        </label>
                         <div class="input-group input-group-solid mb-2">
-                            <input type="text" class="form-control text-start" id="company" v-model="v$.request.company.$model">
+                            <input 
+                                type="text" 
+                                class="form-control text-start" 
+                                id="company" 
+                                v-model="v$.request.companyName.$model"
+                            >
                         </div>
-                        <div class="invalid-feedback" v-if="v$.request.company.$dirty && v$.request.company.$invalid">Company is required</div>
+                        <div 
+                            class="invalid-feedback" 
+                            v-if="v$.request.companyName.$dirty && v$.request.companyName.$invalid"
+                        >
+                            Company is required
+                        </div>
 
                         <div class="row mt-6 mb-2">
                             <div class="col-6">
-                                <label for="phoneNo" class="form-label fw-bolder">Phone number</label>
+                                <label 
+                                    for="phoneNo" 
+                                    class="form-label fw-bolder"
+                                >
+                                    Phone number
+                                </label>
                                 <div class="input-group input-group-solid">
-                                    <input type="text" class="form-control text-start" id="phoneNo" v-model="v$.request.phoneNo.$model" maxlength="10">
+                                    <input 
+                                        type="text" 
+                                        class="form-control text-start" 
+                                        id="phoneNo" 
+                                        v-model="v$.request.phoneNumber.$model" 
+                                        maxlength="10"
+                                    >
                                 </div>
-                                <div class="invalid-feedback" v-if="v$.request.phoneNo.$dirty && v$.request.phoneNo.$invalid">Phone number is required</div>
+                                <div 
+                                    class="invalid-feedback" 
+                                    v-if="v$.request.phoneNumber.$dirty && v$.request.phoneNumber.$invalid"
+                                >
+                                    Phone number is required
+                                </div>
                             </div>
                             <div class="col-6">
-                                <label for="aum" class="form-label fw-bolder">AUM</label>
-                                <select class="form-select form-select-solid" aria-label="Default select example"  v-model="v$.request.aum.$model">
+                                <label 
+                                    for="aum" 
+                                    class="form-label fw-bolder"
+                                >
+                                    AUM
+                                </label>
+                                <select 
+                                    class="form-select form-select-solid" 
+                                    v-model="v$.request.aumRange.$model"
+                                >
                                     <option selected value="">$</option>
-                                    <option v-for="(item, i) in aum" :key="i" :value="item">{{item}}</option>
+                                    <option 
+                                        v-for="(item, i) in aum" 
+                                        :key="i" 
+                                        :value="item"
+                                    >
+                                        {{item}}
+                                    </option>
                                 </select>                        
-                                <div class="invalid-feedback" v-if="v$.request.aum.$dirty && v$.request.aum.$invalid">AUM is required</div>
+                                <div 
+                                    class="invalid-feedback" 
+                                    v-if="v$.request.aumRange.$dirty && v$.request.aumRange.$invalid"
+                                >
+                                    AUM is required
+                                </div>
                             </div>
                         </div>
 
-                        <label for="company" class="form-label fw-bolder mt-4 mb-4">Where do you custody? <span class="text-muted">Check all that apply</span></label>
+                        <label 
+                            for="company" 
+                            class="form-label fw-bolder mt-4 mb-4"
+                        >
+                            Where do you custody? 
+                            <span class="text-muted">Check all that apply</span>
+                        </label>
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                             <div 
                                 class="form-check form-check-solid form-check-inline mb-3 me-0 flex-fill-basic"
                                 v-for="(item, i) in custodian"
                                 :key="i"
                             >
-                                <input class="form-check-input" type="checkbox" :value="item" @change="updateCustodian($event.target.value)">
-                                <label class="fs-7 form-check-label" v-bind:for="item">{{item}}</label>
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox" 
+                                    :value="item" 
+                                    @change="updateCustodian(item.custodianId)"
+                                >
+                                <label 
+                                    class="fs-7 form-check-label" 
+                                    v-bind:for="item"
+                                >
+                                    {{item.custodianName}}
+                                </label>
                             </div>
                         </div>
-                        <div class="invalid-feedback" v-if="v$.request.$dirty && request.custodian.length == 0">Custodian selection is required</div>
+                        <div class="invalid-feedback" v-if="v$.request.$dirty && request.custodians.length == 0">Custodian selection is required</div>
 
-                        <label for="company" class="form-label fw-bolder mt-4">Work email</label>
+                        <label 
+                            for="company" 
+                            class="form-label fw-bolder mt-4"
+                        >
+                            Work email
+                        </label>
                         <div class="input-group input-group-solid mb-2">
-                            <input type="text" class="form-control text-start" id="work-email" v-model="v$.request.email.$model">
+                            <input 
+                                type="text" 
+                                class="form-control text-start" 
+                                id="work-email" 
+                                v-model="v$.request.email.$model" 
+                                @blur="!v$.request.email.$invalid ? verifyEmailExists() : ''"
+                            />
                         </div>
-                        <div class="invalid-feedback" v-if="v$.request.email.$dirty && v$.request.email.required.$invalid">Email is required</div>
-                        <div class="invalid-feedback" v-if="v$.request.email.$dirty && !v$.request.email.required.$invalid && v$.request.email.email.$invalid">Please enter a valid email address</div>
-                        <div class="invalid-feedback" v-if="v$.request.email.$dirty && !v$.request.email.required.$invalid && v$.request.email.gmail.$invalid">
+                        <div 
+                            class="invalid-feedback" 
+                            v-if="v$.request.email.$dirty && 
+                                v$.request.email.required.$invalid"
+                        >
+                            Email is required
+                        </div>
+                        <div 
+                            class="invalid-feedback" 
+                            v-if="v$.request.email.$dirty && 
+                                !v$.request.email.required.$invalid && 
+                                v$.request.email.email.$invalid"
+                        >
+                            Please enter a valid email address
+                        </div>
+                        <div 
+                            class="invalid-feedback" 
+                            v-if="v$.request.email.$dirty && 
+                                !v$.request.email.required.$invalid && 
+                                !v$.request.email.email.$invalid && 
+                                v$.request.email.gmail.$invalid"
+                        >
                             Please enter your business email. Don't have one? 
-                            <a href="#" class="border-bottom border-primary"> Contact us</a>
+                            <a 
+                                href="#" 
+                                class="border-bottom border-primary"
+                            >
+                                Contact us
+                            </a>
                         </div>
 
-                        <label for="company" class="form-label fw-bolder mt-4">Password</label>
+                        <div 
+                            class="invalid-feedback" 
+                            v-if="emailVerification.userRegistered"
+                        >
+                            An account with this email address already exists
+                            <a 
+                                href="#" 
+                                class="border-bottom border-primary"
+                            > 
+                                Contact us
+                            </a>
+                        </div>
+
+                        <label 
+                            for="Password" 
+                            class="form-label fw-bolder mt-4"
+                        >
+                            Password
+                        </label>
                         <div class="input-group input-group-solid mb-2">
                             <input 
                                 :type="showPassword ? 'text' : 'password'" 
@@ -105,7 +254,8 @@
                             <div 
                                 class="card bg-secondary w-25 h-25 p-1 me-4"
                                 :class="{
-                                    'bg-success': v$.request.password.$dirty && !v$.request.password.required.$invalid
+                                    'bg-success': v$.request.password.$dirty && 
+                                        !v$.request.password.required.$invalid
                                 }"
                             >
                             </div>
@@ -147,21 +297,43 @@
                         </div>
                         <div 
                             class="invalid-feedback" 
-                            v-if="v$.request.confirmPassword.$dirty && v$.request.password.$model != v$.request.confirmPassword.$model"
+                            v-if="v$.request.confirmPassword.$dirty && 
+                                v$.request.password.$model != v$.request.confirmPassword.$model"
                         >
                             Password and Confirmation password does't match.
                         </div>
 
                         <p class="form-check form-check-solid form-check-inline fs-5 text-muted text-center mt-6">
-                            <input class="form-check-input" type="checkbox" v-model="termsAndConditions">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                v-model="v$.request.hasAgreed.$model"
+                            >
                             I Agree to the BillFin 
-                            <a href="https://www.redi2.com/billfin/terms" target="_blank" class="fw-bolder">Terms & Conditions</a>
+                            <a 
+                                href="https://www.redi2.com/billfin/terms" 
+                                target="_blank" 
+                                class="fw-bolder"
+                            >
+                                Terms & Conditions
+                            </a>
                         </p>
 
-                        <p class="invalid-feedback" v-if="v$.request.$dirty && !termsAndConditions">You must agree to terms and conditions to create an account.</p>
+                        <p 
+                            class="invalid-feedback" 
+                            v-if="v$.request.$dirty && 
+                                v$.request.hasAgreed.$invalid"
+                        >
+                            You must agree to terms and conditions to create an account.
+                        </p>
 
                         <div class="text-center mt-6 mb-6">
-                            <button type="submit" class="btn btn-primary">Create Account</button>
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary"
+                            >
+                                Create Account
+                            </button>
                         </div>
 
                     </form>
@@ -190,7 +362,7 @@ import {
 
 import Information from '@/components/Models/Information.vue';
 
-import { signUpRequest, signUpResponse } from "@/model";
+import { signUpRequest, signUpResponse, custodianResponseModel, emailVerificationResponseModel, emailVerificationRequestModel } from "@/model";
 import { ISignUpService } from "@/service";
 
 @Options({
@@ -201,18 +373,18 @@ import { ISignUpService } from "@/service";
         request: {
             firstName: { required },
             lastName: { required },
-            company:  { required },
-            phoneNo:  { 
+            companyName:  { required },
+            phoneNumber:  { 
                 required,
                 numeric,
                 minLength: minLength(10),
                 maxLength: maxLength(10),
             },
-            aum: { required },
+            aumRange: { required },
             email: { 
                 required,
                 email: (value: string) => {
-                    const validation = value.indexOf("@") != -1;
+                    const validation = value.indexOf("@") != -1 && value.lastIndexOf(".com") != -1;
                     return validation;
                 },
                 gmail: (value: string) => {
@@ -256,6 +428,9 @@ import { ISignUpService } from "@/service";
             },
             confirmPassword: { 
                 required
+            },
+            hasAgreed: {
+                required
             }
         }
     }
@@ -266,13 +441,14 @@ export default class SignUp extends Vue {
     public request = new signUpRequest();
     public response = new signUpResponse();
 
+    public emailVerification = new emailVerificationResponseModel();
+
     public showPassword:boolean = false;
     public showConfirmPassword:boolean = false;
-    public termsAndConditions: boolean = false;
     public showInfomationModel:boolean = false;
 
     public aum: Array<string> = ['Under $25M', '$26M - $50M', '$51M - $100M', '$101M to $250M', '$251M to $500M', 'Above $500M'];
-    public custodian: Array<string> = [];
+    public custodian: Array<custodianResponseModel> = [];
 
     public v$ = setup(() => this.validate());
 
@@ -283,23 +459,34 @@ export default class SignUp extends Vue {
     }
 
     private getCustodian() {
-        this.service?.getCustodian().then((response) => {
-            this.custodian = response;
+        this.service?.getCustodian().then((response) => { this.custodian = response; })
+    }
+
+    public updateCustodian(value: number) {
+        if (this.request.custodians.includes(value)) this.request.custodians.splice(this.request.custodians.indexOf(value), 1);
+        else  this.request.custodians.push(value);
+    }
+
+    public verifyEmailExists() {
+        const request = new emailVerificationRequestModel();
+        request.email = this.request.email;
+        this.service?.verifyEmail(request)
+        .then((response) => {
+            this.emailVerification = response;
+        }).catch((err) => {
+            console.log(err);
         })
     }
-
-    public updateCustodian(value: any) {
-        if (this.request.custodian.includes(value)) this.request.custodian.splice(this.request.custodian.indexOf(value), 1)
-        else  this.request.custodian.push(value);
-    }
-
+    
     public signUp() {
         this.v$.$touch();
+        console.log(this.request);
         if (
             !this.v$.$invalid &&
-            this.request.custodian.length > 0 &&
+            this.request.custodians.length > 0 &&
             this.request.password == this.request.confirmPassword &&
-            this.termsAndConditions 
+            this.request.hasAgreed &&
+            !this.emailVerification.userRegistered
         ) {
             this.service?.createAccount(this.request)
             .then((response) => {
