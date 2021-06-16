@@ -13,6 +13,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'SignUp',
     component: () => import('@/views/auth/SignUp.vue'),
     meta: { anonymous: true }
+  },
+  {
+    path: '/email-verification',
+    name: 'EmailVerification',
+    component: () => import('@/views/auth/Email-Verification.vue'),
+    meta: { anonymous: true }
   }
 ]
 

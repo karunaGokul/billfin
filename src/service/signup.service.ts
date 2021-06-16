@@ -26,8 +26,16 @@ export class SignUpMockService extends BaseService<signUpRequest, signUpResponse
         return new Promise((resolve, reject) => {
             const items: emailVerificationResponseModel = new emailVerificationResponseModel();
             items.email = request.email;
-            items.userRegistered = true;
-            items.firmRegistered = true;
+            if(request.email == 'logeswaran@yectra.com') {
+                items.userRegistered = true;
+                items.firmRegistered = false;
+            } else if(request.email == 'sample@yectra.com') {
+                    items.userRegistered = false;
+                    items.firmRegistered = true;
+            } else {
+                items.userRegistered = false;
+                items.firmRegistered = false;
+            }
 
             resolve(items);
         });
@@ -55,9 +63,25 @@ export class SignUpMockService extends BaseService<signUpRequest, signUpResponse
             const response = new signUpResponse();
             response.email = request.email;
             response.domain = request.email;
-            response.status = "Failed";
-            response.errorCode = 1;
-            response.errorMessage = `${request.email} is already registered`;
+
+            if(response.email == 'logeswaran@yectra.com') {
+                response.status = "Failed";
+                response.errorCode = 1;
+                response.errorMessage = `${request.email} is already registered`;
+            } else if(response.email == 'sample@yectra.com') {
+                response.status = "Failed";
+                response.errorCode = 2;
+                response.errorMessage = `${request.email.split('@')[1]} is already registered`;
+            } else if(response.email == 'sample1@yectra.com') {
+                response.status = "Failed";
+                response.errorCode = 2;
+                response.errorMessage = `${request.email.split('@')[1]} is already registered`;
+            }
+             else {
+                response.status = "Success";
+                response.errorCode = 0;
+                response.errorMessage = "";
+            }
 
             resolve(response);
         });
