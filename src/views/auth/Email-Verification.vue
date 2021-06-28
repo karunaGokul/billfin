@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-export default class EmailVerificationPage extends Vue {
+export default class EmailVerification extends Vue {
 
 } 
 </script>

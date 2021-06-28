@@ -266,7 +266,13 @@ import {
 import TextInput from "@/components/controls/TextInput.vue";
 import Information from '@/components/Models/Information.vue';
 
-import { signUpRequest, signUpResponse, custodianResponseModel, emailVerificationResponseModel, emailVerificationRequestModel } from "@/model";
+import { 
+    signUpRequest, 
+    signUpResponse, 
+    custodianResponseModel, 
+    emailVerificationResponseModel, 
+    emailVerificationRequestModel 
+} from "@/model";
 import { ISignUpService } from "@/service";
 
 @Options({

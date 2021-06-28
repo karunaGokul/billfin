@@ -1,0 +1,41 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    transition: all ease .4s;
+
+    &-small {
+        width: 7rem;
+    }
+    &-medium {
+        width: 15%;
+
+        .nav-link__name {
+            display: inline !important;
+        }
+    }
+    .nav-bar__name {
+        color: #B5B5C3;
+    }
+    .nav {
+        &-link {
+            color: #7E8299;
+
+            i {
+                color: #A1A5B7;
+            }
+
+            &.active {
+                font-weight: 600;
+                color: $primary;
+    
+                i {
+                    color: $primary;
+                }
+            }
+            &__name {
+                transition: all ease .4s;
+                display: none;
+            }
+        }
+    }
+}
