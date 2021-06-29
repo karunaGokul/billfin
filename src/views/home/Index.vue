@@ -172,9 +172,9 @@ export default class Home extends Vue {
     public sideBar:boolean = false;
 
     mounted() {
-        /*setTimeout(() => {
+        setTimeout(() => {
             this.showWelcomeMessage = true;
-        }, 1000)*/
+        }, 1000)
     }
 }
 </script>

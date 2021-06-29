@@ -1,46 +1,86 @@
-.tabs {
+/*.tabs {
     position: relative;  
     clear: both;
 
-    .tab {
-      float: left;
-      margin-right: 3rem;
+  .tab, .custom-tab {
+    float: left;
+    margin-right: 3rem;
 
-      & label {
-        background: $primary-inverse; 
-        padding: 10px; 
-        margin-left: -1px; 
-        position: relative;
-        left: 1px; 
-        top: 0;
-        font-weight: $font-weight-bolder;
-        cursor: pointer;
-      }
+    &-label, .custom-tab-label {
+      background: $primary-inverse; 
+      padding: 10px; 
+      margin-left: -1px; 
+      position: relative;
+      left: 1px; 
+      top: 0;
+      font-weight: $font-weight-bolder;
+      cursor: pointer;
+    }
 
-      [type=radio] {
-        display: none;   
-      }
-      &-content {
-        position: absolute;
-        top: 37px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        padding: 20px;
-        opacity: 0;
-      }
+    &-content, .custom-tab-content {
+      position: absolute;
+      top: 37px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 20px;
+      opacity: 0;
+    }
 
-      [type=radio]:checked ~ label {
-        color: $primary;
-        border-bottom: 2px solid $primary;
-        z-index: 2;
-        padding-bottom: 4px;
-      }
-      [type=radio]:checked ~ label ~ .tab-content {
-        z-index: 1;
-        opacity: 1;
-      }
+    &.tab-active .tab-label {
+      color: $primary;
+      border-bottom: 2px solid $primary;
+      z-index: 2;
+      padding-bottom: 4px;
+    }
+    &.tab-active .tab-label, &.tab-active .tab-content {
+      z-index: 1;
+      opacity: 1;
+    }
 
+    .custom-tab.custom-tab__active .custom-tab-label {
+      color: black;
+      border-bottom: 1px solid $primary;
+      z-index: 2;
+      padding-bottom: 4px;
+    }
+    .custom-tab.custom-tab__active .custom-tab-label, .custom-tab.custom-tab__active .custom-tab-content {
+      z-index: 1;
+      opacity: 1;
     }
 
   }
+}*/
+
+.tab-group {
+  position: relative;  
+  clear: both;
+  width: 100%;
+
+  .tab-header {
+
+    .tab-label-group {
+      margin: 0;
+      padding: 0;
+      display: flex;
+
+      .tab-label {
+        list-style-type: none;
+        margin: 0 2rem;
+        font-weight: $font-weight-bolder;
+        cursor: pointer;
+      }
+      .tab-active {
+        color: $primary;
+        border-bottom: 2px solid $primary;
+      }
+      .tab-active-border-bottom {
+        border-bottom: 2px solid $primary;
+      }
+    }
+  }
+  .tab-content-group {
+    margin: 1rem 2rem;
+  }
+  
+}
