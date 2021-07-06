@@ -1,0 +1,216 @@
+<template>
+  <div class="tab-content tab-content-sm__scroll border-bottom">
+    <div class="w-75 mx-auto mt-10">
+      <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
+        General Information
+        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+      </p>
+
+      <form @submit.prevent="updateGeneral">
+        <TextInput
+          label="Company"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.company"
+          :validation="['required']"
+        />
+        <TextInput
+          label="Company Phone"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.companyPhone"
+          :validation="['required', 'numeric', 'minLength', 'maxLength']"
+        />
+        <TextInput
+          label="Company Site"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.companySite"
+          :validation="['required']"
+        />
+        <TextInput
+          label="Company Address"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.companyAddress"
+          :validation="['required']"
+        />
+        <TextInput
+          label="City"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.city"
+          :validation="['required']"
+        />
+        <SelectBox
+          label="State"
+          :controls="v$.request.state"
+          :data="states"
+          :validation="['required']"
+        />
+        <TextInput
+          label="Postal Code"
+          inputType="text"
+          formFieldType="inputInline"
+          :controls="v$.request.postalCode"
+          :validation="['required', 'numeric']"
+        />
+        <div class="mb-5 row g-0 align-items-center">
+          <div class="col-sm-4">
+            <div class="col-form-label pb-0 fw-bolder">
+              Which fees do you bill?
+              <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+            </div>
+            <div class="text-muted">Check all that apply</div>
+          </div>
+
+          <div class="col-sm-8">
+            <div
+              class="form-check form-check-solid form-check-inline fs-7"
+              v-for="(item, index) in feesBill"
+              :key="index"
+            >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                @change="updateFeesBill(item)"
+              />
+              {{ item }}
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-end pb-5">
+          <button type="submit" class="btn btn-primary">Continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { Vue, Options, setup } from "vue-class-component";
+
+import useVuelidate from "@vuelidate/core";
+import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
+
+import TextInput from "@/components/controls/TextInput.vue";
+import SelectBox from "@/components/controls/SelectBox.vue";
+
+import { generalRequestModel } from "@/model";
+
+@Options({
+  components: {
+    TextInput,
+    SelectBox,
+  },
+  validations: {
+    request: {
+      company: { required },
+      companyPhone: {
+        required,
+        numeric,
+        minLength: minLength(10),
+        maxLength: maxLength(10),
+      },
+      companySite: { required },
+      companyAddress: { required },
+      city: { required },
+      state: { required },
+      postalCode: { required, numeric },
+    },
+  },
+})
+export default class General extends Vue {
+  public v$ = setup(() => this.validate());
+
+  validate() {
+    return useVuelidate();
+  }
+
+  public request = new generalRequestModel();
+  public feesBill: Array<string> = ["AUM Advisory", "One Time", "Subscription"];
+
+  mounted() {
+    this.request.state = "Massachusetts";
+  }
+
+  public states: Array<string> = [
+    "Alabama",
+    "Alaska",
+    "American Samoa",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "District Of Columbia",
+    "Federated States Of Micronesia",
+    "Florida",
+    "Georgia",
+    "Guam",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Marshall Islands",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Northern Mariana Islands",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Palau",
+    "Pennsylvania",
+    "Puerto Rico",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virgin Islands",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming",
+  ];
+
+  nextTab() {
+    this.$emit("next");
+  }
+
+  public updateFeesBill(value: string) {
+    if (this.request.feesBill.includes(value))
+      this.request.feesBill.splice(this.request.feesBill.indexOf(value), 1);
+    else this.request.feesBill.push(value);
+  }
+
+  public updateGeneral() {
+    this.v$.$touch();
+    if (!this.v$.$invalid) {
+      console.log(this.request);
+      this.$emit("next");
+    }
+  }
+}
+</script>
