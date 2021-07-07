@@ -60,8 +60,8 @@ const actions: ActionTree<AuthenticationState, any> = {
     login(context) {
         const config: KeycloakConfig = {
             url: 'https://keycloak.redi2.com:8443/auth/',
-            realm: 'WME-Dev',
-            clientId: 'wmXplorer',
+            realm: 'BillFin-Dev',
+            clientId: 'reference-service',
         }
     
         const keycloak = Keycloak(config);

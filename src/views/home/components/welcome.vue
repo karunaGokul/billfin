@@ -8,69 +8,70 @@
             Let's you get onboarded quickly and easily!
           </h6>
         </div>
-        <div class="modal-body w-75 mx-auto" style="height: 80vh">
+        <div class="modal-body w-75 mx-auto" style="height: 75vh">
           <div class="tab-group">
             <div class="tab-header">
               <ul class="tab-label-group">
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 1 }"
-                  @click="activeTab = 1"
                 >
                   General
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 2 }"
-                  @click="activeTab = 2"
                 >
                   Frequecy & Timing
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 3 }"
-                  @click="activeTab = 3"
                 >
                   Methodologies
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 4 }"
-                  @click="activeTab = 4"
                 >
                   Adjustments
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 5 }"
-                  @click="activeTab = 5"
                 >
                   Invite
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 6 }"
-                  @click="activeTab = 6"
                 >
                   Confirm
                 </li>
               </ul>
             </div>
             <div class="tab-content-group">
-              <General @next="activeTab = 2" v-if="activeTab == 1" />
+              <General 
+                @controlTabs="onControlTabs"
+                @next="activeTab = 2" 
+                v-if="activeTab == 1" 
+              />
               <Frequecy
                 @prev="activeTab = 1"
                 @next="activeTab = 3"
+                :tabs="tabs"
                 v-if="activeTab == 2"
               />
               <Methodologies
                 @prev="activeTab = 2"
                 @next="activeTab = 4"
+                :tabs="tabs"
                 v-if="activeTab == 3"
               />
               <Adjustments
                 @prev="activeTab = 3"
                 @next="activeTab = 5"
+                :tabs="tabs"
                 v-if="activeTab == 4"
               />
               <div class="tab-content pb-5 border-bottom" v-if="activeTab == 5">
@@ -113,8 +114,15 @@ import Adjustments from "./adjustments.vue";
   },
 })
 export default class Welcome extends Vue {
+  
   public activeTab: number = 1;
   public methodologiesTab: number = 1;
   public adjustmentsTab: number = 1;
+
+  public tabs: Array<string> = [];
+
+  public onControlTabs(tabs: any) {
+    this.tabs = tabs;
+  }
 }
 </script>

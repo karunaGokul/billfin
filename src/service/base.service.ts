@@ -27,9 +27,9 @@ export abstract class ServiceHelper {
     protected apiUrl: string = `${this.baseUrl}/${Settings.ApiPath}`;
 
     protected deserialize<T>(classType: EntityType<T>, source: any): T {
-        let raw = plainToClass<T, any>(classType, source);
+        const raw = plainToClass<T, any>(classType, source);
 
-        let item: T = raw;
+        const item: T = raw;
 
         return item;
     }
@@ -102,7 +102,7 @@ export class BaseService<R extends IBaseRequest, T extends IBaseModel> extends S
 
     protected construct(data: any) {
         if (this.eType) {
-            let item: T = this.deserialize<T>(this.eType, data);
+            const item: T = this.deserialize<T>(this.eType, data);
 
             this.format(item);
             return item;
@@ -184,7 +184,7 @@ export class BaseService<R extends IBaseRequest, T extends IBaseModel> extends S
                 let result = new DataResponse<T>();
 
                 if (response.data) {
-                    let items: T[] = [];
+                    const items: T[] = [];
 
                     if (response.data.data) {
                         response.data.data.forEach((item: any) => {

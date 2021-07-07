@@ -7,25 +7,20 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
+            v-for="(item, index) in tabs"
+            :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': frequencyTab == 1 }"
-            @click="frequencyTab = 1"
+            :class="{ 'tab-active-border-bottom': frequencyTab == index }"
+            @click="frequencyTab = index"
           >
-            AUM Advisory
-          </li>
-          <li
-            class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': frequencyTab == 2 }"
-            @click="frequencyTab = 2"
-          >
-            Subscription
+            {{item}}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll mt-10"
-          v-if="frequencyTab == 1"
+          v-if="frequencyTab == 0"
         >
           <div class="d-flex fs-7">
             <div class="fw-bolder">
@@ -37,19 +32,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in aumAdvisoryBill"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.aumAdvisoryBill"
-                :value="item"
-              />
-              {{ item }}
-            </div>
+            <MultiSelectCheckBox
+              :data="aumAdvisoryFees"
+              @update="updateAumAdvisoryFees"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -61,28 +47,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in request.aumAdvisoryBill"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.aumAdvisoryAccount"
-                :value="item"
-              />
-              {{ item }}
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.aumAdvisoryAccount"
-                value="Don't default"
-              />
-              Don't default
-            </div>
+            <SingleSelectionCheckBox 
+              :data="aumAdvisoryNewAccount" 
+              @update="updateAumAdvisoryNewAccount"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -96,19 +64,10 @@
           </div>
 
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in aumArrears"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.aumArrears"
-                :value="item"
-              />
-              {{ item }}
-            </div>
+            <MultiSelectCheckBox
+              :data="aumAdvisoryArrears"
+              @update="updateAumAdvisoryArrears"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -120,23 +79,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in request.aumArrears"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.newAccounts"
-                :value="item"
-              />
-              {{ item }}
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
-              Don't default
-            </div>
+            <SingleSelectionCheckBox 
+              :data="aumDefaultNewAccounts" 
+              @update="updateAumDefaultNewAccounts"
+            />
           </div>
 
           <template v-if="isQuarterlySelected">
@@ -172,42 +118,10 @@
               </div>
             </div>
             <div class="mt-6 ms-6">
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.quarterltyCycle"
-                  value="Jan-Apr-Jul-Oct"
-                />
-                Jan-Apr-Jul-Oct
-              </div>
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.quarterltyCycle"
-                  value="Feb-May-Aug-Nov"
-                />
-                Feb-May-Aug-Nov
-              </div>
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.quarterltyCycle"
-                  value="Mar-Jun-Seb-Dec"
-                />
-                Mar-Jun-Seb-Dec
-              </div>
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.quarterltyCycle"
-                  value="Don't default"
-                />
-                Don't default
-              </div>
+              <SingleSelectionCheckBox 
+                :data="defaultQuarterlyCycle" 
+                @update="updateDefaultQuarterltyCycle"
+              />
             </div>
           </template>
 
@@ -218,7 +132,7 @@
             </button>
           </div>
         </div>
-        <div class="tab-content" v-if="frequencyTab == 2">
+        <div class="tab-content" v-if="frequencyTab == 1">
           {{ frequencyTab }}
         </div>
       </div>
@@ -226,22 +140,52 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 
 import { frequencyModel } from "@/model";
+import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
+import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
+
+@Options({
+  components: {
+    MultiSelectCheckBox,
+    SingleSelectionCheckBox,
+  },
+})
 export default class Frequecy extends Vue {
-  public frequencyTab: number = 1;
+  @Prop() tabs: Array<string> | any;
+  public frequencyTab: number = 0;
 
   public request = new frequencyModel();
 
-  public aumAdvisoryBill: Array<string> = [
+  public aumAdvisoryFees: Array<string> = [
     "Monthly",
     "Quarterly",
     "Semi-Annually",
     "Annually",
   ];
 
-  public aumArrears: Array<string> = ["Advance", "Arrears"];
+  public aumAdvisoryNewAccount: Array<string> = [
+    "Monthly",
+    "Quarterly",
+    "Semi-Annually",
+    "Annually",
+    "Don't default",
+  ];
+
+  public aumAdvisoryArrears: Array<string> = ["Advance", "Arrears"];
+  public aumDefaultNewAccounts: Array<string> = [
+    "Advance",
+    "Arrears",
+    "Don't default",
+  ];
+
+  public defaultQuarterlyCycle: Array<string> = ["Jan-Apr-Jul-Oct", "Feb-May-Aug-Nov", "Mar-Jun-Seb-Dec", "Don't default"];
+
+  created() {
+    console.log(this.tabs);
+  }
 
   prev() {
     this.$emit("prev");
@@ -252,8 +196,55 @@ export default class Frequecy extends Vue {
     this.$emit("next");
   }
 
+  updateAumAdvisoryFees(selectedAUM: any) {
+    this.request.aumAdvisoryFees = selectedAUM;
+    this.aumAdvisoryNewAccount = [];
+    this.aumAdvisoryNewAccount = this.aumAdvisoryNewAccount.concat(
+      this.request.aumAdvisoryFees
+    );
+    this.aumAdvisoryNewAccount.push("Don't default");
+    this._sortOrder(this.aumAdvisoryNewAccount);
+  }
+
+  updateAumAdvisoryNewAccount(newAccount: any) {
+    this.request.aumAdvisoryNewAccount = newAccount;
+  }
+
+  updateAumAdvisoryArrears(aumArrears: any) {
+    this.request.aumAdvisoryArrears = aumArrears;
+    this.aumDefaultNewAccounts = [];
+    this.aumDefaultNewAccounts = this.aumDefaultNewAccounts.concat(
+      this.request.aumAdvisoryArrears
+    );
+    this.aumDefaultNewAccounts.push("Don't default");
+    this._sortOrder(this.aumDefaultNewAccounts);
+  }
+
+  updateAumDefaultNewAccounts(selectedAccounts: any) {
+    this.request.aumDefaultNewAccounts = selectedAccounts;
+  }
+
+  updateDefaultQuarterltyCycle(QuarterltyCycle: any) {
+    this.request.defaultQuarterltyCycle = QuarterltyCycle;
+  }
+
   get isQuarterlySelected() {
-    return this.request.aumAdvisoryBill.includes('Quarterly');
+    return this.request.aumAdvisoryFees.includes("Quarterly");
+  }
+
+  public _sortOrder(aumNewAccounts: Array<string>) {
+    const sortOrder = [
+      "Monthly",
+      "Quarterly",
+      "Semi-Annually",
+      "Annually",
+      "Advance",
+      "Arrears",
+      "Don't default",
+    ];
+    aumNewAccounts.sort((a, b) => {
+      return sortOrder.indexOf(a) - sortOrder.indexOf(b);
+    });
   }
 }
 </script>

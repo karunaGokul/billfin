@@ -65,17 +65,32 @@
           </div>
 
           <div class="col-sm-8">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in feesBill"
-              :key="index"
-            >
+            <div class="form-check form-check-solid form-check-inline fs-7">
               <input
                 class="form-check-input"
                 type="checkbox"
-                @change="updateFeesBill(item)"
+                v-model="request.feesBill"
+                value="AUM Advisory"
               />
-              {{ item }}
+              AUM Advisory
+            </div>
+            <div class="form-check form-check-solid form-check-inline fs-7">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.feesBill"
+                value="One Time"
+              />
+              One Time
+            </div>
+            <div class="form-check form-check-solid form-check-inline fs-7">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.feesBill"
+                value="Subscription"
+              />
+              Subscription
             </div>
           </div>
         </div>
@@ -127,7 +142,6 @@ export default class General extends Vue {
   }
 
   public request = new generalRequestModel();
-  public feesBill: Array<string> = ["AUM Advisory", "One Time", "Subscription"];
 
   mounted() {
     this.request.state = "Massachusetts";
@@ -199,16 +213,10 @@ export default class General extends Vue {
     this.$emit("next");
   }
 
-  public updateFeesBill(value: string) {
-    if (this.request.feesBill.includes(value))
-      this.request.feesBill.splice(this.request.feesBill.indexOf(value), 1);
-    else this.request.feesBill.push(value);
-  }
-
   public updateGeneral() {
     this.v$.$touch();
     if (!this.v$.$invalid) {
-      console.log(this.request);
+      this.$emit("controlTabs",this.request.feesBill);
       this.$emit("next");
     }
   }

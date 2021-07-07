@@ -11,7 +11,6 @@
                 list-style-type: none;
                 margin: 0 2rem;
                 font-weight: $font-weight-bolder;
-                cursor: pointer;
             }
             .tab-active {
                 color: $primary;
@@ -25,11 +24,11 @@
     .tab-content-group {
         margin: 1rem 2rem;
         .tab-content-sm__scroll {
-            height: calc(80vh - 60px);
+            height: calc(75vh - 60px);
             overflow: auto;
         }
         .tab-content-lg__scroll {
-            height: calc(80vh - 60px - 100px);
+            height: calc(75vh - 60px - 100px);
             overflow: auto;
         }
     }

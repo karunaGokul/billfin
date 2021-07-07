@@ -7,25 +7,20 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
+            v-for="(item, index) in tabs"
+            :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': adjustmentsTab == 1 }"
-            @click="adjustmentsTab = 1"
+            :class="{ 'tab-active-border-bottom': adjustmentsTab == index }"
+            @click="adjustmentsTab = index"
           >
-            AUM Advisory
-          </li>
-          <li
-            class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': adjustmentsTab == 2 }"
-            @click="adjustmentsTab = 2"
-          >
-            Subscription
+            {{ item }}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll"
-          v-if="adjustmentsTab == 1"
+          v-if="adjustmentsTab == 0"
         >
           <div class="d-flex fs-7 mt-10">
             <div class="fw-bolder">
@@ -49,7 +44,11 @@
             <template v-if="request.firmWideStandardMinimumFee">
               <div class="input-group input-group-solid w-25 ms-4">
                 <span class="input-group-text">$</span>
-                <input type="text" class="form-control text-start" />
+                <input
+                  type="text"
+                  class="form-control text-start"
+                  v-model="request.firmWideMinimumFeeAmount"
+                />
               </div>
               <div class="ms-4">annual minimum</div>
             </template>
@@ -77,7 +76,11 @@
             <template v-if="request.firmWideMaximumFee">
               <div class="input-group input-group-solid w-25 ms-4">
                 <span class="input-group-text">$</span>
-                <input type="text" class="form-control text-start" />
+                <input
+                  type="text"
+                  class="form-control text-start"
+                  v-model="request.firmWideMaximumFeeAmount"
+                />
               </div>
               <div class="ms-4">annual maximum</div>
             </template>
@@ -114,36 +117,13 @@
               </div>
             </div>
             <div class="mt-6 ms-6">
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.thresholdFlowsAmount"
-                  value="Dollar amount"
-                />
-                Dollar amount
-              </div>
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.thresholdFlowsAum"
-                  value="% of AUM"
-                />
-                % of AUM
-              </div>
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.thresholdFlowsNone"
-                  value="None"
-                />
-                None
-              </div>
+              <SingleSelectionCheckBox
+                :data="thresholdFlows"
+                @update="updateThresholdFlows"
+              />
             </div>
 
-            <template v-if="request.thresholdFlowsAmount">
+            <template v-if="request.thresholdFlows == 'Dollar amount'">
               <div class="d-flex fs-7 mt-10">
                 <div class="fw-bolder">
                   Please enter the dollar amount of your threshold.
@@ -155,12 +135,16 @@
               <div class="mt-6 ms-6">
                 <div class="input-group input-group-solid w-50">
                   <span class="input-group-text">$</span>
-                  <input type="text" class="form-control text-start" />
+                  <input
+                    type="text"
+                    class="form-control text-start"
+                    v-model="request.thresholdFlowsAmount"
+                  />
                 </div>
               </div>
             </template>
 
-            <template v-if="request.thresholdFlowsAum">
+            <template v-if="request.thresholdFlows == '% of AUM'">
               <div class="d-flex fs-7 mt-10">
                 <div class="fw-bolder">
                   PLease enter the % aum of your threshold.
@@ -172,7 +156,11 @@
               <div class="mt-6 ms-6">
                 <div class="input-group input-group-solid w-50">
                   <span class="input-group-text">%</span>
-                  <input type="text" class="form-control text-start" />
+                  <input
+                    type="text"
+                    class="form-control text-start"
+                    v-model="request.thresholdFlowsAum"
+                  />
                 </div>
               </div>
             </template>
@@ -191,7 +179,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="avoidCharging"
+                v-model="request.avoidCharging"
               />
               <label class="fs-7 text-muted form-check-label"
                 >No, I charge exact amounts</label
@@ -206,25 +194,44 @@
             </button>
           </div>
         </div>
-        <div class="tab-content" v-if="adjustmentsTab == 2">2</div>
+        <div class="tab-content" v-if="adjustmentsTab == 1">
+          {{ adjustmentsTab }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
-import { adjustmentsModel } from "@/model";
+import { Vue, Options } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 
+import { adjustmentsModel } from "@/model";
+import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
+
+@Options({
+  components: {
+    SingleSelectionCheckBox,
+  },
+})
 export default class Adjustments extends Vue {
-  public adjustmentsTab: number = 1;
+  @Prop() tabs: Array<string> | any;
+
+  public adjustmentsTab: number = 0;
   public request = new adjustmentsModel();
+
+  public thresholdFlows: Array<string> = ["Dollar amount", "% of AUM", "None"];
+
+  public updateThresholdFlows(value: any) {
+    this.request.thresholdFlows = value[0];
+  }
 
   prev() {
     this.$emit("prev");
   }
 
   next() {
-    this.$emit("next");
+    console.log(this.request);
+    //this.$emit("next");
   }
 }
 </script>

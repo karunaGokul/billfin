@@ -7,25 +7,20 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
+            v-for="(item, index) in tabs"
+            :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': methodologiesTab == 1 }"
-            @click="methodologiesTab = 1"
+            :class="{ 'tab-active-border-bottom': methodologiesTab == index }"
+            @click="methodologiesTab = index"
           >
-            AUM Advisory
-          </li>
-          <li
-            class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': methodologiesTab == 2 }"
-            @click="methodologiesTab = 2"
-          >
-            Subscription
+            {{item}}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll mt-10"
-          v-if="methodologiesTab == 1"
+          v-if="methodologiesTab == 0"
         >
           <div class="d-flex fs-7 mt-5">
             <div class="fw-bolder">
@@ -37,19 +32,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in aumAdvisoryBilling"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.aumAdvisoryBilling"
-                :value="item"
-              />
-              {{ item }}
-            </div>
+            <MultiSelectCheckBox
+              :data="aumAdvisoryBilling"
+              @update="updateAumAdvisoryBilling"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -61,23 +47,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div
-              class="form-check form-check-solid form-check-inline fs-7"
-              v-for="(item, index) in request.aumAdvisoryBilling"
-              :key="index"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.newAccounts"
-                :value="item"
-              />
-              {{ item }}
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
-              Don't default
-            </div>
+            <SingleSelectionCheckBox
+              :data="newAccounts"
+              @update="updateNewAccounts"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -91,11 +64,21 @@
           </div>
           <div class="mt-6 ms-6">
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.advanceFees"
+                value="Period End"
+              />
               Period End
             </div>
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.advanceFees"
+                value="Billing Start Date"
+              />
               Billing Start Date
             </div>
           </div>
@@ -110,11 +93,11 @@
           </div>
           <div class="mt-6 ms-6">
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input class="form-check-input" type="checkbox" v-model="request.billingPeriod" value="Days in period divided by days in the year"/>
               Days in period divided by days in the year
             </div>
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input class="form-check-input" type="checkbox" v-model="request.billingPeriod" value="Divide by number of billing periods in the year"/>
               Divide by number of billing periods in the year
             </div>
           </div>
@@ -129,11 +112,11 @@
           </div>
           <div class="mt-6 ms-6">
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input class="form-check-input" type="checkbox" v-model="request.billingRates" value="Basis Point"/>
               Basis Point
             </div>
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" />
+              <input class="form-check-input" type="checkbox"  v-model="request.billingRates" value="Percentages"/>
               Percentages
             </div>
           </div>
@@ -147,7 +130,7 @@
         </div>
         <div
           class="tab-content tab-content-lg__scroll"
-          v-if="methodologiesTab == 2"
+          v-if="methodologiesTab == 1"
         >
           {{ methodologiesTab }}
         </div>
@@ -156,14 +139,31 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
-import { methodologiesModel } from "@/model";
+import { Vue, Options } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 
+import { methodologiesModel } from "@/model";
+import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
+import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
+
+@Options({
+  components: {
+    MultiSelectCheckBox,
+    SingleSelectionCheckBox,
+  },
+})
 export default class Methodologies extends Vue {
-  public methodologiesTab: number = 1;
+  @Prop() tabs: Array<string> | any;
+  public methodologiesTab: number = 0;
+
   public aumAdvisoryBilling: Array<string> = [
     "Period End",
     "Average Daily Balance",
+  ];
+  public newAccounts: Array<string> = [
+    "Period End",
+    "Average Daily Balance",
+    "Don't default",
   ];
   public request = new methodologiesModel();
 
@@ -172,7 +172,27 @@ export default class Methodologies extends Vue {
   }
 
   next() {
+    console.log(this.request);
     this.$emit("next");
+  }
+
+  public updateAumAdvisoryBilling(selectedAUM: any) {
+    this.request.aumAdvisoryBilling = selectedAUM;
+    this.newAccounts = [];
+    this.newAccounts = this.newAccounts.concat(this.request.aumAdvisoryBilling);
+    this.newAccounts.push("Don't default");
+    this._sortOrder(this.newAccounts);
+  }
+
+  public updateNewAccounts(newAccounts: any) {
+    this.request.newAccounts = newAccounts;
+  }
+
+  public _sortOrder(newAccounts: Array<string>) {
+    const sortOrder = ["Period End", "Average Daily Balance", "Don't default"];
+    newAccounts.sort((a, b) => {
+      return sortOrder.indexOf(a) - sortOrder.indexOf(b);
+    });
   }
 }
 </script>

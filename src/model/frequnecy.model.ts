@@ -1,8 +1,8 @@
 export class frequencyModel {
-    aumAdvisoryBill: Array<string> | Array<any> = [];
-    aumAdvisoryAccount: Array<string> | Array<any> = [];
-    aumArrears: Array<string> | Array<any> = [];
-    newAccounts: Array<string> | Array<any> = [];
+    aumAdvisoryFees: Array<string> | Array<any> = [];
+    aumAdvisoryNewAccount: Array<string> | Array<any> = [];
+    aumAdvisoryArrears: Array<string> | Array<any> = [];
+    aumDefaultNewAccounts: Array<string> | Array<any> = [];
     quarterltyClients: boolean = false;
-    quarterltyCycle: Array<string> | Array<any> = [];
+    defaultQuarterltyCycle: Array<string> | Array<any> = [];
 }
