@@ -180,11 +180,11 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 
-import Welcome from "./components/welcome.vue";
+import Welcome from './components/OnBoard.vue';
 
 @Options({
   components: {
-    Welcome,
+    Welcome
   },
 })
 export default class Home extends Vue {

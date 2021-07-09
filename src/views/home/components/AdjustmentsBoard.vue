@@ -10,8 +10,8 @@
             v-for="(item, index) in tabs"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': adjustmentsTab == index }"
-            @click="adjustmentsTab = index"
+            :class="{ 'tab-active-border-bottom': adjustmentsTab == item }"
+            @click="adjustmentsTab = item"
           >
             {{ item }}
           </li>
@@ -20,7 +20,7 @@
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll"
-          v-if="adjustmentsTab == 0"
+          v-if="adjustmentsTab == 'AUM Advisory'"
         >
           <div class="d-flex fs-7 mt-10">
             <div class="fw-bolder">
@@ -179,7 +179,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.avoidCharging"
+                v-model="request.avoidChargingCents"
               />
               <label class="fs-7 text-muted form-check-label"
                 >No, I charge exact amounts</label
@@ -189,12 +189,23 @@
 
           <div class="d-flex justify-content-between mt-10">
             <button class="btn btn-secondary" @click="prev">Back</button>
-            <button class="btn btn-primary me-10" @click="next">
+            <button 
+              class="btn btn-primary me-10" 
+              :class="{
+                'btn-secondary': !formValidation || !minimumFee || !maximumFee,
+                'btn-primary': formValidation && minimumFee && maximumFees,
+              }"
+              :disabled="!formValidation || !minimumFee || !maximumFee"
+              @click="next"
+            >  
               Continue
             </button>
           </div>
         </div>
-        <div class="tab-content" v-if="adjustmentsTab == 1">
+        <div class="tab-content" v-if="adjustmentsTab == 'One Time'">
+          {{ adjustmentsTab }}
+        </div>
+        <div class="tab-content" v-if="adjustmentsTab == 'Subscription'">
           {{ adjustmentsTab }}
         </div>
       </div>
@@ -202,24 +213,45 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { adjustmentsModel } from "@/model";
+import useVuelidate from "@vuelidate/core";
+import { required, numeric } from "@vuelidate/validators";
+
+import { adjustmentsBoardModel } from "@/model";
 import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
 
 @Options({
   components: {
     SingleSelectionCheckBox,
   },
+  validations: {
+    request: {
+      firmWideMinimumFeeAmount: { required, numeric },
+      firmWideMaximumFeeAmount: { required, numeric },
+      thresholdFlowsAmount: { required, numeric },
+      thresholdFlowsAum: { required, numeric }
+    }
+  }
 })
-export default class Adjustments extends Vue {
+export default class AdjustmentsBoard extends Vue {
   @Prop() tabs: Array<string> | any;
 
-  public adjustmentsTab: number = 0;
-  public request = new adjustmentsModel();
+  public adjustmentsTab: string = "";
+  public request = new adjustmentsBoardModel();
 
   public thresholdFlows: Array<string> = ["Dollar amount", "% of AUM", "None"];
+
+  public v$ = setup(() => this.validate());
+
+  validate() {
+    return useVuelidate();
+  }
+
+  created() {
+    this.adjustmentsTab = this.tabs[0];
+  }
 
   public updateThresholdFlows(value: any) {
     this.request.thresholdFlows = value[0];
@@ -230,8 +262,60 @@ export default class Adjustments extends Vue {
   }
 
   next() {
+    console.log(this.v$);
     console.log(this.request);
     //this.$emit("next");
+
+  }
+
+  get formValidation() {
+    let valid = false;
+    const self = this.request;
+
+    if(self.depositsAndWithdrawls) {
+      if(self.thresholdFlows == "Dollar amount") {
+        if(self.thresholdFlowsAmount) valid = true;
+        else valid = false;
+      } else if(self.thresholdFlows == "% of AUM") {
+        if(self.thresholdFlowsAum) valid = true;
+        else valid = false;
+      } else if(self.thresholdFlows == "None") {
+        valid = true;
+      } else valid = false;
+    } else valid = true;
+
+    return valid;
+  }
+
+  get minimumFee() {
+    let valid = false;
+    const self = this.request;
+
+    if(self.firmWideStandardMinimumFee) {
+      if(self.firmWideMinimumFeeAmount != '' && !this.isNumeric(self.firmWideMinimumFeeAmount)) valid = true;
+      else valid = false;
+    } else valid = true;
+
+    return valid;
+  }
+
+  get maximumFee() {
+    let valid = false;
+    const self = this.request;
+
+    if(self.firmWideMaximumFee) {
+      if(self.firmWideMaximumFeeAmount != '' && !this.isNumeric(self.firmWideMaximumFeeAmount)) valid = true;
+      else valid = false;
+    } else valid = true;
+
+    return valid;
+  }
+
+  private isNumeric(value: any) {
+    let validation = false;
+    if (value && value != "") validation = /^(?=.*?[A-Za-z])/.test(value);
+
+    return validation;
   }
 }
 </script>

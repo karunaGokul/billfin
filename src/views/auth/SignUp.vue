@@ -117,8 +117,8 @@
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  :value="item"
-                  @change="updateCustodian(item.custodianId)"
+                  v-model="request.custodians"
+                  :value="item.custodianId"
                 />
                 <label class="fs-7 form-check-label" v-bind:for="item">
                   {{ item.custodianName }}
@@ -138,13 +138,13 @@
               inputType="text"
               formFieldType ="inputBlock"
               :validation="['required', 'email', 'domain']"
-              @verifyEmail="verifyEmailExists"
+              @validateEmail="validateEmail"
             />
 
             <div
               class="invalid-feedback"
               v-if="
-                !v$.request.email.$invalid && emailVerification.userRegistered
+                !v$.request.email.$invalid && validateEmailResponse.userRegistered
               "
             >
               An account with this email address already exists
@@ -154,7 +154,7 @@
             <div
               class="invalid-feedback"
               v-if="
-                !v$.request.email.$invalid && emailVerification.firmRegistered
+                !v$.request.email.$invalid && validateEmailResponse.firmRegistered
               "
             >
               The {{ request.email.split("@")[1] }} domain already exists
@@ -315,8 +315,8 @@ import {
   signUpRequest,
   signUpResponse,
   custodianResponseModel,
-  emailVerificationResponseModel,
-  emailVerificationRequestModel,
+  validateEmailRequestModel,
+  validateEmailResponseModel,
 } from "@/model";
 import { ISignUpService } from "@/service";
 
@@ -390,7 +390,7 @@ export default class SignUp extends Vue {
   public request = new signUpRequest();
   public response = new signUpResponse();
 
-  public emailVerification = new emailVerificationResponseModel();
+  public validateEmailResponse = new validateEmailResponseModel();
 
   public showPassword: boolean = false;
   public showConfirmPassword: boolean = false;
@@ -428,13 +428,13 @@ export default class SignUp extends Vue {
     else this.request.custodians.push(value);
   }
 
-  public verifyEmailExists() {
-    const request = new emailVerificationRequestModel();
+  public validateEmail() {
+    const request = new validateEmailRequestModel();
     request.email = this.request.email;
     this.service
       ?.verifyEmail(request)
       .then((response) => {
-        this.emailVerification = response;
+        this.validateEmailResponse = response;
       })
       .catch((err) => {
         console.log(err);
@@ -448,15 +448,15 @@ export default class SignUp extends Vue {
       this.request.custodians.length > 0 &&
       this.request.password == this.request.confirmPassword &&
       this.request.hasAgreed &&
-      !this.emailVerification.userRegistered &&
-      !this.emailVerification.firmRegistered
+      !this.validateEmailResponse.userRegistered &&
+      !this.validateEmailResponse.firmRegistered
     ) {
       this.service
         ?.createAccount(this.request)
         .then((response) => {
           this.response = response;
           if (response.status == "Failed") this.showInfomationModel = true;
-          else this.$router.push("/email-verification");
+          else this.$router.push("/verification-email");
         })
         .catch((err) => {
           console.log(err);

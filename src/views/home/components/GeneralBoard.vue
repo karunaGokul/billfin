@@ -13,20 +13,23 @@
           formFieldType="inputInline"
           :controls="v$.request.company"
           :validation="['required']"
+          :readonly="false"
         />
         <TextInput
           label="Company Phone"
           inputType="text"
           formFieldType="inputInline"
           :controls="v$.request.companyPhone"
-          :validation="['required', 'numeric', 'minLength', 'maxLength']"
+          :validation="['required']"
+          :readonly="false"
         />
         <TextInput
-          label="Company Site"
+          label="Company Domain"
           inputType="text"
           formFieldType="inputInline"
-          :controls="v$.request.companySite"
+          :controls="v$.request.companyDomain"
           :validation="['required']"
+          :readonly="true"
         />
         <TextInput
           label="Company Address"
@@ -34,6 +37,7 @@
           formFieldType="inputInline"
           :controls="v$.request.companyAddress"
           :validation="['required']"
+          :readonly="false"
         />
         <TextInput
           label="City"
@@ -41,6 +45,7 @@
           formFieldType="inputInline"
           :controls="v$.request.city"
           :validation="['required']"
+          :readonly="false"
         />
         <SelectBox
           label="State"
@@ -54,6 +59,7 @@
           formFieldType="inputInline"
           :controls="v$.request.postalCode"
           :validation="['required', 'numeric']"
+          :readonly="false"
         />
         <div class="mb-5 row g-0 align-items-center">
           <div class="col-sm-4">
@@ -95,7 +101,23 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end pb-5">
-          <button type="submit" class="btn btn-primary">Continue</button>
+          <!--<button
+            type="submit"
+            class="btn"
+            :class="{
+              'btn-secondary': v$.$invalid,
+              'btn-primary': !v$.$invalid,
+            }"
+            :disabled="v$.$invalid"
+          >
+            Continue
+          </button>-->
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Continue
+          </button>
         </div>
       </form>
     </div>
@@ -110,7 +132,7 @@ import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
-import { generalRequestModel } from "@/model";
+import { generalBoardRequestModel } from "@/model";
 
 @Options({
   components: {
@@ -120,28 +142,24 @@ import { generalRequestModel } from "@/model";
   validations: {
     request: {
       company: { required },
-      companyPhone: {
-        required,
-        numeric,
-        minLength: minLength(10),
-        maxLength: maxLength(10),
-      },
-      companySite: { required },
+      companyPhone: { required },
+      companyDomain: { required },
       companyAddress: { required },
       city: { required },
       state: { required },
       postalCode: { required, numeric },
+      feesBill: { required },
     },
   },
 })
-export default class General extends Vue {
+export default class GeneralBoard extends Vue {
   public v$ = setup(() => this.validate());
 
   validate() {
     return useVuelidate();
   }
 
-  public request = new generalRequestModel();
+  public request = new generalBoardRequestModel();
 
   mounted() {
     this.request.state = "Massachusetts";
@@ -209,16 +227,15 @@ export default class General extends Vue {
     "Wyoming",
   ];
 
-  nextTab() {
-    this.$emit("next");
-  }
-
   public updateGeneral() {
     this.v$.$touch();
-    if (!this.v$.$invalid) {
-      this.$emit("controlTabs",this.request.feesBill);
+    this.$emit("controlTabs", this.request.feesBill);
+    this.$emit("next");
+    /*if (!this.v$.$invalid) {
+      console.log(this.request);
+      this.$emit("controlTabs", this.request.feesBill);
       this.$emit("next");
-    }
+    }*/
   }
 }
 </script>

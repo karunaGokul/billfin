@@ -10,17 +10,17 @@
             v-for="(item, index) in tabs"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': methodologiesTab == index }"
-            @click="methodologiesTab = index"
+            :class="{ 'tab-active-border-bottom': methodologiesTab == item }"
+            @click="methodologiesTab = item"
           >
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll mt-10"
-          v-if="methodologiesTab == 0"
+          v-if="methodologiesTab == 'AUM Advisory'"
         >
           <div class="d-flex fs-7 mt-5">
             <div class="fw-bolder">
@@ -93,11 +93,21 @@
           </div>
           <div class="mt-6 ms-6">
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" v-model="request.billingPeriod" value="Days in period divided by days in the year"/>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.billingPeriod"
+                value="Days in period divided by days in the year"
+              />
               Days in period divided by days in the year
             </div>
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" v-model="request.billingPeriod" value="Divide by number of billing periods in the year"/>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.billingPeriod"
+                value="Divide by number of billing periods in the year"
+              />
               Divide by number of billing periods in the year
             </div>
           </div>
@@ -112,25 +122,49 @@
           </div>
           <div class="mt-6 ms-6">
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox" v-model="request.billingRates" value="Basis Point"/>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.billingRates"
+                value="Basis Point"
+              />
               Basis Point
             </div>
             <div class="form-check form-check-solid form-check-inline fs-7">
-              <input class="form-check-input" type="checkbox"  v-model="request.billingRates" value="Percentages"/>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="request.billingRates"
+                value="Percentages"
+              />
               Percentages
             </div>
           </div>
 
           <div class="d-flex justify-content-between mt-10">
             <button class="btn btn-secondary" @click="prev">Back</button>
-            <button class="btn btn-primary me-10" @click="next">
+            <button 
+              class="btn me-10" 
+              :class="{
+                'btn-secondary': !formValidation,
+                'btn-primary': formValidation,
+              }"
+              :disabled="!formValidation"
+              @click="next"
+            >
               Continue
             </button>
           </div>
         </div>
         <div
           class="tab-content tab-content-lg__scroll"
-          v-if="methodologiesTab == 1"
+          v-if="methodologiesTab == 'One Time'"
+        >
+          {{ methodologiesTab }}
+        </div>
+        <div
+          class="tab-content tab-content-lg__scroll"
+          v-if="methodologiesTab == 'Subscription'"
         >
           {{ methodologiesTab }}
         </div>
@@ -142,7 +176,7 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { methodologiesModel } from "@/model";
+import { methodologiesBoardModel } from "@/model";
 import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
 import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
 
@@ -152,9 +186,9 @@ import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckB
     SingleSelectionCheckBox,
   },
 })
-export default class Methodologies extends Vue {
+export default class MethodologiesBoard extends Vue {
   @Prop() tabs: Array<string> | any;
-  public methodologiesTab: number = 0;
+  public methodologiesTab: string = "";
 
   public aumAdvisoryBilling: Array<string> = [
     "Period End",
@@ -165,7 +199,11 @@ export default class Methodologies extends Vue {
     "Average Daily Balance",
     "Don't default",
   ];
-  public request = new methodologiesModel();
+  public request = new methodologiesBoardModel();
+
+  created() {
+    this.methodologiesTab = this.tabs[0];
+  }
 
   prev() {
     this.$emit("prev");
@@ -180,7 +218,12 @@ export default class Methodologies extends Vue {
     this.request.aumAdvisoryBilling = selectedAUM;
     this.newAccounts = [];
     this.newAccounts = this.newAccounts.concat(this.request.aumAdvisoryBilling);
-    this.newAccounts.push("Don't default");
+
+    if(this.newAccounts.length > 0)
+      this.newAccounts.push("Don't default");
+    else 
+      this.newAccounts = ["Period End", "Average Daily Balance",  "Don't default"];
+
     this._sortOrder(this.newAccounts);
   }
 
@@ -193,6 +236,20 @@ export default class Methodologies extends Vue {
     newAccounts.sort((a, b) => {
       return sortOrder.indexOf(a) - sortOrder.indexOf(b);
     });
+  }
+
+  get formValidation() {
+    let valid = false; 
+    if(
+      this.request.aumAdvisoryBilling.length > 0 &&
+      this.request.newAccounts.length > 0 &&
+      this.request.advanceFees.length > 0 &&
+      this.request.billingPeriod.length > 0 &&
+      this.request.billingRates.length > 0
+    )
+      valid = true;
+
+    return valid;
   }
 }
 </script>

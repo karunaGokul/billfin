@@ -1,10 +1,10 @@
-export class generalRequestModel {
+export class generalBoardRequestModel {
     company: string | any;
     companyPhone: string | any;
-    companySite: string | any;
+    companyDomain: string | any = "universal-advisort-lic.com";
     companyAddress: string | any;
     city: string | any;
     state: string | any;
-    feesBill: Array<string> | Array<any> = [];
     postalCode: number | any;
+    feesBill: Array<string> | Array<any> = [];
 }

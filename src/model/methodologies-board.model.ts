@@ -1,4 +1,4 @@
-export class methodologiesModel {
+export class methodologiesBoardModel {
     aumAdvisoryBilling: Array<string> | Array<any> = [];
     newAccounts: Array<string> | Array<any> = [];
     advanceFees: Array<string> | Array<any> = [];

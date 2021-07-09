@@ -1,4 +1,4 @@
-export class adjustmentsModel {
+export class adjustmentsBoardModel {
     firmWideStandardMinimumFee: boolean = false;
     firmWideMinimumFeeAmount:string = "";
     firmWideMaximumFee: boolean = false;
@@ -7,5 +7,5 @@ export class adjustmentsModel {
     thresholdFlows: string = "";
     thresholdFlowsAmount: string = "";
     thresholdFlowsAum: string = "";
-    avoidCharging: boolean = false;
+    avoidChargingCents: boolean = false;
 }

@@ -19,10 +19,10 @@ export class signUpResponse extends BaseModel {
     errorCode: number | any;
     errorMessage: string | any;
 }
-export class emailVerificationRequestModel {
+export class validateEmailRequestModel {
     email: string | any;
 }
-export class emailVerificationResponseModel {
+export class validateEmailResponseModel {
     email: string | any;
     userRegistered: boolean | any;
     firmRegistered: boolean | any;

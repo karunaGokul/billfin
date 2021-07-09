@@ -10,7 +10,7 @@
         class="form-control text-start"
         :id="label"
         v-model="controls.$model"
-        @blur="label == 'Work email' && !controls.$invalid ? verifyEmail() : ''"
+        @blur="label == 'Work email' && !controls.$invalid ? validateEmail() : ''"
       />
       <span class="input-group-text">
         <i
@@ -49,14 +49,18 @@
     </label>
     <div class="col-sm-8">
       <div class="input-group input-group-solid">
-        <input type="text" class="form-control" v-model="controls.$model" />
+        <input
+          type="text"
+          class="form-control"
+          v-model="controls.$model"
+          :readonly="readonly"
+        />
       </div>
       <div class="invalid-feedback" v-if="errorMessage != null">
         {{ errorMessage }}
       </div>
     </div>
   </div>
-  
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
@@ -69,11 +73,12 @@ export default class TextInput extends Vue {
   @Prop() controls: any;
   @Prop() inputType: string | any;
   @Prop() validation: Array<string> | any;
+  @Prop() readonly: boolean | any;
 
   public showPassword: boolean = false;
 
-  public verifyEmail() {
-    this.$emit("verifyEmail");
+  public validateEmail() {
+    this.$emit("validateEmail");
   }
 
   get errorMessage() {

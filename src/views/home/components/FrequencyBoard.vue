@@ -10,17 +10,17 @@
             v-for="(item, index) in tabs"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': frequencyTab == index }"
-            @click="frequencyTab = index"
+            :class="{ 'tab-active-border-bottom': frequencyTab == item }"
+            @click="frequencyTab = item"
           >
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <div
           class="tab-content tab-content-lg__scroll mt-10"
-          v-if="frequencyTab == 0"
+          v-if="frequencyTab == 'AUM Advisory'"
         >
           <div class="d-flex fs-7">
             <div class="fw-bolder">
@@ -47,8 +47,8 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <SingleSelectionCheckBox 
-              :data="aumAdvisoryNewAccount" 
+            <SingleSelectionCheckBox
+              :data="aumAdvisoryNewAccount"
               @update="updateAumAdvisoryNewAccount"
             />
           </div>
@@ -79,8 +79,8 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <SingleSelectionCheckBox 
-              :data="aumDefaultNewAccounts" 
+            <SingleSelectionCheckBox
+              :data="aumDefaultNewAccounts"
               @update="updateAumDefaultNewAccounts"
             />
           </div>
@@ -118,8 +118,8 @@
               </div>
             </div>
             <div class="mt-6 ms-6">
-              <SingleSelectionCheckBox 
-                :data="defaultQuarterlyCycle" 
+              <SingleSelectionCheckBox
+                :data="defaultQuarterlyCycle"
                 @update="updateDefaultQuarterltyCycle"
               />
             </div>
@@ -127,12 +127,23 @@
 
           <div class="d-flex justify-content-between mt-10">
             <button class="btn btn-secondary" @click="prev">Back</button>
-            <button class="btn btn-primary me-10" @click="next">
+            <button 
+              class="btn me-10" 
+              :class="{
+                'btn-secondary': !formValidation,
+                'btn-primary': formValidation,
+              }"
+              :disabled="!formValidation"
+              @click="next"
+            >
               Continue
             </button>
           </div>
         </div>
-        <div class="tab-content" v-if="frequencyTab == 1">
+        <div class="tab-content" v-if="frequencyTab == 'One Time'">
+          {{ frequencyTab }}
+        </div>
+        <div class="tab-content" v-if="frequencyTab == 'Subscription'">
           {{ frequencyTab }}
         </div>
       </div>
@@ -143,7 +154,7 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { frequencyModel } from "@/model";
+import { frequencyBoardModel } from "@/model";
 import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
 import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
 
@@ -151,14 +162,13 @@ import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckB
   components: {
     MultiSelectCheckBox,
     SingleSelectionCheckBox,
-  },
+  }
 })
-export default class Frequecy extends Vue {
+export default class FrequencyBoard extends Vue {
   @Prop() tabs: Array<string> | any;
-  public frequencyTab: number = 0;
 
-  public request = new frequencyModel();
-
+  public frequencyTab: string = "";
+  public request = new frequencyBoardModel();
   public aumAdvisoryFees: Array<string> = [
     "Monthly",
     "Quarterly",
@@ -181,10 +191,15 @@ export default class Frequecy extends Vue {
     "Don't default",
   ];
 
-  public defaultQuarterlyCycle: Array<string> = ["Jan-Apr-Jul-Oct", "Feb-May-Aug-Nov", "Mar-Jun-Seb-Dec", "Don't default"];
+  public defaultQuarterlyCycle: Array<string> = [
+    "Jan-Apr-Jul-Oct",
+    "Feb-May-Aug-Nov",
+    "Mar-Jun-Seb-Dec",
+    "Don't default",
+  ];
 
   created() {
-    console.log(this.tabs);
+    this.frequencyTab = this.tabs[0];
   }
 
   prev() {
@@ -202,7 +217,12 @@ export default class Frequecy extends Vue {
     this.aumAdvisoryNewAccount = this.aumAdvisoryNewAccount.concat(
       this.request.aumAdvisoryFees
     );
-    this.aumAdvisoryNewAccount.push("Don't default");
+
+    if(this.aumAdvisoryNewAccount.length > 0 )
+      this.aumAdvisoryNewAccount.push("Don't default");
+    else
+      this.aumAdvisoryNewAccount = ["Monthly",  "Quarterly",  "Semi-Annually",  "Annually", "Don't default"];
+
     this._sortOrder(this.aumAdvisoryNewAccount);
   }
 
@@ -216,7 +236,12 @@ export default class Frequecy extends Vue {
     this.aumDefaultNewAccounts = this.aumDefaultNewAccounts.concat(
       this.request.aumAdvisoryArrears
     );
-    this.aumDefaultNewAccounts.push("Don't default");
+
+    if(this.aumDefaultNewAccounts.length > 0)
+      this.aumDefaultNewAccounts.push("Don't default");
+    else
+      this.aumDefaultNewAccounts = ["Advance",  "Arrears",  "Don't default",];
+      
     this._sortOrder(this.aumDefaultNewAccounts);
   }
 
@@ -246,5 +271,24 @@ export default class Frequecy extends Vue {
       return sortOrder.indexOf(a) - sortOrder.indexOf(b);
     });
   }
+
+  get formValidation() {
+    let valid = false;
+
+    if(
+      this.request.aumAdvisoryFees.length > 0 &&
+      this.request.aumAdvisoryNewAccount.length > 0 &&
+      this.request.aumAdvisoryArrears.length > 0 &&
+      this.request.aumDefaultNewAccounts.length > 0 
+    ) {
+        valid = true;
+        if(this.request.quarterltyClients)
+          if(this.request.defaultQuarterltyCycle.length > 0)  valid = true; 
+          else valid = false;
+    }
+
+    return valid;
+  }
+
 }
 </script>

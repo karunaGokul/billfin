@@ -19,13 +19,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/sign-up",
     name: "SignUp",
-    component: () => import("@/views/auth/sign-up.vue"),
+    component: () => import("@/views/auth/SignUp.vue"),
     meta: { anonymous: true },
   },
   {
-    path: "/email-verification",
-    name: "Email-Verification",
-    component: () => import("@/views/auth/email-verification.vue"),
+    path: "/verification-email",
+    name: "Email Verification",
+    component: () => import("@/views/auth/EmailVerification.vue"),
     meta: { anonymous: true },
   }
 ];

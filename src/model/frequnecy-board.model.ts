@@ -1,4 +1,4 @@
-export class frequencyModel {
+export class frequencyBoardModel {
     aumAdvisoryFees: Array<string> | Array<any> = [];
     aumAdvisoryNewAccount: Array<string> | Array<any> = [];
     aumAdvisoryArrears: Array<string> | Array<any> = [];

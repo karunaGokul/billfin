@@ -22,7 +22,7 @@
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 2 }"
                 >
-                  Frequecy & Timing
+                  Frequency & Timing
                 </li>
                 <li
                   class="tab-label"
@@ -51,24 +51,24 @@
               </ul>
             </div>
             <div class="tab-content-group">
-              <General 
+              <GeneralBoard 
                 @controlTabs="onControlTabs"
                 @next="activeTab = 2" 
                 v-if="activeTab == 1" 
               />
-              <Frequecy
+              <FrequencyBoard
                 @prev="activeTab = 1"
                 @next="activeTab = 3"
                 :tabs="tabs"
                 v-if="activeTab == 2"
               />
-              <Methodologies
+              <MethodologiesBoard
                 @prev="activeTab = 2"
                 @next="activeTab = 4"
                 :tabs="tabs"
                 v-if="activeTab == 3"
               />
-              <Adjustments
+              <AdjustmentsBoard
                 @prev="activeTab = 3"
                 @next="activeTab = 5"
                 :tabs="tabs"
@@ -100,17 +100,17 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 
-import General from "./general.vue";
-import Frequecy from "./frequecy.vue";
-import Methodologies from "./methodologies.vue";
-import Adjustments from "./adjustments.vue";
+import GeneralBoard from "./GeneralBoard.vue";
+import FrequencyBoard from "./FrequencyBoard.vue";
+import MethodologiesBoard from "./MethodologiesBoard.vue";
+import AdjustmentsBoard from "./AdjustmentsBoard.vue";
 
 @Options({
   components: {
-    General,
-    Frequecy,
-    Methodologies,
-    Adjustments,
+    GeneralBoard,
+    FrequencyBoard,
+    MethodologiesBoard,
+    AdjustmentsBoard,
   },
 })
 export default class Welcome extends Vue {
