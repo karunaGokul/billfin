@@ -9,8 +9,10 @@ export default class ValidationService {
         propertyName == "Work email" ? "Email" : propertyName
       } is required`,
       numeric: "Please enter valid number",
+      phone: "Please enter valid number",
       minLength: `Minimum ${propertyValue.min} characters`,
       maxLength: `Maximum ${propertyValue.max} characters`,
+      phoneLength: `Phone number 10 or 13 charaters`,
       email: "Please enter a valid email address",
       domain: `Please enter your business email. Don't have one?`,
       number: "Please enter one number",

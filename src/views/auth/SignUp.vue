@@ -64,9 +64,9 @@
                   formFieldType ="inputBlock"
                   :validation="[
                     'required',
-                    'numeric',
+                    'phone',
                     'minLength',
-                    'maxLength',
+                    'phoneLength',
                   ]"
                 />
               </div>
@@ -102,6 +102,7 @@
                 justify-content-between
                 align-items-center
                 flex-wrap
+                mb-2
               "
             >
               <div
@@ -127,7 +128,7 @@
             </div>
             <div
               class="invalid-feedback mb-4"
-              v-if="v$.request.$dirty && request.custodians.length == 0"
+              v-if="v$.request.$dirty && v$.request.$invalid"
             >
               Custodian selection is required
             </div>
@@ -285,7 +286,10 @@
             </p>
 
             <div class="text-center mt-6 mb-6">
-              <button type="submit" class="btn btn-primary">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+              >
                 Create Account
               </button>
             </div>
@@ -318,6 +322,7 @@ import {
   validateEmailRequestModel,
   validateEmailResponseModel,
 } from "@/model";
+
 import { ISignUpService } from "@/service";
 
 @Options({
@@ -332,11 +337,21 @@ import { ISignUpService } from "@/service";
       companyName: { required },
       phoneNumber: {
         required,
-        numeric,
+        phone: (value: any) => {
+          let validation = false;
+          if (value && value != "" && /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)) validation = true;
+          else if(value && value != "" && /^[0-9]*\d$/.test(value)) validation = true;
+          return validation;
+        },
         minLength: minLength(10),
-        maxLength: maxLength(10),
+        phoneLength: (value: any) => {
+          let validation = false;
+          if(value && value != '' && value.length == 10 || value.length == 12) validation = true;
+          return validation;
+        },
       },
       aumRange: { required },
+      custodians: { required },
       email: {
         required,
         email: (value: string) => {
@@ -379,7 +394,7 @@ import { ISignUpService } from "@/service";
         required,
       },
       hasAgreed: {
-        required,
+        required
       },
     },
   },
@@ -422,12 +437,6 @@ export default class SignUp extends Vue {
     });
   }
 
-  public updateCustodian(value: number) {
-    if (this.request.custodians.includes(value))
-      this.request.custodians.splice(this.request.custodians.indexOf(value), 1);
-    else this.request.custodians.push(value);
-  }
-
   public validateEmail() {
     const request = new validateEmailRequestModel();
     request.email = this.request.email;
@@ -445,7 +454,6 @@ export default class SignUp extends Vue {
     this.v$.$touch();
     if (
       !this.v$.$invalid &&
-      this.request.custodians.length > 0 &&
       this.request.password == this.request.confirmPassword &&
       this.request.hasAgreed &&
       !this.validateEmailResponse.userRegistered &&
@@ -456,7 +464,11 @@ export default class SignUp extends Vue {
         .then((response) => {
           this.response = response;
           if (response.status == "Failed") this.showInfomationModel = true;
-          else this.$router.push("/verification-email");
+          else if(response.status == "SUCCESS") {
+            this.$router.push("/verification-email");
+            localStorage.setItem("email", response.email);
+            localStorage.setItem("uuid", response.uuid)
+          }
         })
         .catch((err) => {
           console.log(err);

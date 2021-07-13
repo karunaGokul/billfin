@@ -18,6 +18,7 @@ export class signUpResponse extends BaseModel {
     status: string | any;
     errorCode: number | any;
     errorMessage: string | any;
+    uuid: string | any;
 }
 export class validateEmailRequestModel {
     email: string | any;
@@ -30,4 +31,8 @@ export class validateEmailResponseModel {
 export class custodianResponseModel  {
     custodianId: number | any;
     custodianName: string | any;
+}
+export class resentEmailRequestModel {
+    email: string | any;
+    uuid: string | any;
 }
