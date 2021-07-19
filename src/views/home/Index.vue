@@ -148,7 +148,7 @@
             </div>
           </div>
           <div class="col-lg-2">
-            <button type="button" class="btn btn-primary fs-7">
+            <button type="button" class="btn btn-primary fs-7" @click="logout">
               Create New
             </button>
           </div>
@@ -174,27 +174,55 @@
 
       <router-view></router-view>
     </div>
-    <Welcome v-if="showWelcomeMessage" />
+    <Welcome :step="lastOnboardingStep" v-if="showOnBoard" />
   </div>
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
-import Welcome from './components/OnBoard.vue';
+import { useStore } from "vuex";
+
+import Welcome from "./components/OnBoard.vue";
+
+import { IFirmService } from "@/service";
+import { firmsResponseModel } from "@/model";
 
 @Options({
   components: {
-    Welcome
+    Welcome,
   },
 })
 export default class Home extends Vue {
-  public showWelcomeMessage: boolean = false;
+  @Inject("firmService") service: IFirmService | undefined;
+
+  public store = useStore();
+
+  public showOnBoard: boolean = false;
   public sideBar: boolean = false;
 
+  public firms = new Array<firmsResponseModel>();
+  public lastOnboardingStep: number | any = 0;
+
   mounted() {
-    setTimeout(() => {
-      this.showWelcomeMessage = true;
-    }, 1000);
+    this.firms = this.store.getters.firms;
+    console.log(this.firms);
+    if (
+      this.firms.length == 1 &&
+      this.firms[0].trailOnboardingStatus != "Completed"
+    ) {
+      this.showOnBoard = true;
+
+      if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
+        this.lastOnboardingStep = 1;
+      else this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+    }
+  }
+
+  logout() {
+    this.$keycloak.loginFn
+    this.store.dispatch("logout");
+    this.$router.push('/');
   }
 }
 </script>

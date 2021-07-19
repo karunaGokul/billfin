@@ -27,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Email Verification",
     component: () => import("@/views/auth/EmailVerification.vue"),
     meta: { anonymous: true },
-  }
+  },
 ];
 
 const router = createRouter({
@@ -39,8 +39,13 @@ export default router;
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => !record.meta.anonymous)) {
+
     if (store.getters.isLoggedIn) {
       next();
+      const token = store.getters.accessToken;
+        if (token)
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      store.dispatch("loadEntitlements");
       return;
     }
     store.dispatch("login").then(() => {
@@ -48,10 +53,10 @@ router.beforeEach((to, from, next) => {
         const token = store.getters.accessToken;
         if (token)
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
         next("/");
-      } else next("/sign-up");
+      } else next();
     });
+
   } else {
     next();
   }

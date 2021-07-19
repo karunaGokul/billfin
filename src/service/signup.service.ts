@@ -15,25 +15,25 @@ export class SignUpService extends BaseService<signUpRequest, signUpResponse> {
     }
 
     public getCustodian(): Promise<Array<custodianResponseModel>> {
-        return this.httpGet('trailsignup/custodian', null).then(response => {
+        return this.httpGet('public/api/v1/custodians', null).then(response => {
             return response.data;
         });
     }
 
     public verifyEmail(request: validateEmailRequestModel): Promise<validateEmailResponseModel> {
-        return this.httpPost('trailsignup/validateemail', request).then(response => {
+        return this.httpPost('public/api/v1/trailsignup/validateEmail', request).then(response => {
             return response.data;
         });
     }
 
     public createAccount(request: signUpRequest): Promise<signUpResponse> {
-        return this.httpPost('trailsignup/createuser', request).then(response => {
+        return this.httpPost('public/api/v1/user', request).then(response => {
             return response.data;
         })
     }
 
     public resendEmail(request: resentEmailRequestModel): Promise<any> {
-        return this.httpPost('trailsignup/resendVerificationEmail', request).then(response => {
+        return this.httpPost('public/api/v1/trailsignup/resendVerificationEmail', request).then(response => {
             return response.data;
         });
     }

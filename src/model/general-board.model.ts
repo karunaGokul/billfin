@@ -6,5 +6,9 @@ export class generalBoardRequestModel {
     city: string | any;
     state: string | any;
     postalCode: number | any;
-    feesBill: Array<string> | Array<any> = [];
+    billingTypes: Array<string> | Array<any> = [];
+}
+export class firmRequestModel {
+    firmDomain: string | any;
+    firmName: string | any;
 }

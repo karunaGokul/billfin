@@ -99,6 +99,7 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 
 import GeneralBoard from "./GeneralBoard.vue";
 import FrequencyBoard from "./FrequencyBoard.vue";
@@ -114,12 +115,18 @@ import AdjustmentsBoard from "./AdjustmentsBoard.vue";
   },
 })
 export default class Welcome extends Vue {
+
+  @Prop() step: number | any;
   
   public activeTab: number = 1;
   public methodologiesTab: number = 1;
   public adjustmentsTab: number = 1;
 
   public tabs: Array<string> = [];
+
+  mounted() {
+    this.activeTab = this.step;
+  }
 
   public onControlTabs(tabs: any) {
     this.tabs = tabs;

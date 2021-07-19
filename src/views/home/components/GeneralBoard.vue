@@ -75,7 +75,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.feesBill"
+                v-model="request.billingTypes"
                 value="AUM Advisory"
               />
               AUM Advisory
@@ -84,7 +84,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.feesBill"
+                v-model="request.billingTypes"
                 value="One Time"
               />
               One Time
@@ -93,7 +93,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.feesBill"
+                v-model="request.billingTypes"
                 value="Subscription"
               />
               Subscription
@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end pb-5">
-          <!--<button
+          <button
             type="submit"
             class="btn"
             :class="{
@@ -109,12 +109,6 @@
               'btn-primary': !v$.$invalid,
             }"
             :disabled="v$.$invalid"
-          >
-            Continue
-          </button>-->
-          <button
-            type="submit"
-            class="btn btn-primary"
           >
             Continue
           </button>
@@ -125,14 +119,18 @@
 </template>
 <script lang="ts">
 import { Vue, Options, setup } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
 import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
 
+import { useStore } from "vuex";
+import { IFirmService } from "@/service";
+
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
-import { generalBoardRequestModel } from "@/model";
+import { generalBoardRequestModel, firmRequestModel } from "@/model";
 
 @Options({
   components: {
@@ -148,12 +146,15 @@ import { generalBoardRequestModel } from "@/model";
       city: { required },
       state: { required },
       postalCode: { required, numeric },
-      feesBill: { required },
+      billingTypes: { required },
     },
   },
 })
 export default class GeneralBoard extends Vue {
+  @Inject("firmService") service: IFirmService | undefined;
+
   public v$ = setup(() => this.validate());
+  public store = useStore();
 
   validate() {
     return useVuelidate();
@@ -163,6 +164,7 @@ export default class GeneralBoard extends Vue {
 
   mounted() {
     this.request.state = "Massachusetts";
+    this.getGeneralDetails();
   }
 
   public states: Array<string> = [
@@ -227,15 +229,37 @@ export default class GeneralBoard extends Vue {
     "Wyoming",
   ];
 
+  public getGeneralDetails() {
+    const request = new firmRequestModel();
+    /*request.firmDomain = this.store.getters.selectedFirmDomain;
+    request.firmName = this.store.getters.selectedFirmName;*/
+    request.firmDomain = 'yect.com';
+    request.firmName = 'Yect';
+    this.service
+      ?.getGeneralDetails(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   public updateGeneral() {
     this.v$.$touch();
-    this.$emit("controlTabs", this.request.feesBill);
-    this.$emit("next");
-    /*if (!this.v$.$invalid) {
+    if (!this.v$.$invalid) {
       console.log(this.request);
-      this.$emit("controlTabs", this.request.feesBill);
-      this.$emit("next");
-    }*/
+      this.service
+        ?.updateGeneral(this.request)
+        .then((response) => {
+          console.log(response);
+          this.$emit("controlTabs", this.request.billingTypes);
+          this.$emit("next");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>

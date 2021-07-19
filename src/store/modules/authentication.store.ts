@@ -70,9 +70,7 @@ const actions: ActionTree<AuthenticationState, any> = {
         };
     
         keycloak.onTokenExpired = () => {
-            console.log('token expired', keycloak.token);
             keycloak.updateToken(30).then(() => {
-                console.log('successfully get a new token', keycloak.token);
     
                 context.commit('onLogin', {
                     success: true,
@@ -86,14 +84,12 @@ const actions: ActionTree<AuthenticationState, any> = {
     
         return new Promise((resolve, reject) => {
             keycloak.init(options)
-                .success(async authenticated => {
+                .then(async authenticated => {
                     if (!authenticated) {
                         console.log("NOT Authenticated");
     
                         context.commit('onLogin', { success: false });
                     } else {
-                        console.log("Authenticated");
-                        console.log(keycloak);
     
                         context.commit('onLogin', {
                             success: true,
@@ -104,9 +100,7 @@ const actions: ActionTree<AuthenticationState, any> = {
     
                     resolve(authenticated);
                 })
-                .error(kcError => {
-                    console.log("failed");
-                    console.log(keycloak);
+                .catch(kcError => {
     
                     let msg = 'An error happened during Keycloak initialization.';
                     if (kcError) {
@@ -120,6 +114,7 @@ const actions: ActionTree<AuthenticationState, any> = {
     
                     reject(msg);
                 });
+                //app.config.globalProperties.$keycloak = keycloak
         });
     },
     
