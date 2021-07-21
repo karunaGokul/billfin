@@ -26,7 +26,7 @@ export default class SingleSelectionCheckBox extends Vue {
   update(e: any) {
     this.selectedData = [];
     if (e.target.checked) this.selectedData.push(e.target.value);
-    this.$emit("update", this.selectedData);
+    this.$emit("update", this.selectedData[0]);
   }
 }
 </script>

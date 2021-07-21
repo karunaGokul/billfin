@@ -6,7 +6,7 @@
         <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
       </p>
 
-      <form @submit.prevent="updateGeneral">
+      <form @submit.prevent="saveGeneral">
         <TextInput
           label="Company"
           inputType="text"
@@ -35,7 +35,7 @@
           label="Company Address"
           inputType="text"
           formFieldType="inputInline"
-          :controls="v$.request.companyAddress"
+          :controls="v$.request.companyAddress1"
           :validation="['required']"
           :readonly="false"
         />
@@ -105,10 +105,10 @@
             type="submit"
             class="btn"
             :class="{
-              'btn-secondary': v$.$invalid,
-              'btn-primary': !v$.$invalid,
+              'btn-secondary': v$.request.$invalid,
+              'btn-primary': !v$.request.$invalid,
             }"
-            :disabled="v$.$invalid"
+            :disabled="v$.request.$invalid"
           >
             Continue
           </button>
@@ -130,7 +130,7 @@ import { IFirmService } from "@/service";
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
-import { generalBoardRequestModel, firmRequestModel } from "@/model";
+import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel } from "@/model";
 
 @Options({
   components: {
@@ -142,11 +142,11 @@ import { generalBoardRequestModel, firmRequestModel } from "@/model";
       company: { required },
       companyPhone: { required },
       companyDomain: { required },
-      companyAddress: { required },
+      companyAddress1: { required },
       city: { required },
       state: { required },
       postalCode: { required, numeric },
-      billingTypes: { required },
+      billingTypes: { required }
     },
   },
 })
@@ -231,30 +231,29 @@ export default class GeneralBoard extends Vue {
 
   public getGeneralDetails() {
     const request = new firmRequestModel();
-    /*request.firmDomain = this.store.getters.selectedFirmDomain;
-    request.firmName = this.store.getters.selectedFirmName;*/
-    request.firmDomain = 'yect.com';
-    request.firmName = 'Yect';
+    request.firmDomain = this.store.getters.selectedFirmDomain;
+    request.firmName = this.store.getters.selectedFirmName;
     this.service
       ?.getGeneralDetails(request)
       .then((response) => {
-        console.log(response);
+        this.request = response;
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  public updateGeneral() {
+  public saveGeneral() {
     this.v$.$touch();
+
     if (!this.v$.$invalid) {
-      console.log(this.request);
       this.service
-        ?.updateGeneral(this.request)
-        .then((response) => {
-          console.log(response);
-          this.$emit("controlTabs", this.request.billingTypes);
-          this.$emit("next");
+        ?.saveGeneral(this.request)
+        .then((response: generalBoardResponseModel) => {
+          if(response.status == 'SUCCESS') {
+            this.$emit("controlTabs", this.request.billingTypes);
+            this.$emit("next");
+          }
         })
         .catch((err) => {
           console.log(err);

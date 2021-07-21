@@ -204,25 +204,35 @@ export default class Home extends Vue {
   public firms = new Array<firmsResponseModel>();
   public lastOnboardingStep: number | any = 0;
 
-  mounted() {
-    this.firms = this.store.getters.firms;
-    console.log(this.firms);
-    if (
-      this.firms.length == 1 &&
-      this.firms[0].trailOnboardingStatus != "Completed"
-    ) {
-      this.showOnBoard = true;
+  public subscription: any = null;
 
-      if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
-        this.lastOnboardingStep = 1;
-      else this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
-    }
+  mounted() {
+    this.subscription = this.store.subscribe((mutations, type) => {
+      if (mutations.type == "onLoadEntitlements") {
+        this.firms = mutations.payload;
+        if (
+          this.firms.length == 1 &&
+          this.firms[0].trailOnboardingStatus != "Completed"
+        ) {
+          this.showOnBoard = true;
+
+          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
+            this.lastOnboardingStep = 1;
+          else
+            this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+        }
+      }
+    });
+  }
+
+  unmounted() {
+    if (this.subscription) this.subscription();
   }
 
   logout() {
-    this.$keycloak.loginFn
+    this.$keycloak.loginFn;
     this.store.dispatch("logout");
-    this.$router.push('/');
+    this.$router.push("/");
   }
 }
 </script>

@@ -10,10 +10,13 @@ const getters: GetterTree<any, any> = {
     return state.firms;
   },
   selectedFirmDomain:(state) => {
-    return state.firms[0].firmDomain;
+    return state.firms[0].domain;
   },
   selectedFirmName:(state) => {
-    return state.firms[0].firmName;
+    return state.firms[0].name;
+  },
+  selectedFirmId:(state) => {
+    return state.firms[0].firmId;
   }
 };
 const mutations: MutationTree<any> = {

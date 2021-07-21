@@ -1,10 +1,6 @@
 <template>
   <div>
-    <router-view
-      v-if="
-        store.getters.firms && store.getters.firms.length
-      "
-    ></router-view>
+    <router-view></router-view>
   </div>
 </template>
 <script lang="ts">

@@ -18,158 +18,168 @@
         </ul>
       </div>
       <div class="tab-content-group m-0">
-        <div
-          class="tab-content tab-content-lg__scroll mt-10"
-          v-if="frequencyTab == 'AUM Advisory'"
-        >
-          <div class="d-flex fs-7">
-            <div class="fw-bolder">
-              How frequently do you bill your AUM advisory fees?
-            </div>
-            <div class="text-muted ms-4 fs-8">Check all that apply</div>
-            <div class="ms-5">
-              <i class="fa fa-question-circle fs-4 text-dark"></i>
-            </div>
-          </div>
-          <div class="mt-6 ms-6">
-            <MultiSelectCheckBox
-              :data="aumAdvisoryFees"
-              @update="updateAumAdvisoryFees"
-            />
-          </div>
-
-          <div class="d-flex fs-7 mt-10">
-            <div class="fw-bolder">
-              What frequency do you want to default for new accounts?
-            </div>
-            <div class="ms-5">
-              <i class="fa fa-question-circle fs-4 text-dark"></i>
-            </div>
-          </div>
-          <div class="mt-6 ms-6">
-            <SingleSelectionCheckBox
-              :data="aumAdvisoryNewAccount"
-              @update="updateAumAdvisoryNewAccount"
-            />
-          </div>
-
-          <div class="d-flex fs-7 mt-10">
-            <div class="fw-bolder">
-              Do you bill your AUM advisory fees in advance or in arrears?
-            </div>
-            <div class="text-muted ms-4 fs-8">Check all that apply</div>
-            <div class="ms-5">
-              <i class="fa fa-question-circle fs-4 text-dark"></i>
-            </div>
-          </div>
-
-          <div class="mt-6 ms-6">
-            <MultiSelectCheckBox
-              :data="aumAdvisoryArrears"
-              @update="updateAumAdvisoryArrears"
-            />
-          </div>
-
-          <div class="d-flex fs-7 mt-10">
-            <div class="fw-bolder">
-              What billing timing do you want to default for new accounts?
-            </div>
-            <div class="ms-5">
-              <i class="fa fa-question-circle fs-4 text-dark"></i>
-            </div>
-          </div>
-          <div class="mt-6 ms-6">
-            <SingleSelectionCheckBox
-              :data="aumDefaultNewAccounts"
-              @update="updateAumDefaultNewAccounts"
-            />
-          </div>
-
-          <template v-if="isQuarterlySelected">
-            <div class="d-flex fs-7 mt-10">
+        <template v-for="(tab, index) in tabs" :key="index">
+          <div
+            class="tab-content tab-content-lg__scroll mt-10"
+            v-if="frequencyTab == tab"
+          >
+            <div class="d-flex fs-7">
               <div class="fw-bolder">
-                Do you bill any quarterly clients during off-cycle months?
+                How frequently do you bill your AUM advisory fees?
               </div>
+              <div class="text-muted ms-4 fs-8">Check all that apply</div>
               <div class="ms-5">
                 <i class="fa fa-question-circle fs-4 text-dark"></i>
               </div>
             </div>
             <div class="mt-6 ms-6">
-              <div class="form-check form-check-solid form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="request.quarterltyClients"
-                />
-                <label
-                  class="fs-8 text-muted form-check-label"
-                  for="flexSwitchCheckChecked"
-                  >Yes, I bill quarterly on off-cycle months</label
-                >
-              </div>
+              <MultiSelectCheckBox
+                :data="billingFrequency"
+                @update="updatebillingFrequency"
+              />
             </div>
-          </template>
 
-          <template v-if="request.quarterltyClients">
             <div class="d-flex fs-7 mt-10">
-              <div class="fw-bolder">What’s your default quarterly cycle?</div>
+              <div class="fw-bolder">
+                What frequency do you want to default for new accounts?
+              </div>
               <div class="ms-5">
                 <i class="fa fa-question-circle fs-4 text-dark"></i>
               </div>
             </div>
             <div class="mt-6 ms-6">
               <SingleSelectionCheckBox
-                :data="defaultQuarterlyCycle"
-                @update="updateDefaultQuarterltyCycle"
+                :data="aumAdvisoryNewAccount"
+                @update="updateDefaultBillingFrequency"
               />
             </div>
-          </template>
 
-          <div class="d-flex justify-content-between mt-10">
-            <button class="btn btn-secondary" @click="prev">Back</button>
-            <button 
-              class="btn me-10" 
-              :class="{
-                'btn-secondary': !formValidation,
-                'btn-primary': formValidation,
-              }"
-              :disabled="!formValidation"
-              @click="next"
-            >
-              Continue
-            </button>
+            <div class="d-flex fs-7 mt-10">
+              <div class="fw-bolder">
+                Do you bill your AUM advisory fees in advance or in arrears?
+              </div>
+              <div class="text-muted ms-4 fs-8">Check all that apply</div>
+              <div class="ms-5">
+                <i class="fa fa-question-circle fs-4 text-dark"></i>
+              </div>
+            </div>
+
+            <div class="mt-6 ms-6">
+              <MultiSelectCheckBox
+                :data="aumAdvisoryArrears"
+                @update="updateBillingMethod"
+              />
+            </div>
+
+            <div class="d-flex fs-7 mt-10">
+              <div class="fw-bolder">
+                What billing timing do you want to default for new accounts?
+              </div>
+              <div class="ms-5">
+                <i class="fa fa-question-circle fs-4 text-dark"></i>
+              </div>
+            </div>
+            <div class="mt-6 ms-6">
+              <SingleSelectionCheckBox
+                :data="defaultBillingMethod"
+                @update="updateDefaultBillingMethod"
+              />
+            </div>
+
+            <template v-if="isQuarterlySelected">
+              <div class="d-flex fs-7 mt-10">
+                <div class="fw-bolder">
+                  Do you bill any quarterly clients during off-cycle months?
+                </div>
+                <div class="ms-5">
+                  <i class="fa fa-question-circle fs-4 text-dark"></i>
+                </div>
+              </div>
+              <div class="mt-6 ms-6">
+                <div class="form-check form-check-solid form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    v-model="request.offsetCycleFlag"
+                    @change="
+                      !request.offsetCycleFlag
+                        ? (request.defaultOffsetCycle = '')
+                        : ''
+                    "
+                  />
+                  <label
+                    class="fs-8 text-muted form-check-label"
+                    for="flexSwitchCheckChecked"
+                    >Yes, I bill quarterly on off-cycle months</label
+                  >
+                </div>
+              </div>
+            </template>
+
+            <template v-if="request.offsetCycleFlag">
+              <div class="d-flex fs-7 mt-10">
+                <div class="fw-bolder">
+                  What’s your default quarterly cycle?
+                </div>
+                <div class="ms-5">
+                  <i class="fa fa-question-circle fs-4 text-dark"></i>
+                </div>
+              </div>
+              <div class="mt-6 ms-6">
+                <SingleSelectionCheckBox
+                  :data="defaultQuarterlyCycle"
+                  @update="updateDefaultOffsetCycle"
+                />
+              </div>
+            </template>
+
+            <div class="d-flex justify-content-between mt-10">
+              <button class="btn btn-secondary" @click="prev">Back</button>
+              <button
+                class="btn me-10"
+                :class="{
+                  'btn-secondary': !formValidation,
+                  'btn-primary': formValidation,
+                }"
+                :disabled="!formValidation"
+                @click="saveFrequncyAndTiming"
+              >
+                Continue
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="tab-content" v-if="frequencyTab == 'One Time'">
-          {{ frequencyTab }}
-        </div>
-        <div class="tab-content" v-if="frequencyTab == 'Subscription'">
-          {{ frequencyTab }}
-        </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Inject } from "vue-property-decorator";
 
-import { frequencyBoardModel } from "@/model";
+import { useStore } from "vuex";
+
+import { IFirmService } from "@/service";
+import { firmRequestModel, frequencyRequestModel } from "@/model";
+
 import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
 import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
+import { required } from "@vuelidate/validators";
 
 @Options({
   components: {
     MultiSelectCheckBox,
     SingleSelectionCheckBox,
-  }
+  },
 })
 export default class FrequencyBoard extends Vue {
+  @Inject("firmService") service: IFirmService | undefined;
+
   @Prop() tabs: Array<string> | any;
 
   public frequencyTab: string = "";
-  public request = new frequencyBoardModel();
-  public aumAdvisoryFees: Array<string> = [
+  public request = new frequencyRequestModel();
+  public billingFrequency: Array<string> = [
     "Monthly",
     "Quarterly",
     "Semi-Annually",
@@ -185,7 +195,7 @@ export default class FrequencyBoard extends Vue {
   ];
 
   public aumAdvisoryArrears: Array<string> = ["Advance", "Arrears"];
-  public aumDefaultNewAccounts: Array<string> = [
+  public defaultBillingMethod: Array<string> = [
     "Advance",
     "Arrears",
     "Don't default",
@@ -198,63 +208,97 @@ export default class FrequencyBoard extends Vue {
     "Don't default",
   ];
 
+  public store = useStore();
+
   created() {
     this.frequencyTab = this.tabs[0];
+    this.getFrequncyAndTiming();
   }
 
   prev() {
     this.$emit("prev");
   }
 
-  next() {
-    console.log(this.request);
-    this.$emit("next");
-  }
-
-  updateAumAdvisoryFees(selectedAUM: any) {
-    this.request.aumAdvisoryFees = selectedAUM;
+  updatebillingFrequency(billingFrequency: string[]) {
+    this.request.billingFrequency = billingFrequency;
     this.aumAdvisoryNewAccount = [];
     this.aumAdvisoryNewAccount = this.aumAdvisoryNewAccount.concat(
-      this.request.aumAdvisoryFees
+      this.request.billingFrequency
     );
 
-    if(this.aumAdvisoryNewAccount.length > 0 )
+    if (this.aumAdvisoryNewAccount.length > 0)
       this.aumAdvisoryNewAccount.push("Don't default");
     else
-      this.aumAdvisoryNewAccount = ["Monthly",  "Quarterly",  "Semi-Annually",  "Annually", "Don't default"];
+      this.aumAdvisoryNewAccount = [
+        "Monthly",
+        "Quarterly",
+        "Semi-Annually",
+        "Annually",
+        "Don't default",
+      ];
 
     this._sortOrder(this.aumAdvisoryNewAccount);
   }
 
-  updateAumAdvisoryNewAccount(newAccount: any) {
-    this.request.aumAdvisoryNewAccount = newAccount;
+  updateDefaultBillingFrequency(defaultBillingFrequency: string) {
+    console.log(defaultBillingFrequency);
+    this.request.defaultBillingFrequency = defaultBillingFrequency;
   }
 
-  updateAumAdvisoryArrears(aumArrears: any) {
-    this.request.aumAdvisoryArrears = aumArrears;
-    this.aumDefaultNewAccounts = [];
-    this.aumDefaultNewAccounts = this.aumDefaultNewAccounts.concat(
-      this.request.aumAdvisoryArrears
+  updateBillingMethod(billingMethod: string[]) {
+    this.request.billingMethod = billingMethod;
+    this.defaultBillingMethod = [];
+    this.defaultBillingMethod = this.defaultBillingMethod.concat(
+      this.request.billingMethod
     );
 
-    if(this.aumDefaultNewAccounts.length > 0)
-      this.aumDefaultNewAccounts.push("Don't default");
-    else
-      this.aumDefaultNewAccounts = ["Advance",  "Arrears",  "Don't default",];
-      
-    this._sortOrder(this.aumDefaultNewAccounts);
+    if (this.defaultBillingMethod.length > 0)
+      this.defaultBillingMethod.push("Don't default");
+    else this.defaultBillingMethod = ["Advance", "Arrears", "Don't default"];
+
+    this._sortOrder(this.defaultBillingMethod);
   }
 
-  updateAumDefaultNewAccounts(selectedAccounts: any) {
-    this.request.aumDefaultNewAccounts = selectedAccounts;
+  updateDefaultBillingMethod(defaultBillingMethod: string) {
+    this.request.defaultBillingMethod = defaultBillingMethod;
   }
 
-  updateDefaultQuarterltyCycle(QuarterltyCycle: any) {
-    this.request.defaultQuarterltyCycle = QuarterltyCycle;
+  updateDefaultOffsetCycle(defaultOffsetCycle: string) {
+    this.request.defaultOffsetCycle = defaultOffsetCycle;
   }
 
-  get isQuarterlySelected() {
-    return this.request.aumAdvisoryFees.includes("Quarterly");
+  private getFrequncyAndTiming() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    request.billingType = this.frequencyTab;
+    this.service
+      ?.getFrequencyAndTiming(request)
+      .then((response) => {
+        this.request = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public saveFrequncyAndTiming() {
+
+    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.payorType = "Investor Client";
+    this.request.billingType = this.frequencyTab;
+    this.request.feeTypeCode = "CF";
+
+    this.service
+      ?.saveFrequncyAndTiming(this.request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+      this.$emit("controlTabs", this.tabs);
+      this.$emit("next");
   }
 
   public _sortOrder(aumNewAccounts: Array<string>) {
@@ -272,23 +316,26 @@ export default class FrequencyBoard extends Vue {
     });
   }
 
+  get isQuarterlySelected() {
+    return this.request.billingFrequency.includes("Quarterly");
+  }
+
   get formValidation() {
     let valid = false;
 
-    if(
-      this.request.aumAdvisoryFees.length > 0 &&
-      this.request.aumAdvisoryNewAccount.length > 0 &&
-      this.request.aumAdvisoryArrears.length > 0 &&
-      this.request.aumDefaultNewAccounts.length > 0 
+    if (
+      this.request.billingFrequency.length > 0 &&
+      this.request.billingMethod.length > 0 &&
+      this.request.defaultBillingFrequency &&
+      this.request.defaultBillingMethod
     ) {
-        valid = true;
-        if(this.request.quarterltyClients)
-          if(this.request.defaultQuarterltyCycle.length > 0)  valid = true; 
-          else valid = false;
+      valid = true;
+      if (this.request.offsetCycleFlag)
+        if (this.request.defaultOffsetCycle) valid = true;
+        else valid = false;
     }
 
     return valid;
   }
-
 }
 </script>

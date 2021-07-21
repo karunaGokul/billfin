@@ -1,7 +1,11 @@
 export class methodologiesBoardModel {
-    aumAdvisoryBilling: Array<string> | Array<any> = [];
-    newAccounts: Array<string> | Array<any> = [];
-    advanceFees: Array<string> | Array<any> = [];
-    billingPeriod: Array<string> | Array<any> = [];
-    billingRates: Array<string> | Array<any> = [];
+    firmId: number | any;
+    payorType: string | any;
+    billingType: string | any;
+    feeTypeCode: string | any;
+    valuationMethod: Array<string> | Array<any> = [];
+    defaultValuationMethod: string | any;
+    initialBillingValuationMethod: string | any;
+    defaultProrationMethod: string | any;
+    expressRatesAs: string | any;
 }

@@ -15,7 +15,7 @@ export class SignUpService extends BaseService<signUpRequest, signUpResponse> {
     }
 
     public getCustodian(): Promise<Array<custodianResponseModel>> {
-        return this.httpGet('public/api/v1/custodians', null).then(response => {
+        return this.httpGet('public/api/v1/custodian', null).then(response => {
             return response.data;
         });
     }

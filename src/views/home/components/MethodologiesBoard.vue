@@ -33,8 +33,8 @@
           </div>
           <div class="mt-6 ms-6">
             <MultiSelectCheckBox
-              :data="aumAdvisoryBilling"
-              @update="updateAumAdvisoryBilling"
+              :data="valuationMethod"
+              @update="updateValuationMethod"
             />
           </div>
 
@@ -48,8 +48,8 @@
           </div>
           <div class="mt-6 ms-6">
             <SingleSelectionCheckBox
-              :data="newAccounts"
-              @update="updateNewAccounts"
+              :data="defaultValuationMethod"
+              @update="updateDefaultValuationMethod"
             />
           </div>
 
@@ -63,24 +63,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.advanceFees"
-                value="Period End"
-              />
-              Period End
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.advanceFees"
-                value="Billing Start Date"
-              />
-              Billing Start Date
-            </div>
+            <SingleSelectionCheckBox
+              :data="['Period End', 'Billing Start Date']"
+              @update="updateInitialBillingValuationMethod"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -92,24 +78,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingPeriod"
-                value="Days in period divided by days in the year"
-              />
-              Days in period divided by days in the year
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingPeriod"
-                value="Divide by number of billing periods in the year"
-              />
-              Divide by number of billing periods in the year
-            </div>
+            <SingleSelectionCheckBox
+              :data="['Days in period divided by days in the year', 'Divide by number of billing periods in the year']"
+              @update="updateDefaultProrationMethod"
+            />
           </div>
 
           <div class="d-flex fs-7 mt-10">
@@ -121,24 +93,10 @@
             </div>
           </div>
           <div class="mt-6 ms-6">
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingRates"
-                value="Basis Point"
-              />
-              Basis Point
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingRates"
-                value="Percentages"
-              />
-              Percentages
-            </div>
+            <SingleSelectionCheckBox
+              :data="['Basis Point', 'Percentages']"
+              @update="updateExpressRatesAs"
+            />
           </div>
 
           <div class="d-flex justify-content-between mt-10">
@@ -150,7 +108,7 @@
                 'btn-primary': formValidation,
               }"
               :disabled="!formValidation"
-              @click="next"
+              @click="saveMethodologies"
             >
               Continue
             </button>
@@ -174,9 +132,13 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Inject } from "vue-property-decorator";
 
-import { methodologiesBoardModel } from "@/model";
+import { useStore } from "vuex";
+
+import { IFirmService } from "@/service";
+
+import { firmRequestModel, methodologiesBoardModel } from "@/model";
 import MultiSelectCheckBox from "@/components/controls/MultiSelectCheckBox.vue";
 import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
 
@@ -187,22 +149,62 @@ import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckB
   },
 })
 export default class MethodologiesBoard extends Vue {
+  @Inject("firmService") service: IFirmService | undefined;
+
   @Prop() tabs: Array<string> | any;
+
   public methodologiesTab: string = "";
 
-  public aumAdvisoryBilling: Array<string> = [
+  public valuationMethod: Array<string> = [
     "Period End",
     "Average Daily Balance",
   ];
-  public newAccounts: Array<string> = [
+  public defaultValuationMethod: Array<string> = [
     "Period End",
     "Average Daily Balance",
     "Don't default",
   ];
+  
+  public store = useStore();
   public request = new methodologiesBoardModel();
 
   created() {
     this.methodologiesTab = this.tabs[0];
+    this.getMethodologies();
+  }
+
+  private getMethodologies() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    request.billingType = this.methodologiesTab;
+    this.service
+      ?.getMethodologies(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public saveMethodologies() {
+
+    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.payorType = "Investor Client";
+    this.request.billingType = this.methodologiesTab;
+    this.request.feeTypeCode = "CF";
+
+    this.service
+      ?.saveMethodologies(this.request)
+      .then((response) => {
+        console.log(response);
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
+
+      this.$emit("controlTabs", this.tabs);
+      this.$emit("next");
   }
 
   prev() {
@@ -214,26 +216,38 @@ export default class MethodologiesBoard extends Vue {
     this.$emit("next");
   }
 
-  public updateAumAdvisoryBilling(selectedAUM: any) {
-    this.request.aumAdvisoryBilling = selectedAUM;
-    this.newAccounts = [];
-    this.newAccounts = this.newAccounts.concat(this.request.aumAdvisoryBilling);
+  public updateValuationMethod(valuationMethod: string[]) {
+    this.request.valuationMethod = valuationMethod;
+    this.defaultValuationMethod = [];
+    this.defaultValuationMethod = this.defaultValuationMethod.concat(this.request.valuationMethod);
 
-    if(this.newAccounts.length > 0)
-      this.newAccounts.push("Don't default");
+    if(this.defaultValuationMethod.length > 0)
+      this.defaultValuationMethod.push("Don't default");
     else 
-      this.newAccounts = ["Period End", "Average Daily Balance",  "Don't default"];
+      this.defaultValuationMethod = ["Period End", "Average Daily Balance",  "Don't default"];
 
-    this._sortOrder(this.newAccounts);
+    this._sortOrder(this.defaultValuationMethod);
   }
 
-  public updateNewAccounts(newAccounts: any) {
-    this.request.newAccounts = newAccounts;
+  public updateDefaultValuationMethod(defaultValuationMethod: string) {
+    this.request.defaultValuationMethod = defaultValuationMethod;
   }
 
-  public _sortOrder(newAccounts: Array<string>) {
+  public updateInitialBillingValuationMethod(initialBillingValuationMethod: string) {
+    this.request.initialBillingValuationMethod = initialBillingValuationMethod;
+  }
+
+  public updateDefaultProrationMethod(defaultProrationMethod: string) {
+    this.request.defaultProrationMethod = defaultProrationMethod;
+  }
+
+  public updateExpressRatesAs(expressRatesAs: string) {
+    this.request.expressRatesAs = expressRatesAs;
+  }
+
+  public _sortOrder(defaultValuationMethod: Array<string>) {
     const sortOrder = ["Period End", "Average Daily Balance", "Don't default"];
-    newAccounts.sort((a, b) => {
+    defaultValuationMethod.sort((a, b) => {
       return sortOrder.indexOf(a) - sortOrder.indexOf(b);
     });
   }
@@ -241,11 +255,11 @@ export default class MethodologiesBoard extends Vue {
   get formValidation() {
     let valid = false; 
     if(
-      this.request.aumAdvisoryBilling.length > 0 &&
-      this.request.newAccounts.length > 0 &&
-      this.request.advanceFees.length > 0 &&
-      this.request.billingPeriod.length > 0 &&
-      this.request.billingRates.length > 0
+      this.request.valuationMethod.length > 0 &&
+      this.request.defaultValuationMethod &&
+      this.request.initialBillingValuationMethod &&
+      this.request.defaultProrationMethod &&
+      this.request.expressRatesAs
     )
       valid = true;
 

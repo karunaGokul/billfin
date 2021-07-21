@@ -274,8 +274,16 @@
                 target="_blank"
                 class="fw-bolder"
               >
-                Terms & Conditions
+                Terms
               </a>
+              and
+              <a
+                href="https://www.redi2.com/billfin/terms"
+                target="_blank"
+                class="fw-bolder"
+              >
+                Conditions
+              </a> policy
             </p>
 
             <p
