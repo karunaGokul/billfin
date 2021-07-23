@@ -16,14 +16,26 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 
-export default class SingleSelectionCheckBox extends Vue {
+export default class SingleCheckBox extends Vue {
   @Prop() data: Array<any> | any;
+  @Prop() value?: string | any;
 
   public selectedData: Array<any> = [];
 
-  update(e: any) {
+  mounted() {
+    this.selectedData = [];
+    this.selectedData.push(this.value);
+  }
+
+  @Watch('value')
+  create() {
+    this.selectedData = [];
+    this.selectedData.push(this.value);
+  }
+
+  update(e: any) { 
     this.selectedData = [];
     if (e.target.checked) this.selectedData.push(e.target.value);
     this.$emit("update", this.selectedData[0]);

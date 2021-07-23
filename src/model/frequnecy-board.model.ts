@@ -1,6 +1,3 @@
-export class frequencyBoardModel {
-    status: string | any;
-}
 export class frequencyRequestModel {
     firmId: number | any;
     payorType: string | any;

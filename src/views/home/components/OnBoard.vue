@@ -59,13 +59,11 @@
               <FrequencyBoard
                 @prev="activeTab = 1"
                 @next="activeTab = 3"
-                :tabs="tabs"
                 v-if="activeTab == 2"
               />
               <MethodologiesBoard
                 @prev="activeTab = 2"
                 @next="activeTab = 4"
-                :tabs="tabs"
                 v-if="activeTab == 3"
               />
               <AdjustmentsBoard
@@ -102,8 +100,8 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import GeneralBoard from "./GeneralBoard.vue";
-import FrequencyBoard from "./FrequencyBoard.vue";
-import MethodologiesBoard from "./MethodologiesBoard.vue";
+import FrequencyBoard from "./FrequencyBoard/Index.vue"
+import MethodologiesBoard from "./MethodologiesBoard/Index.vue";
 import AdjustmentsBoard from "./AdjustmentsBoard.vue";
 
 @Options({
@@ -111,7 +109,7 @@ import AdjustmentsBoard from "./AdjustmentsBoard.vue";
     GeneralBoard,
     FrequencyBoard,
     MethodologiesBoard,
-    AdjustmentsBoard,
+    AdjustmentsBoard
   },
 })
 export default class Welcome extends Vue {

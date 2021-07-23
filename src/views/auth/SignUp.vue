@@ -394,7 +394,7 @@ import { ISignUpService } from "@/service";
         },
         special: (value: any) => {
           let validation = false;
-          if (value && value != "") validation = /[#?!@$%^&*-]/.test(value);
+          if (value && value != "") validation = /[!@#$%^&*()_+={};':"\\|,.<>]/.test(value);
           return validation;
         },
       },
@@ -423,8 +423,8 @@ export default class SignUp extends Vue {
     "Under $25M",
     "$26M - $50M",
     "$51M - $100M",
-    "$101M to $250M",
-    "$251M to $500M",
+    "$101M - $250M",
+    "$251M - $500M",
     "Above $500M",
   ];
   public custodian: Array<custodianResponseModel> = [];

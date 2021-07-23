@@ -7,7 +7,7 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
-            v-for="(item, index) in tabs"
+            v-for="(item, index) in billingTypes"
             :key="index"
             class="tab-label pb-4"
             :class="{ 'tab-active-border-bottom': adjustmentsTab == item }"
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div class="mt-6 ms-6">
-              <SingleSelectionCheckBox
+              <single-checkBox
                 :data="thresholdFlows"
                 @update="updateThresholdFlows"
               />
@@ -220,11 +220,13 @@ import useVuelidate from "@vuelidate/core";
 import { required, numeric } from "@vuelidate/validators";
 
 import { adjustmentsBoardModel } from "@/model";
-import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckBox.vue";
+import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
+
+import { useStore } from "vuex";
 
 @Options({
   components: {
-    SingleSelectionCheckBox,
+    SingleCheckBox,
   },
   validations: {
     request: {
@@ -236,7 +238,6 @@ import SingleSelectionCheckBox from "@/components/controls/SingleSelectionCheckB
   }
 })
 export default class AdjustmentsBoard extends Vue {
-  @Prop() tabs: Array<string> | any;
 
   public adjustmentsTab: string = "";
   public request = new adjustmentsBoardModel();
@@ -245,12 +246,16 @@ export default class AdjustmentsBoard extends Vue {
 
   public v$ = setup(() => this.validate());
 
+  public store = useStore();
+  public billingTypes: Array<string> | any = [];
+
   validate() {
     return useVuelidate();
   }
 
   created() {
-    this.adjustmentsTab = this.tabs[0];
+    this.billingTypes = this.store.getters.billingTypes;
+    this.adjustmentsTab = this.billingTypes[0];
   }
 
   public updateThresholdFlows(value: any) {

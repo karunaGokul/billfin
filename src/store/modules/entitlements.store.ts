@@ -17,6 +17,9 @@ const getters: GetterTree<any, any> = {
   },
   selectedFirmId:(state) => {
     return state.firms[0].firmId;
+  },
+  billingTypes:() => {
+    return state.firms[0].billingType;
   }
 };
 const mutations: MutationTree<any> = {

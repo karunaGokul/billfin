@@ -1,4 +1,4 @@
-export class methodologiesBoardModel {
+export class methodologiesRequestModel {
     firmId: number | any;
     payorType: string | any;
     billingType: string | any;

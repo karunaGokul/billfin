@@ -231,6 +231,7 @@ export default class GeneralBoard extends Vue {
 
   public getGeneralDetails() {
     const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
     request.firmDomain = this.store.getters.selectedFirmDomain;
     request.firmName = this.store.getters.selectedFirmName;
     this.service

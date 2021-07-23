@@ -16,13 +16,19 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 
-export default class MultiSelectCheckBox extends Vue {
+export default class MultiCheckBox extends Vue {
   @Prop() data: Array<any> | any;
+  @Prop() value?: Array<any> | any;
 
   public selectedData: Array<any> = [];
 
+  @Watch('value')
+  create() {
+    this.selectedData = this.value;
+  }
+  
   update() {
     this.$emit("update", this.selectedData);
   }

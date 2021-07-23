@@ -1,5 +1,5 @@
 import { IBaseService, BaseService } from './base.service';
-import { firmRequestModel, firmsResponseModel, generalBoardRequestModel, generalBoardResponseModel, frequencyRequestModel, frequencyResponseModel, methodologiesBoardModel } from "@/model";
+import { firmRequestModel, firmsResponseModel, generalBoardRequestModel, generalBoardResponseModel, frequencyRequestModel, frequencyResponseModel, methodologiesRequestModel } from "@/model";
 
 export interface IFirmService extends IBaseService<any, any> {
     getFirms(): Promise<Array<firmsResponseModel>>
@@ -10,8 +10,8 @@ export interface IFirmService extends IBaseService<any, any> {
     getFrequencyAndTiming(request: firmRequestModel): Promise<frequencyRequestModel>;
     saveFrequncyAndTiming(request: frequencyRequestModel): Promise<frequencyResponseModel>;
 
-    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel>;
-    saveMethodologies(request: methodologiesBoardModel): Promise<frequencyResponseModel>;
+    getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel>;
+    saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel>;
 }
 
 export class FirmService extends BaseService<any, any> implements IFirmService {
@@ -50,13 +50,13 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel> {
+    getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel> {
         return this.httpGet('private/api/v1/firm/methodologies', request).then(response => {
             return response.data;
         });
     }
 
-    saveMethodologies(request: methodologiesBoardModel): Promise<frequencyResponseModel> {
+    saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel> {
         return this.httpPost('private/api/v1/firm/methodologies', request).then(response => {
             return response.data;
         });
