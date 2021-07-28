@@ -128,7 +128,7 @@
             </div>
             <div
               class="invalid-feedback mb-4"
-              v-if="v$.request.$dirty && v$.request.$invalid"
+              v-if="v$.request.custodians.$dirty && v$.request.custodians.$invalid"
             >
               Custodian selection is required
             </div>
@@ -243,14 +243,13 @@
               formFieldType ="inputBlock"
               :controls="v$.request.confirmPassword"
               :validation="['required']"
+              @validatePassword="validatePassword"
             />
             <div
               class="invalid-feedback"
               v-if="
-                v$.request.confirmPassword.$dirty &&
-                !v$.request.confirmPassword.required.$invalid &&
-                v$.request.password.$model != v$.request.confirmPassword.$model
-              "
+              !v$.request.confirmPassword.$invalid &&
+              showPasswordError"
             >
               Password and Confirmation password does't match.
             </div>
@@ -268,7 +267,7 @@
                 type="checkbox"
                 v-model="v$.request.hasAgreed.$model"
               />
-              I Agree to the BillFin
+              I agree to the BillFin
               <a
                 href="https://www.redi2.com/billfin/terms"
                 target="_blank"
@@ -285,10 +284,9 @@
                 Conditions
               </a> policy
             </p>
-
             <p
               class="invalid-feedback"
-              v-if="v$.request.$dirty && v$.request.hasAgreed.$invalid"
+              v-if="v$.request.$dirty && !v$.request.hasAgreed.$model"
             >
               You must agree to terms and conditions to create an account.
             </p>
@@ -318,7 +316,7 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
-import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
+import { required, minLength } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import Information from "@/components/Models/Information.vue";
@@ -418,6 +416,7 @@ export default class SignUp extends Vue {
   public showPassword: boolean = false;
   public showConfirmPassword: boolean = false;
   public showInfomationModel: boolean = false;
+  public showPasswordError: boolean = false;
 
   public aum: Array<string> = [
     "Under $25M",
@@ -456,6 +455,10 @@ export default class SignUp extends Vue {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  public validatePassword() {
+    if(this.request.password != this.request.confirmPassword) this.showPasswordError = true;
   }
 
   public signUp() {

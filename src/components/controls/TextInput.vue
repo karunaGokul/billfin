@@ -10,7 +10,7 @@
         class="form-control text-start"
         :id="label"
         v-model="controls.$model"
-        @blur="label == 'Work email' && !controls.$invalid ? validateEmail() : ''"
+        @blur="label == 'Work email' || label == 'Confirm password' && !controls.$invalid ? emitEvent() : ''"
       />
       <span class="input-group-text">
         <i
@@ -77,8 +77,8 @@ export default class TextInput extends Vue {
 
   public showPassword: boolean = false;
 
-  public validateEmail() {
-    this.$emit("validateEmail");
+  public emitEvent() {
+    this.$emit(this.label == 'Work email' ? "validateEmail": "validatePassword");
   }
 
   get errorMessage() {
