@@ -52,5 +52,12 @@ export class DataResponse<T> {
 }
 
 export class ListItem {
-    constructor(public text: string, public value?: string) {}
+    constructor(public text: string, public value?: string) {
+        if (!this.value) this.value = this.text;
+    }
+
+    data: any;
+    selected: boolean = false;
+    type: string;
+    hidden: boolean = false;
 }

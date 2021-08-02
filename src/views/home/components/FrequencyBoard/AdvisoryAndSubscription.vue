@@ -12,7 +12,6 @@
     <div class="mt-6 ms-6">
       <multi-checkBox
         :data="billingFrequency"
-        :value="request.billingFrequency"
         @update="updatebillingFrequency"
       />
     </div>
@@ -44,11 +43,7 @@
     </div>
 
     <div class="mt-6 ms-6">
-      <multi-checkBox
-        :data="billingMethod"
-        :value="request.billingMethod"
-        @update="updateBillingMethod"
-      />
+      <multi-checkBox :data="billingMethod" @update="updateBillingMethod" />
     </div>
 
     <div class="d-flex fs-7 mt-10">
@@ -134,7 +129,17 @@ import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel, frequencyRequestModel } from "@/model";
+import {
+  firmRequestModel,
+  frequencyRequestModel,
+  BillingFrequency,
+  defaultBillingFrequency,
+  billingMethod,
+  defaultBillingMethod,
+  defaultOffsetCycle,
+  PayorType,
+  ListItem,
+} from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
@@ -146,44 +151,56 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
   },
 })
 export default class AdvisoryAndSubscription extends Vue {
-  @Inject("firmService") service: IFirmService | undefined;
+  @Inject("firmService") service: IFirmService;
   @Prop() billingType: string | any;
-  @Prop() previousTab: string | any;
+  @Prop() previousTab: string;
   @Prop() nextTab: string | any;
 
   public store = useStore();
   public request = new frequencyRequestModel();
 
-  public billingFrequency: Array<string> = [
-    "Monthly",
-    "Quarterly",
-    "Semi-Annually",
-    "Annually",
-  ];
-
-  public defaultBillingFrequency: Array<string> = [
-    "Monthly",
-    "Quarterly",
-    "Semi-Annually",
-    "Annually",
-    "Don't default",
-  ];
-
-  public billingMethod: Array<string> = ["Advance", "Arrears"];
-  public defaultBillingMethod: Array<string> = [
-    "Advance",
-    "Arrears",
-    "Don't default",
-  ];
-
-  public defaultOffsetCycle: Array<string> = [
-    "Jan-Apr-Jul-Oct",
-    "Feb-May-Aug-Nov",
-    "Mar-Jun-Seb-Dec",
-    "Don't default",
-  ];
+  public billingFrequency: Array<ListItem> = [];
+  public defaultBillingFrequency: Array<ListItem> = [];
+  public billingMethod: Array<ListItem> = [];
+  public defaultBillingMethod: Array<ListItem> = [];
+  public defaultOffsetCycle: Array<ListItem> = [];
 
   created() {
+    this.billingFrequency = Object.entries(BillingFrequency).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          BillingFrequency[key as keyof typeof BillingFrequency]
+        )
+    );
+    this.defaultBillingFrequency = Object.entries(defaultBillingFrequency).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+        )
+    );
+    this.billingMethod = Object.entries(billingMethod).map(
+      ([key]) =>
+        new ListItem(key, billingMethod[key as keyof typeof billingMethod])
+    );
+    this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+        )
+    );
+    this.defaultOffsetCycle = Object.entries(defaultOffsetCycle).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          defaultOffsetCycle[key as keyof typeof defaultOffsetCycle]
+        )
+    );
+  }
+
+  mounted() {
     this.getFrequncyAndTiming();
   }
 
@@ -196,6 +213,7 @@ export default class AdvisoryAndSubscription extends Vue {
       .then((response) => {
         this.request = response;
         this.request.billingType = this.billingType;
+        this.bindValues(response);
       })
       .catch((err) => {
         console.log(err);
@@ -203,61 +221,102 @@ export default class AdvisoryAndSubscription extends Vue {
   }
 
   public saveFrequncyAndTiming() {
-    console.log(this.request);
+    this.request.payorType = PayorType.INVESTOR_CLIENT;
     this.request.billingType = this.billingType;
     this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.payorType = "Investor Client";
     this.request.feeTypeCode = "CF";
 
     this.service
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
-        console.log(response);
+        this.$emit("next", this.nextTab);
       })
       .catch((err) => {
         console.log(err);
       });
-
-    this.$emit("next", this.nextTab);
   }
 
-  updatebillingFrequency(billingFrequency: string[]) {
-    this.request.billingFrequency = billingFrequency;
+  updatebillingFrequency(billingFrequency: any[]) {
+    this.request.billingFrequency = [];
     this.defaultBillingFrequency = [];
-    this.defaultBillingFrequency = this.defaultBillingFrequency.concat(
-      this.request.billingFrequency
-    );
 
-    if (this.defaultBillingFrequency.length > 0)
-      this.defaultBillingFrequency.push("Don't default");
-    else
-      this.defaultBillingFrequency = [
-        "Monthly",
-        "Quarterly",
-        "Semi-Annually",
-        "Annually",
-        "Don't default",
-      ];
+    for (var i in billingFrequency) {
+      if (billingFrequency[i].selected) {
+        this.request.billingFrequency.push(billingFrequency[i].value);
+        const item = new ListItem(
+          billingFrequency[i].text,
+          billingFrequency[i].value
+        );
+        if (this.request.defaultBillingFrequency == billingFrequency[i].value)
+          item.selected = true;
+        this.defaultBillingFrequency.push(item);
+      }
+    }
 
-    this._sortOrder(this.defaultBillingFrequency);
+    if (!this.isQuarterlySelected) {
+      this.request.offsetCycleFlag = false;
+      this.request.defaultOffsetCycle = "";
+    }
+
+    if (this.request.billingFrequency.length == 0)
+      this.defaultBillingFrequency = Object.entries(
+        defaultBillingFrequency
+      ).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+          )
+      );
+
+    if (
+      !this.defaultBillingFrequency.some((item) => {
+        return item.text == "Don't Default";
+      })
+    )
+      this.defaultBillingFrequency.push(
+        new ListItem("Don't Default", "Don't_Default")
+      );
   }
 
   updateDefaultBillingFrequency(defaultBillingFrequency: string) {
     this.request.defaultBillingFrequency = defaultBillingFrequency;
   }
 
-  updateBillingMethod(billingMethod: string[]) {
-    this.request.billingMethod = billingMethod;
+  updateBillingMethod(billingMethod: any[]) {
+    this.request.billingMethod = [];
     this.defaultBillingMethod = [];
-    this.defaultBillingMethod = this.defaultBillingMethod.concat(
-      this.request.billingMethod
-    );
 
-    if (this.defaultBillingMethod.length > 0)
-      this.defaultBillingMethod.push("Don't default");
-    else this.defaultBillingMethod = ["Advance", "Arrears", "Don't default"];
+    for (var i in billingMethod) {
+      if (billingMethod[i].selected) {
+        this.request.billingMethod.push(billingMethod[i].value);
+        const item = new ListItem(
+          billingMethod[i].text,
+          billingMethod[i].value
+        );
+        if (this.request.defaultBillingMethod == billingMethod[i].value)
+          item.selected = true;
+        this.defaultBillingMethod.push(item);
+      }
+    }
 
-    this._sortOrder(this.defaultBillingMethod);
+    if (
+      !this.defaultBillingMethod.some((item) => {
+        return item.text == "Don't Default";
+      })
+    )
+      this.defaultBillingMethod.push(
+        new ListItem("Don't Default", "Don't_Default")
+      );
+
+    if (this.request.billingMethod.length == 0)
+      this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+          )
+      );
   }
 
   updateDefaultBillingMethod(defaultBillingMethod: string) {
@@ -268,19 +327,71 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.defaultOffsetCycle = defaultOffsetCycle;
   }
 
-  private _sortOrder(value: Array<string>) {
-    const sortOrder = [
-      "Monthly",
-      "Quarterly",
-      "Semi-Annually",
-      "Annually",
-      "Advance",
-      "Arrears",
-      "Don't default",
-    ];
-    value.sort((a, b) => {
-      return sortOrder.indexOf(a) - sortOrder.indexOf(b);
+  private bindValues(response: frequencyRequestModel) {
+    this.defaultBillingFrequency = [];
+
+    this.billingFrequency.forEach((item) => {
+      if (response.billingFrequency.includes(item.value)) {
+        item.selected = true;
+        this.defaultBillingFrequency.push(new ListItem(item.text, item.value));
+      }
     });
+
+    if (this.defaultBillingFrequency.length == 0)
+      this.defaultBillingFrequency = Object.entries(
+        defaultBillingFrequency
+      ).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+          )
+      );
+    else
+      this.defaultBillingFrequency.push(
+        new ListItem("Don't Default", "Don't_Default")
+      );
+
+    this.defaultBillingFrequency.forEach((item) => {
+      if (response.defaultBillingFrequency == item.value) item.selected = true;
+    });
+
+    this.defaultBillingMethod = [];
+
+    this.billingMethod.forEach((item) => {
+      if (response.billingMethod.includes(item.value)) {
+        item.selected = true;
+        this.defaultBillingMethod.push(new ListItem(item.text, item.value));
+      }
+    });
+
+    if (this.defaultBillingMethod.length == 0)
+      this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+          )
+      );
+    else
+      this.defaultBillingMethod.push(
+        new ListItem("Don't Default", "Don't_Default")
+      );
+
+    this.defaultBillingMethod.forEach((item) => {
+      if (response.defaultBillingMethod == item.value) item.selected = true;
+    });
+
+    if (!this.isQuarterlySelected) {
+      this.request.offsetCycleFlag = false;
+      this.request.defaultOffsetCycle = "";
+    } else {
+      this.request.offsetCycleFlag = response.offsetCycleFlag;
+      this.defaultOffsetCycle.forEach((item) => {
+        if (response.defaultOffsetCycle.includes(item.value))
+          item.selected = true;
+      });
+    }
   }
 
   public prev() {
@@ -288,7 +399,7 @@ export default class AdvisoryAndSubscription extends Vue {
   }
 
   get isQuarterlySelected() {
-    return this.request.billingFrequency.includes("Quarterly");
+    return this.request.billingFrequency.includes("QUATERLY");
   }
 
   get formValidation() {

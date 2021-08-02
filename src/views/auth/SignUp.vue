@@ -428,7 +428,7 @@ export default class SignUp extends Vue {
   ];
   public custodian: Array<custodianResponseModel> = [];
 
-  public v$ = setup(() => this.validate());
+  public v$: any = setup(() => this.validate());
 
   validate() {
     return useVuelidate();
@@ -459,6 +459,7 @@ export default class SignUp extends Vue {
 
   public validatePassword() {
     if(this.request.password != this.request.confirmPassword) this.showPasswordError = true;
+    else this.showPasswordError = false;
   }
 
   public signUp() {

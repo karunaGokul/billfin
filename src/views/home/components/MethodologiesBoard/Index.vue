@@ -25,14 +25,14 @@
           @next="onNext"
           v-if="methodologiesTab == 'AUM Advisory'"
         />
-        <advisory-and-subscription
+        <!--<advisory-and-subscription
           billingType="Subscription"
           :previousTab="previousTab('AUM Advisory')"
           :nextTab="nextTab('One Time')"
           @prev="onPrev"
           @next="onNext"
           v-if="methodologiesTab == 'Subscription'"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -55,7 +55,6 @@ export default class MethodologiesBoard extends Vue {
   public billingTypes: Array<string> | any;
 
   created() {
-    console.log('test');
     this.billingTypes = this.store.getters.billingTypes;
     this.methodologiesTab = this.billingTypes[0];
   }

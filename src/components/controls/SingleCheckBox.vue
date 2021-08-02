@@ -1,17 +1,17 @@
 <template>
   <div
     class="form-check form-check-solid form-check-inline fs-7"
-    v-for="(item, index) in data"
+    v-for="(item, index) in selectedData"
     :key="index"
   >
     <input
       class="form-check-input"
       type="checkbox"
       :value="item"
-      v-model="selectedData"
-      @change="update"
+      v-model="item.selected"
+      @change="update(item.value)"
     />
-    {{ item }}
+    {{ item.text }}
   </div>
 </template>
 <script lang="ts">
@@ -25,20 +25,20 @@ export default class SingleCheckBox extends Vue {
   public selectedData: Array<any> = [];
 
   mounted() {
-    this.selectedData = [];
-    this.selectedData.push(this.value);
+    this.selectedData = this.data;
   }
 
-  @Watch('value')
+  @Watch('data') 
   create() {
-    this.selectedData = [];
-    this.selectedData.push(this.value);
+    this.selectedData = this.data;
   }
 
-  update(e: any) { 
-    this.selectedData = [];
-    if (e.target.checked) this.selectedData.push(e.target.value);
-    this.$emit("update", this.selectedData[0]);
+  update(value: string) { 
+    for(var i in this.selectedData) {
+      if(this.selectedData[i].value == value) this.selectedData[i].selected = true;
+      else this.selectedData[i].selected = false;
+    }
+    this.$emit("update", value);
   }
 }
 </script>

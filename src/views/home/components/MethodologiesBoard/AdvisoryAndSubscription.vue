@@ -12,7 +12,6 @@
     <div class="mt-6 ms-6">
       <multi-checkBox
         :data="valuationMethod"
-        :value="request.valuationMethod"
         @update="updateValuationMethod"
       />
     </div>
@@ -43,7 +42,7 @@
     </div>
     <div class="mt-6 ms-6">
       <single-checkBox
-        :data="['Period End', 'Billing Start Date']"
+        :data="initialBillingValuationMethod"
         :value="request.initialBillingValuationMethod"
         @update="updateInitialBillingValuationMethod"
       />
@@ -59,10 +58,7 @@
     </div>
     <div class="mt-6 ms-6">
       <single-checkBox
-        :data="[
-          'Days in period divided by days in the year',
-          'Divide by number of billing periods in the year',
-        ]"
+        :data="defaultProrationMethod"
         :value="request.defaultProrationMethod"
         @update="updateDefaultProrationMethod"
       />
@@ -78,7 +74,7 @@
     </div>
     <div class="mt-6 ms-6">
       <single-checkBox
-        :data="['Basis Point', 'Percentages']"
+        :data="expressRatesAs"
         :value="request.expressRatesAs"
         @update="updateExpressRatesAs"
       />
@@ -107,7 +103,18 @@ import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel, methodologiesRequestModel } from "@/model";
+import {
+  firmRequestModel,
+  methodologiesRequestModel,
+
+  ValuationMethodType,
+  defaultValuationMethod,
+  initialBillingValuationMethod,
+  ProrationMethodType,
+  expressRatesAs,
+  PayorType,
+  ListItem,
+} from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
@@ -127,15 +134,50 @@ export default class AdvisoryAndSubscription extends Vue {
   public store = useStore();
   public request = new methodologiesRequestModel();
 
-  public valuationMethod: Array<string> = [
-    "Period End",
-    "Average Daily Balance",
-  ];
-  public defaultValuationMethod: Array<string> = [
-    "Period End",
-    "Average Daily Balance",
-    "Don't default",
-  ];
+  public valuationMethod: Array<ListItem> = [];
+  public defaultValuationMethod: Array<ListItem> = [];
+  public initialBillingValuationMethod: Array<ListItem> = [];
+  public defaultProrationMethod: Array<ListItem> = [];
+  public expressRatesAs: Array<ListItem> = [];
+
+  created() {
+    this.valuationMethod = Object.entries(ValuationMethodType).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          ValuationMethodType[key as keyof typeof ValuationMethodType]
+        )
+    );
+
+    this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+        )
+    );
+    this.initialBillingValuationMethod = Object.entries(initialBillingValuationMethod).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          initialBillingValuationMethod[key as keyof typeof initialBillingValuationMethod]
+        )
+    );
+    this.defaultProrationMethod = Object.entries(ProrationMethodType).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          ProrationMethodType[key as keyof typeof ProrationMethodType]
+        )
+    );
+    this.expressRatesAs = Object.entries(expressRatesAs).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          expressRatesAs[key as keyof typeof expressRatesAs]
+        )
+    );
+  }
 
   mounted() {
     this.getMethodologies();
@@ -150,6 +192,8 @@ export default class AdvisoryAndSubscription extends Vue {
       ?.getMethodologies(request)
       .then((response) => {
         this.request = response;
+        this.request.billingType = this.billingType;
+        this.bindValues(response);
       })
       .catch((err) => {
         console.log(err);
@@ -158,38 +202,57 @@ export default class AdvisoryAndSubscription extends Vue {
 
   public saveMethodologies() {
     this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.payorType = "Investor Client";
+    this.request.payorType = PayorType.INVESTOR_CLIENT;
     this.request.billingType = this.billingType;
     this.request.feeTypeCode = "CF";
 
     this.service
       ?.saveMethodologies(this.request)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
+        this.$emit("next", this.nextTab);
       })
       .catch((err) => {
         console.log(err);
       });
-    this.$emit("next", this.nextTab);
+    
   }
 
-  public updateValuationMethod(valuationMethod: string[]) {
-    this.request.valuationMethod = valuationMethod;
+  public updateValuationMethod(valuationMethod: any[]) {
+    this.request.valuationMethod = [];
     this.defaultValuationMethod = [];
-    this.defaultValuationMethod = this.defaultValuationMethod.concat(
-      this.request.valuationMethod
-    );
 
-    if (this.defaultValuationMethod.length > 0)
-      this.defaultValuationMethod.push("Don't default");
-    else
-      this.defaultValuationMethod = [
-        "Period End",
-        "Average Daily Balance",
-        "Don't default",
-      ];
+    for(var i in valuationMethod) {
+      if(valuationMethod[i].selected) {
+        this.request.valuationMethod.push(valuationMethod[i].value);
+        const item = new ListItem(
+          valuationMethod[i].text,
+          valuationMethod[i].value
+        );
+        if(this.request.defaultValuationMethod == valuationMethod[i].value) item.selected = true;
+        this.defaultValuationMethod.push(item);
+      }
+    }
 
-    this._sortOrder(this.defaultValuationMethod);
+    if (this.request.valuationMethod.length == 0)
+      this.defaultValuationMethod = Object.entries(
+        defaultValuationMethod
+      ).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+          )
+      );
+
+    if (
+      !this.defaultValuationMethod.some((item) => {
+        return item.text == "Don't Default";
+      })
+    )
+      this.defaultValuationMethod.push(
+        new ListItem("Don't Default", "Don't_Default")
+      );
   }
 
   public updateDefaultValuationMethod(defaultValuationMethod: string) {
@@ -210,6 +273,45 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.expressRatesAs = expressRatesAs;
   }
 
+  private bindValues(response: methodologiesRequestModel) {
+    this.defaultValuationMethod = [];
+    this.valuationMethod.forEach((item) => {
+      if (response.valuationMethod && response.valuationMethod.includes(item.value)) {
+        item.selected = true;
+        this.defaultValuationMethod.push(new ListItem(item.text, item.value));
+      }
+    });
+
+    if(this.defaultValuationMethod.length == 0)
+    this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+        )
+    );
+    else 
+      this.defaultValuationMethod.push(
+      new ListItem("Don't Default", "Don't_Default")
+    );
+
+    this.defaultValuationMethod.forEach((item) => {
+      if (response.defaultValuationMethod && response.defaultValuationMethod == item.value) item.selected = true;
+    });
+
+    this.initialBillingValuationMethod.forEach((item) => {
+      if (response.initialBillingValuationMethod && response.initialBillingValuationMethod == item.value) item.selected = true;
+    });
+
+    this.defaultProrationMethod.forEach((item) => {
+      if (response.defaultProrationMethod && response.defaultProrationMethod == item.value) item.selected = true;
+    });
+
+    this.expressRatesAs.forEach((item) => {
+      if (response.expressRatesAs && response.expressRatesAs == item.value) item.selected = true;
+    });
+  }
+
   public _sortOrder(defaultValuationMethod: Array<string>) {
     const sortOrder = ["Period End", "Average Daily Balance", "Don't default"];
     defaultValuationMethod.sort((a, b) => {
@@ -223,7 +325,9 @@ export default class AdvisoryAndSubscription extends Vue {
 
   get formValidation() {
     let valid = false;
+
     if (
+      this.request.valuationMethod && 
       this.request.valuationMethod.length > 0 &&
       this.request.defaultValuationMethod &&
       this.request.initialBillingValuationMethod &&

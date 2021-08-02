@@ -153,7 +153,7 @@ import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel }
 export default class GeneralBoard extends Vue {
   @Inject("firmService") service: IFirmService | undefined;
 
-  public v$ = setup(() => this.validate());
+  public v$: any = setup(() => this.validate());
   public store = useStore();
 
   validate() {

@@ -7,11 +7,11 @@
     <input
       class="form-check-input"
       type="checkbox"
-      v-model="selectedData"
+      v-model="item.selected"
       :value="item"
       @change="update"
     />
-    {{ item }}
+    {{ item.text }}
   </div>
 </template>
 <script lang="ts">
@@ -20,17 +20,9 @@ import { Prop, Watch } from "vue-property-decorator";
 
 export default class MultiCheckBox extends Vue {
   @Prop() data: Array<any> | any;
-  @Prop() value?: Array<any> | any;
-
-  public selectedData: Array<any> = [];
-
-  @Watch('value')
-  create() {
-    this.selectedData = this.value;
-  }
   
   update() {
-    this.$emit("update", this.selectedData);
+    this.$emit("update", this.data);
   }
 
 }
