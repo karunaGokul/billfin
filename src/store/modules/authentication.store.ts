@@ -63,11 +63,17 @@ const actions: ActionTree<AuthenticationState, any> = {
             realm: 'BillFin-Dev',
             clientId: 'reference-service',
         }
+
+        console.log('1');
+        console.log(config);
     
         const keycloak = Keycloak(config);
+        console.log(keycloak);
         const options: KeycloakInitOptions = {
             onLoad: 'login-required'
         };
+
+        console.log(options);
     
         keycloak.onTokenExpired = () => {
             keycloak.updateToken(30).then(() => {
@@ -117,7 +123,14 @@ const actions: ActionTree<AuthenticationState, any> = {
                 //app.config.globalProperties.$keycloak = keycloak
         });
     },
-    
+
+    checkSession(context, keycloak)  {
+        context.commit('onLogin', {
+            success: true,
+            accessToken: keycloak.token,
+            refreshToken: keycloak.refreshToken
+        });
+    },
     logout(context) {
         return new Promise((resolve, reject) => {
             context.commit('onLogout');
