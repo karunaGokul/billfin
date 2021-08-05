@@ -1,11 +1,14 @@
-export class adjustmentsBoardModel {
-    firmWideStandardMinimumFee: boolean = false;
-    firmWideMinimumFeeAmount:string = "";
-    firmWideMaximumFee: boolean = false;
-    firmWideMaximumFeeAmount:string = "";
-    depositsAndWithdrawls: boolean = false;
-    thresholdFlows: string = "";
-    thresholdFlowsAmount: string = "";
-    thresholdFlowsAum: string = "";
-    avoidChargingCents: boolean = false;
+export class adjustmentsBoardRequestModel {
+    firmId: number | any;
+    payorType: string | any;
+    billingType: string | any;
+    feeTypeCode: string | any;
+    firmMinimumFee: boolean;
+    firmMaximumFee: boolean;
+    minimumFeeAmount: number;
+    maximumFeeAmount: number;
+    adjustForFlows: boolean;
+    feeScheduleRateType: string;
+    flowThresholdValue: number;
+    dollarRoundingFlag: boolean;
 }

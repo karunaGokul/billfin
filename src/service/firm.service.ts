@@ -1,5 +1,14 @@
 import { IBaseService, BaseService } from './base.service';
-import { firmRequestModel, firmsResponseModel, generalBoardRequestModel, generalBoardResponseModel, frequencyRequestModel, frequencyResponseModel, methodologiesRequestModel } from "@/model";
+import { 
+    firmRequestModel, 
+    firmsResponseModel, 
+    generalBoardRequestModel, 
+    generalBoardResponseModel, 
+    frequencyRequestModel, 
+    frequencyResponseModel, 
+    methodologiesRequestModel,
+    adjustmentsBoardRequestModel
+} from "@/model";
 
 export interface IFirmService extends IBaseService<any, any> {
     getFirms(): Promise<Array<firmsResponseModel>>
@@ -12,6 +21,9 @@ export interface IFirmService extends IBaseService<any, any> {
 
     getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel>;
     saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel>;
+
+    getAdjustments(request: firmRequestModel): Promise<adjustmentsBoardRequestModel>;
+    saveAdjustments(request: adjustmentsBoardRequestModel): Promise<frequencyResponseModel>;
 }
 
 export class FirmService extends BaseService<any, any> implements IFirmService {
@@ -58,6 +70,18 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
 
     saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel> {
         return this.httpPost('private/api/v1/firm/methodologies', request).then(response => {
+            return response.data;
+        });
+    }
+
+    getAdjustments(request: firmRequestModel): Promise<adjustmentsBoardRequestModel> {
+        return this.httpGet('private/api/v1/firm/adjustments', request).then(response => {
+            return response.data;
+        });
+    }
+
+    saveAdjustments(request: adjustmentsBoardRequestModel): Promise<frequencyResponseModel> {
+        return this.httpPost('private/api/v1/firm/adjustments', request).then(response => {
             return response.data;
         });
     }

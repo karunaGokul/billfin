@@ -191,8 +191,11 @@ export default class AdvisoryAndSubscription extends Vue {
     this.service
       ?.getMethodologies(request)
       .then((response) => {
-        this.request = response;
-        this.request.billingType = this.billingType;
+        this.request.valuationMethod = response.valuationMethod;
+        this.request.defaultValuationMethod = this.nullCheck(response.defaultValuationMethod);
+        this.request.initialBillingValuationMethod = this.nullCheck(response.initialBillingValuationMethod);
+        this.request.defaultProrationMethod = this.nullCheck(response.defaultProrationMethod);
+        this.request.expressRatesAs = this.nullCheck(response.expressRatesAs);
         this.bindValues(response);
       })
       .catch((err) => {
@@ -251,7 +254,7 @@ export default class AdvisoryAndSubscription extends Vue {
       })
     )
       this.defaultValuationMethod.push(
-        new ListItem("Don't Default", "Don't_Default")
+        new ListItem("Don't Default", "DONT_DEFAULT")
       );
   }
 
@@ -292,7 +295,7 @@ export default class AdvisoryAndSubscription extends Vue {
     );
     else 
       this.defaultValuationMethod.push(
-      new ListItem("Don't Default", "Don't_Default")
+      new ListItem("Don't Default", "DONT_DEFAULT")
     );
 
     this.defaultValuationMethod.forEach((item) => {
@@ -317,6 +320,10 @@ export default class AdvisoryAndSubscription extends Vue {
     defaultValuationMethod.sort((a, b) => {
       return sortOrder.indexOf(a) - sortOrder.indexOf(b);
     });
+  }
+
+  public nullCheck(value: any) {
+    return value ? value : "";
   }
 
   public prev() {

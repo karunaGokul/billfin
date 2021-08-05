@@ -211,8 +211,12 @@ export default class AdvisoryAndSubscription extends Vue {
     this.service
       ?.getFrequencyAndTiming(request)
       .then((response) => {
-        this.request = response;
-        this.request.billingType = this.billingType;
+        this.request.billingFrequency = response.billingFrequency;
+        this.request.defaultBillingFrequency = this.nullCheck(response.defaultBillingFrequency);
+        this.request.billingMethod = response.billingMethod;
+        this.request.defaultBillingMethod = this.nullCheck(response.defaultBillingMethod);
+        this.request.defaultOffsetCycle = this.nullCheck(response.defaultOffsetCycle);
+
         this.bindValues(response);
       })
       .catch((err) => {
@@ -275,7 +279,7 @@ export default class AdvisoryAndSubscription extends Vue {
       })
     )
       this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "Don't_Default")
+        new ListItem("Don't Default", "DONT_DEFAULT")
       );
   }
 
@@ -306,7 +310,7 @@ export default class AdvisoryAndSubscription extends Vue {
       })
     )
       this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "Don't_Default")
+        new ListItem("Don't Default", "DONT_DEFAULT")
       );
 
     if (this.request.billingMethod.length == 0)
@@ -349,7 +353,7 @@ export default class AdvisoryAndSubscription extends Vue {
       );
     else
       this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "Don't_Default")
+        new ListItem("Don't Default", "DONT_DEFAULT")
       );
 
     this.defaultBillingFrequency.forEach((item) => {
@@ -375,7 +379,7 @@ export default class AdvisoryAndSubscription extends Vue {
       );
     else
       this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "Don't_Default")
+        new ListItem("Don't Default", "DONT_DEFAULT")
       );
 
     this.defaultBillingMethod.forEach((item) => {
@@ -398,8 +402,12 @@ export default class AdvisoryAndSubscription extends Vue {
     this.$emit("prev", this.previousTab);
   }
 
+  public nullCheck(value: any) {
+    return value ? value : "";
+  }
+
   get isQuarterlySelected() {
-    return this.request.billingFrequency.includes("QUATERLY");
+    return this.request.billingFrequency.includes("QUARTERLY");
   }
 
   get formValidation() {

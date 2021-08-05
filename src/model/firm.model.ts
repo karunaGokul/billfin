@@ -7,6 +7,7 @@ export class firmsResponseModel {
     lastOnboardingStepCompleted: number | any;
     provider:  string | any;
     trailOnboardingStatus:  string | any;
+    billingTypes: Array<string>;
 }
 export class firmRequestModel {
     firmDomain: string | any;

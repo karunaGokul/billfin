@@ -7,13 +7,14 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
-            v-for="(item, index) in billingTypes"
+            v-for="(item, index) in billingTypes[0]"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': adjustmentsTab == item }"
-            @click="adjustmentsTab = item"
+            :class="{
+              'tab-active-border-bottom': adjustmentsTab == item.value,
+            }"
           >
-            {{ item }}
+            {{ item.value }}
           </li>
         </ul>
       </div>
@@ -35,19 +36,19 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.firmWideStandardMinimumFee"
+                v-model="request.firmMinimumFee"
               />
               <label class="fs-7 text-muted form-check-label"
                 >No firm-wide minimum fees</label
               >
             </div>
-            <template v-if="request.firmWideStandardMinimumFee">
+            <template v-if="request.firmMinimumFee">
               <div class="input-group input-group-solid w-25 ms-4">
                 <span class="input-group-text">$</span>
                 <input
                   type="text"
                   class="form-control text-start"
-                  v-model="request.firmWideMinimumFeeAmount"
+                  v-model="request.minimumFeeAmount"
                 />
               </div>
               <div class="ms-4">annual minimum</div>
@@ -67,19 +68,19 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.firmWideMaximumFee"
+                v-model="request.firmMaximumFee"
               />
               <label class="fs-7 text-muted form-check-label"
                 >No firm-wide minimum fees</label
               >
             </div>
-            <template v-if="request.firmWideMaximumFee">
+            <template v-if="request.firmMaximumFee">
               <div class="input-group input-group-solid w-25 ms-4">
                 <span class="input-group-text">$</span>
                 <input
                   type="text"
                   class="form-control text-start"
-                  v-model="request.firmWideMaximumFeeAmount"
+                  v-model="request.maximumFeeAmount"
                 />
               </div>
               <div class="ms-4">annual maximum</div>
@@ -99,7 +100,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.depositsAndWithdrawls"
+                v-model="request.adjustForFlows"
               />
               <label class="fs-7 text-muted form-check-label"
                 >Yes, billing is adjusted for flows</label
@@ -107,7 +108,7 @@
             </div>
           </div>
 
-          <template v-if="request.depositsAndWithdrawls">
+          <template v-if="request.adjustForFlows">
             <div class="d-flex fs-7 mt-10">
               <div class="fw-bolder">
                 Indicate whether you apply a threshold to flows.
@@ -118,12 +119,12 @@
             </div>
             <div class="mt-6 ms-6">
               <single-checkBox
-                :data="thresholdFlows"
-                @update="updateThresholdFlows"
+                :data="feeScheduleRateType"
+                @update="updatefeeScheduleRateType"
               />
             </div>
 
-            <template v-if="request.thresholdFlows == 'Dollar amount'">
+            <template v-if="request.feeScheduleRateType == 'DOLLAR_AMOUNT'">
               <div class="d-flex fs-7 mt-10">
                 <div class="fw-bolder">
                   Please enter the dollar amount of your threshold.
@@ -138,13 +139,13 @@
                   <input
                     type="text"
                     class="form-control text-start"
-                    v-model="request.thresholdFlowsAmount"
+                    v-model="request.flowThresholdValue"
                   />
                 </div>
               </div>
             </template>
 
-            <template v-if="request.thresholdFlows == '% of AUM'">
+            <template v-if="request.feeScheduleRateType == 'PERCENTAGES'">
               <div class="d-flex fs-7 mt-10">
                 <div class="fw-bolder">
                   PLease enter the % aum of your threshold.
@@ -159,7 +160,7 @@
                   <input
                     type="text"
                     class="form-control text-start"
-                    v-model="request.thresholdFlowsAum"
+                    v-model="request.flowThresholdValue"
                   />
                 </div>
               </div>
@@ -179,7 +180,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.avoidChargingCents"
+                v-model="request.dollarRoundingFlag"
               />
               <label class="fs-7 text-muted form-check-label"
                 >No, I charge exact amounts</label
@@ -189,15 +190,15 @@
 
           <div class="d-flex justify-content-between mt-10">
             <button class="btn btn-secondary" @click="prev">Back</button>
-            <button 
-              class="btn btn-primary me-10" 
+            <button
+              class="btn btn-primary me-10"
               :class="{
                 'btn-secondary': !formValidation || !minimumFee || !maximumFee,
-                'btn-primary': formValidation && minimumFee && maximumFees,
+                'btn-primary': formValidation && minimumFee && maximumFee,
               }"
               :disabled="!formValidation || !minimumFee || !maximumFee"
-              @click="next"
-            >  
+              @click="saveFrequncyAndTiming"
+            >
               Continue
             </button>
           </div>
@@ -214,15 +215,22 @@
 </template>
 <script lang="ts">
 import { Vue, Options, setup } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Inject } from "vue-property-decorator";
 
+import { useStore } from "vuex";
 import useVuelidate from "@vuelidate/core";
 import { required, numeric } from "@vuelidate/validators";
 
-import { adjustmentsBoardModel } from "@/model";
-import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
+import { IFirmService } from "@/service";
+import {
+  firmRequestModel,
+  adjustmentsBoardRequestModel,
+  ListItem,
+  feeScheduleRateType,
+  PayorType
+} from "@/model";
 
-import { useStore } from "vuex";
+import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 
 @Options({
   components: {
@@ -230,19 +238,20 @@ import { useStore } from "vuex";
   },
   validations: {
     request: {
-      firmWideMinimumFeeAmount: { required, numeric },
-      firmWideMaximumFeeAmount: { required, numeric },
-      thresholdFlowsAmount: { required, numeric },
-      thresholdFlowsAum: { required, numeric }
-    }
-  }
+      minimumFeeAmount: { required, numeric },
+      maximumFeeAmount: { required, numeric },
+      feeScheduleRateTypeAmount: { required, numeric },
+      feeScheduleRateTypeAum: { required, numeric },
+    },
+  },
 })
 export default class AdjustmentsBoard extends Vue {
+  @Inject("firmService") service: IFirmService;
 
   public adjustmentsTab: string = "";
-  public request = new adjustmentsBoardModel();
+  public request = new adjustmentsBoardRequestModel();
 
-  public thresholdFlows: Array<string> = ["Dollar amount", "% of AUM", "None"];
+  public feeScheduleRateType: Array<ListItem> = [];
 
   public v$ = setup(() => this.validate());
 
@@ -254,40 +263,84 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   created() {
+    this.feeScheduleRateType = Object.entries(feeScheduleRateType).map(
+      ([key]) =>
+        new ListItem(
+          key,
+          feeScheduleRateType[key as keyof typeof feeScheduleRateType]
+        )
+    );
+
     this.billingTypes = this.store.getters.billingTypes;
-    this.adjustmentsTab = this.billingTypes[0];
+    this.adjustmentsTab = this.billingTypes[0].value;
   }
 
-  public updateThresholdFlows(value: any) {
-    this.request.thresholdFlows = value[0];
+  mounted() {
+    this.getAdjustments();
   }
 
-  prev() {
+  private getAdjustments() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      ?.getAdjustments(request)
+      .then((response) => {
+        this.request = response;
+        this.bindValues(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public saveFrequncyAndTiming() {
+    this.request.payorType = PayorType.INVESTOR_CLIENT;
+    this.request.billingType = "AUM_ADVISORY";
+    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.feeTypeCode = "CF";
+
+    this.service
+      ?.saveAdjustments(this.request)
+      .then((response) => {
+        //this.$emit("next", this.nextTab);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public updatefeeScheduleRateType(value: string) {
+    this.request.feeScheduleRateType = value;
+  }
+
+  private bindValues(response: adjustmentsBoardRequestModel) {
+    if(this.request.minimumFeeAmount) this.request.firmMinimumFee = true;
+    if(this.request.maximumFeeAmount) this.request.firmMaximumFee = true;
+  }
+
+  public prev() {
     this.$emit("prev");
   }
 
-  next() {
+  public next() {
     console.log(this.v$);
     console.log(this.request);
     //this.$emit("next");
-
   }
 
   get formValidation() {
     let valid = false;
     const self = this.request;
 
-    if(self.depositsAndWithdrawls) {
-      if(self.thresholdFlows == "Dollar amount") {
-        if(self.thresholdFlowsAmount) valid = true;
+    if (self.adjustForFlows) {
+      if (self.feeScheduleRateType) {
+        if (self.flowThresholdValue && !this.isNumeric(self.flowThresholdValue))
+          valid = true;
         else valid = false;
-      } else if(self.thresholdFlows == "% of AUM") {
-        if(self.thresholdFlowsAum) valid = true;
-        else valid = false;
-      } else if(self.thresholdFlows == "None") {
-        valid = true;
-      } else valid = false;
-    } else valid = true;
+      } else if (self.feeScheduleRateType == "NONE") valid = true;
+      else valid = false;
+    } else valid = false;
 
     return valid;
   }
@@ -296,8 +349,9 @@ export default class AdjustmentsBoard extends Vue {
     let valid = false;
     const self = this.request;
 
-    if(self.firmWideStandardMinimumFee) {
-      if(self.firmWideMinimumFeeAmount != '' && !this.isNumeric(self.firmWideMinimumFeeAmount)) valid = true;
+    if (self.firmMinimumFee) {
+      if (self.minimumFeeAmount && !this.isNumeric(self.minimumFeeAmount))
+        valid = true;
       else valid = false;
     } else valid = true;
 
@@ -308,8 +362,9 @@ export default class AdjustmentsBoard extends Vue {
     let valid = false;
     const self = this.request;
 
-    if(self.firmWideMaximumFee) {
-      if(self.firmWideMaximumFeeAmount != '' && !this.isNumeric(self.firmWideMaximumFeeAmount)) valid = true;
+    if (self.firmMaximumFee) {
+      if (self.maximumFeeAmount && !this.isNumeric(self.maximumFeeAmount))
+        valid = true;
       else valid = false;
     } else valid = true;
 
@@ -318,7 +373,7 @@ export default class AdjustmentsBoard extends Vue {
 
   private isNumeric(value: any) {
     let validation = false;
-    if (value && value != "") validation = /^(?=.*?[A-Za-z])/.test(value);
+    if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
 
     return validation;
   }

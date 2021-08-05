@@ -150,7 +150,7 @@ import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel }
     },
   },
 })
-export default class GeneralBoard extends Vue {
+export default class FeeTypesBoard extends Vue {
   @Inject("firmService") service: IFirmService | undefined;
 
   public v$: any = setup(() => this.validate());

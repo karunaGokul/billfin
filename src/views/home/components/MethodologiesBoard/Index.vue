@@ -7,28 +7,28 @@
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
-            v-for="(item, index) in billingTypes"
+            v-for="(item, index) in billingTypes[0]"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': methodologiesTab == item }"
+            :class="{ 'tab-active-border-bottom': methodologiesTab == item.value }"
           >
-            {{ item }}
+            {{ item.value }}
           </li>
         </ul>
       </div>
       <div class="tab-content-group m-0">
         <advisory-and-subscription
-          billingType="AUM Advisory"
+          billingType="AUM_ADVISORY"
           previousTab="prev"
-          :nextTab="nextTab('Subscription')"
+          :nextTab="prevNextTab('next')"
           @prev="onPrev"
           @next="onNext"
           v-if="methodologiesTab == 'AUM Advisory'"
         />
         <!--<advisory-and-subscription
           billingType="Subscription"
-          :previousTab="previousTab('AUM Advisory')"
-          :nextTab="nextTab('One Time')"
+          :previousTab="prevNextTab('AUM Advisory')"
+          :nextTab="prevNextTab('One Time')"
           @prev="onPrev"
           @next="onNext"
           v-if="methodologiesTab == 'Subscription'"
@@ -41,6 +41,8 @@
 import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
+import { BillingTypes, ListItem } from "@/model";
+
 import AdvisoryAndSubscription from "./AdvisoryAndSubscription.vue";
 
 @Options({
@@ -52,11 +54,11 @@ export default class MethodologiesBoard extends Vue {
   public store = useStore();
 
   public methodologiesTab: string = "";
-  public billingTypes: Array<string> | any;
+  public billingTypes: Array<ListItem>;
 
   created() {
     this.billingTypes = this.store.getters.billingTypes;
-    this.methodologiesTab = this.billingTypes[0];
+    this.methodologiesTab = this.billingTypes[0].value;
   }
 
   onPrev(value: string) {
@@ -69,12 +71,11 @@ export default class MethodologiesBoard extends Vue {
     else this.methodologiesTab = value;
   }
 
-  previousTab(selectedTab: string) {
-    return this.billingTypes.includes(selectedTab) ? selectedTab : "next";
+  prevNextTab(selectedTab: string) {
+    let tab: string = '';
+    this.billingTypes.find((item) => { tab = item.value == selectedTab ? selectedTab : "next";})
+    return tab;
   }
-
-  nextTab(selectedTab: string) {
-    return this.billingTypes.includes(selectedTab) ? selectedTab : "next";
-  }
+  
 }
 </script>

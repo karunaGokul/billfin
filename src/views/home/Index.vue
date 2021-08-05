@@ -174,7 +174,10 @@
 
       <router-view></router-view>
     </div>
-    <Welcome :step="lastOnboardingStep" v-if="showOnBoard" />
+    <Welcome 
+      :step="lastOnboardingStep" 
+      v-if="showOnBoard" 
+    />
   </div>
 </template>
 <script lang="ts">
@@ -215,11 +218,8 @@ export default class Home extends Vue {
           this.firms[0].trailOnboardingStatus != "Completed"
         ) {
           this.showOnBoard = true;
-
-          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
-            this.lastOnboardingStep = 1;
-          else
-            this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED") this.lastOnboardingStep = 1;
+          else  this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
         }
       }
     });

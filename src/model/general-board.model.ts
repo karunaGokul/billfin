@@ -7,6 +7,7 @@ export class generalBoardRequestModel {
     state: string | any;
     postalCode: number | any;
     billingTypes: Array<string> | Array<any> = [];
+    firmId: number;
 }
 
 export class generalBoardResponseModel {

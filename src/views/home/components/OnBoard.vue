@@ -5,7 +5,7 @@
         <div class="modal-header justify-content-start p-5">
           <h5 class="modal-title">Welcome to BillFin</h5>
           <h6 class="text-muted ms-10">
-            Let's you get onboarded quickly and easily!
+            Let's get you onboarded quickly and easily!
           </h6>
         </div>
         <div class="modal-body w-75 mx-auto" style="height: 75vh">
@@ -52,7 +52,6 @@
             </div>
             <div class="tab-content-group">
               <GeneralBoard 
-                @controlTabs="onControlTabs"
                 @next="activeTab = 2" 
                 v-if="activeTab == 1" 
               />
@@ -100,6 +99,7 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import GeneralBoard from "./GeneralBoard.vue";
+import FeeTypesBoard from "./FeeTypesBoard/Index.vue";
 import FrequencyBoard from "./FrequencyBoard/Index.vue"
 import MethodologiesBoard from "./MethodologiesBoard/Index.vue";
 import AdjustmentsBoard from "./AdjustmentsBoard.vue";
@@ -107,6 +107,7 @@ import AdjustmentsBoard from "./AdjustmentsBoard.vue";
 @Options({
   components: {
     GeneralBoard,
+    FeeTypesBoard,
     FrequencyBoard,
     MethodologiesBoard,
     AdjustmentsBoard
