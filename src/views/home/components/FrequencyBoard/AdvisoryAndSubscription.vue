@@ -78,7 +78,7 @@
             type="checkbox"
             v-model="request.offsetCycleFlag"
             @change="
-              !request.offsetCycleFlag ? (request.defaultOffsetCycle = '') : ''
+              !request.offsetCycleFlag ? (request.defaultOffsetCycle = null) : ''
             "
           />
           <label
@@ -211,11 +211,12 @@ export default class AdvisoryAndSubscription extends Vue {
     this.service
       ?.getFrequencyAndTiming(request)
       .then((response) => {
-        this.request.billingFrequency = response.billingFrequency;
-        this.request.defaultBillingFrequency = this.nullCheck(response.defaultBillingFrequency);
+        this.request = response;
+
+        /*this.request.defaultBillingFrequency = this.nullCheck(response.defaultBillingFrequency);
         this.request.billingMethod = response.billingMethod;
         this.request.defaultBillingMethod = this.nullCheck(response.defaultBillingMethod);
-        this.request.defaultOffsetCycle = this.nullCheck(response.defaultOffsetCycle);
+        this.request.defaultOffsetCycle = this.nullCheck(response.defaultOffsetCycle);*/
 
         this.bindValues(response);
       })
@@ -259,7 +260,7 @@ export default class AdvisoryAndSubscription extends Vue {
 
     if (!this.isQuarterlySelected) {
       this.request.offsetCycleFlag = false;
-      this.request.defaultOffsetCycle = "";
+      this.request.defaultOffsetCycle = null;
     }
 
     if (this.request.billingFrequency.length == 0)
