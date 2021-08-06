@@ -27,10 +27,11 @@ app.use(VueKeyCloak, {
     redirectUri: window.location.origin,
   },
   onReady: () => {
+    app.mount("#app");
     tokenInterceptor();
   },
 });
-app.mount("#app");
+
 
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {

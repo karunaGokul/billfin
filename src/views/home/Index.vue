@@ -174,10 +174,7 @@
 
       <router-view></router-view>
     </div>
-    <Welcome 
-      :step="lastOnboardingStep" 
-      v-if="showOnBoard" 
-    />
+    <Welcome :step="lastOnboardingStep" v-if="showOnBoard" />
   </div>
 </template>
 <script lang="ts">
@@ -210,19 +207,16 @@ export default class Home extends Vue {
   public subscription: any = null;
 
   mounted() {
-    this.subscription = this.store.subscribe((mutations, type) => {
-      if (mutations.type == "onLoadEntitlements") {
-        this.firms = mutations.payload;
-        if (
-          this.firms.length == 1 &&
-          this.firms[0].trailOnboardingStatus != "Completed"
-        ) {
-          this.showOnBoard = true;
-          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED") this.lastOnboardingStep = 1;
-          else  this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
-        }
-      }
-    });
+    this.firms = this.store.getters.firms;
+    if (
+      this.firms.length == 1 &&
+      this.firms[0].trailOnboardingStatus != "Completed"
+    ) {
+      this.showOnBoard = true;
+      if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
+        this.lastOnboardingStep = 1;
+      else this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+    }
   }
 
   unmounted() {
