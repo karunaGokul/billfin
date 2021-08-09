@@ -207,16 +207,20 @@ export default class Home extends Vue {
   public subscription: any = null;
 
   mounted() {
-    this.firms = this.store.getters.firms;
-    if (
-      this.firms.length == 1 &&
-      this.firms[0].trailOnboardingStatus != "Completed"
-    ) {
-      this.showOnBoard = true;
-      if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
-        this.lastOnboardingStep = 1;
-      else this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
-    }
+    this.service.getFirms().then((response) => {
+      this.store.dispatch('loadEntitlements', response);
+      this.firms = response;
+        if (
+          this.firms.length == 1 &&
+          this.firms[0].trailOnboardingStatus != "Completed"
+        ) {
+          this.showOnBoard = true;
+          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
+            this.lastOnboardingStep = 1;
+          else
+            this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+        }
+    })
   }
 
   unmounted() {
@@ -224,9 +228,9 @@ export default class Home extends Vue {
   }
 
   logout() {
-    this.$keycloak.loginFn;
+    //this.$keycloak.loginFn;
     this.store.dispatch("logout");
-    this.$router.push("/");
+    this.$router.go;
   }
 }
 </script>

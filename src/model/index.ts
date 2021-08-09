@@ -4,6 +4,7 @@ export * from './signup.model';
 export * from './firm.model';
 export * from './enums';
 export * from './general-board.model';
+export * from './fee-types.model';
 export * from './frequnecy-board.model';
 export * from './methodologies-board.model';
 export * from './adjustments-board.model';

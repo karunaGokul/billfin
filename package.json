@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "^2.0.1-beta",
+    "@dystudio/vue-keycloak-js": "^1.1.12",
     "@types/jwt-decode": "^3.1.0",
     "@types/vuelidate": "^0.7.14",
     "@vuelidate/core": "^2.0.0-alpha.19",

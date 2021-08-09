@@ -212,12 +212,6 @@ export default class AdvisoryAndSubscription extends Vue {
       ?.getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-
-        /*this.request.defaultBillingFrequency = this.nullCheck(response.defaultBillingFrequency);
-        this.request.billingMethod = response.billingMethod;
-        this.request.defaultBillingMethod = this.nullCheck(response.defaultBillingMethod);
-        this.request.defaultOffsetCycle = this.nullCheck(response.defaultOffsetCycle);*/
-
         this.bindValues(response);
       })
       .catch((err) => {

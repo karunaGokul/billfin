@@ -1,265 +1,216 @@
 <template>
   <div class="tab-content tab-content-sm__scroll border-bottom">
-    <div class="w-75 mx-auto mt-10">
+    <div class="mt-5">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
-        General Information
+        Fee Types
         <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
       </p>
 
-      <form @submit.prevent="saveGeneral">
-        <TextInput
-          label="Company"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.company"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="Company Phone"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyPhone"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="Company Domain"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyDomain"
-          :validation="['required']"
-          :readonly="true"
-        />
-        <TextInput
-          label="Company Address"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyAddress1"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="City"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.city"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <SelectBox
-          label="State"
-          :controls="v$.request.state"
-          :data="states"
-          :validation="['required']"
-        />
-        <TextInput
-          label="Postal Code"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.postalCode"
-          :validation="['required', 'numeric']"
-          :readonly="false"
-        />
-        <div class="mb-5 row g-0 align-items-center">
-          <div class="col-sm-4">
-            <div class="col-form-label pb-0 fw-bolder">
-              Which fees do you bill?
-              <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-            </div>
-            <div class="text-muted">Check all that apply</div>
-          </div>
+      <div class="row g-0">
+        <div class="col-lg-5">
+          <div class="fw-bolder">What billing do you wish to setup?</div>
+          <div class="text-muted fs-8">Check all that apply</div>
+        </div>
+        <div class="col-lg-7">
+          <multi-checkBox :data="billingTypes" @update="updateBillingTypes" />
+        </div>
+      </div>
 
-          <div class="col-sm-8">
+      <div class="fw-bolder mt-10">
+        For your AUM-based advisory billing,which fees do you bill? Feel free to
+        edit descriptions as needed
+        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+      </div>
+
+      <div class="d-flex mt-5 flex-wrap justify-content-between">
+        <div class="m-3" v-for="(item, index) in AUMAdvisory" :key="index">
+          <div class="d-flex align-items-center">
             <div class="form-check form-check-solid form-check-inline fs-7">
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="request.billingTypes"
-                value="AUM_ADVISORY"
+                v-model="item.selected"
               />
-              AUM Advisory
             </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
+            <div class="input-group input-group-solid mb-2">
               <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingTypes"
-                value="ONE_TIME"
+                type="text"
+                class="form-control text-start"
+                style="width: 280px"
+                :value="item.text"
               />
-              One Time
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingTypes"
-                value="SUBSCRIPTION"
-              />
-              Subscription
             </div>
           </div>
         </div>
-        <div class="d-flex align-items-center justify-content-end pb-5">
-          <button
-            type="submit"
-            class="btn"
-            :class="{
-              'btn-secondary': v$.request.$invalid,
-              'btn-primary': !v$.request.$invalid,
-            }"
-            :disabled="v$.request.$invalid"
-          >
-            Continue
-          </button>
+      </div>
+
+      <template v-if="showAUMAdvisoryFees">
+        <div class="fw-bolder mt-10">
+          Do you bill your {{ showAUMAdvisoryFees }} on different frequencies
+          and/or timing relative to each other?
+          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>
-      </form>
+        <div class="form-check form-check-solid form-switch mt-6">
+          <input class="form-check-input" type="checkbox" />
+          <label class="fs-7 text-muted form-check-label"
+            >Yes, my AUM-based fees can bill on different freequencies and/or
+            timing relative to each other.</label
+          >
+        </div>
+      </template>
+
+      <template v-if="showAUMAdvisoryFees">
+        <div class="fw-bolder mt-10">
+          Do you bill your {{ showAUMAdvisoryFees }} based on different assest
+          methodologies relative to each other?
+          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+        </div>
+        <div class="form-check form-check-solid form-switch mt-6">
+          <input class="form-check-input" type="checkbox" />
+          <label class="fs-7 text-muted form-check-label"
+            >Yes, my AUM-based fees can bill based on different assest
+            methodologies relative to each other.</label
+          >
+        </div>
+      </template>
+
+      <div class="fw-bolder mt-10">
+        For your non-AUM billing,which fees do you bill? Feel free to edit
+        descriptions as needed
+        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+      </div>
+
+      <div class="d-flex mt-5 flex-wrap justify-content-between">
+        <div class="m-3" v-for="(item, index) in NonAUMBilling" :key="index">
+          <div class="d-flex align-items-center">
+            <div class="form-check form-check-solid form-check-inline fs-7">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="item.selected"
+              />
+            </div>
+            <div class="input-group input-group-solid mb-2">
+              <input
+                type="text"
+                class="form-control text-start"
+                style="width: 280px"
+                :value="item.text"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-bolder mt-10">
+        Do you bill your various non-AUM fees on different frequencies and/or
+        timing relative to each other?
+        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
+      </div>
+      <div class="form-check form-check-solid form-switch mt-6">
+        <input class="form-check-input" type="checkbox" />
+        <label class="fs-7 text-muted form-check-label"
+          >Yes, my AUM-based fees can bill on different frequencies and/or
+          timing relative to each other.</label
+        >
+      </div>
+
+      <div class="d-flex justify-content-between mt-10">
+        <button class="btn btn-secondary">Back</button>
+        <button
+          class="btn me-10"
+          :class="{
+            'btn-secondary': !formValidation,
+            'btn-primary': formValidation,
+          }"
+          :disabled="!formValidation"
+          @click="saveFeeTypes"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
-import useVuelidate from "@vuelidate/core";
-import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
-
-import { useStore } from "vuex";
 import { IFirmService } from "@/service";
+import { Types, ListItem, feeTypesRequestModel } from "@/model";
 
-import TextInput from "@/components/controls/TextInput.vue";
+import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
-
-import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel } from "@/model";
 
 @Options({
   components: {
-    TextInput,
+    MultiCheckBox,
     SelectBox,
-  },
-  validations: {
-    request: {
-      company: { required },
-      companyPhone: { required },
-      companyDomain: { required },
-      companyAddress1: { required },
-      city: { required },
-      state: { required },
-      postalCode: { required, numeric },
-      billingTypes: { required }
-    },
   },
 })
 export default class FeeTypesBoard extends Vue {
-  @Inject("firmService") service: IFirmService | undefined;
+  @Inject("firmService") service: IFirmService;
 
-  public v$: any = setup(() => this.validate());
-  public store = useStore();
+  public request = new feeTypesRequestModel();
 
-  validate() {
-    return useVuelidate();
+  public billingTypes: Array<ListItem> = [];
+  public AUMAdvisory: Array<ListItem> = [];
+  public NonAUMBilling: Array<ListItem> = [];
+
+  created() {
+    this.billingTypes = Object.entries(Types).map(
+      ([key]) => new ListItem(key, Types[key as keyof typeof Types])
+    );
+    this.getAUMAdvisory();
+    this.getNonAUMBilling();
   }
 
-  public request = new generalBoardRequestModel();
-
-  mounted() {
-    this.request.state = "Massachusetts";
-    this.getGeneralDetails();
+  private getAUMAdvisory() {
+    this.service.getAUMAdvisory().then((response) => {
+      this.AUMAdvisory = response;
+    });
   }
 
-  public states: Array<string> = [
-    "Alabama",
-    "Alaska",
-    "American Samoa",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "District Of Columbia",
-    "Federated States Of Micronesia",
-    "Florida",
-    "Georgia",
-    "Guam",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Marshall Islands",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Northern Mariana Islands",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Palau",
-    "Pennsylvania",
-    "Puerto Rico",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virgin Islands",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming",
-  ];
-
-  public getGeneralDetails() {
-    const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
-    request.firmDomain = this.store.getters.selectedFirmDomain;
-    request.firmName = this.store.getters.selectedFirmName;
-    this.service
-      ?.getGeneralDetails(request)
-      .then((response) => {
-        this.request = response;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  private getNonAUMBilling() {
+    this.service.getNonAUMBilling().then((response) => {
+      this.NonAUMBilling = response;
+    });
   }
 
-  public saveGeneral() {
-    this.v$.$touch();
+  public saveFeeTypes() {
+    console.log(this.request);
+    console.log(this.AUMAdvisory);
+    this.$emit("next");
+  }
 
-    if (!this.v$.$invalid) {
-      this.request.firmId = this.store.getters.selectedFirmId;
-      this.service
-        ?.saveGeneral(this.request)
-        .then((response: generalBoardResponseModel) => {
-          if(response.status == 'SUCCESS') {
-            this.$emit("next");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  public updateBillingTypes(billingTypes: any[]) {
+    this.request.billingTypes = billingTypes.reduce(
+      (a, o) => (o.selected && a.push(o.value), a),
+      []
+    );
+  }
+
+  get showAUMAdvisoryFees() {
+    let value: string = "";
+    const data: Array<string> = [];
+    for (var i in this.AUMAdvisory) {
+      if (this.AUMAdvisory[i].selected) data.push(this.AUMAdvisory[i].text);
     }
+
+    if (data.length >= 1)
+      value = data.slice(0, data.length - 1).join(", ") + data.slice(-1);
+    if (data.length > 0)
+      value =
+        data.slice(0, data.length - 1).join(", ") + " and " + data.slice(-1);
+
+    return value;
+  }
+
+  get formValidation() {
+    let valid = false;
+    if (this.request.billingTypes.length > 0) valid = true;
+
+    return valid;
   }
 }
 </script>

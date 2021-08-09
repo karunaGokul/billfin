@@ -7,40 +7,47 @@ import axios from "axios";
 // BillFin styles
 import "./styles/main.scss";
 
-import VueKeyCloak from "@dsb-norge/vue-keycloak-js";
-import { VueKeycloakInstance } from "@dsb-norge/vue-keycloak-js/dist/types";
+/*import VueKeyCloak from "@dsb-norge/vue-keycloak-js";
+import { VueKeycloakInstance } from "@dsb-norge/vue-keycloak-js/dist/types";*/
 
 const app = createApp(App);
 app.use(store);
 app.use(router);
-app.use(VueKeyCloak, {
+//app.use(VueKeyCloak);
+app.mount("#app");
+/*
+  , {
   init: {
     onLoad: "login-required",
+    checkLoginIframe: false,
   },
   config: {
     url: "https://keycloak.redi2.com:8443/auth/",
     realm: "BillFin-Dev",
     clientId: "reference-service",
-    logoutRedirectUri: window.location.origin,
   },
   logout: {
     redirectUri: window.location.origin,
   },
   onReady: () => {
-    app.mount("#app");
     tokenInterceptor();
+    
+    
   },
 });
+*/
 
 
-declare module "@vue/runtime-core" {
+
+
+/*declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $keycloak: VueKeycloakInstance;
   }
-}
+}*/
 
 function tokenInterceptor() {
-  store.dispatch('checkSession', app.config.globalProperties.$keycloak)
+  store.dispatch("checkSession", app.config.globalProperties.$keycloak);
   axios.interceptors.request.use(
     (config) => {
       config.headers.Authorization = `Bearer ${app.config.globalProperties.$keycloak.token}`;

@@ -7,7 +7,8 @@ import {
     frequencyRequestModel, 
     frequencyResponseModel, 
     methodologiesRequestModel,
-    adjustmentsBoardRequestModel
+    adjustmentsBoardRequestModel,
+    ListItem
 } from "@/model";
 
 export interface IFirmService extends IBaseService<any, any> {
@@ -15,6 +16,9 @@ export interface IFirmService extends IBaseService<any, any> {
 
     getGeneralDetails(request: firmRequestModel): Promise<generalBoardRequestModel>;
     saveGeneral(request: generalBoardRequestModel): Promise<generalBoardResponseModel>;
+
+    getAUMAdvisory(): Promise<Array<ListItem>>;
+    getNonAUMBilling(): Promise<Array<ListItem>>;
 
     getFrequencyAndTiming(request: firmRequestModel): Promise<frequencyRequestModel>;
     saveFrequncyAndTiming(request: frequencyRequestModel): Promise<frequencyResponseModel>;
@@ -47,6 +51,30 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
     saveGeneral(request: generalBoardRequestModel): Promise<generalBoardResponseModel> {
         return this.httpPost('private/api/v1/firm/general', request).then(response => {
             return response.data;
+        });
+    } 
+
+    getAUMAdvisory(): Promise<Array<ListItem>> {
+        return new Promise((resolve, reject) => {
+            const items: Array<ListItem> = [];
+            items.push(new ListItem("Advisory Fee", "ADVISORY_FEE"));
+            items.push(new ListItem("Management Fee", "MANAGEMENT_FEE"));
+            items.push(new ListItem("Platform Fee", "PLATFORM_FEE"));
+            items.push(new ListItem("Strategy Fee", "STARTEGY_FEE"));
+
+            resolve(items);
+        });
+    } 
+
+    getNonAUMBilling(): Promise<Array<ListItem>> {
+        return new Promise((resolve, reject) => {
+            const items: Array<ListItem> = [];
+            items.push(new ListItem("Financial Fee", "FINANCIAL_FEE"));
+            items.push(new ListItem("Consulting Fee", "CONSULTING_FEE"));
+            items.push(new ListItem("Estate Planning Fee", "ESTATE_PLANNING_FEE"));
+            items.push(new ListItem("Tax Strategy Fee", "TAX_STARTEGY_FEE"));
+
+            resolve(items);
         });
     }
 
