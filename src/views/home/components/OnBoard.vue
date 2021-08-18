@@ -22,25 +22,25 @@
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 2 }"
                 >
-                  Frequency & Timing
+                  Fee Types
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 3 }"
                 >
-                  Methodologies
+                  Frequency & Timing
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 4 }"
                 >
-                  Adjustments
+                  Methodologies
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 5 }"
                 >
-                  Invite
+                  Adjustments
                 </li>
                 <li
                   class="tab-label"
@@ -55,29 +55,28 @@
                 @next="activeTab = 2" 
                 v-if="activeTab == 1" 
               />
-              <FrequencyBoard
-                @prev="activeTab = 1"
+              <FeeTypesBoard 
+                @prev="activeTab = 1" 
                 @next="activeTab = 3"
                 v-if="activeTab == 2"
               />
-              <MethodologiesBoard
+              <FrequencyBoard
                 @prev="activeTab = 2"
                 @next="activeTab = 4"
                 v-if="activeTab == 3"
               />
-              <AdjustmentsBoard
+              <MethodologiesBoard
                 @prev="activeTab = 3"
                 @next="activeTab = 5"
-                :tabs="tabs"
                 v-if="activeTab == 4"
               />
-              <div class="tab-content pb-5 border-bottom" v-if="activeTab == 5">
-                {{ activeTab }}
-              </div>
+              <AdjustmentsBoard
+                @prev="activeTab = 4"
+                @next="activeTab = 6"
+                :tabs="tabs"
+                v-if="activeTab == 5"
+              />
               <div class="tab-content pb-5 border-bottom" v-if="activeTab == 6">
-                {{ activeTab }}
-              </div>
-              <div class="tab-content pb-5 border-bottom" v-if="activeTab == 7">
                 {{ activeTab }}
               </div>
             </div>
@@ -118,9 +117,6 @@ export default class Welcome extends Vue {
   @Prop() step: number | any;
   
   public activeTab: number = 1;
-  public methodologiesTab: number = 1;
-  public adjustmentsTab: number = 1;
-
   public tabs: Array<string> = [];
 
   mounted() {

@@ -61,45 +61,7 @@
           :validation="['required', 'numeric']"
           :readonly="false"
         />
-        <div class="mb-5 row g-0 align-items-center">
-          <div class="col-sm-4">
-            <div class="col-form-label pb-0 fw-bolder">
-              Which fees do you bill?
-              <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-            </div>
-            <div class="text-muted">Check all that apply</div>
-          </div>
-
-          <div class="col-sm-8">
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingTypes"
-                value="AUM_ADVISORY"
-              />
-              AUM Advisory
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingTypes"
-                value="ONE_TIME"
-              />
-              One Time
-            </div>
-            <div class="form-check form-check-solid form-check-inline fs-7">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="request.billingTypes"
-                value="SUBSCRIPTION"
-              />
-              Subscription
-            </div>
-          </div>
-        </div>
+        
         <div class="d-flex align-items-center justify-content-end pb-5">
           <button
             type="submit"
@@ -145,8 +107,7 @@ import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel }
       companyAddress1: { required },
       city: { required },
       state: { required },
-      postalCode: { required, numeric },
-      billingTypes: { required }
+      postalCode: { required, numeric }
     },
   },
 })

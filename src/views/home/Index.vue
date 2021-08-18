@@ -207,9 +207,9 @@ export default class Home extends Vue {
   public subscription: any = null;
 
   mounted() {
-    this.service.getFirms().then((response) => {
-      this.store.dispatch('loadEntitlements', response);
-      this.firms = response;
+    this.subscription = this.store.subscribe((mutations, type) => {
+      if(mutations.type == 'onLoadEntitlements') {
+        this.firms = mutations.payload;
         if (
           this.firms.length == 1 &&
           this.firms[0].trailOnboardingStatus != "Completed"
@@ -220,6 +220,7 @@ export default class Home extends Vue {
           else
             this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
         }
+      }
     })
   }
 
@@ -228,9 +229,7 @@ export default class Home extends Vue {
   }
 
   logout() {
-    //this.$keycloak.loginFn;
     this.store.dispatch("logout");
-    this.$router.go;
   }
 }
 </script>

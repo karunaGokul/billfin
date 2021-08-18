@@ -3,16 +3,16 @@
     <div class="tab-group mt-10">
       <div class="tab-header position-relative">
         <div class="tab-header__title position-absolute fw-bolder fs-4">
-          Methodologies
+          Methodologies 
         </div>
         <ul class="tab-label-group justify-content-center border-bottom">
           <li
-            v-for="(item, index) in billingTypes[0]"
+            v-for="(item, index) in billingTypes"
             :key="index"
             class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': methodologiesTab == item.value }"
+            :class="{ 'tab-active-border-bottom': methodologiesTab == item.text }"
           >
-            {{ item.value }}
+            {{ item.text }}
           </li>
         </ul>
       </div>
@@ -54,11 +54,13 @@ export default class MethodologiesBoard extends Vue {
   public store = useStore();
 
   public methodologiesTab: string = "";
-  public billingTypes: Array<ListItem>;
+  public billingTypes: Array<ListItem> = [];
 
   created() {
-    this.billingTypes = this.store.getters.billingTypes;
-    this.methodologiesTab = this.billingTypes[0].value;
+    //this.billingTypes = this.store.getters.billingTypes;
+    this.billingTypes.push(new ListItem("AUM Advisory", "AUM_ADVISORY"));
+    this.methodologiesTab = this.billingTypes[0].text;
+    console.log(this.methodologiesTab);
   }
 
   onPrev(value: string) {

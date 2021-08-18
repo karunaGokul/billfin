@@ -1,37 +1,49 @@
 <template>
   <div class="tab-content pb-5 border-bottom">
     <div class="tab-group mt-10">
-      <div class="tab-header position-relative">
-        <div class="tab-header__title position-absolute fw-bolder fs-4">
-          Frequecy & Timing
+      <div
+        class="
+          tab-header
+          d-flex
+          justify-content-start
+          align-items-center
+          border-bottom
+        "
+      >
+        <div class="tab-header__title fw-bolder fs-4">Frequecy & Timing</div>
+
+        <div
+          class="
+            tab-label-group
+            w-75
+            align-items-center
+            justify-content-center
+            ms-2
+            overflow-auto
+          "
+        >
+          <div class="tab-label-group justify-content-center">
+            <div
+              v-for="(item, index) in request.aumFeeTypes"
+              :key="index"
+              class="tab-label border-1 pb-4"
+              :class="{
+                'tab-active-border-bottom':
+                  selectedFee.feeTypeName == item.feeTypeName,
+              }"
+            >
+              {{ item.feeTypeName }}
+            </div>
+          </div>
         </div>
-        <ul class="tab-label-group justify-content-center border-bottom">
-          <li
-            v-for="(item, index) in billingTypes"
-            :key="index"
-            class="tab-label pb-4"
-            :class="{ 'tab-active-border-bottom': frequencyTab == item.value }"
-          >
-            {{ item.value }}
-          </li>
-        </ul>
       </div>
       <div class="tab-content-group m-0">
         <advisory-and-subscription
-          billingType="AUM_ADVISORY"
-          previousTab="prev"
-          :nextTab="prevNextTab('Subscription')"
+          :billingFee="selectedFee"
+          :aumDetails="aumDetails"
           @prev="onPrev"
           @next="onNext"
-          v-if="frequencyTab == 'AUM Advisory'"
-        />
-        <advisory-and-subscription
-          billingType="SUBSCRIPTION"
-          :previousTab="prevNextTab('AUM Advisory')"
-          :nextTab="prevNextTab('One Time')"
-          @prev="onPrev"
-          @next="onNext"
-          v-if="frequencyTab == 'Subscription'"
+          v-if="aumDetails && selectedFee"
         />
       </div>
     </div>
@@ -39,9 +51,17 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
+
 import { useStore } from "vuex";
 
-import { ListItem } from "@/model";
+import { IFirmService } from "@/service";
+import {
+  firmRequestModel,
+  frequencyRequestModel,
+  aumFeeTypes,
+  aumDetails,
+} from "@/model";
 
 import AdvisoryAndSubscription from "./AdvisoryAndSubscription.vue";
 
@@ -51,31 +71,52 @@ import AdvisoryAndSubscription from "./AdvisoryAndSubscription.vue";
   },
 })
 export default class FrequencyBoard extends Vue {
+  @Inject("firmService") service: IFirmService;
 
   public store = useStore();
-
-  public frequencyTab: string = "";
-  public billingTypes: Array<ListItem>;
+  public request: frequencyRequestModel = new frequencyRequestModel();
+  public selectedFee: aumFeeTypes = null;
+  public aumDetails: aumDetails = null;
 
   created() {
-    this.billingTypes = this.store.getters.billingTypes;
-    this.frequencyTab = this.billingTypes[0].value;
+    this.getFrequncyAndTiming();
   }
 
-  onPrev(value: string) {
-    if (value == "prev") this.$emit("prev");
-    else this.frequencyTab = value;
+  private getFrequncyAndTiming() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getFrequencyAndTiming(request)
+      .then((response) => {
+        this.request = response;
+        this.selectedFee = this.request.aumFeeTypes[0];
+        this.aumDetails = this.request.aumFeeTypes[0].aumDetails;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  onNext(value: string) {
-    if (value == "next") this.$emit("next");
-    else this.frequencyTab = value;
+  onPrev() {
+    let index = this.request.aumFeeTypes.findIndex(
+      (item) => item.feeTypeCode == this.selectedFee.feeTypeCode
+    );
+    index = index - 1;
+    if (this.request.aumFeeTypes[index] != undefined) {
+      this.selectedFee = this.request.aumFeeTypes[index];
+      this.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+    } else this.$emit("prev");
   }
 
-  prevNextTab(selectedTab: string) {
-    let tab: string = '';
-    this.billingTypes.find((item: ListItem) => { tab = item.value == selectedTab ? selectedTab : "next";})
-    return tab;
+  onNext() {
+    let index = this.request.aumFeeTypes.findIndex(
+      (item) => item.feeTypeCode == this.selectedFee.feeTypeCode
+    );
+    index = index + 1;
+    if (this.request.aumFeeTypes[index] != undefined) {
+      this.selectedFee = this.request.aumFeeTypes[index];
+      this.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+    } else this.$emit("next");
   }
 }
 </script>

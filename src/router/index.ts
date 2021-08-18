@@ -38,12 +38,13 @@ const router = createRouter({
 export default router;
 
 router.beforeEach((to, from, next) => {
-
   if (to.matched.some((record) => !record.meta.anonymous)) {
+    
     if (store.getters.isLoggedIn) {
       const token = store.getters.accessToken;
       if (token)
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        store.dispatch('loadEntitlements');
       next();
       return;
     }
@@ -53,10 +54,12 @@ router.beforeEach((to, from, next) => {
         const token = store.getters.accessToken;
         if (token)
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          store.dispatch('loadEntitlements');
 
         next("/");
       } else next("/");
     });
+    
   } else {
     next();
   }

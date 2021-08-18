@@ -1,16 +1,27 @@
 export class frequencyRequestModel {
     firmId: number | any;
-    payorType: string | any;
-    billingType: string | any;
-    feeTypeCode: string | any;
-    billingFrequency: Array<string> | Array<any> = [];
-    billingMethod: Array<string> | Array<any> = [];
-    defaultBillingFrequency: string | any;
-    defaultBillingMethod: string | any;
-    offsetCycleFlag: boolean = false;
-    defaultOffsetCycle: string | any;
+    aumFeeTypes: Array<aumFeeTypes>;
 }
 
 export class frequencyResponseModel {
     status: string | any;
+}
+export class aumFeeTypes {
+    feeTypeCode: string;
+    feeTypeName: string;
+    aumFlag: boolean;
+    id: number;
+    aumDetails: aumDetails = new aumDetails();
+}
+export class aumDetails {
+    firmId: number = 0;
+    feeTypeName: string = '';
+    aumFeeTypeFlag: boolean = false;
+    onboardingFeeTypeId: number = 0;
+    billingFrequency: Array<string>  = [];
+    billingMethod: Array<string> = [];
+    defaultBillingFrequency: string = '';
+    defaultBillingMethod: string = '';
+    offsetCycleFlag: boolean = false;
+    defaultOffsetCycle: string = '';
 }

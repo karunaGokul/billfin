@@ -475,7 +475,7 @@ export default class SignUp extends Vue {
         ?.createAccount(this.request)
         .then((response) => {
           this.response = response;
-          if (response.status == "Failed") this.showInfomationModel = true;
+          if (response.status == "FAILED") this.showInfomationModel = true;
           else if(response.status == "SUCCESS") {
             this.$router.push("/verification-email");
             localStorage.setItem("email", response.email);

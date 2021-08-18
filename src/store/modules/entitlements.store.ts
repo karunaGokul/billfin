@@ -36,9 +36,8 @@ const mutations: MutationTree<any> = {
   },
 };
 const actions: ActionTree<any, any> = {
-  loadEntitlements(context, response) {
-    context.commit("onLoadEntitlements", response);
-    /*if (!context.state.firms || !context.state.firms.length) {
+  loadEntitlements(context) {
+    if (!context.state.firms || !context.state.firms.length) {
       const service = new FirmService();
 
       return service.getFirms().then((response) => {
@@ -50,7 +49,7 @@ const actions: ActionTree<any, any> = {
 
         resolve(context.state.firms);
       });
-    }*/
+    }
   },
 };
 

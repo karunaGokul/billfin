@@ -1,10 +1,10 @@
 export enum Types {
-    "AUM Advisory" = "AUM_ADVISORY", 
-    "Non-AUM(e.g., subscriptions, one-time)" = "SUBSCRIPTION"
+    "AUM Advisory" = "AUM", 
+    "Non-AUM(e.g., subscriptions, one-time)" = "NON-AUM"
 }
 export enum BillingTypes {
-    "AUM_ADVISORY" = "AUM Advisory", 
-    "SUBSCRIPTION" = "Subscription"
+    "AUM Advisory" = "AUM_ADVISORY", 
+    "Subscription" = "SUBSCRIPTION"
 }
 export enum BillingFrequency {
     Monthly = "MONTHLY",

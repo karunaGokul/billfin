@@ -21,7 +21,7 @@ export class SignUpService extends BaseService<signUpRequest, signUpResponse> {
     }
 
     public verifyEmail(request: validateEmailRequestModel): Promise<validateEmailResponseModel> {
-        return this.httpPost('public/api/v1/trailsignup/validateEmail', request).then(response => {
+        return this.httpPost('public/api/v1/trialsignup/validateEmail', request).then(response => {
             return response.data;
         });
     }
@@ -33,7 +33,7 @@ export class SignUpService extends BaseService<signUpRequest, signUpResponse> {
     }
 
     public resendEmail(request: resentEmailRequestModel): Promise<any> {
-        return this.httpPost('public/api/v1/trailsignup/resendVerificationEmail', request).then(response => {
+        return this.httpPost('public/api/v1/trialsignup/resendVerificationEmail', request).then(response => {
             return response.data;
         });
     }

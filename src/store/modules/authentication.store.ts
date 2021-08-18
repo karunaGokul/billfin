@@ -3,8 +3,6 @@ import { GetterTree, MutationTree, ActionTree } from "vuex";
 import Keycloak, { KeycloakConfig, KeycloakInitOptions } from "keycloak-js";
 import JwtDecode from "jwt-decode";
 
-import axios from "axios";
-
 import { AuthenticationState, AuthenticationResponse } from "@/model";
 
 const ACCESS_TOKEN_KEY = "access_token";
@@ -55,7 +53,6 @@ const mutations: MutationTree<AuthenticationState> = {
       state.refreshToken = data.refreshToken;
     }
   },
-
   onLogout(state) {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
@@ -66,13 +63,6 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
-    /*const config: KeycloakConfig = {
-            url: 'https://keycloak.redi2.com:8443/auth/',
-            realm: 'BillFin-Dev',
-            clientId: 'reference-service',
-        }
-    
-        const keycloak = Keycloak(config);*/
     console.log(keycloak);
     const options: KeycloakInitOptions = {
       onLoad: "login-required",
@@ -110,6 +100,8 @@ const actions: ActionTree<AuthenticationState, any> = {
             });
           }
 
+          
+
           resolve(authenticated);
         })
         .catch((kcError) => {
@@ -127,35 +119,9 @@ const actions: ActionTree<AuthenticationState, any> = {
         });
     });
   },
-
-  checkSession(context, keycloak) {
-    console.log(axios);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${keycloak.token}`;
-    console.log(axios.defaults.headers);
-    context.commit("onLogin", {
-      success: true,
-      accessToken: keycloak.token,
-      refreshToken: keycloak.refreshToken,
-    });
-  },
   logout(context) {
-    const config: KeycloakConfig = {
-      url: "https://keycloak.redi2.com:8443/auth/",
-      realm: "BillFin-Dev",
-      clientId: "reference-service",
-    };
-
-    const keycloak = Keycloak(config);
-    const logoutOptions = { redirectUri: "http://localhost:8080/" };
-    console.log(keycloak);
-    keycloak
-      .logout(logoutOptions)
-      .then((success) => {
-        console.log("--> log: logout success ", success);
-      })
-      .catch((error) => {
-        console.log("--> log: logout error ", error);
-      });
+    const logoutOptions = { redirectUri: window.location.href };
+    keycloak.logout(logoutOptions);
     return new Promise((resolve, reject) => {
       context.commit("onLogout");
       resolve("");

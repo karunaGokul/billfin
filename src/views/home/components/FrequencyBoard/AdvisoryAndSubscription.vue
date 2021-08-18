@@ -2,7 +2,7 @@
   <div class="tab-content tab-content-lg__scroll mt-10">
     <div class="d-flex fs-7">
       <div class="fw-bolder">
-        How frequently do you bill your AUM advisory fees?
+        How frequently do you bill your {{ billingFee.feeTypeName }}?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -18,7 +18,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What frequency do you want to default for new accounts?
+        For {{ billingFee.feeTypeName }}, what frequency do you want to default
+        for new accounts?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -34,7 +35,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        Do you bill your AUM advisory fees in advance or in arrears?
+        Do you bill your {{ billingFee.feeTypeName }} in advance or in arrears?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -48,7 +49,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What billing timing do you want to default for new accounts?
+        For {{ billingFee.feeTypeName }}, what billing timing do you want to
+        default for new accounts?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -65,7 +67,8 @@
     <template v-if="isQuarterlySelected">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          Do you bill any quarterly clients during off-cycle months?
+          Do you bill your full-quarter {{ billingFee.feeTypeName }} during
+          off-cycle months?
         </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -78,7 +81,9 @@
             type="checkbox"
             v-model="request.offsetCycleFlag"
             @change="
-              !request.offsetCycleFlag ? (request.defaultOffsetCycle = null) : ''
+              !request.offsetCycleFlag
+                ? (request.defaultOffsetCycle = null)
+                : ''
             "
           />
           <label
@@ -92,7 +97,10 @@
 
     <template v-if="request.offsetCycleFlag">
       <div class="d-flex fs-7 mt-10">
-        <div class="fw-bolder">What’s your default quarterly cycle?</div>
+        <div class="fw-bolder">
+          For {{ billingFee.feeTypeName }}, what quarterly cycle do ypu want to
+          default for new accounts?
+        </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>
         </div>
@@ -124,20 +132,19 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Prop, Inject } from "vue-property-decorator";
+import { Prop, Inject, Watch } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
 import {
-  firmRequestModel,
-  frequencyRequestModel,
   BillingFrequency,
   defaultBillingFrequency,
   billingMethod,
   defaultBillingMethod,
   defaultOffsetCycle,
-  PayorType,
+  aumFeeTypes,
+  aumDetails,
   ListItem,
 } from "@/model";
 
@@ -152,12 +159,11 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 })
 export default class AdvisoryAndSubscription extends Vue {
   @Inject("firmService") service: IFirmService;
-  @Prop() billingType: string | any;
-  @Prop() previousTab: string;
-  @Prop() nextTab: string | any;
+  @Prop() billingFee: aumFeeTypes;
+  @Prop() aumDetails: aumDetails;
 
   public store = useStore();
-  public request = new frequencyRequestModel();
+  public request: aumDetails = new aumDetails();
 
   public billingFrequency: Array<ListItem> = [];
   public defaultBillingFrequency: Array<ListItem> = [];
@@ -204,31 +210,22 @@ export default class AdvisoryAndSubscription extends Vue {
     this.getFrequncyAndTiming();
   }
 
+  @Watch("aumDetails")
   private getFrequncyAndTiming() {
-    const request = new firmRequestModel();
-    request.billingType = this.billingType;
-    request.firmId = this.store.getters.selectedFirmId;
-    this.service
-      ?.getFrequencyAndTiming(request)
-      .then((response) => {
-        this.request = response;
-        this.bindValues(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.request = this.aumDetails;
+    this.bindValues(this.aumDetails);
   }
 
   public saveFrequncyAndTiming() {
-    this.request.payorType = PayorType.INVESTOR_CLIENT;
-    this.request.billingType = this.billingType;
     this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.feeTypeCode = "CF";
+    this.request.feeTypeName = this.billingFee.feeTypeName;
+    this.request.onboardingFeeTypeId = this.billingFee.id;
+    this.request.aumFeeTypeFlag = this.billingFee.aumFlag;
 
     this.service
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
-        this.$emit("next", this.nextTab);
+        if (response.status == "SUCCESS") this.$emit("next");
       })
       .catch((err) => {
         console.log(err);
@@ -326,14 +323,14 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.defaultOffsetCycle = defaultOffsetCycle;
   }
 
-  private bindValues(response: frequencyRequestModel) {
+  private bindValues(response: aumDetails) {
     this.defaultBillingFrequency = [];
 
     this.billingFrequency.forEach((item) => {
       if (response.billingFrequency.includes(item.value)) {
         item.selected = true;
         this.defaultBillingFrequency.push(new ListItem(item.text, item.value));
-      }
+      } else item.selected = false;
     });
 
     if (this.defaultBillingFrequency.length == 0)
@@ -361,7 +358,7 @@ export default class AdvisoryAndSubscription extends Vue {
       if (response.billingMethod.includes(item.value)) {
         item.selected = true;
         this.defaultBillingMethod.push(new ListItem(item.text, item.value));
-      }
+      } else item.selected = false;
     });
 
     if (this.defaultBillingMethod.length == 0)
@@ -383,18 +380,21 @@ export default class AdvisoryAndSubscription extends Vue {
 
     if (!this.isQuarterlySelected) {
       this.request.offsetCycleFlag = false;
-      this.request.defaultOffsetCycle = "";
+      this.request.defaultOffsetCycle = null;
     } else {
       this.request.offsetCycleFlag = response.offsetCycleFlag;
       this.defaultOffsetCycle.forEach((item) => {
-        if (response.defaultOffsetCycle.includes(item.value))
+        if (
+          response.defaultOffsetCycle &&
+          response.defaultOffsetCycle.includes(item.value)
+        )
           item.selected = true;
       });
     }
   }
 
   public prev() {
-    this.$emit("prev", this.previousTab);
+    this.$emit("prev");
   }
 
   public nullCheck(value: any) {

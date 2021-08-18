@@ -4,7 +4,10 @@ import {
     firmsResponseModel, 
     generalBoardRequestModel, 
     generalBoardResponseModel, 
+    feeTypes,
+    feeTypesRequestModel,
     frequencyRequestModel, 
+    aumDetails,
     frequencyResponseModel, 
     methodologiesRequestModel,
     adjustmentsBoardRequestModel,
@@ -17,11 +20,12 @@ export interface IFirmService extends IBaseService<any, any> {
     getGeneralDetails(request: firmRequestModel): Promise<generalBoardRequestModel>;
     saveGeneral(request: generalBoardRequestModel): Promise<generalBoardResponseModel>;
 
-    getAUMAdvisory(): Promise<Array<ListItem>>;
-    getNonAUMBilling(): Promise<Array<ListItem>>;
+    getFeeType(): Promise<Array<feeTypes>>;
+    getFeeTypesSetup(request: firmRequestModel): Promise<feeTypesRequestModel>;
+    saveFeeTypesSetup(request: feeTypesRequestModel): Promise<frequencyResponseModel>;
 
     getFrequencyAndTiming(request: firmRequestModel): Promise<frequencyRequestModel>;
-    saveFrequncyAndTiming(request: frequencyRequestModel): Promise<frequencyResponseModel>;
+    saveFrequncyAndTiming(request: aumDetails): Promise<frequencyResponseModel>;
 
     getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel>;
     saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel>;
@@ -54,27 +58,21 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     } 
 
-    getAUMAdvisory(): Promise<Array<ListItem>> {
-        return new Promise((resolve, reject) => {
-            const items: Array<ListItem> = [];
-            items.push(new ListItem("Advisory Fee", "ADVISORY_FEE"));
-            items.push(new ListItem("Management Fee", "MANAGEMENT_FEE"));
-            items.push(new ListItem("Platform Fee", "PLATFORM_FEE"));
-            items.push(new ListItem("Strategy Fee", "STARTEGY_FEE"));
-
-            resolve(items);
+    getFeeType(): Promise<Array<feeTypes>> {
+        return this.httpGet('private/api/v1/feeTypes', null).then(response => {
+            return response.data;
         });
-    } 
+    }
 
-    getNonAUMBilling(): Promise<Array<ListItem>> {
-        return new Promise((resolve, reject) => {
-            const items: Array<ListItem> = [];
-            items.push(new ListItem("Financial Fee", "FINANCIAL_FEE"));
-            items.push(new ListItem("Consulting Fee", "CONSULTING_FEE"));
-            items.push(new ListItem("Estate Planning Fee", "ESTATE_PLANNING_FEE"));
-            items.push(new ListItem("Tax Strategy Fee", "TAX_STARTEGY_FEE"));
+    getFeeTypesSetup(request: firmRequestModel): Promise<feeTypesRequestModel> {
+        return this.httpGet('private/api/v1/firm/feeTypesSetup', request).then(response => {
+            return response.data;
+        });
+    }
 
-            resolve(items);
+    saveFeeTypesSetup(request: feeTypesRequestModel): Promise<frequencyResponseModel> {
+        return this.httpPost('private/api/v1/firm/feeTypesSetup', request).then(response => {
+            return response.data;
         });
     }
 
@@ -84,7 +82,7 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    saveFrequncyAndTiming(request: frequencyRequestModel): Promise<frequencyResponseModel> {
+    saveFrequncyAndTiming(request: aumDetails): Promise<frequencyResponseModel> {
         return this.httpPost('private/api/v1/firm/frequencyAndTiming', request).then(response => {
             return response.data;
         });
