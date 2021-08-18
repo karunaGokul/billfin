@@ -207,6 +207,7 @@ export default class Home extends Vue {
   public subscription: any = null;
 
   mounted() {
+    console.log('mounted called');
     this.subscription = this.store.subscribe((mutations, type) => {
       console.log(mutations, type);
       if (mutations.type == "onLoadEntitlements") {
