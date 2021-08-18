@@ -208,20 +208,26 @@ export default class Home extends Vue {
 
   mounted() {
     this.subscription = this.store.subscribe((mutations, type) => {
-      if(mutations.type == 'onLoadEntitlements') {
+      console.log(mutations, type);
+      if (mutations.type == "onLoadEntitlements") {
         this.firms = mutations.payload;
+        console.log(this.firms);
         if (
           this.firms.length == 1 &&
-          this.firms[0].trialOnboardingStatus != "Completed"
+          this.firms[0].trialOnboardingStatus != "COMPLETED"
         ) {
+          console.log("if");
           this.showOnBoard = true;
-          if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
+          if (this.firms[0].trialOnboardingStatus == "NOT_STARTED") {
+            console.log('child if');
             this.lastOnboardingStep = 1;
-          else
+          } else {
+            console.log('else');
             this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+          }
         }
       }
-    })
+    });
   }
 
   unmounted() {
