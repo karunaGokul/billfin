@@ -212,10 +212,10 @@ export default class Home extends Vue {
         this.firms = mutations.payload;
         if (
           this.firms.length == 1 &&
-          this.firms[0].trailOnboardingStatus != "Completed"
+          this.firms[0].trialOnboardingStatus != "Completed"
         ) {
           this.showOnBoard = true;
-          if (this.firms[0].trailOnboardingStatus == "NOT_STARTED")
+          if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
             this.lastOnboardingStep = 1;
           else
             this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
