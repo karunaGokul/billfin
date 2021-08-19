@@ -204,37 +204,30 @@ export default class Home extends Vue {
   public firms = new Array<firmsResponseModel>();
   public lastOnboardingStep: number | any = 0;
 
-  public subscription: any = null;
-
   mounted() {
-    console.log('mounted called');
-    console.log(this.store.getters.firms);
-    this.subscription = this.store.subscribe((mutations, type) => {
-      console.log(mutations, type);
-      if (mutations.type == "onLoadEntitlements") {
-        this.firms = mutations.payload;
-        console.log(this.firms);
-        if (
-          this.firms.length == 1 &&
-          this.firms[0].trialOnboardingStatus != "COMPLETED"
-        ) {
-          console.log("if");
-          this.showOnBoard = true;
-          if (this.firms[0].trialOnboardingStatus == "NOT_STARTED") {
-            console.log('child if');
-            this.lastOnboardingStep = 1;
-          } else {
-            console.log('else');
-            this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
-          }
+    this.getFirms();
+  }
+
+  private getFirms() {
+    this.service.getFirms().then((response) => {
+      this.firms = response;
+      console.log(response);
+      this.store.dispatch("loadEntitlements", response);
+      if (
+        this.firms.length == 1 &&
+        this.firms[0].trialOnboardingStatus != "COMPLETED"
+      ) {
+        console.log("if");
+        this.showOnBoard = true;
+        if (this.firms[0].trialOnboardingStatus == "NOT_STARTED") {
+          console.log("child if");
+          this.lastOnboardingStep = 1;
+        } else {
+          console.log("else");
+          this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
         }
       }
     });
-    console.log(this.store.getters.firms);
-  }
-
-  unmounted() {
-    if (this.subscription) this.subscription();
   }
 
   logout() {
