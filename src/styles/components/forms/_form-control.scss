@@ -73,3 +73,6 @@
 .resize-none {
 	resize: none;
 }
+input::-ms-reveal, input::-ms-clear {
+    display: none;
+}
