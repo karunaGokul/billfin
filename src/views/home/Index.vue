@@ -208,6 +208,7 @@ export default class Home extends Vue {
 
   mounted() {
     console.log('mounted called');
+    console.log(this.store.getters.firms);
     this.subscription = this.store.subscribe((mutations, type) => {
       console.log(mutations, type);
       if (mutations.type == "onLoadEntitlements") {
@@ -229,6 +230,7 @@ export default class Home extends Vue {
         }
       }
     });
+    console.log(this.store.getters.firms);
   }
 
   unmounted() {
