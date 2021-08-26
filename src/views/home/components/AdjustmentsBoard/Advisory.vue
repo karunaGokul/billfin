@@ -120,7 +120,7 @@
         </div>
       </template>
 
-      <template v-if="request.flowThresholdType == 'PERCENTAGES'">
+      <template v-if="request.flowThresholdType == 'PERCENT'">
         <div class="d-flex fs-7 mt-10">
           <div class="fw-bolder">PLease enter the % aum of your threshold.</div>
           <div class="ms-5">

@@ -52,6 +52,6 @@ export enum expressRatesAs {
 }
 export enum flowThresholdType {
     "Dollar amount" = "DOLLAR_AMOUNT", 
-    "% of AUM" = "PERCENTAGES", 
+    "% of AUM" = "PERCENT", 
     "None" = "NONE"
 }
