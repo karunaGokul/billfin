@@ -33,12 +33,14 @@
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 4 }"
+                  v-if="showAumTab"
                 >
                   Methodologies
                 </li>
                 <li
                   class="tab-label"
                   :class="{ 'tab-active': activeTab == 5 }"
+                  v-if="showAumTab"
                 >
                   Adjustments
                 </li>
@@ -62,7 +64,8 @@
               />
               <FrequencyBoard
                 @prev="activeTab = 2"
-                @next="activeTab = 4"
+                @next="showAumTab ? activeTab = 4 : activeTab = 6"
+                @showAumTabs="updateAumTabs"
                 v-if="activeTab == 3"
               />
               <MethodologiesBoard
@@ -76,6 +79,9 @@
                 :tabs="tabs"
                 v-if="activeTab == 5"
               />
+              <div v-if="activeTab == 6">
+                Confirm Tab
+              </div>
               <div class="tab-content pb-5 border-bottom" v-if="activeTab == 6">
                 {{ activeTab }}
               </div>
@@ -101,7 +107,7 @@ import GeneralBoard from "./GeneralBoard.vue";
 import FeeTypesBoard from "./FeeTypesBoard/Index.vue";
 import FrequencyBoard from "./FrequencyBoard/Index.vue"
 import MethodologiesBoard from "./MethodologiesBoard/Index.vue";
-import AdjustmentsBoard from "./AdjustmentsBoard.vue";
+import AdjustmentsBoard from "./AdjustmentsBoard/Index.vue";
 
 @Options({
   components: {
@@ -118,6 +124,7 @@ export default class Welcome extends Vue {
   
   public activeTab: number = 1;
   public tabs: Array<string> = [];
+  public showAumTab: boolean = true;
 
   mounted() {
     this.activeTab = this.step;
@@ -125,6 +132,11 @@ export default class Welcome extends Vue {
 
   public onControlTabs(tabs: any) {
     this.tabs = tabs;
+  }
+
+  public updateAumTabs(control: string) {
+    console.log(control);
+    this.showAumTab = control == 'show' ? true : false;
   }
 }
 </script>

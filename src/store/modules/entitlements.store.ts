@@ -1,6 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from "vuex";
-import { FirmService } from "@/service";
-import { firmsResponseModel, BillingTypes, ListItem } from "@/model";
+import { firmsResponseModel } from "@/model";
 
 const state: any = {
   firms: new Array<firmsResponseModel>(),
@@ -17,18 +16,7 @@ const getters: GetterTree<any, any> = {
   },
   selectedFirmId: (state) => {
     return state.firms[0].firmId;
-  },
-  billingTypes: () => {
-    const item: Array<string> = state.firms[0].billingTypes,
-      billingTypes: Array<ListItem> = [];
-    item.forEach((e) => {
-      billingTypes.push(
-        new ListItem(e, BillingTypes[e as keyof typeof BillingTypes])
-      );
-    });
-
-    return billingTypes;
-  },
+  }
 };
 const mutations: MutationTree<any> = {
   onLoadEntitlements(state, firms) {

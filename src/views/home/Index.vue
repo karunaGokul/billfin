@@ -217,15 +217,11 @@ export default class Home extends Vue {
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        console.log("if");
         this.showOnBoard = true;
-        if (this.firms[0].trialOnboardingStatus == "NOT_STARTED") {
-          console.log("child if");
+        if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
-        } else {
-          console.log("else");
+        else
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
-        }
       }
     });
   }

@@ -1,11 +1,3 @@
-export enum Types {
-    "AUM Advisory" = "AUM", 
-    "Non-AUM(e.g., subscriptions, one-time)" = "NON-AUM"
-}
-export enum BillingTypes {
-    "AUM Advisory" = "AUM_ADVISORY", 
-    "Subscription" = "SUBSCRIPTION"
-}
 export enum BillingFrequency {
     Monthly = "MONTHLY",
     Quarterly = "QUARTERLY",
@@ -58,7 +50,7 @@ export enum expressRatesAs {
     "Basis Point" = "BASIS_POINT",
     "Percentages" = "PERCENTAGES"
 }
-export enum feeScheduleRateType {
+export enum flowThresholdType {
     "Dollar amount" = "DOLLAR_AMOUNT", 
     "% of AUM" = "PERCENTAGES", 
     "None" = "NONE"

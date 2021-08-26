@@ -13,7 +13,7 @@
         "
       >
         <div class="col-5">
-          <div class="tab-header__title fw-bolder fs-4">Methodologies</div>
+          <div class="tab-header__title fw-bolder fs-4">Adjustments</div>
         </div>
         <div class="col-7">
           <ul class="tab-header__scroll">
@@ -58,7 +58,7 @@ import Advisory from "./Advisory.vue";
     Advisory,
   },
 })
-export default class MethodologiesBoard extends Vue {
+export default class AdjustmentsBoard extends Vue {
   @Inject("firmService") service: IFirmService;
 
   public store = useStore();
@@ -66,15 +66,15 @@ export default class MethodologiesBoard extends Vue {
   public response: aumFeeTypes = null;
 
   created() {
-    this.getMethodologies();
+    this.getAdjustments();
   }
 
-  private getMethodologies() {
+  private getAdjustments() {
     const request = new firmRequestModel();
     request.firmId = this.store.getters.selectedFirmId;
 
     this.service
-      ?.getMethodologies(request)
+      ?.getAdjustments(request)
       .then((response) => {
         this.request = response;
         for(var i in this.request.aumFeeTypes) {

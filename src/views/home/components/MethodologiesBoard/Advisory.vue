@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content tab-content-lg__scroll mt-10">
+  <div class="tab-content tab-content-lg__scroll mt-5">
     <div class="d-flex fs-7 mt-5">
       <div class="fw-bolder">
         What valuation methodologies do you use for AUM advisory billing?
@@ -10,10 +10,7 @@
       </div>
     </div>
     <div class="mt-6 ms-6">
-      <multi-checkBox
-        :data="valuationMethod"
-        @update="updateValuationMethod"
-      />
+      <multi-checkBox :data="valuationMethod" @update="updateValuationMethod" />
     </div>
 
     <div class="d-flex fs-7 mt-10">
@@ -98,21 +95,19 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Prop, Inject } from "vue-property-decorator";
+import { Prop, Inject, Watch } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
 import {
-  firmRequestModel,
-  methodologiesRequestModel,
-
+  aumDetails,
+  aumFeeTypes,
   ValuationMethodType,
   defaultValuationMethod,
   initialBillingValuationMethod,
   ProrationMethodType,
   expressRatesAs,
-  PayorType,
   ListItem,
 } from "@/model";
 
@@ -125,14 +120,12 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class AdvisoryAndSubscription extends Vue {
-  @Inject("firmService") service: IFirmService | undefined;
-  @Prop() billingType: string | any;
-  @Prop() previousTab: string | any;
-  @Prop() nextTab: string | any;
+export default class Advisory extends Vue {
+  @Inject("firmService") service: IFirmService;
+  @Prop() response: aumFeeTypes;
 
   public store = useStore();
-  public request = new methodologiesRequestModel();
+  public request: aumDetails = new aumDetails();
 
   public valuationMethod: Array<ListItem> = [];
   public defaultValuationMethod: Array<ListItem> = [];
@@ -156,11 +149,15 @@ export default class AdvisoryAndSubscription extends Vue {
           defaultValuationMethod[key as keyof typeof defaultValuationMethod]
         )
     );
-    this.initialBillingValuationMethod = Object.entries(initialBillingValuationMethod).map(
+    this.initialBillingValuationMethod = Object.entries(
+      initialBillingValuationMethod
+    ).map(
       ([key]) =>
         new ListItem(
           key,
-          initialBillingValuationMethod[key as keyof typeof initialBillingValuationMethod]
+          initialBillingValuationMethod[
+            key as keyof typeof initialBillingValuationMethod
+          ]
         )
     );
     this.defaultProrationMethod = Object.entries(ProrationMethodType).map(
@@ -172,10 +169,7 @@ export default class AdvisoryAndSubscription extends Vue {
     );
     this.expressRatesAs = Object.entries(expressRatesAs).map(
       ([key]) =>
-        new ListItem(
-          key,
-          expressRatesAs[key as keyof typeof expressRatesAs]
-        )
+        new ListItem(key, expressRatesAs[key as keyof typeof expressRatesAs])
     );
   }
 
@@ -183,64 +177,60 @@ export default class AdvisoryAndSubscription extends Vue {
     this.getMethodologies();
   }
 
+  @Watch("response")
   private getMethodologies() {
-    const request = new firmRequestModel();
-    request.billingType = this.billingType;
-    request.firmId = this.store.getters.selectedFirmId;
 
-    this.service
-      ?.getMethodologies(request)
-      .then((response) => {
-        this.request.valuationMethod = response.valuationMethod;
-        this.request.defaultValuationMethod = this.nullCheck(response.defaultValuationMethod);
-        this.request.initialBillingValuationMethod = this.nullCheck(response.initialBillingValuationMethod);
-        this.request.defaultProrationMethod = this.nullCheck(response.defaultProrationMethod);
-        this.request.expressRatesAs = this.nullCheck(response.expressRatesAs);
-        this.bindValues(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (this.response.aumDetails) {
+      this.request = this.response.aumDetails;
+      this.bindValues(this.response.aumDetails);
+    } else {
+      this.request = new aumDetails();
+      this.bindValues(this.request);
+    }
+    console.log(this.request);
   }
 
   public saveMethodologies() {
     this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.payorType = PayorType.INVESTOR_CLIENT;
-    this.request.billingType = this.billingType;
-    this.request.feeTypeCode = "CF";
+    this.request.feeTypeName = this.response.feeTypeName;
+    this.request.onboardingFeeTypeId = this.response.id;
+    this.request.aumFeeTypeFlag = this.response.aumFlag;
+
+    console.log(this.request);
 
     this.service
       ?.saveMethodologies(this.request)
       .then((response) => {
-        //console.log(response);
-        this.$emit("next", this.nextTab);
+        if (response.status == "SUCCESS") this.$emit("next");
       })
       .catch((err) => {
         console.log(err);
       });
-    
   }
 
-  public updateValuationMethod(valuationMethod: any[]) {
+  public updateValuationMethod(valuationMethod: Array<ListItem>) {
     this.request.valuationMethod = [];
     this.defaultValuationMethod = [];
 
-    for(var i in valuationMethod) {
-      if(valuationMethod[i].selected) {
-        this.request.valuationMethod.push(valuationMethod[i].value);
-        const item = new ListItem(
-          valuationMethod[i].text,
-          valuationMethod[i].value
+    valuationMethod.forEach((item) => {
+      if(item.selected) {
+        this.request.valuationMethod.push(item.value);
+        const data = new ListItem(
+          item.text,
+          item.value
         );
-        if(this.request.defaultValuationMethod == valuationMethod[i].value) item.selected = true;
-        this.defaultValuationMethod.push(item);
+        if (this.request.defaultValuationMethod == item.value)
+          data.selected = true;
+        this.defaultValuationMethod.push(data);
       }
-    }
+    });
+
+    this.defaultValuationMethod.forEach((item: ListItem) => {
+      if(item.value != this.request.defaultValuationMethod) this.request.defaultValuationMethod = '';
+    })
 
     if (this.request.valuationMethod.length == 0)
-      this.defaultValuationMethod = Object.entries(
-        defaultValuationMethod
-      ).map(
+      this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
         ([key]) =>
           new ListItem(
             key,
@@ -276,65 +266,74 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.expressRatesAs = expressRatesAs;
   }
 
-  private bindValues(response: methodologiesRequestModel) {
+  private bindValues(response: aumDetails) {
     this.defaultValuationMethod = [];
     this.valuationMethod.forEach((item) => {
-      if (response.valuationMethod && response.valuationMethod.includes(item.value)) {
+      if (
+        response.valuationMethod &&
+        response.valuationMethod.includes(item.value)
+      ) {
         item.selected = true;
         this.defaultValuationMethod.push(new ListItem(item.text, item.value));
-      }
+      } else item.selected = false;
     });
 
-    if(this.defaultValuationMethod.length == 0)
-    this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
-      ([key]) =>
-        new ListItem(
-          key,
-          defaultValuationMethod[key as keyof typeof defaultValuationMethod]
-        )
-    );
-    else 
+    if (this.defaultValuationMethod.length == 0)
+      this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+        ([key]) =>
+          new ListItem(
+            key,
+            defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+          )
+      );
+    else
       this.defaultValuationMethod.push(
-      new ListItem("Don't Default", "DONT_DEFAULT")
-    );
+        new ListItem("Don't Default", "DONT_DEFAULT")
+      );
 
     this.defaultValuationMethod.forEach((item) => {
-      if (response.defaultValuationMethod && response.defaultValuationMethod == item.value) item.selected = true;
+      if (
+        response.defaultValuationMethod &&
+        response.defaultValuationMethod == item.value
+      )
+        item.selected = true;
+      else item.selected = false;
     });
 
     this.initialBillingValuationMethod.forEach((item) => {
-      if (response.initialBillingValuationMethod && response.initialBillingValuationMethod == item.value) item.selected = true;
+      if (
+        response.initialBillingValuationMethod &&
+        response.initialBillingValuationMethod == item.value
+      )
+        item.selected = true;
+      else item.selected = false;
     });
 
     this.defaultProrationMethod.forEach((item) => {
-      if (response.defaultProrationMethod && response.defaultProrationMethod == item.value) item.selected = true;
+      if (
+        response.defaultProrationMethod &&
+        response.defaultProrationMethod == item.value
+      )
+        item.selected = true;
+      else item.selected = false;
     });
 
     this.expressRatesAs.forEach((item) => {
-      if (response.expressRatesAs && response.expressRatesAs == item.value) item.selected = true;
+      if (response.expressRatesAs && response.expressRatesAs == item.value)
+        item.selected = true;
+      else item.selected = false;
     });
-  }
-
-  public _sortOrder(defaultValuationMethod: Array<string>) {
-    const sortOrder = ["Period End", "Average Daily Balance", "Don't default"];
-    defaultValuationMethod.sort((a, b) => {
-      return sortOrder.indexOf(a) - sortOrder.indexOf(b);
-    });
-  }
-
-  public nullCheck(value: any) {
-    return value ? value : "";
   }
 
   public prev() {
-    this.$emit("prev", this.previousTab);
+    this.$emit("prev");
   }
 
   get formValidation() {
     let valid = false;
 
     if (
-      this.request.valuationMethod && 
+      this.request.valuationMethod &&
       this.request.valuationMethod.length > 0 &&
       this.request.defaultValuationMethod &&
       this.request.initialBillingValuationMethod &&

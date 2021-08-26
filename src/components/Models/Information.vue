@@ -3,10 +3,10 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="width: 400px">
         <div class="modal-header justify-content-center border-0">
-          <i class="fa fa-times error" v-if="status == 'Failed'"></i>
+          <i class="fa fa-times error" v-if="status == 'FAILED'"></i>
         </div>
         <div class="modal-body pt-0">
-          <p class="fs-6 fw-bolder ps-10" v-if="status == 'Failed'">
+          <p class="fs-6 fw-bolder ps-10" v-if="status == 'FAILED'">
             Sorry, looks like we encountered errors. Please try again.
           </p>
           <p class="ps-10 mt-7 invalid-feedback">{{ message }}</p>

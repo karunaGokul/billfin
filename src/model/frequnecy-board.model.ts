@@ -15,13 +15,33 @@ export class aumFeeTypes {
 }
 export class aumDetails {
     firmId: number = 0;
-    feeTypeName: string = '';
+    feeTypeName: string = "";
     aumFeeTypeFlag: boolean = false;
     onboardingFeeTypeId: number = 0;
-    billingFrequency: Array<string>  = [];
+    onboardingFeeTypeCode: string = "";
+    billingFrequency: Array<string> = [];
     billingMethod: Array<string> = [];
-    defaultBillingFrequency: string = '';
-    defaultBillingMethod: string = '';
+    defaultBillingFrequency: string = "";
+    defaultBillingMethod: string = "";
     offsetCycleFlag: boolean = false;
-    defaultOffsetCycle: string = '';
+    defaultOffsetCycle: string = "";
+    valuationMethod: Array<string> = [];
+    defaultValuationMethod: string = "";
+    initialBillingValuationMethod: string = "";
+    defaultProrationMethod: string = "";
+    expressRatesAs: string = "";
+    feeScheduleRateType: string = "";
+    inceptionValuationMethod: string = "";
+    flowBillingType: string = "";
+    flowThresholdType: string = "";
+    flowThresholdValue: string = "";
+    dollarRoundingFlag: boolean = false;
+    minimumFeeAmount: string = "";
+    maximumFeeAmount: string = "";
+    adjustForFlows: boolean = false;
+    nonAUMBillingType: string = "";
+    forward: boolean = false;
+
+    firmMinimumFee:boolean = false;
+    firmMaximumFee:boolean = false;
 }

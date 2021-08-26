@@ -20,6 +20,28 @@
                 border-bottom: 2px solid $primary;
             }
         }
+        &__scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: -webkit-box;
+            display: -moz-box;
+            margin: 0;
+            padding: 0;
+            
+            .tab-label {
+                list-style-type: none;
+                margin: 0 2rem;
+                font-weight: $font-weight-bolder;
+            }
+            .tab-active {
+                color: $primary;
+                border-bottom: 2px solid $primary;
+            }
+            .tab-active-border-bottom {
+                border-bottom: 2px solid $primary;
+            }
+        }
+        
     }
     .tab-content-group {
         margin: 1rem 2rem;

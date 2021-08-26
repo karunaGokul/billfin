@@ -27,11 +27,11 @@ export interface IFirmService extends IBaseService<any, any> {
     getFrequencyAndTiming(request: firmRequestModel): Promise<frequencyRequestModel>;
     saveFrequncyAndTiming(request: aumDetails): Promise<frequencyResponseModel>;
 
-    getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel>;
-    saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel>;
+    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel>;
+    saveMethodologies(request: aumDetails): Promise<frequencyResponseModel>;
 
-    getAdjustments(request: firmRequestModel): Promise<adjustmentsBoardRequestModel>;
-    saveAdjustments(request: adjustmentsBoardRequestModel): Promise<frequencyResponseModel>;
+    getAdjustments(request: firmRequestModel): Promise<frequencyRequestModel>;
+    saveAdjustments(request: aumDetails): Promise<frequencyResponseModel>;
 }
 
 export class FirmService extends BaseService<any, any> implements IFirmService {
@@ -88,25 +88,25 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    getMethodologies(request: firmRequestModel): Promise<methodologiesRequestModel> {
+    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel> {
         return this.httpGet('private/api/v1/firm/methodologies', request).then(response => {
             return response.data;
         });
     }
 
-    saveMethodologies(request: methodologiesRequestModel): Promise<frequencyResponseModel> {
+    saveMethodologies(request: aumDetails): Promise<frequencyResponseModel> {
         return this.httpPost('private/api/v1/firm/methodologies', request).then(response => {
             return response.data;
         });
     }
 
-    getAdjustments(request: firmRequestModel): Promise<adjustmentsBoardRequestModel> {
+    getAdjustments(request: firmRequestModel): Promise<frequencyRequestModel> {
         return this.httpGet('private/api/v1/firm/adjustments', request).then(response => {
             return response.data;
         });
     }
 
-    saveAdjustments(request: adjustmentsBoardRequestModel): Promise<frequencyResponseModel> {
+    saveAdjustments(request: aumDetails): Promise<frequencyResponseModel> {
         return this.httpPost('private/api/v1/firm/adjustments', request).then(response => {
             return response.data;
         });

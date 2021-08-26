@@ -8,42 +8,35 @@
           justify-content-start
           align-items-center
           border-bottom
+          row
+          g-0
         "
       >
-        <div class="tab-header__title fw-bolder fs-4">Frequecy & Timing</div>
-
-        <div
-          class="
-            tab-label-group
-            w-75
-            align-items-center
-            justify-content-center
-            ms-2
-            overflow-auto
-          "
-        >
-          <div class="tab-label-group justify-content-center">
-            <div
+        <div class="col-5">
+          <div class="tab-header__title fw-bolder fs-4">Frequency & Timing</div>
+        </div>
+        <div class="col-7">
+          <ul class="tab-header__scroll">
+            <li
               v-for="(item, index) in request.aumFeeTypes"
               :key="index"
               class="tab-label border-1 pb-4"
               :class="{
                 'tab-active-border-bottom':
-                  selectedFee.feeTypeName == item.feeTypeName,
+                  response.feeTypeName == item.feeTypeName,
               }"
             >
               {{ item.feeTypeName }}
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="tab-content-group m-0">
         <advisory-and-subscription
-          :billingFee="selectedFee"
-          :aumDetails="aumDetails"
+          :response="response"
           @prev="onPrev"
           @next="onNext"
-          v-if="aumDetails && selectedFee"
+          v-if="response"
         />
       </div>
     </div>
@@ -75,8 +68,7 @@ export default class FrequencyBoard extends Vue {
 
   public store = useStore();
   public request: frequencyRequestModel = new frequencyRequestModel();
-  public selectedFee: aumFeeTypes = null;
-  public aumDetails: aumDetails = null;
+  public response: aumFeeTypes = null;
 
   created() {
     this.getFrequncyAndTiming();
@@ -89,33 +81,43 @@ export default class FrequencyBoard extends Vue {
       .getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-        this.selectedFee = this.request.aumFeeTypes[0];
-        this.aumDetails = this.request.aumFeeTypes[0].aumDetails;
+        this.response = this.request.aumFeeTypes[0];
+        this.showMethodolgiesAndAdjustments();
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
+  private showMethodolgiesAndAdjustments() {
+    const data: Array<aumFeeTypes> = null;
+    this.request.aumFeeTypes.forEach((item) => {
+      if (item.aumFlag) data.push(item);
+    });
+
+    if (data.length > 0) this.$emit("showAumTabs", "show");
+    else this.$emit("showAumTabs", "hide");
+  }
+
   onPrev() {
     let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.selectedFee.feeTypeCode
+      (item) => item.feeTypeCode == this.response.feeTypeCode
     );
     index = index - 1;
     if (this.request.aumFeeTypes[index] != undefined) {
-      this.selectedFee = this.request.aumFeeTypes[index];
-      this.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+      this.response = this.request.aumFeeTypes[index];
+      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
     } else this.$emit("prev");
   }
 
   onNext() {
     let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.selectedFee.feeTypeCode
+      (item) => item.feeTypeCode == this.response.feeTypeCode
     );
     index = index + 1;
     if (this.request.aumFeeTypes[index] != undefined) {
-      this.selectedFee = this.request.aumFeeTypes[index];
-      this.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+      this.response = this.request.aumFeeTypes[index];
+      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
     } else this.$emit("next");
   }
 }

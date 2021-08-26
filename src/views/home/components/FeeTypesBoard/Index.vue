@@ -12,7 +12,26 @@
           <div class="text-muted fs-8">Check all that apply</div>
         </div>
         <div class="col-lg-7">
-          <multi-checkBox :data="billingType" @update="updateBillingTypes" />
+          <div class="form-check form-check-solid form-check-inline fs-7">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              v-model="request.billingType"
+              @change="updateBillingTypes"
+              value="AUM"
+            />
+            AUM Advisory
+          </div>
+          <div class="form-check form-check-solid form-check-inline fs-7">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              v-model="request.billingType"
+              @change="updateBillingTypes"
+              value="NON-AUM"
+            />
+            Non-AUM(e.g., subscriptions, one-time)
+          </div>
         </div>
       </div>
 
@@ -59,7 +78,7 @@
             v-model="request.aumFeeTypes.commonFrequencyTimingFlag"
           />
           <label class="fs-7 text-muted form-check-label"
-            >Yes, my AUM-based fees can bill on different freequencies and/or
+            >Yes, my AUM-based fees can bill on different frequencies and/or
             timing relative to each other.</label
           >
         </div>
@@ -67,7 +86,7 @@
 
       <template v-if="showAUMAdvisoryFees.length > 1">
         <div class="fw-bolder mt-10">
-          Do you bill your based various AUM fees on different assest
+          Do you bill your various AUM fees based on different assest
           methodologies relative to each other?
           <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>
@@ -106,7 +125,7 @@
                   type="text"
                   class="form-control text-start"
                   style="width: 280px"
-                  :value="item.feeTypeName"
+                  v-model="item.feeTypeName"
                 />
               </div>
             </div>
@@ -159,9 +178,7 @@ import { useStore } from "vuex";
 import { IFirmService } from "@/service";
 import {
   firmRequestModel,
-  Types,
   feeTypes,
-  ListItem,
   feeTypesRequestModel,
 } from "@/model";
 
@@ -181,14 +198,10 @@ export default class FeeTypesBoard extends Vue {
 
   public store = useStore();
 
-  public billingType: Array<ListItem> = [];
   public aumFeeTypes: Array<feeTypes> = [];
   public nonAUMFeeTypes: Array<feeTypes> = [];
 
   created() {
-    this.billingType = Object.entries(Types).map(
-      ([key]) => new ListItem(key, Types[key as keyof typeof Types])
-    );
     this.getFeeType();
   }
 
@@ -243,11 +256,16 @@ export default class FeeTypesBoard extends Vue {
     });
   }
 
-  public updateBillingTypes(billingType: Array<ListItem>) {
-    this.request.billingType = billingType.reduce(
-      (a, o) => (o.selected && a.push(o.value), a),
-      []
-    );
+  public updateBillingTypes() {
+    if (!this.showNonAUMAdvisory)
+      this.nonAUMFeeTypes.forEach((item: feeTypes) => {
+        item.selected = false;
+      });
+
+    if (!this.showAUMAdvisory)
+      this.aumFeeTypes.forEach((item: feeTypes) => {
+        item.selected = false;
+      });
   }
 
   public back() {
@@ -255,12 +273,6 @@ export default class FeeTypesBoard extends Vue {
   }
 
   private bindValues(response: feeTypesRequestModel) {
-    if (response.billingType.length > 0) {
-      this.billingType.forEach((item: ListItem) => {
-        if (response.billingType.includes(item.value)) item.selected = true;
-      });
-    }
-
     if (response.aumFeeTypes) {
       this.request.aumFeeTypes = response.aumFeeTypes;
       for (var i in response.aumFeeTypes.feeTypes) {

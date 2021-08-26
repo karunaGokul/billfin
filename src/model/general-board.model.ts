@@ -6,7 +6,6 @@ export class generalBoardRequestModel {
     city: string | any;
     state: string | any;
     postalCode: number | any;
-    //billingTypes: Array<string> | Array<any> = [];
     firmId: number;
 }
 

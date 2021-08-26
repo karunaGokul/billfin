@@ -45,7 +45,6 @@ router.beforeEach((to, from, next) => {
       if (token)
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         store.dispatch('loadEntitlements');
-        console.log('loadEntitlements called');
       next();
       return;
     }
@@ -56,7 +55,6 @@ router.beforeEach((to, from, next) => {
         if (token)
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           store.dispatch('loadEntitlements');
-          console.log('loadEntitlements called');
 
         next("/");
       } else next("/");
