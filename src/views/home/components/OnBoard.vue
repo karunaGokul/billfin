@@ -12,22 +12,13 @@
           <div class="tab-group">
             <div class="tab-header">
               <ul class="tab-label-group">
-                <li
-                  class="tab-label"
-                  :class="{ 'tab-active': activeTab == 1 }"
-                >
+                <li class="tab-label" :class="{ 'tab-active': activeTab == 1 }">
                   General
                 </li>
-                <li
-                  class="tab-label"
-                  :class="{ 'tab-active': activeTab == 2 }"
-                >
+                <li class="tab-label" :class="{ 'tab-active': activeTab == 2 }">
                   Fee Types
                 </li>
-                <li
-                  class="tab-label"
-                  :class="{ 'tab-active': activeTab == 3 }"
-                >
+                <li class="tab-label" :class="{ 'tab-active': activeTab == 3 }">
                   Frequency & Timing
                 </li>
                 <li
@@ -44,27 +35,21 @@
                 >
                   Adjustments
                 </li>
-                <li
-                  class="tab-label"
-                  :class="{ 'tab-active': activeTab == 6 }"
-                >
+                <li class="tab-label" :class="{ 'tab-active': activeTab == 6 }">
                   Confirm
                 </li>
               </ul>
             </div>
             <div class="tab-content-group">
-              <GeneralBoard 
-                @next="activeTab = 2" 
-                v-if="activeTab == 1" 
-              />
-              <FeeTypesBoard 
-                @prev="activeTab = 1" 
+              <GeneralBoard @next="activeTab = 2" v-if="activeTab == 1" />
+              <FeeTypesBoard
+                @prev="activeTab = 1"
                 @next="activeTab = 3"
                 v-if="activeTab == 2"
               />
               <FrequencyBoard
                 @prev="activeTab = 2"
-                @next="showAumTab ? activeTab = 4 : activeTab = 6"
+                @next="showAumTab ? (activeTab = 4) : (activeTab = 6)"
                 @showAumTabs="updateAumTabs"
                 v-if="activeTab == 3"
               />
@@ -79,9 +64,10 @@
                 :tabs="tabs"
                 v-if="activeTab == 5"
               />
-              <div v-if="activeTab == 6">
-                Confirm Tab
-              </div>
+              <ConfirmBoard
+                @prev="activeTab = 5"
+                v-if="activeTab == 6"
+              />
               <div class="tab-content pb-5 border-bottom" v-if="activeTab == 6">
                 {{ activeTab }}
               </div>
@@ -105,9 +91,10 @@ import { Prop } from "vue-property-decorator";
 
 import GeneralBoard from "./GeneralBoard.vue";
 import FeeTypesBoard from "./FeeTypesBoard/Index.vue";
-import FrequencyBoard from "./FrequencyBoard/Index.vue"
+import FrequencyBoard from "./FrequencyBoard/Index.vue";
 import MethodologiesBoard from "./MethodologiesBoard/Index.vue";
 import AdjustmentsBoard from "./AdjustmentsBoard/Index.vue";
+import ConfirmBoard from "./Confirm/Index.vue";
 
 @Options({
   components: {
@@ -115,13 +102,13 @@ import AdjustmentsBoard from "./AdjustmentsBoard/Index.vue";
     FeeTypesBoard,
     FrequencyBoard,
     MethodologiesBoard,
-    AdjustmentsBoard
+    AdjustmentsBoard,
+    ConfirmBoard,
   },
 })
 export default class Welcome extends Vue {
-
   @Prop() step: number | any;
-  
+
   public activeTab: number = 1;
   public tabs: Array<string> = [];
   public showAumTab: boolean = true;
@@ -136,7 +123,7 @@ export default class Welcome extends Vue {
 
   public updateAumTabs(control: string) {
     console.log(control);
-    this.showAumTab = control == 'show' ? true : false;
+    this.showAumTab = control == "show" ? true : false;
   }
 }
 </script>

@@ -95,7 +95,7 @@ export default class FrequencyBoard extends Vue {
       if (item.aumFlag) data.push(item);
     });
 
-    if (data.length > 0) this.$emit("showAumTabs", "show");
+    if (data && data.length > 0) this.$emit("showAumTabs", "show");
     else this.$emit("showAumTabs", "hide");
   }
 
