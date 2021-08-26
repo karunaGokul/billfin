@@ -90,7 +90,7 @@ export default class FrequencyBoard extends Vue {
   }
 
   private showMethodolgiesAndAdjustments() {
-    const data: Array<aumFeeTypes> = null;
+    const data: Array<aumFeeTypes> = [];
     this.request.aumFeeTypes.forEach((item) => {
       if (item.aumFlag) data.push(item);
     });

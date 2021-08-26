@@ -152,7 +152,7 @@
         </div>
       </template>
 
-      <div class="d-flex justify-content-between mt-10">
+      <div class="d-flex justify-content-between mt-10 mb-4">
         <button class="btn btn-secondary" @click="back">Back</button>
         <button
           class="btn me-10"
