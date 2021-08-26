@@ -474,6 +474,7 @@ export default class SignUp extends Vue {
       this.service
         ?.createAccount(this.request)
         .then((response) => {
+          console.log(response);
           this.response = response;
           if (response.status == "FAILED") this.showInfomationModel = true;
           else if(response.status == "SUCCESS") {
