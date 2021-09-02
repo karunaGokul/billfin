@@ -9,8 +9,9 @@
             display: flex;
             .tab-label {
                 list-style-type: none;
-                margin: 0 2rem;
+                margin: 0 4rem;
                 font-weight: $font-weight-bolder;
+                color: $secondary-active;
             }
             .tab-active {
                 color: $primary;
@@ -44,14 +45,15 @@
         
     }
     .tab-content-group {
-        margin: 1rem 2rem;
+        //margin: 1rem 2rem;
+        .tab-content__scroll {
+            height: calc(66vh - 60px);
+        }
         .tab-content-sm__scroll {
-            height: calc(75vh - 60px);
-            overflow: auto;
+            height: calc(66vh - 18px);
         }
         .tab-content-lg__scroll {
-            height: calc(75vh - 60px - 100px);
-            overflow: auto;
+            height: calc(66vh - 80px);
         }
     }
 }

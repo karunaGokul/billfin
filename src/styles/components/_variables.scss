@@ -6,7 +6,7 @@
 // Bootstrap base colors
 $white:    											#ffffff !default;
 $gray-100: 											#F5F8FA !default;
-$gray-200: 											#EFF2F5 !default;
+$gray-200: 											#E4E5E6 !default;
 $gray-300: 											#E4E6EF !default;
 $gray-400: 											#B5B5C3 !default;
 $gray-500: 											#A1A5B7 !default;
@@ -577,7 +577,7 @@ $input-font-size:                                   $input-btn-font-size !defaul
 $input-font-weight:                                 $font-weight-bold !default;
 $input-line-height:                                 $input-btn-line-height !default;
 
-$input-solid-bg:                                    $gray-100 !default; // Custom variable
+$input-solid-bg:                                    $gray-200 !default; // Custom variable
 $input-solid-bg-focus:                              darken($gray-100, 2%) !default; // Custom variable
 $input-solid-placeholder-color:                     $input-placeholder-color !default;  // Custom variable
 $input-solid-color:                              	$gray-700 !default; // Custom variable

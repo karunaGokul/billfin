@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade show d-block vh-100">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-lg">
       <div class="modal-content">
         <div class="modal-header justify-content-start p-5">
           <h5 class="modal-title">Welcome to BillFin</h5>
@@ -8,9 +8,9 @@
             Let's get you onboarded quickly and easily!
           </h6>
         </div>
-        <div class="modal-body w-75 mx-auto" style="height: 75vh">
+        <div class="modal-body p-0">
           <div class="tab-group">
-            <div class="tab-header">
+            <div class="tab-header p-4 pt-10">
               <ul class="tab-label-group">
                 <li class="tab-label" :class="{ 'tab-active': activeTab == 1 }">
                   General
@@ -40,7 +40,7 @@
                 </li>
               </ul>
             </div>
-            <div class="tab-content-group">
+            <div class="tab-content-group w-75 mx-auto">
               <GeneralBoard @next="activeTab = 2" v-if="activeTab == 1" />
               <FeeTypesBoard
                 @prev="activeTab = 1"
@@ -68,9 +68,6 @@
                 @prev="activeTab = 5"
                 v-if="activeTab == 6"
               />
-              <div class="tab-content pb-5 border-bottom" v-if="activeTab == 6">
-                {{ activeTab }}
-              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content tab-content-lg__scroll pb-5">
+  <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
         Do you charge a firm-wide standard minimum fee?
@@ -122,7 +122,7 @@
 
       <template v-if="request.flowThresholdType == 'PERCENT'">
         <div class="d-flex fs-7 mt-10">
-          <div class="fw-bolder">PLease enter the % aum of your threshold.</div>
+          <div class="fw-bolder">Please enter the % aum of your threshold.</div>
           <div class="ms-5">
             <i class="fa fa-question-circle fs-4 text-dark"></i>
           </div>
@@ -266,7 +266,7 @@ export default class AdjustmentsBoard extends Vue {
     const self = this.request;
 
     if (self.adjustForFlows) {
-      if (self.flowThresholdType) {
+      if (self.flowThresholdType != "NONE") {
         if (self.flowThresholdValue && !this.isNumeric(self.flowThresholdValue))
           valid = true;
         else valid = false;

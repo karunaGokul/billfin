@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content pb-5 border-bottom">
+  <div class="tab-content pb-5 tab-content-sm__scroll border-bottom">
     <div class="tab-group mt-10">
       <div
         class="
@@ -76,10 +76,9 @@ export default class MethodologiesBoard extends Vue {
     this.service
       ?.getMethodologies(request)
       .then((response) => {
-        this.request = response;
-        for(var i in this.request.aumFeeTypes) {
-          if(!this.request.aumFeeTypes[i].aumFlag) this.request.aumFeeTypes.splice(+i, 1);
-        }
+        response.aumFeeTypes.forEach((item) => {
+          if (item.aumFlag) this.request.aumFeeTypes.push(item);
+        });
         this.response = this.request.aumFeeTypes[0];
       })
       .catch((err) => {

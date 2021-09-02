@@ -1,6 +1,6 @@
 export class frequencyRequestModel {
     firmId: number | any;
-    aumFeeTypes: Array<aumFeeTypes>;
+    aumFeeTypes: Array<aumFeeTypes> = [];
 }
 
 export class frequencyResponseModel {

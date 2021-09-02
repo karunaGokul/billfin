@@ -1,80 +1,149 @@
 <template>
-  <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
-    <div class="d-flex fs-7">
-      <div class="fw-bolder">
+  <div class="tab-content mt-10">
+    <div class="row pb-8 g-0">
+      <div class="col-lg-7 fw-bolder">
         How frequently do you bill your {{ response.feeTypeName }}?
       </div>
-      <div class="text-muted ms-4 fs-8">Check all that apply</div>
-      <div class="ms-5">
-        <i class="fa fa-question-circle fs-4 text-dark"></i>
+      <div class="col-lg-5 fw-bold" v-if="!showBillingFrequency">
+        <span v-for="(data, i) in billingFrequency" :key="i">
+          <template v-if="data.selected">
+            {{ data.text.concat(", ") }}
+          </template>
+        </span>
+        <i
+          class="fa fa-solid fa-pen text-primary ms-4"
+          @click="showBillingFrequency = true"
+        ></i>
       </div>
     </div>
-    <div class="mt-6 ms-6">
+
+    <div class="ms-2 pb-8" v-if="showBillingFrequency">
       <multi-checkBox
         :data="billingFrequency"
         @update="updatebillingFrequency"
       />
+      <i
+        class="fa fa-check text-primary ms-4"
+        @click="
+          showBillingFrequency = false;
+          saveFrequncyAndTiming();
+        "
+      ></i>
     </div>
 
-    <div class="d-flex fs-7 mt-10">
-      <div class="fw-bolder">
+    <div class="row pb-8 g-0">
+      <div class="col-lg-9 fw-bolder">
         For {{ response.feeTypeName }}, what frequency do you want to default
         for new accounts?
       </div>
-      <div class="ms-5">
-        <i class="fa fa-question-circle fs-4 text-dark"></i>
+      <div class="col-lg-3 fw-bold" v-if="!showDefaultFrequency">
+        <span v-for="(data, i) in defaultBillingFrequency" :key="i">
+          <template v-if="data.selected">
+            {{ data.text }}
+          </template>
+        </span>
+        <i
+          class="fa fa-solid fa-pen text-primary ms-4"
+          @click="showDefaultFrequency = true"
+        ></i>
       </div>
     </div>
-    <div class="mt-6 ms-6">
+
+    <div class="ms-2 pb-8" v-if="showDefaultFrequency">
       <single-checkBox
         :data="defaultBillingFrequency"
         :value="request.defaultBillingFrequency"
         @update="updateDefaultBillingFrequency"
       />
+      <i
+        class="fa fa-check text-primary ms-4"
+        @click="
+          showDefaultFrequency = false;
+          saveFrequncyAndTiming();
+        "
+      ></i>
     </div>
 
-    <div class="d-flex fs-7 mt-10">
-      <div class="fw-bolder">
+    <div class="row pb-8 g-0">
+      <div class="col-lg-7 fw-bolder">
         Do you bill your {{ response.feeTypeName }} in advance or in arrears?
       </div>
-      <div class="text-muted ms-4 fs-8">Check all that apply</div>
-      <div class="ms-5">
-        <i class="fa fa-question-circle fs-4 text-dark"></i>
+      <div class="col-lg-5 fw-bold" v-if="!showBillingMethod">
+        <span v-for="(data, i) in billingMethod" :key="i">
+          <template v-if="data.selected">
+            {{ data.text.concat(", ") }}
+          </template>
+        </span>
+        <i
+          class="fa fa-solid fa-pen text-primary ms-4"
+          @click="showBillingMethod = true"
+        ></i>
       </div>
     </div>
 
-    <div class="mt-6 ms-6">
+    <div class="ms-2 pb-8" v-if="showBillingMethod">
       <multi-checkBox :data="billingMethod" @update="updateBillingMethod" />
+      <i
+        class="fa fa-check text-primary ms-4"
+        @click="
+          showBillingMethod = false;
+          saveFrequncyAndTiming();
+        "
+      ></i>
     </div>
 
-    <div class="d-flex fs-7 mt-10">
-      <div class="fw-bolder">
+    <div class="row pb-8 g-0">
+      <div class="col-lg-10 fw-bolder">
         For {{ response.feeTypeName }}, what billing timing do you want to
         default for new accounts?
       </div>
-      <div class="ms-5">
-        <i class="fa fa-question-circle fs-4 text-dark"></i>
+      <div class="col-lg-2 fw-bold" v-if="!showDefaultBillingMethod">
+        <span v-for="(data, i) in defaultBillingMethod" :key="i">
+          <template v-if="data.selected">
+            {{ data.text }}
+          </template>
+        </span>
+        <i
+          class="fa fa-solid fa-pen text-primary ms-4"
+          @click="showDefaultBillingMethod = true"
+        ></i>
       </div>
     </div>
-    <div class="mt-6 ms-6">
+
+    <div class="ms-2 pb-8" v-if="showDefaultBillingMethod">
       <single-checkBox
         :data="defaultBillingMethod"
         :value="request.defaultBillingMethod"
         @update="updateDefaultBillingMethod"
       />
+      <i
+        class="fa fa-check text-primary ms-4"
+        @click="
+          showDefaultBillingMethod = false;
+          saveFrequncyAndTiming();
+        "
+      ></i>
     </div>
 
     <template v-if="isQuarterlySelected">
-      <div class="d-flex fs-7 mt-10">
-        <div class="fw-bolder">
+      <div class="row pb-8 g-0">
+        <div class="col-lg-8 fw-bolder">
           Do you bill your full-quarter {{ response.feeTypeName }} during
           off-cycle months?
         </div>
-        <div class="ms-5">
-          <i class="fa fa-question-circle fs-4 text-dark"></i>
+        <div class="col-lg-4 fw-bold" v-if="!showOffsetCycleFlag">
+          {{
+            request.offsetCycleFlag
+              ? "Yes, I bill quarterly on off-cycle months"
+              : "No"
+          }}
+          <i
+            class="fa fa-solid fa-pen text-primary ms-4"
+            @click="showOffsetCycleFlag = true"
+          ></i>
         </div>
       </div>
-      <div class="mt-6 ms-6">
+      <div class="ms-2 pb-8" v-if="showOffsetCycleFlag">
         <div class="form-check form-check-solid form-switch">
           <input
             class="form-check-input"
@@ -87,43 +156,44 @@
             for="flexSwitchCheckChecked"
             >Yes, I bill quarterly on off-cycle months</label
           >
+          <i
+            class="fa fa-solid fa-pen text-primary ms-4"
+            @click="showOffsetCycleFlag = false"
+          ></i>
         </div>
       </div>
     </template>
 
     <template v-if="request.offsetCycleFlag">
-      <div class="d-flex fs-7 mt-10">
-        <div class="fw-bolder">
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
           For {{ response.feeTypeName }}, what quarterly cycle do you want to
           default for new accounts?
         </div>
-        <div class="ms-5">
-          <i class="fa fa-question-circle fs-4 text-dark"></i>
+        <div class="col-lg-3 fw-bold" v-if="!showDefaultOffsetCycle">
+          <span v-for="(data, i) in defaultOffsetCycle" :key="i">
+            <template v-if="data.selected">
+              {{ data.text }}
+            </template>
+          </span>
+          <i
+            class="fa fa-solid fa-pen text-primary ms-4"
+            @click="showDefaultOffsetCycle = true"
+          ></i>
         </div>
       </div>
-      <div class="mt-6 ms-6">
+      <div class="ms-2 pb-8" v-if="showDefaultOffsetCycle">
         <single-checkBox
           :data="defaultOffsetCycle"
           :value="request.defaultOffsetCycle"
           @update="updateDefaultOffsetCycle"
         />
+        <i
+          class="fa fa-solid fa-pen text-primary ms-4"
+          @click="showDefaultOffsetCycle = false"
+        ></i>
       </div>
     </template>
-
-    <div class="d-flex justify-content-between mt-10">
-      <button class="btn btn-secondary" @click="prev">Back</button>
-      <button
-        class="btn me-10"
-        :class="{
-          'btn-secondary': !formValidation,
-          'btn-primary': formValidation,
-        }"
-        :disabled="!formValidation"
-        @click="saveFrequncyAndTiming"
-      >
-        Continue
-      </button>
-    </div>
   </div>
 </template>
 <script lang="ts">
@@ -153,7 +223,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class AdvisoryAndSubscription extends Vue {
+export default class FrequencyAdvisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
 
@@ -166,7 +236,15 @@ export default class AdvisoryAndSubscription extends Vue {
   public defaultBillingMethod: Array<ListItem> = [];
   public defaultOffsetCycle: Array<ListItem> = [];
 
+  public showBillingFrequency: boolean = false;
+  public showDefaultFrequency: boolean = false;
+  public showBillingMethod: boolean = false;
+  public showDefaultBillingMethod: boolean = false;
+  public showOffsetCycleFlag: boolean = false;
+  public showDefaultOffsetCycle: boolean = false;
+
   created() {
+    console.log(this.response);
     this.billingFrequency = Object.entries(BillingFrequency).map(
       ([key]) =>
         new ListItem(
@@ -217,19 +295,22 @@ export default class AdvisoryAndSubscription extends Vue {
   }
 
   public saveFrequncyAndTiming() {
-    this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.feeTypeName = this.response.feeTypeName;
-    this.request.onboardingFeeTypeId = this.response.id;
-    this.request.aumFeeTypeFlag = this.response.aumFlag;
+    console.log(this.request);
+    if (this.formValidation) {
+      this.request.firmId = this.store.getters.selectedFirmId;
+      this.request.feeTypeName = this.response.feeTypeName;
+      this.request.onboardingFeeTypeId = this.response.id;
+      this.request.aumFeeTypeFlag = this.response.aumFlag;
 
-    this.service
-      ?.saveFrequncyAndTiming(this.request)
-      .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      this.service
+        ?.saveFrequncyAndTiming(this.request)
+        .then((response) => {
+          if (response.status == "SUCCESS") this.$emit("next");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 
   public updatebillingFrequency(billingFrequency: Array<ListItem>) {
@@ -264,13 +345,20 @@ export default class AdvisoryAndSubscription extends Vue {
       );
 
     if (
+      this.request.defaultBillingFrequency == "" ||
+      this.request.defaultBillingFrequency == null
+    ) {
+      this.request.defaultBillingFrequency =
+        this.defaultBillingFrequency[0].value;
+      this.defaultBillingFrequency[0].selected = true;
+    }
+
+    if (
       !this.defaultBillingFrequency.some((item) => {
         return item.text == "Don't Default";
       })
     )
-      this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultBillingFrequency.push(new ListItem("Don't Default", "NONE"));
 
     if (!this.isQuarterlySelected) {
       this.request.offsetCycleFlag = false;
@@ -304,13 +392,20 @@ export default class AdvisoryAndSubscription extends Vue {
     });
 
     if (
+      this.request.defaultBillingMethod == "" ||
+      this.request.defaultBillingMethod == null
+    ) {
+      this.request.defaultBillingMethod =
+        this.defaultBillingMethod[0].value;
+      this.defaultBillingMethod[0].selected = true;
+    }
+
+    if (
       !this.defaultBillingMethod.some((item) => {
         return item.text == "Don't Default";
       })
     )
-      this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));
 
     if (this.request.billingMethod.length == 0)
       this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
@@ -330,7 +425,7 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.defaultOffsetCycle = null;
     this.defaultOffsetCycle.forEach((item: ListItem) => {
       item.selected = false;
-    })
+    });
   }
 
   public updateDefaultOffsetCycle(defaultOffsetCycle: string) {
@@ -358,9 +453,7 @@ export default class AdvisoryAndSubscription extends Vue {
           )
       );
     else
-      this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultBillingFrequency.push(new ListItem("Don't Default", "NONE"));
 
     this.defaultBillingFrequency.forEach((item) => {
       if (response.defaultBillingFrequency == item.value) item.selected = true;
@@ -383,10 +476,7 @@ export default class AdvisoryAndSubscription extends Vue {
             defaultBillingMethod[key as keyof typeof defaultBillingMethod]
           )
       );
-    else
-      this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+    else this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));
 
     this.defaultBillingMethod.forEach((item) => {
       if (response.defaultBillingMethod == item.value) item.selected = true;

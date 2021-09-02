@@ -58,6 +58,7 @@ export class ListItem {
 
     data: any;
     selected: boolean = false;
+    displayName: string;
     type: string;
     hidden: boolean = false;
 }

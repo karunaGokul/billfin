@@ -1,6 +1,6 @@
 <template>
-  <div class="tab-content pb-5 border-bottom">
-    <div class="tab-group mt-10">
+  <div class="tab-content pb-5 tab-content-sm__scroll border-bottom">
+    <div class="tab-group mt-5">
       <div
         class="
           tab-header

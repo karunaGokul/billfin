@@ -1,170 +1,92 @@
 <template>
-  <div class="tab-content tab-content-sm__scroll border-bottom">
-    <div class="mt-5">
-      <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
-        Fee Types
-        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-      </p>
+  <div class="tab-content tab-content-sm__scroll overflow-auto border-bottom">
+    <div class="p-8">
+      <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">Confirm your setup</p>
 
-      <div class="row g-0">
-        <div class="col-lg-5">
-          <div class="fw-bolder">What billing do you wish to setup?</div>
-          <div class="text-muted fs-8">Check all that apply</div>
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary">General</p>
+
+      <div
+        v-for="(item, index) in generalRequest"
+        :key="index"
+        class="row ps-4 pe-4 mt-5 pb-5"
+      >
+        <div class="col-lg-8">
+          <div class="fw-bolder">{{ item.displayName }}</div>
         </div>
-        <div class="col-lg-7">
-          <div class="form-check form-check-solid form-check-inline fs-7">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="request.billingType"
-              @change="updateBillingTypes"
-              value="AUM"
-            />
-            AUM Advisory
-          </div>
-          <div class="form-check form-check-solid form-check-inline fs-7">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="request.billingType"
-              @change="updateBillingTypes"
-              value="NON-AUM"
-            />
-            Non-AUM(e.g., subscriptions, one-time)
-          </div>
+        <div class="col-lg-4">
+          <template v-if="!item.selected">
+            {{ item.value }}
+            <i
+              class="fa fa-solid fa-pen text-primary ms-lg-4"
+              @click="item.selected = true"
+            ></i>
+          </template>
+          <template v-if="item.selected">
+            <div
+              class="input-group input-group-solid mb-2"
+              v-if="item.text != 'state'"
+            >
+              <input
+                type="text"
+                class="form-control text-start"
+                @blur="saveGeneral(item)"
+                v-model="item.value"
+              />
+            </div>
+            <div v-else>
+              <select
+                class="form-select form-select-solid"
+                @blur="saveGeneral(item)"
+                v-model="item.value"
+              >
+                <option selected value=""></option>
+                <option v-for="(item, i) in states" :key="i" :value="item">
+                  {{ item }}
+                </option>
+              </select>
+            </div>
+          </template>
         </div>
       </div>
 
-      <template v-if="showAUMAdvisory">
-        <div class="fw-bolder mt-10">
-          For your AUM-based advisory billing,which fees do you bill? Feel free
-          to edit descriptions as needed
-          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-        </div>
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary pt-5 border-top">
+        Frequency & Timing
+      </p>
 
-        <div class="d-flex mt-5 flex-wrap justify-content-between">
-          <div class="m-3" v-for="(item, index) in aumFeeTypes" :key="index">
-            <div class="d-flex align-items-center">
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="item.selected"
-                />
-              </div>
-              <div class="input-group input-group-solid mb-2">
-                <input
-                  type="text"
-                  class="form-control text-start"
-                  style="width: 280px"
-                  v-model="item.feeTypeName"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
+      <div
+        v-for="(item, index) in frequencyRequest.aumFeeTypes"
+        :key="index"
+        class="ps-4 pe-4"
+      >
+        <p class="fs-3 fw-bolder pb-3 mb-5 text-primary border-bottom">
+          {{ item.feeTypeName }}
+        </p>
 
-      <template v-if="showAUMAdvisoryFees.length > 1">
-        <div class="fw-bolder mt-10">
-          Do you bill your various AUM fees on different frequencies and/or
-          timing relative to each other?
-          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-        </div>
-        <div class="form-check form-check-solid form-switch mt-6">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="request.aumFeeTypes.commonFrequencyTimingFlag"
-          />
-          <label class="fs-7 text-muted form-check-label"
-            >Yes, my AUM-based fees can bill on different frequencies and/or
-            timing relative to each other.</label
-          >
-        </div>
-      </template>
+        <frequency-advisory :response="item" v-if="item" />
+      </div>
 
-      <template v-if="showAUMAdvisoryFees.length > 1">
-        <div class="fw-bolder mt-10">
-          Do you bill your various AUM fees based on different assest
-          methodologies relative to each other?
-          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-        </div>
-        <div class="form-check form-check-solid form-switch mt-6">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="request.aumFeeTypes.commonAssetMethodologyFlag"
-          />
-          <label class="fs-7 text-muted form-check-label"
-            >Yes, my AUM-based fees can bill based on different assest
-            methodologies relative to each other.</label
-          >
-        </div>
-      </template>
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary pt-5 border-top">
+        Methodologies
+      </p>
 
-      <template v-if="showNonAUMAdvisory">
-        <div class="fw-bolder mt-10">
-          For your non-AUM billing,which fees do you bill? Feel free to edit
-          descriptions as needed
-          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-        </div>
+      <div
+        v-for="(item, index) in methodologiesRequest.aumFeeTypes"
+        :key="index"
+        class="ps-4 pe-4"
+      >
+        <p
+          class="fs-3 fw-bolder pb-3 mb-5 text-primary border-bottom"
+          v-if="item.aumFlag"
+        >
+          {{ item.feeTypeName }}
+        </p>
 
-        <div class="d-flex mt-5 flex-wrap justify-content-between">
-          <div class="m-3" v-for="(item, index) in nonAUMFeeTypes" :key="index">
-            <div class="d-flex align-items-center">
-              <div class="form-check form-check-solid form-check-inline fs-7">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="item.selected"
-                />
-              </div>
-              <div class="input-group input-group-solid mb-2">
-                <input
-                  type="text"
-                  class="form-control text-start"
-                  style="width: 280px"
-                  v-model="item.feeTypeName"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <template v-if="showNonAUMAdvisoryFees.length > 1">
-        <div class="fw-bolder mt-10">
-          Do you bill your various non-AUM fees on different frequencies and/or
-          timing relative to each other?
-          <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
-        </div>
-        <div class="form-check form-check-solid form-switch mt-6">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="request.nonAUMFeeTypes.commonFrequencyTimingFlag"
-          />
-          <label class="fs-7 text-muted form-check-label"
-            >Yes, my non-AUM fees can bill on different frequencies and/or
-            timing relative to each other.</label
-          >
-        </div>
-      </template>
+        <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
+      </div>
 
       <div class="d-flex justify-content-between mt-10">
         <button class="btn btn-secondary" @click="back">Back</button>
-        <button
-          class="btn me-10"
-          :class="{
-            'btn-secondary': !formValidation,
-            'btn-primary': formValidation,
-          }"
-          :disabled="!formValidation"
-          @click="confirm"
-        >
-          Continue
-        </button>
+        <button class="btn me-10 btn-primary" @click="confirm">Continue</button>
       </div>
     </div>
   </div>
@@ -174,97 +96,85 @@ import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
-
 import { IFirmService } from "@/service";
 import {
   firmRequestModel,
-  feeTypes,
-  feeTypesRequestModel,
+  generalBoardRequestModel,
+  generalBoardResponseModel,
+  frequencyRequestModel,
+  ListItem,
 } from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
+import FrequencyAdvisory from "./FrequencyAdvisory.vue";
+import MethodologiesAdvisory from "./MethodologiesAdvisory.vue";
+
 @Options({
   components: {
     MultiCheckBox,
     SelectBox,
+    FrequencyAdvisory,
+    MethodologiesAdvisory,
   },
 })
 export default class ConfirmBoard extends Vue {
   @Inject("firmService") service: IFirmService;
-
-  public request = new feeTypesRequestModel();
-
   public store = useStore();
+  public request = new generalBoardRequestModel();
 
-  public aumFeeTypes: Array<feeTypes> = [];
-  public nonAUMFeeTypes: Array<feeTypes> = [];
+  public generalRequest: Array<ListItem> = [];
+  public frequencyRequest: frequencyRequestModel = new frequencyRequestModel();
+  public methodologiesRequest: frequencyRequestModel =
+    new frequencyRequestModel();
 
-  created() {
-    //this.getFeeType();
+  mounted() {
+    this.request.state = "Massachusetts";
+    this.getGeneralDetails();
+    this.getFrequncyAndTiming();
+    this.getMethodologies();
   }
 
-  private getFeeType() {
-    this.service.getFeeType().then((response) => {
-      response.map((item) => {
-        if (item.aumFlag) this.aumFeeTypes.push(item);
-        else this.nonAUMFeeTypes.push(item);
-      });
-      this.getFeeTypesSetup();
-    });
-  }
-
-  private getFeeTypesSetup() {
+  public getGeneralDetails() {
     const request = new firmRequestModel();
     request.firmId = this.store.getters.selectedFirmId;
-    this.service.getFeeTypesSetup(request).then((response) => {
-      this.request.billingType = response.billingType;
-      this.bindValues(response);
-    });
-  }
+    request.firmDomain = this.store.getters.selectedFirmDomain;
+    request.firmName = this.store.getters.selectedFirmName;
+    this.service
+      ?.getGeneralDetails(request)
+      .then((response) => {
+        this.request = response;
+        let item = new ListItem("company", this.request.company);
+        item.displayName = "Company";
+        this.generalRequest.push(item);
 
-  public saveFeeTypes() {
-    this.request.aumFeeTypes.feeTypes = [];
-    this.request.nonAUMFeeTypes.feeTypes = [];
+        item = new ListItem("companyPhone", this.request.companyPhone);
+        item.displayName = "Company Phone";
+        this.generalRequest.push(item);
 
-    this.aumFeeTypes.forEach((item) => {
-      if (item.selected)
-        this.request.aumFeeTypes.feeTypes.push({
-          feeTypeCode: item.feeTypeCode,
-          feeTypeName: item.feeTypeName,
-          aumFlag: item.aumFlag,
-          id: item.id,
-        });
-    });
+        item = new ListItem("companyDomain", this.request.companyDomain);
+        item.displayName = "Company Site";
+        this.generalRequest.push(item);
 
-    this.nonAUMFeeTypes.forEach((item) => {
-      if (item.selected)
-        this.request.nonAUMFeeTypes.feeTypes.push({
-          feeTypeCode: item.feeTypeCode,
-          feeTypeName: item.feeTypeName,
-          aumFlag: item.aumFlag,
-          id: item.id,
-        });
-    });
+        item = new ListItem("companyAddress1", this.request.companyAddress1);
+        item.displayName = "Company Address";
+        this.generalRequest.push(item);
 
-    //if(this.request.nonAUMFeeTypes.feeTypes.length <= 0) this.request.nonAUMFeeTypes = null;
+        item = new ListItem("city", this.request.city);
+        item.displayName = "City";
+        this.generalRequest.push(item);
 
-    this.request.firmId = this.store.getters.selectedFirmId;
-    this.service.saveFeeTypesSetup(this.request).then((response) => {
-      if (response.status == "SUCCESS") this.$emit("next");
-    });
-  }
+        item = new ListItem("state", this.request.state);
+        item.displayName = "State";
+        this.generalRequest.push(item);
 
-  public updateBillingTypes() {
-    if (!this.showNonAUMAdvisory)
-      this.nonAUMFeeTypes.forEach((item: feeTypes) => {
-        item.selected = false;
-      });
-
-    if (!this.showAUMAdvisory)
-      this.aumFeeTypes.forEach((item: feeTypes) => {
-        item.selected = false;
+        item = new ListItem("postalCode", this.request.postalCode);
+        item.displayName = "Postal Code";
+        this.generalRequest.push(item);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -272,81 +182,118 @@ export default class ConfirmBoard extends Vue {
     this.$emit("prev");
   }
 
-  public confirm() {
-      console.log('close the model');
-      //this.$emit("next");
+  public saveGeneral(data: ListItem) {
+    data.selected = false;
+
+    this.generalRequest.forEach((item) => {
+      if (item.text == "company") this.request.company = item.value;
+      if (item.text == "companyPhone") this.request.companyPhone = item.value;
+      if (item.text == "companyDomain") this.request.companyDomain = item.value;
+      if (item.text == "companyAddress1")
+        this.request.companyAddress1 = item.value;
+      if (item.text == "city") this.request.city = item.value;
+      if (item.text == "state") this.request.state = item.value;
+      if (item.text == "postalCode") this.request.postalCode = item.value;
+    });
+
+    this.request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      ?.saveGeneral(this.request)
+      .then((response: generalBoardResponseModel) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  private bindValues(response: feeTypesRequestModel) {
-    if (response.aumFeeTypes) {
-      this.request.aumFeeTypes = response.aumFeeTypes;
-      for (var i in response.aumFeeTypes.feeTypes) {
-        if (
-          response.aumFeeTypes.feeTypes[i].feeTypeCode ==
-          this.aumFeeTypes[i].feeTypeCode
-        )
-          this.aumFeeTypes[i].selected = true;
-      }
-    }
-
-    if (response.nonAUMFeeTypes) {
-      this.request.nonAUMFeeTypes = response.nonAUMFeeTypes;
-      for (var j in response.nonAUMFeeTypes.feeTypes) {
-        if (
-          response.nonAUMFeeTypes.feeTypes[j].feeTypeCode ==
-          this.nonAUMFeeTypes[j].feeTypeCode
-        )
-          this.nonAUMFeeTypes[j].selected = true;
-      }
-    }
+  private getFrequncyAndTiming() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getFrequencyAndTiming(request)
+      .then((response) => {
+        this.frequencyRequest = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  get showAUMAdvisory() {
-    return this.request.billingType.includes("AUM");
+  private getMethodologies() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+
+    this.service
+      ?.getMethodologies(request)
+      .then((response) => {
+        this.methodologiesRequest = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  get showNonAUMAdvisory() {
-    return this.request.billingType.includes("NON-AUM");
-  }
-
-  get showAUMAdvisoryFees() {
-    const data: Array<string> = this.aumFeeTypes.reduce(
-      (a, o) => (o.selected && a.push(o.feeTypeName), a),
-      []
-    );
-    return data;
-  }
-
-  get showNonAUMAdvisoryFees() {
-    const data: Array<string> = this.nonAUMFeeTypes.reduce(
-      (a, o) => (o.selected && a.push(o.feeTypeName), a),
-      []
-    );
-    return data;
-  }
-
-  get formValidation() {
-    let valid = false;
-    if (this.request.billingType.length == 2) {
-      if (
-        this.showAUMAdvisoryFees.length > 0 &&
-        this.showNonAUMAdvisoryFees.length > 0
-      )
-        valid = true;
-    } else if (this.request.billingType.length > 0) {
-      if (
-        this.request.billingType.includes("AUM") &&
-        this.showAUMAdvisoryFees.length > 0
-      )
-        valid = true;
-      else if (
-        this.request.billingType.includes("NON-AUM") &&
-        this.showNonAUMAdvisoryFees.length > 0
-      )
-        valid = true;
-    }
-
-    return valid;
-  }
+  public states: Array<string> = [
+    "Alabama",
+    "Alaska",
+    "American Samoa",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "District Of Columbia",
+    "Federated States Of Micronesia",
+    "Florida",
+    "Georgia",
+    "Guam",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Marshall Islands",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Northern Mariana Islands",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Palau",
+    "Pennsylvania",
+    "Puerto Rico",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virgin Islands",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming",
+  ];
 }
 </script>

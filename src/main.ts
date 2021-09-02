@@ -1,5 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+
+import { ListItem } from "./model";
+
 import router from "./router";
 import store from "./store";
 
@@ -15,8 +18,10 @@ app.mount("#app");
 app.config.globalProperties.$filters = {
   lineDisplay(data: Array<string>) {
     let value: string = "";
-    if (!data) value =  "";
-    else    value = data.slice(0, data.length - 1).join(", ") + " and " + data.slice(-1);
+    if (!data) value = "";
+    else
+      value =
+        data.slice(0, data.length - 1).join(", ") + " and " + data.slice(-1);
 
     return value;
   }

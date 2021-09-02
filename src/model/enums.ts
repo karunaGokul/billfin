@@ -9,7 +9,7 @@ export enum defaultBillingFrequency {
     Quarterly = "QUARTERLY",
     "Semi-Annually" =  "SEMI_ANNUALLY",
     Annually = "ANNUALLY",
-    "Don't Default"= "DONT_DEFAULT"
+    "Don't Default"= "NONE"
 }
 export enum billingMethod {
     Advance = "ADVANCE",
@@ -18,13 +18,13 @@ export enum billingMethod {
 export enum defaultBillingMethod {
     Advance = "ADVANCE",
     Arrears = "ARREARS",
-    "Don't Default"= "DONT_DEFAULT",
+    "Don't Default"= "NONE",
 }
 export enum defaultOffsetCycle {
     "Jan-Apr-Jul-Oct" = "JAN_APR_JUL_OCT",
     "Feb-May-Aug-Nov" = "FEB_MAY_AUG_NOV",
-    "Mar-Jun-Seb-Dec" = "MAR_JUN_SEP_DEC",
-    "Don't default" = "DONT_DEFAULT"
+    "Mar-Jun-Sep-Dec" = "MAR_JUN_SEP_DEC",
+    "Don't default" = "NONE"
 }
 export enum PayorType {
 	INVESTOR_CLIENT,INSTITUTIONAL
@@ -36,7 +36,7 @@ export enum ValuationMethodType {
 export enum defaultValuationMethod {
     "Period End" = "PERIOD_END",
     "Average Daily Balance" = "AVERAGE_DAILY_BALANCE",
-    "Don't default" = "DONT_DEFAULT"
+    "Don't default" = "NONE"
 }
 export enum initialBillingValuationMethod {
     "Period End" = "PERIOD_END", 

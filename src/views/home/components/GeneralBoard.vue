@@ -1,81 +1,83 @@
 <template>
-  <div class="tab-content tab-content-sm__scroll border-bottom">
+  <div class="tab-content">
     <div class="w-75 mx-auto mt-10">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
         General Information
         <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
       </p>
 
-      <form @submit.prevent="saveGeneral">
-        <TextInput
-          label="Company"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.company"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="Company Phone"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyPhone"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="Company Domain"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyDomain"
-          :validation="['required']"
-          :readonly="true"
-        />
-        <TextInput
-          label="Company Address"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.companyAddress1"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <TextInput
-          label="City"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.city"
-          :validation="['required']"
-          :readonly="false"
-        />
-        <SelectBox
-          label="State"
-          :controls="v$.request.state"
-          :data="states"
-          :validation="['required']"
-        />
-        <TextInput
-          label="Postal Code"
-          inputType="text"
-          formFieldType="inputInline"
-          :controls="v$.request.postalCode"
-          :validation="['required', 'numeric']"
-          :readonly="false"
-        />
-        
-        <div class="d-flex align-items-center justify-content-end pb-5">
-          <button
-            type="submit"
-            class="btn"
-            :class="{
-              'btn-secondary': v$.request.$invalid,
-              'btn-primary': !v$.request.$invalid,
-            }"
-            :disabled="v$.request.$invalid"
-          >
-            Continue
-          </button>
-        </div>
-      </form>
+      <div class="ps-4 pe-4 border-bottom tab-content__scroll overflow-auto">
+        <form @submit.prevent="saveGeneral">
+          <TextInput
+            label="Company"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.company"
+            :validation="['required']"
+            :readonly="false"
+          />
+          <TextInput
+            label="Company Phone"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.companyPhone"
+            :validation="['required', 'phone', 'minLength', 'phoneLength']"
+            :readonly="false"
+          />
+          <TextInput
+            label="Company Domain"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.companyDomain"
+            :validation="['required']"
+            :readonly="true"
+          />
+          <TextInput
+            label="Company Address"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.companyAddress1"
+            :validation="['required']"
+            :readonly="false"
+          />
+          <TextInput
+            label="City"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.city"
+            :validation="['required']"
+            :readonly="false"
+          />
+          <SelectBox
+            label="State"
+            :controls="v$.request.state"
+            :data="states"
+            :validation="['required']"
+          />
+          <TextInput
+            label="Postal Code"
+            inputType="text"
+            formFieldType="inputInline"
+            :controls="v$.request.postalCode"
+            :validation="['required', 'numeric']"
+            :readonly="false"
+          />
+
+          <div class="d-flex align-items-center justify-content-end pb-5">
+            <button
+              type="submit"
+              class="btn"
+              :class="{
+                'btn-secondary': v$.request.$invalid,
+                'btn-primary': !v$.request.$invalid,
+              }"
+              :disabled="v$.request.$invalid"
+            >
+              Continue
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -84,7 +86,7 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
-import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
+import { required, numeric, minLength } from "@vuelidate/validators";
 
 import { useStore } from "vuex";
 import { IFirmService } from "@/service";
@@ -92,7 +94,11 @@ import { IFirmService } from "@/service";
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
-import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel } from "@/model";
+import {
+  generalBoardRequestModel,
+  generalBoardResponseModel,
+  firmRequestModel,
+} from "@/model";
 
 @Options({
   components: {
@@ -102,17 +108,41 @@ import { generalBoardRequestModel, generalBoardResponseModel, firmRequestModel }
   validations: {
     request: {
       company: { required },
-      companyPhone: { required },
+      companyPhone: {
+        required,
+        phone: (value: any) => {
+          let validation = false;
+          if (
+            value &&
+            value != "" &&
+            /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)
+          )
+            validation = true;
+          else if (value && value != "" && /^[0-9]*\d$/.test(value))
+            validation = true;
+          return validation;
+        },
+        minLength: minLength(10),
+        phoneLength: (value: any) => {
+          let validation = false;
+          if (
+            (value && value != "" && value.length == 10) ||
+            value.length == 12
+          )
+            validation = true;
+          return validation;
+        },
+      },
       companyDomain: { required },
       companyAddress1: { required },
       city: { required },
       state: { required },
-      postalCode: { required, numeric }
+      postalCode: { required, numeric },
     },
   },
 })
 export default class GeneralBoard extends Vue {
-  @Inject("firmService") service: IFirmService | undefined;
+  @Inject("firmService") service: IFirmService;
 
   public v$: any = setup(() => this.validate());
   public store = useStore();
@@ -213,7 +243,7 @@ export default class GeneralBoard extends Vue {
       this.service
         ?.saveGeneral(this.request)
         .then((response: generalBoardResponseModel) => {
-          if(response.status == 'SUCCESS') {
+          if (response.status == "SUCCESS") {
             this.$emit("next");
           }
         })
