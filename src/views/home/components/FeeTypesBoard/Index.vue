@@ -6,7 +6,7 @@
         <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
       </p>
 
-      <div class="ps-4 pe-4 tab-content-lg__scroll overflow-auto">
+      <div class="ps-4 pe-4 tab-content-lg__scroll overflow-auto mt-10">
         <div class="row g-0">
           <div class="col-lg-5">
             <div class="fw-bolder">What billing do you wish to setup?</div>
