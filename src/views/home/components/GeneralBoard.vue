@@ -1,6 +1,6 @@
 <template>
-  <div class="tab-content">
-    <div class="w-75 mx-auto mt-10">
+  <div class="tab-content d-flex justify-content-center align-items-center">
+    <div class="w-75 mt-10">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
         General Information
         <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>

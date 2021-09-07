@@ -1,6 +1,6 @@
 <template>
   <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
-    <div class="d-flex fs-7 mt-5">
+    <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
         What valuation methodologies do you use for AUM advisory billing?
       </div>
@@ -77,7 +77,7 @@
       />
     </div>
 
-    <div class="d-flex justify-content-between mt-10">
+    <div class="d-flex justify-content-between mt-10 mb-5">
       <button class="btn btn-secondary" @click="prev">Back</button>
       <button
         class="btn me-10"
@@ -179,7 +179,6 @@ export default class Advisory extends Vue {
 
   @Watch("response")
   private getMethodologies() {
-
     if (this.response.aumDetails) {
       this.request = this.response.aumDetails;
       this.bindValues(this.response.aumDetails);
@@ -213,23 +212,24 @@ export default class Advisory extends Vue {
     this.defaultValuationMethod = [];
 
     valuationMethod.forEach((item) => {
-      if(item.selected) {
+      if (item.selected) {
         this.request.valuationMethod.push(item.value);
-        const data = new ListItem(
-          item.text,
-          item.value
-        );
+        const data = new ListItem(item.text, item.value);
         if (this.request.defaultValuationMethod == item.value)
           data.selected = true;
         this.defaultValuationMethod.push(data);
       }
     });
 
-    this.defaultValuationMethod.forEach((item: ListItem) => {
-      if(item.value != this.request.defaultValuationMethod) this.request.defaultValuationMethod = '';
-    })
+    this.defaultValuationMethod.push(new ListItem("Don't Default", "NONE"));
 
-    if (this.request.valuationMethod.length == 0)
+    this.defaultValuationMethod.forEach((item: ListItem) => {
+      if (item.value != this.request.defaultValuationMethod)
+        this.request.defaultValuationMethod = "";
+    });
+
+    if (this.request.valuationMethod.length == 0) {
+      this.defaultValuationMethod = [];
       this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
         ([key]) =>
           new ListItem(
@@ -237,15 +237,8 @@ export default class Advisory extends Vue {
             defaultValuationMethod[key as keyof typeof defaultValuationMethod]
           )
       );
-
-    if (
-      !this.defaultValuationMethod.some((item) => {
-        return item.text == "Don't Default";
-      })
-    )
-      this.defaultValuationMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+    }
+      
   }
 
   public updateDefaultValuationMethod(defaultValuationMethod: string) {
@@ -287,9 +280,7 @@ export default class Advisory extends Vue {
           )
       );
     else
-      this.defaultValuationMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultValuationMethod.push(new ListItem("Don't Default", "NONE"));
 
     this.defaultValuationMethod.forEach((item) => {
       if (

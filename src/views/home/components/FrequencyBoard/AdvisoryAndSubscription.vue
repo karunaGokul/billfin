@@ -1,6 +1,6 @@
 <template>
   <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
-    <div class="d-flex fs-7">
+    <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
         How frequently do you bill your {{ response.feeTypeName }}?
       </div>
@@ -110,7 +110,7 @@
       </div>
     </template>
 
-    <div class="d-flex justify-content-between mt-10">
+    <div class="d-flex justify-content-between mt-10 mb-5">
       <button class="btn btn-secondary" @click="prev">Back</button>
       <button
         class="btn me-10"
@@ -247,12 +247,15 @@ export default class AdvisoryAndSubscription extends Vue {
       }
     });
 
+    this.defaultBillingFrequency.push(new ListItem("Don't Default", "NONE"));
+
     this.defaultBillingFrequency.forEach((item) => {
       if (item.value != this.request.defaultBillingFrequency)
         this.request.defaultBillingFrequency = "";
     });
 
-    if (this.request.billingFrequency.length == 0)
+    if (this.request.billingFrequency.length == 0) {
+      this.defaultBillingFrequency = [];
       this.defaultBillingFrequency = Object.entries(
         defaultBillingFrequency
       ).map(
@@ -262,15 +265,7 @@ export default class AdvisoryAndSubscription extends Vue {
             defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
           )
       );
-
-    if (
-      !this.defaultBillingFrequency.some((item) => {
-        return item.text == "Don't Default";
-      })
-    )
-      this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "NONE")
-      );
+    }
 
     if (!this.isQuarterlySelected) {
       this.request.offsetCycleFlag = false;
@@ -308,9 +303,7 @@ export default class AdvisoryAndSubscription extends Vue {
         return item.text == "Don't Default";
       })
     )
-      this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));
 
     if (this.request.billingMethod.length == 0)
       this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
@@ -330,7 +323,7 @@ export default class AdvisoryAndSubscription extends Vue {
     this.request.defaultOffsetCycle = null;
     this.defaultOffsetCycle.forEach((item: ListItem) => {
       item.selected = false;
-    })
+    });
   }
 
   public updateDefaultOffsetCycle(defaultOffsetCycle: string) {
@@ -358,9 +351,7 @@ export default class AdvisoryAndSubscription extends Vue {
           )
       );
     else
-      this.defaultBillingFrequency.push(
-        new ListItem("Don't Default", "NONE")
-      );
+      this.defaultBillingFrequency.push(new ListItem("Don't Default", "NONE"));
 
     this.defaultBillingFrequency.forEach((item) => {
       if (response.defaultBillingFrequency == item.value) item.selected = true;
@@ -383,10 +374,7 @@ export default class AdvisoryAndSubscription extends Vue {
             defaultBillingMethod[key as keyof typeof defaultBillingMethod]
           )
       );
-    else
-      this.defaultBillingMethod.push(
-        new ListItem("Don't Default", "NONE")
-      );
+    else this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));
 
     this.defaultBillingMethod.forEach((item) => {
       if (response.defaultBillingMethod == item.value) item.selected = true;

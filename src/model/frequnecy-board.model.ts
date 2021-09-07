@@ -44,4 +44,6 @@ export class aumDetails {
 
     firmMinimumFee:boolean = false;
     firmMaximumFee:boolean = false;
+
+    aumAdvisoryBill: Array<string> | Array<any> = [];
 }

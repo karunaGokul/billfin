@@ -3,53 +3,78 @@
     <div class="p-8">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">Confirm your setup</p>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary">General</p>
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted">General</p>
 
-      <div
-        v-for="(item, index) in generalRequest"
-        :key="index"
-        class="row ps-4 pe-4 mt-5 pb-5"
-      >
+      <div class="row ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-8">
-          <div class="fw-bolder">{{ item.displayName }}</div>
+          <div class="fw-bolder">Company</div>
         </div>
         <div class="col-lg-4">
-          <template v-if="!item.selected">
-            {{ item.value }}
-            <i
-              class="fa fa-solid fa-pen text-primary ms-lg-4"
-              @click="item.selected = true"
-            ></i>
-          </template>
-          <template v-if="item.selected">
-            <div
-              class="input-group input-group-solid mb-2"
-              v-if="item.text != 'state'"
-            >
-              <input
-                type="text"
-                class="form-control text-start"
-                @blur="saveGeneral(item)"
-                v-model="item.value"
-              />
-            </div>
-            <div v-else>
-              <select
-                class="form-select form-select-solid"
-                @blur="saveGeneral(item)"
-                v-model="item.value"
-              >
-                <option selected value=""></option>
-                <option v-for="(item, i) in states" :key="i" :value="item">
-                  {{ item }}
-                </option>
-              </select>
-            </div>
-          </template>
+          {{ generalResponse.company }}
         </div>
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary pt-5 border-top">
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">Company Phone</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.companyPhone }}
+        </div>
+      </div>
+
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">Company Site</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.companyDomain }}
+        </div>
+      </div>
+
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">Company Address</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.companyAddress1 }}
+        </div>
+      </div>
+
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">City</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.city }}
+        </div>
+      </div>
+
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">State</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.state }}
+        </div>
+      </div>
+
+      <div class="row ps-4 pe-4 mt-5 pb-5">
+        <div class="col-lg-8">
+          <div class="fw-bolder">Postal Code</div>
+        </div>
+        <div class="col-lg-4">
+          {{ generalResponse.postalCode }}
+        </div>
+      </div>
+
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
+        Frequency & Timing
+      </p>
+
+      <fee-types-advisory />
+
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
         Frequency & Timing
       </p>
 
@@ -58,14 +83,14 @@
         :key="index"
         class="ps-4 pe-4"
       >
-        <p class="fs-3 fw-bolder pb-3 mb-5 text-primary border-bottom">
+        <p class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom">
           {{ item.feeTypeName }}
         </p>
 
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-primary pt-5 border-top">
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
         Methodologies
       </p>
 
@@ -75,13 +100,29 @@
         class="ps-4 pe-4"
       >
         <p
-          class="fs-3 fw-bolder pb-3 mb-5 text-primary border-bottom"
+          class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
           v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
         </p>
 
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
+      </div>
+
+      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
+        Adjustments
+      </p>
+
+      <div
+        v-for="(item, index) in adjustmentsResponse.aumFeeTypes"
+        :key="index"
+        class="ps-4 pe-4"
+      >
+        <p class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom" v-if="item.aumFlag">
+          {{ item.feeTypeName }}
+        </p>
+
+        <adjustments-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
       <div class="d-flex justify-content-between mt-10">
@@ -100,40 +141,41 @@ import { IFirmService } from "@/service";
 import {
   firmRequestModel,
   generalBoardRequestModel,
-  generalBoardResponseModel,
-  frequencyRequestModel,
-  ListItem,
+  frequencyRequestModel
 } from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
+import FeeTypesAdvisory from "./FeeTypesAdvisory.vue";
 import FrequencyAdvisory from "./FrequencyAdvisory.vue";
 import MethodologiesAdvisory from "./MethodologiesAdvisory.vue";
+import AdjustmentsAdvisory from "./AdjustmentsAdvisory.vue";
 
 @Options({
   components: {
     MultiCheckBox,
     SelectBox,
+    FeeTypesAdvisory,
     FrequencyAdvisory,
     MethodologiesAdvisory,
+    AdjustmentsAdvisory
   },
 })
 export default class ConfirmBoard extends Vue {
   @Inject("firmService") service: IFirmService;
   public store = useStore();
-  public request = new generalBoardRequestModel();
+  public generalResponse = new generalBoardRequestModel();
 
-  public generalRequest: Array<ListItem> = [];
   public frequencyRequest: frequencyRequestModel = new frequencyRequestModel();
-  public methodologiesRequest: frequencyRequestModel =
-    new frequencyRequestModel();
+  public methodologiesRequest: frequencyRequestModel = new frequencyRequestModel();
+  public adjustmentsResponse: frequencyRequestModel = new frequencyRequestModel();
 
   mounted() {
-    this.request.state = "Massachusetts";
     this.getGeneralDetails();
     this.getFrequncyAndTiming();
     this.getMethodologies();
+    this.getAdjustments();
   }
 
   public getGeneralDetails() {
@@ -144,34 +186,7 @@ export default class ConfirmBoard extends Vue {
     this.service
       ?.getGeneralDetails(request)
       .then((response) => {
-        this.request = response;
-        let item = new ListItem("company", this.request.company);
-        item.displayName = "Company";
-        this.generalRequest.push(item);
-
-        item = new ListItem("companyPhone", this.request.companyPhone);
-        item.displayName = "Company Phone";
-        this.generalRequest.push(item);
-
-        item = new ListItem("companyDomain", this.request.companyDomain);
-        item.displayName = "Company Site";
-        this.generalRequest.push(item);
-
-        item = new ListItem("companyAddress1", this.request.companyAddress1);
-        item.displayName = "Company Address";
-        this.generalRequest.push(item);
-
-        item = new ListItem("city", this.request.city);
-        item.displayName = "City";
-        this.generalRequest.push(item);
-
-        item = new ListItem("state", this.request.state);
-        item.displayName = "State";
-        this.generalRequest.push(item);
-
-        item = new ListItem("postalCode", this.request.postalCode);
-        item.displayName = "Postal Code";
-        this.generalRequest.push(item);
+        this.generalResponse = response;
       })
       .catch((err) => {
         console.log(err);
@@ -180,31 +195,6 @@ export default class ConfirmBoard extends Vue {
 
   public back() {
     this.$emit("prev");
-  }
-
-  public saveGeneral(data: ListItem) {
-    data.selected = false;
-
-    this.generalRequest.forEach((item) => {
-      if (item.text == "company") this.request.company = item.value;
-      if (item.text == "companyPhone") this.request.companyPhone = item.value;
-      if (item.text == "companyDomain") this.request.companyDomain = item.value;
-      if (item.text == "companyAddress1")
-        this.request.companyAddress1 = item.value;
-      if (item.text == "city") this.request.city = item.value;
-      if (item.text == "state") this.request.state = item.value;
-      if (item.text == "postalCode") this.request.postalCode = item.value;
-    });
-
-    this.request.firmId = this.store.getters.selectedFirmId;
-    this.service
-      ?.saveGeneral(this.request)
-      .then((response: generalBoardResponseModel) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
   private getFrequncyAndTiming() {
@@ -228,6 +218,20 @@ export default class ConfirmBoard extends Vue {
       ?.getMethodologies(request)
       .then((response) => {
         this.methodologiesRequest = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private getAdjustments() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+
+    this.service
+      ?.getAdjustments(request)
+      .then((response) => {
+        this.adjustmentsResponse = response;
       })
       .catch((err) => {
         console.log(err);

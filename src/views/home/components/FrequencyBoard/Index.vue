@@ -13,10 +13,10 @@
         "
       >
         <div class="col-5">
-          <div class="tab-header__title fw-bolder fs-4">Frequency & Timing</div>
+          <div class="tab-header__title fw-bolder fs-3 pb-5">Frequency & Timing</div>
         </div>
         <div class="col-7">
-          <ul class="tab-header__scroll">
+          <ul class="tab-header__scroll mt-4">
             <li
               v-for="(item, index) in request.aumFeeTypes"
               :key="index"

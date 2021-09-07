@@ -9,26 +9,32 @@
       </div>
     </div>
     <div class="d-flex align-items-center mt-6 ms-6">
-      <div class="form-check form-check-solid form-switch">
+      <div class="form-check form-check-solid form-switch mt-2 lh-lg">
         <input
           class="form-check-input"
           type="checkbox"
           v-model="request.firmMinimumFee"
         />
-        <label class="fs-7 text-muted form-check-label"
-          >No firm-wide minimum fees</label
-        >
+        <label class="fs-7 text-muted form-check-label">{{
+          request.firmMinimumFee
+            ? "Yes, I normally charge a minimum fee of "
+            : "No firm-wide minimum fees"
+        }}</label>
       </div>
       <template v-if="request.firmMinimumFee">
-        <div class="input-group input-group-solid w-25 ms-4">
-          <span class="input-group-text">$</span>
-          <input
-            type="text"
-            class="form-control text-start"
-            v-model="request.minimumFeeAmount"
-          />
+        <div class="row g-0 align-items-center">
+          <div class="col-4">
+            <div class="input-group input-group-solid ms-4">
+              <span class="input-group-text">$</span>
+              <input
+                type="text"
+                class="form-control text-start"
+                v-model="request.minimumFeeAmount"
+              />
+            </div>
+          </div>
+          <div class="col-6 text-dark fw-bold ms-6">annual minimum</div>
         </div>
-        <div class="ms-4">annual minimum</div>
       </template>
     </div>
 
@@ -39,26 +45,32 @@
       </div>
     </div>
     <div class="d-flex align-items-center mt-6 ms-6">
-      <div class="form-check form-check-solid form-switch">
+      <div class="form-check form-check-solid form-switch mt-2 lh-lg">
         <input
           class="form-check-input"
           type="checkbox"
           v-model="request.firmMaximumFee"
         />
-        <label class="fs-7 text-muted form-check-label"
-          >No firm-wide minimum fees</label
-        >
+        <label class="fs-7 text-muted form-check-label">{{
+          request.firmMaximumFee
+            ? "Yes, I normally cap fees at a maximum of "
+            : "No firm-wide minimum fees"
+        }}</label>
       </div>
       <template v-if="request.firmMaximumFee">
-        <div class="input-group input-group-solid w-25 ms-4">
-          <span class="input-group-text">$</span>
-          <input
-            type="text"
-            class="form-control text-start"
-            v-model="request.maximumFeeAmount"
-          />
+        <div class="row g-0 align-items-center">
+          <div class="col-4">
+            <div class="input-group input-group-solid ms-4">
+              <span class="input-group-text">$</span>
+              <input
+                type="text"
+                class="form-control text-start"
+                v-model="request.maximumFeeAmount"
+              />
+            </div>
+          </div>
+          <div class="col-6 text-dark fw-bold ms-6">annual maximum</div>
         </div>
-        <div class="ms-4">annual maximum</div>
       </template>
     </div>
 
@@ -78,7 +90,7 @@
           v-model="request.adjustForFlows"
         />
         <label class="fs-7 text-muted form-check-label"
-          >Yes, billing is adjusted for flows</label
+          >{{ request.adjustForFlows ? 'Yes, billing is adjusted for flows' : 'No, billing is not adjusted for flows'}}</label
         >
       </div>
     </div>
@@ -161,7 +173,7 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-10">
+    <div class="d-flex justify-content-between mt-10 mb-5">
       <button class="btn btn-secondary" @click="prev">Back</button>
       <button
         class="btn btn-primary me-10"
@@ -170,7 +182,7 @@
           'btn-primary': formValidation && minimumFee && maximumFee,
         }"
         :disabled="!formValidation || !minimumFee || !maximumFee"
-        @click="saveFrequncyAndTiming"
+        @click="saveAdjustments"
       >
         Continue
       </button>
@@ -184,19 +196,14 @@ import { Prop, Inject, Watch } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import {
-  ListItem,
-  flowThresholdType,
-  aumFeeTypes,
-  aumDetails,
-} from "@/model";
+import { ListItem, flowThresholdType, aumFeeTypes, aumDetails } from "@/model";
 
 import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 
 @Options({
   components: {
     SingleCheckBox,
-  }
+  },
 })
 export default class AdjustmentsBoard extends Vue {
   @Inject("firmService") service: IFirmService;
@@ -228,7 +235,7 @@ export default class AdjustmentsBoard extends Vue {
     this.bindValues();
   }
 
-  public saveFrequncyAndTiming() {
+  public saveAdjustments() {
     this.request.firmId = this.store.getters.selectedFirmId;
     this.request.feeTypeName = this.response.feeTypeName;
     this.request.onboardingFeeTypeId = this.response.id;
@@ -252,9 +259,9 @@ export default class AdjustmentsBoard extends Vue {
     if (this.request.minimumFeeAmount) this.request.firmMinimumFee = true;
     if (this.request.maximumFeeAmount) this.request.firmMaximumFee = true;
     this.flowThresholdType.forEach((item: ListItem) => {
-      if(item.value == this.request.flowThresholdType) item.selected = true;
+      if (item.value == this.request.flowThresholdType) item.selected = true;
       else item.selected = false;
-    })
+    });
   }
 
   public prev() {
@@ -272,7 +279,7 @@ export default class AdjustmentsBoard extends Vue {
         else valid = false;
       } else if (self.flowThresholdType == "NONE") valid = true;
       else valid = false;
-    } else valid = false;
+    } else valid = true;
 
     return valid;
   }
