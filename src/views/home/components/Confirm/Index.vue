@@ -70,9 +70,7 @@
 
       <fee-types-advisory />
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
-        Frequency & Timing
-      </p>
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Frequency & Timing</p>
 
       <div
         v-for="(item, index) in frequencyRequest.aumFeeTypes"
@@ -86,9 +84,7 @@
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
-        Methodologies
-      </p>
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Methodologies</p>
 
       <div
         v-for="(item, index) in methodologiesRequest.aumFeeTypes"
@@ -105,25 +101,25 @@
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
-        Adjustments
-      </p>
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Adjustments</p>
 
       <div
         v-for="(item, index) in adjustmentsResponse.aumFeeTypes"
         :key="index"
         class="ps-4 pe-4"
       >
-        <p class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom" v-if="item.aumFlag">
+        <p
+          class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
+          v-if="item.aumFlag"
+        >
           {{ item.feeTypeName }}
         </p>
 
         <adjustments-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <div class="d-flex justify-content-between mt-10">
-        <button class="btn btn-secondary" @click="back">Back</button>
-        <button class="btn me-10 btn-primary" @click="confirm">Continue</button>
+      <div class="d-flex justify-content-end m-0">
+        <button class="btn me-10 btn-primary" @click="confirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -137,7 +133,7 @@ import { IFirmService } from "@/service";
 import {
   firmRequestModel,
   generalBoardRequestModel,
-  frequencyRequestModel
+  frequencyRequestModel,
 } from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
@@ -155,7 +151,7 @@ import AdjustmentsAdvisory from "./AdjustmentsAdvisory.vue";
     FeeTypesAdvisory,
     FrequencyAdvisory,
     MethodologiesAdvisory,
-    AdjustmentsAdvisory
+    AdjustmentsAdvisory,
   },
 })
 export default class ConfirmBoard extends Vue {
@@ -164,8 +160,10 @@ export default class ConfirmBoard extends Vue {
   public generalResponse = new generalBoardRequestModel();
 
   public frequencyRequest: frequencyRequestModel = new frequencyRequestModel();
-  public methodologiesRequest: frequencyRequestModel = new frequencyRequestModel();
-  public adjustmentsResponse: frequencyRequestModel = new frequencyRequestModel();
+  public methodologiesRequest: frequencyRequestModel =
+    new frequencyRequestModel();
+  public adjustmentsResponse: frequencyRequestModel =
+    new frequencyRequestModel();
 
   mounted() {
     this.getGeneralDetails();
@@ -232,6 +230,16 @@ export default class ConfirmBoard extends Vue {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  public confirm() {
+    const request = new firmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service.saveConfirm(request).then((response) => {
+      console.log(response);
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   public states: Array<string> = [

@@ -32,6 +32,8 @@ export interface IFirmService extends IBaseService<any, any> {
 
     getAdjustments(request: firmRequestModel): Promise<frequencyRequestModel>;
     saveAdjustments(request: aumDetails): Promise<frequencyResponseModel>;
+
+    saveConfirm(request: firmRequestModel): Promise<frequencyRequestModel>;
 }
 
 export class FirmService extends BaseService<any, any> implements IFirmService {
@@ -111,5 +113,12 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
             return response.data;
         });
     }
+
+    saveConfirm(request: firmRequestModel): Promise<frequencyRequestModel> {
+        return this.httpPost('private/api/v1/firm/onboardingConfirmation', request).then(response => {
+            return response.data;
+        });
+    }
+
 
 }
