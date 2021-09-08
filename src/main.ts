@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-import { ListItem } from "./model";
+import { ListItem, feeTypes } from "./model";
 
 import router from "./router";
 import store from "./store";
@@ -24,5 +24,25 @@ app.config.globalProperties.$filters = {
         data.slice(0, data.length - 1).join(", ") + " and " + data.slice(-1);
 
     return value;
+  },
+  filterArray(data: Array<ListItem>) {
+    const item: Array<string> = [];
+    if (!data) data = [];
+    else {
+      data.filter((value) => {
+        if (value.selected) item.push(value.text);
+      });
+    }
+    return item;
+  },
+  filterFeeTypes(data: Array<feeTypes>) {
+    const item: Array<string> = [];
+    if (!data) data = [];
+    else {
+      data.filter((value) => {
+        if (value.selected) item.push(value.feeTypeName);
+      });
+    }
+    return item;
   }
 };

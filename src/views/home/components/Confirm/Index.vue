@@ -3,7 +3,7 @@
     <div class="p-8">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">Confirm your setup</p>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted">General</p>
+      <p class="fs-3 fw-bolder pb-3 mb-5">General</p>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-8">
@@ -68,13 +68,9 @@
         </div>
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
-        Frequency & Timing
-      </p>
-
       <fee-types-advisory />
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
         Frequency & Timing
       </p>
 
@@ -83,14 +79,14 @@
         :key="index"
         class="ps-4 pe-4"
       >
-        <p class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom">
+        <p class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom">
           {{ item.feeTypeName }}
         </p>
 
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
         Methodologies
       </p>
 
@@ -100,7 +96,7 @@
         class="ps-4 pe-4"
       >
         <p
-          class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
+          class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
           v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
@@ -109,7 +105,7 @@
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 text-muted pt-5 border-top">
+      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">
         Adjustments
       </p>
 
@@ -118,7 +114,7 @@
         :key="index"
         class="ps-4 pe-4"
       >
-        <p class="fs-3 fw-bolder pb-3 mb-5 text-dark text-center border-bottom" v-if="item.aumFlag">
+        <p class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom" v-if="item.aumFlag">
           {{ item.feeTypeName }}
         </p>
 

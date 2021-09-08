@@ -5,11 +5,7 @@
         How frequently do you bill your {{ response.feeTypeName }}?
       </div>
       <div class="col-lg-3 fw-bold">
-        <span v-for="(data, i) in billingFrequency" :key="i">
-          <template v-if="data.selected">
-            {{ data.text.concat(", ") }}
-          </template>
-        </span>
+          {{$filters.filterArray(billingFrequency).join(', ')}}
       </div>
     </div>
 
@@ -32,11 +28,7 @@
         Do you bill your {{ response.feeTypeName }} in advance or in arrears?
       </div>
       <div class="col-lg-3 fw-bold">
-        <span v-for="(data, i) in billingMethod" :key="i">
-          <template v-if="data.selected">
-            {{ data.text.concat(", ") }}
-          </template>
-        </span>
+          {{$filters.filterArray(billingMethod).join(', ')}}
       </div>
     </div>
 

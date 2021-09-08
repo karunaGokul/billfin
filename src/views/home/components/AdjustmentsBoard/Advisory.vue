@@ -54,7 +54,7 @@
         <label class="fs-7 text-muted form-check-label">{{
           request.firmMaximumFee
             ? "Yes, I normally cap fees at a maximum of "
-            : "No firm-wide minimum fees"
+            : "No firm-wide maximum fees"
         }}</label>
       </div>
       <template v-if="request.firmMaximumFee">
@@ -76,7 +76,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        Do you adjust billing for deposits and withdrawls?
+        Do you adjust billing for deposits and withdrawals?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -90,7 +90,7 @@
           v-model="request.adjustForFlows"
         />
         <label class="fs-7 text-muted form-check-label"
-          >{{ request.adjustForFlows ? 'Yes, billing is adjusted for flows' : 'No, billing is not adjusted for flows'}}</label
+          >{{ request.adjustForFlows ? 'Yes, billing is adjusted for flows' : 'No, Ignore deposits and withdrawals'}}</label
         >
       </div>
     </div>
@@ -134,19 +134,19 @@
 
       <template v-if="request.flowThresholdType == 'PERCENT'">
         <div class="d-flex fs-7 mt-10">
-          <div class="fw-bolder">Please enter the % aum of your threshold.</div>
+          <div class="fw-bolder">Please enter the % of AUM to use as your threshold</div>
           <div class="ms-5">
             <i class="fa fa-question-circle fs-4 text-dark"></i>
           </div>
         </div>
         <div class="mt-6 ms-6">
           <div class="input-group input-group-solid w-50">
-            <span class="input-group-text">%</span>
             <input
               type="text"
               class="form-control text-start"
               v-model="request.flowThresholdValue"
             />
+            <span class="input-group-text">%</span>
           </div>
         </div>
       </template>

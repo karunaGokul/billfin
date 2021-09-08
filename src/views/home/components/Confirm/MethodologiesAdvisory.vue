@@ -5,11 +5,7 @@
         What valuation methodologies do you use for AUM advisory billing?
       </div>
       <div class="col-lg-4 fw-bold">
-        <span v-for="(data, i) in valuationMethod" :key="i">
-          <template v-if="data.selected">
-            {{ data.text.concat(", ") }}
-          </template>
-        </span>
+        {{$filters.filterArray(valuationMethod).join(', ')}}
       </div>
     </div>
 

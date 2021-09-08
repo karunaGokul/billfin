@@ -3,40 +3,30 @@
     <div class="mt-5">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
         Fee Types
-        <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
       </p>
 
       <div class="ps-4 pe-4">
         <div class="row pb-8 g-0">
-          <div class="col-lg-4 fw-bolder">
+          <div class="col-lg-9 fw-bolder">
             What billing do you wish to setup?
           </div>
-          <div class="col-lg-8 fw-bold">
-            <span v-for="(data, i) in billingTypes" :key="i">
-              <template v-if="data.selected">
-                {{ data.text }}, 
-              </template>
-            </span>
+          <div class="col-lg-3 fw-bold">
+            {{$filters.filterArray(billingTypes).join(', ')}}
           </div>
         </div>
 
         <template v-if="showAUMAdvisory">
-          <div class="row pb-8 g-0">
+          <div class="row pb-8 g-0">  
             <div class="col-lg-9 fw-bolder">
-              For your AUM-based advisory billing,which fees do you bill? Feel
-              free to edit descriptions as needed
+              For your AUM-based advisory billing,which fees do you bill?
             </div>
             <div class="col-lg-3 fw-bold">
-              <span v-for="(data, i) in aumFeeTypes" :key="i">
-                <template v-if="data.selected">
-                  {{ data.feeTypeName.concat(", ") }}
-                </template>
-              </span>
+              {{$filters.filterFeeTypes(aumFeeTypes).join(', ')}}
             </div>
           </div>
         </template>
 
-        <template v-if="showAUMAdvisoryFees.length > 1">
+        <!--<template v-if="showAUMAdvisoryFees.length > 1">
           <div class="row pb-8 g-0">
             <div class="col-lg-9 fw-bolder">
               Do you bill your various AUM fees on different frequencies and/or
@@ -64,7 +54,7 @@
               }}
             </div>
           </div>
-        </template>
+        </template> -->
 
         <template v-if="showNonAUMAdvisory">
           <div class="row pb-8 g-0">
@@ -73,16 +63,12 @@
               descriptions as needed
             </div>
             <div class="col-lg-3 fw-bold">
-              <span v-for="(data, i) in nonAUMFeeTypes" :key="i">
-                <template v-if="data.selected">
-                  {{ data.feeTypeName.concat(", ") }}
-                </template>
-              </span>
+              {{$filters.filterFeeTypes(nonAUMFeeTypes).join(', ')}}
             </div>
           </div>
         </template>
 
-        <template v-if="showNonAUMAdvisoryFees.length > 1">
+       <!-- <template v-if="showNonAUMAdvisoryFees.length > 1">
           <div class="row pb-8 g-0">
             <div class="col-lg-9 fw-bolder">
               Do you bill your various non-AUM fees on different frequencies
@@ -96,7 +82,7 @@
               }}
             </div>
           </div>
-        </template>
+        </template> -->
       </div>
     </div>
   </div>
@@ -167,8 +153,6 @@ export default class FeeTypesAdvisory extends Vue {
     this.billingTypes.forEach((item) => {
       if (response.billingType.includes(item.value)) item.selected = true;
     });
-
-    console.log(this.billingTypes);
 
     if (response.aumFeeTypes) {
       this.request.aumFeeTypes = response.aumFeeTypes;
