@@ -119,7 +119,7 @@
       </div>
 
       <div class="d-flex justify-content-end m-0">
-        <button class="btn me-10 btn-primary" @click="confirm">Confirm</button>
+        <button class="btn btn-primary" @click="confirm">Finish</button>
       </div>
     </div>
   </div>
