@@ -23,7 +23,7 @@
         {{
           request.firmMaximumFee
             ? "Yes, I normally cap fees at a maximum of "
-            : "No firm-wide minimum fees"
+            : "No firm-wide maximum fees"
         }}
         
         {{ request.maximumFeeAmount }}
@@ -38,7 +38,7 @@
         {{
           request.adjustForFlows
             ? "Yes, billing is adjusted for flows"
-            : "No, billing is not adjusted for flows"
+            : "No, Ignore deposits and withdrawals"
         }}
       </div>
     </div>
