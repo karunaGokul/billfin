@@ -59,8 +59,7 @@
         <template v-if="showNonAUMAdvisory">
           <div class="row pb-8 g-0">
             <div class="col-lg-9 fw-bolder">
-              For your non-AUM billing,which fees do you bill? Feel free to edit
-              descriptions as needed
+              For your non-AUM billing,which fees do you bill?
             </div>
             <div class="col-lg-3 fw-bold">
               {{$filters.filterFeeTypes(nonAUMFeeTypes).join(', ')}}
@@ -156,21 +155,25 @@ export default class FeeTypesAdvisory extends Vue {
 
     if (response.aumFeeTypes) {
       this.request.aumFeeTypes = response.aumFeeTypes;
-      response.aumFeeTypes.feeTypes.forEach((item, index) => {
-        if (item.feeTypeCode == this.aumFeeTypes[index].feeTypeCode) {
-          this.aumFeeTypes[index].selected = true;
-          this.aumFeeTypes[index].feeTypeName = item.feeTypeName;
-        }
+      response.aumFeeTypes.feeTypes.forEach((item) => {
+        this.aumFeeTypes.forEach((data) => {
+          if (item.feeTypeCode == data.feeTypeCode) {
+            data.selected = true;
+            data.feeTypeName = item.feeTypeName;
+          }
+        });
       });
     }
 
     if (response.nonAUMFeeTypes) {
       this.request.nonAUMFeeTypes = response.nonAUMFeeTypes;
-      response.nonAUMFeeTypes.feeTypes.forEach((item, index) => {
-        if (item.feeTypeCode == this.nonAUMFeeTypes[index].feeTypeCode) {
-          this.nonAUMFeeTypes[index].selected = true;
-          this.nonAUMFeeTypes[index].feeTypeName = item.feeTypeName;
-        }
+      response.nonAUMFeeTypes.feeTypes.forEach((item) => {
+        this.nonAUMFeeTypes.forEach((data) => {
+          if (item.feeTypeCode == data.feeTypeCode) {
+            data.selected = true;
+            data.feeTypeName = item.feeTypeName;
+          }
+        });
       });
     }
   }

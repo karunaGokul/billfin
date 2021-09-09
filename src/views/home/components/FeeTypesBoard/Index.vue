@@ -7,7 +7,7 @@
       </p>
 
       <div class="ps-4 pe-4 tab-content-lg__scroll overflow-auto mt-10">
-        <div class="row g-0">
+        <div class="row g-0 mt-5">
           <div class="col-lg-5">
             <div class="fw-bolder">What billing do you wish to setup?</div>
             <div class="text-muted fs-8">Check all that apply</div>
@@ -257,15 +257,20 @@ export default class FeeTypesBoard extends Vue {
   }
 
   public updateBillingTypes() {
-    if (!this.showNonAUMAdvisory)
+    if (!this.showNonAUMAdvisory) {
       this.nonAUMFeeTypes.forEach((item: feeTypes) => {
         item.selected = false;
       });
+      this.request.nonAUMFeeTypes.commonFrequencyTimingFlag = false;
+    }
 
-    if (!this.showAUMAdvisory)
+    if (!this.showAUMAdvisory) {
       this.aumFeeTypes.forEach((item: feeTypes) => {
         item.selected = false;
       });
+      this.request.aumFeeTypes.commonFrequencyTimingFlag = false;
+      this.request.aumFeeTypes.commonAssetMethodologyFlag = false;
+    }
   }
 
   public back() {
@@ -275,21 +280,25 @@ export default class FeeTypesBoard extends Vue {
   private bindValues(response: feeTypesRequestModel) {
     if (response.aumFeeTypes) {
       this.request.aumFeeTypes = response.aumFeeTypes;
-      response.aumFeeTypes.feeTypes.forEach((item, index) => {
-        if (item.feeTypeCode == this.aumFeeTypes[index].feeTypeCode) {
-          this.aumFeeTypes[index].selected = true;
-          this.aumFeeTypes[index].feeTypeName = item.feeTypeName;
-        }
+      response.aumFeeTypes.feeTypes.forEach((item) => {
+        this.aumFeeTypes.forEach((data) => {
+          if (item.feeTypeCode == data.feeTypeCode) {
+            data.selected = true;
+            data.feeTypeName = item.feeTypeName;
+          }
+        });
       });
     }
 
     if (response.nonAUMFeeTypes) {
       this.request.nonAUMFeeTypes = response.nonAUMFeeTypes;
-      response.nonAUMFeeTypes.feeTypes.forEach((item, index) => {
-        if (item.feeTypeCode == this.nonAUMFeeTypes[index].feeTypeCode) {
-          this.nonAUMFeeTypes[index].selected = true;
-          this.nonAUMFeeTypes[index].feeTypeName = item.feeTypeName;
-        }
+      response.nonAUMFeeTypes.feeTypes.forEach((item) => {
+        this.nonAUMFeeTypes.forEach((data) => {
+          if (item.feeTypeCode == data.feeTypeCode) {
+            data.selected = true;
+            data.feeTypeName = item.feeTypeName;
+          }
+        });
       });
     }
   }

@@ -44,5 +44,43 @@ app.config.globalProperties.$filters = {
       });
     }
     return item;
-  }
+  },
+  currencyDisplay(
+    value: any,
+    numberOfDigits: number = 2,
+    minDigits: number = 2,
+    symbol: string = "$"
+  ) {
+    if (!value) return `${symbol}0`;
+
+    if (isNaN(parseFloat(value))) return value;
+
+    value = parseFloat(value);
+
+    if (value >= 0)
+      return `${symbol}${value.toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      return `${symbol}(${Math.abs(value).toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
+  },
+  percentDisplay(value: any, numberOfDigits: number = 2) {
+    if (!value && value != null) value = 0;
+    if (!value) return "N/A";
+
+    if (value >= 0)
+      return `${value.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: numberOfDigits,
+      })}%`;
+    else
+      return `(${Math.abs(value).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: numberOfDigits,
+      })})%`;
+  },
 };

@@ -168,7 +168,7 @@
           v-model="request.dollarRoundingFlag"
         />
         <label class="fs-7 text-muted form-check-label"
-          >No, I charge exact amounts</label
+          >{{ request.dollarRoundingFlag ? 'Yes, I charge exact amount' : ' No, I do not want to round fees'}}</label
         >
       </div>
     </div>
@@ -253,6 +253,7 @@ export default class AdjustmentsBoard extends Vue {
 
   public updateFlowThresholdType(value: string) {
     this.request.flowThresholdType = value;
+    this.request.flowThresholdValue = '';
   }
 
   private bindValues() {

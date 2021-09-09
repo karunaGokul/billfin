@@ -1,40 +1,40 @@
 <template>
   <div class="tab-content mt-10">
     <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
+      <div class="col-lg-7 fw-bolder">
         Do you charge a firm-wide standard minimum fee?
       </div>
-      <div class="col-lg-3 fw-bold">
+      <div class="col-lg-5 fw-bold">
         {{
           request.firmMinimumFee
             ? "Yes, I normally charge a minimum fee of "
             : "No firm-wide minimum fees"
         }}
-        
-        {{ request.minimumFeeAmount }}
+
+        {{ $filters.currencyDisplay(request.minimumFeeAmount) }}
       </div>
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
+      <div class="col-lg-7 fw-bolder">
         Do you limit fees to a firm-wide maximum fee?
       </div>
-      <div class="col-lg-3 fw-bold">
+      <div class="col-lg-5 fw-bold">
         {{
           request.firmMaximumFee
             ? "Yes, I normally cap fees at a maximum of "
             : "No firm-wide maximum fees"
         }}
-        
-        {{ request.maximumFeeAmount }}
+
+        {{ $filters.currencyDisplay(request.maximumFeeAmount) }}
       </div>
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
+      <div class="col-lg-7 fw-bolder">
         Do you adjust billing for deposits and withdrawls?
       </div>
-      <div class="col-lg-3 fw-bold">
+      <div class="col-lg-5 fw-bold">
         {{
           request.adjustForFlows
             ? "Yes, billing is adjusted for flows"
@@ -45,24 +45,26 @@
 
     <template v-if="request.adjustForFlows">
       <div class="row pb-8 g-0">
-        <div class="col-lg-9 fw-bolder">
+        <div class="col-lg-7 fw-bolder">
           Indicate whether you apply a threshold to flows.
         </div>
-        <div class="col-lg-3 fw-bold">
-          {{ request.flowThresholdType }} {{ request.flowThresholdValue }}
+        <div class="col-lg-5 fw-bold">
+          <template v-if="request.flowThresholdType == 'DOLLAR_AMOUNT'">{{ $filters.currencyDisplay(request.flowThresholdValue) }}</template>
+          <template v-else-if="request.flowThresholdType == 'PERCENT'">{{ $filters.percentDisplay(request.flowThresholdValue) }}</template>
+          <template v-else>None</template>
         </div>
       </div>
     </template>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
+      <div class="col-lg-7 fw-bolder">
         Do you round fees to avoid charging cents?
       </div>
-      <div class="col-lg-3 fw-bold">
+      <div class="col-lg-5 fw-bold">
         {{
           request.dollarRoundingFlag
-            ? "Yes, I charge exact amounts"
-            : "No, I charge exact amounts"
+            ? "Yes, I charge exact amount"
+            : " No, I do not want to round fees"
         }}
       </div>
     </div>
