@@ -11,7 +11,7 @@
             : "No firm-wide minimum fees"
         }}
 
-        {{ $filters.currencyDisplay(request.minimumFeeAmount) }}
+        <template v-if="request.minimumFeeAmount">{{ $filters.currencyDisplay(request.minimumFeeAmount) }}</template>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
             : "No firm-wide maximum fees"
         }}
 
-        {{ $filters.currencyDisplay(request.maximumFeeAmount) }}
+        <template v-if="request.maximumFeeAmount">{{ $filters.currencyDisplay(request.maximumFeeAmount) }}</template>
       </div>
     </div>
 

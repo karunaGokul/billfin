@@ -186,7 +186,6 @@ export default class Advisory extends Vue {
       this.request = new aumDetails();
       this.bindValues(this.request);
     }
-    console.log(this.request);
   }
 
   public saveMethodologies() {
@@ -194,8 +193,6 @@ export default class Advisory extends Vue {
     this.request.feeTypeName = this.response.feeTypeName;
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
-
-    console.log(this.request);
 
     this.service
       ?.saveMethodologies(this.request)

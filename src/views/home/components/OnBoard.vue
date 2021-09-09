@@ -119,7 +119,6 @@ export default class Welcome extends Vue {
   }
 
   public updateAumTabs(control: string) {
-    console.log(control);
     this.showAumTab = control == "show" ? true : false;
   }
 }

@@ -211,7 +211,6 @@ export default class Home extends Vue {
   private getFirms() {
     this.service.getFirms().then((response) => {
       this.firms = response;
-      console.log(response);
       this.store.dispatch("loadEntitlements", response);
       if (
         this.firms.length == 1 &&

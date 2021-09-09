@@ -26,21 +26,6 @@ const mutations: MutationTree<any> = {
 const actions: ActionTree<any, any> = {
   loadEntitlements(context, response) {
     context.commit("onLoadEntitlements", response);
-    /*if (!context.state.firms || !context.state.firms.length) {
-      const service = new FirmService();
-
-      return service.getFirms().then((response) => {
-        console.log('onLoadEntitlements');
-        console.log(response);
-        context.commit("onLoadEntitlements", response);
-      });
-    } else {
-      return new Promise((resolve, reject) => {
-        context.commit("onLoadEntitlements", context.state.firms);
-
-        resolve(context.state.firms);
-      });
-    }*/
   }
 };
 

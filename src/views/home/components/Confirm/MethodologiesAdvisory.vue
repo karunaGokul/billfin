@@ -155,7 +155,6 @@ export default class MethodologiesAdvisory extends Vue {
       this.request = new aumDetails();
       this.bindValues(this.request);
     }
-    console.log(this.request);
   }
 
   private bindValues(response: aumDetails) {
