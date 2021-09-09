@@ -220,11 +220,6 @@ export default class Advisory extends Vue {
 
     this.defaultValuationMethod.push(new ListItem("Don't Default", "NONE"));
 
-    this.defaultValuationMethod.forEach((item: ListItem) => {
-      if (item.value != this.request.defaultValuationMethod)
-        this.request.defaultValuationMethod = "";
-    });
-
     if (this.request.valuationMethod.length == 0) {
       this.defaultValuationMethod = [];
       this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
@@ -234,6 +229,24 @@ export default class Advisory extends Vue {
             defaultValuationMethod[key as keyof typeof defaultValuationMethod]
           )
       );
+    }
+
+    if (this.request.valuationMethod.length == 1) {
+      this.defaultValuationMethod.forEach((item: ListItem) => {
+        if(this.request.valuationMethod.includes(item.value)) {
+          item.selected = true;
+          this.request.defaultValuationMethod = item.value;
+        }
+      });
+    }
+
+    const ValuationMethod = this.defaultValuationMethod.find(
+      (o) => o.value === this.request.defaultValuationMethod
+    );
+
+    if (ValuationMethod == undefined || ValuationMethod == null) {
+      this.defaultValuationMethod[0].selected = true;
+      this.request.defaultValuationMethod = this.defaultValuationMethod[0].value;
     }
       
   }

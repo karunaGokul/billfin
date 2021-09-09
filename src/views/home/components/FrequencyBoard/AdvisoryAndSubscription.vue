@@ -249,11 +249,6 @@ export default class AdvisoryAndSubscription extends Vue {
 
     this.defaultBillingFrequency.push(new ListItem("Don't Default", "NONE"));
 
-    this.defaultBillingFrequency.forEach((item) => {
-      if (item.value != this.request.defaultBillingFrequency)
-        this.request.defaultBillingFrequency = "";
-    });
-
     if (this.request.billingFrequency.length == 0) {
       this.defaultBillingFrequency = [];
       this.defaultBillingFrequency = Object.entries(
@@ -265,6 +260,24 @@ export default class AdvisoryAndSubscription extends Vue {
             defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
           )
       );
+    }
+    if (this.request.billingFrequency.length == 1) {
+      this.defaultBillingFrequency.forEach((item) => {
+        if (this.request.billingFrequency.includes(item.value)) {
+          item.selected = true;
+          this.request.defaultBillingFrequency = item.value;
+        }
+      });
+    }
+
+    const frequency = this.defaultBillingFrequency.find(
+      (o) => o.value === this.request.defaultBillingFrequency
+    );
+
+    if (frequency == undefined || frequency == null) {
+      this.defaultBillingFrequency[0].selected = true;
+      this.request.defaultBillingFrequency =
+        this.defaultBillingFrequency[0].value;
     }
 
     if (!this.isQuarterlySelected) {
@@ -293,11 +306,6 @@ export default class AdvisoryAndSubscription extends Vue {
       }
     });
 
-    this.defaultBillingMethod.forEach((item) => {
-      if (item.value != this.request.defaultBillingMethod)
-        this.request.defaultBillingMethod = "";
-    });
-
     if (
       !this.defaultBillingMethod.some((item) => {
         return item.text == "Don't Default";
@@ -313,6 +321,24 @@ export default class AdvisoryAndSubscription extends Vue {
             defaultBillingMethod[key as keyof typeof defaultBillingMethod]
           )
       );
+
+    if (this.request.billingMethod.length == 1) {
+      this.defaultBillingMethod.forEach((item) => {
+        if (this.request.billingMethod.includes(item.value)) {
+          item.selected = true;
+          this.request.defaultBillingMethod = item.value;
+        }
+      });
+    }
+
+    const BillingMethod = this.defaultBillingMethod.find(
+      (o) => o.value === this.request.defaultBillingMethod
+    );
+
+    if (BillingMethod == undefined || BillingMethod == null) {
+      this.defaultBillingMethod[0].selected = true;
+      this.request.defaultBillingMethod = this.defaultBillingMethod[0].value;
+    }
   }
 
   public updateDefaultBillingMethod(defaultBillingMethod: string) {
