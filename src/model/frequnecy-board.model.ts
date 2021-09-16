@@ -1,6 +1,9 @@
 export class frequencyRequestModel {
     firmId: number | any;
     aumFeeTypes: Array<aumFeeTypes> = [];
+    aumCommonAssetMethodologyFlag: boolean = false;
+    aumCommonFrequencyTimingFlag: boolean = false;
+    nonAumCommonFrequencyTimingFlag: boolean = false;
 }
 
 export class frequencyResponseModel {
@@ -46,4 +49,6 @@ export class aumDetails {
     firmMaximumFee:boolean = false;
 
     aumAdvisoryBill: Array<string> | Array<any> = [];
+
+    recurringFeeFlag: boolean = false;
 }

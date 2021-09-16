@@ -1,7 +1,7 @@
 <template>
   <div class="tab-content border-bottom">
     <div class="mt-5">
-      <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 border-bottom">
         Fee Types
       </p>
 
@@ -10,7 +10,7 @@
           <div class="col-lg-9 fw-bolder">
             What billing do you wish to setup?
           </div>
-          <div class="col-lg-3 fw-bold">
+          <div class="col-lg-3">
             {{$filters.filterArray(billingTypes).join(', ')}}
           </div>
         </div>
@@ -20,7 +20,7 @@
             <div class="col-lg-9 fw-bolder">
               For your AUM-based advisory billing,which fees do you bill?
             </div>
-            <div class="col-lg-3 fw-bold">
+            <div class="col-lg-3">
               {{$filters.filterFeeTypes(aumFeeTypes).join(', ')}}
             </div>
           </div>
@@ -61,7 +61,7 @@
             <div class="col-lg-9 fw-bolder">
               For your non-AUM billing,which fees do you bill?
             </div>
-            <div class="col-lg-3 fw-bold">
+            <div class="col-lg-3">
               {{$filters.filterFeeTypes(nonAUMFeeTypes).join(', ')}}
             </div>
           </div>

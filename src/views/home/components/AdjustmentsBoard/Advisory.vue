@@ -30,7 +30,8 @@
                 type="text"
                 class="form-control text-start"
                 v-model="request.minimumFeeAmount"
-              />
+                v-currencyDisplay
+              /> 
             </div>
           </div>
           <div class="col-6 text-dark fw-bold ms-6">annual minimum</div>
@@ -89,9 +90,11 @@
           type="checkbox"
           v-model="request.adjustForFlows"
         />
-        <label class="fs-7 text-muted form-check-label"
-          >{{ request.adjustForFlows ? 'Yes, billing is adjusted for flows' : 'No, Ignore deposits and withdrawals'}}</label
-        >
+        <label class="fs-7 text-muted form-check-label">{{
+          request.adjustForFlows
+            ? "Yes, billing is adjusted for flows"
+            : "No, Ignore deposits and withdrawals"
+        }}</label>
       </div>
     </div>
 
@@ -134,7 +137,9 @@
 
       <template v-if="request.flowThresholdType == 'PERCENT'">
         <div class="d-flex fs-7 mt-10">
-          <div class="fw-bolder">Please enter the % of AUM to use as your threshold</div>
+          <div class="fw-bolder">
+            Please enter the % of AUM to use as your threshold
+          </div>
           <div class="ms-5">
             <i class="fa fa-question-circle fs-4 text-dark"></i>
           </div>
@@ -167,9 +172,11 @@
           type="checkbox"
           v-model="request.dollarRoundingFlag"
         />
-        <label class="fs-7 text-muted form-check-label"
-          >{{ request.dollarRoundingFlag ? 'Yes, I charge exact amount' : ' No, I do not want to round fees'}}</label
-        >
+        <label class="fs-7 text-muted form-check-label">{{
+          request.dollarRoundingFlag
+            ? "Yes, I do want to round fees"
+            : " No, I charge exact amount"
+        }}</label>
       </div>
     </div>
 
@@ -178,10 +185,10 @@
       <button
         class="btn btn-primary me-10"
         :class="{
-          'btn-secondary': !formValidation || !minimumFee || !maximumFee,
-          'btn-primary': formValidation && minimumFee && maximumFee,
+          'btn-secondary': !formValidation || !minimumFee || !maximumFee || !validation,
+          'btn-primary': formValidation && minimumFee && maximumFee && validation,
         }"
-        :disabled="!formValidation || !minimumFee || !maximumFee"
+        :disabled="!formValidation || !minimumFee || !maximumFee || !validation"
         @click="saveAdjustments"
       >
         Continue
@@ -202,7 +209,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 
 @Options({
   components: {
-    SingleCheckBox,
+    SingleCheckBox
   },
 })
 export default class AdjustmentsBoard extends Vue {
@@ -253,7 +260,7 @@ export default class AdjustmentsBoard extends Vue {
 
   public updateFlowThresholdType(value: string) {
     this.request.flowThresholdType = value;
-    this.request.flowThresholdValue = '';
+    this.request.flowThresholdValue = "";
   }
 
   private bindValues() {
@@ -263,6 +270,35 @@ export default class AdjustmentsBoard extends Vue {
       if (item.value == this.request.flowThresholdType) item.selected = true;
       else item.selected = false;
     });
+  }
+
+  public updateCurrency(value: any) {
+
+    console.log(value);
+    const numberOfDigits: number = 2,
+      minDigits: number = 2,
+      symbol: string = "$";
+    if (!value) return `${symbol}0`;
+
+    if (isNaN(parseFloat(value))) return value;
+
+    value = parseFloat(value);
+
+    if (value >= 0)
+      value = `${symbol}${value.toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      value = `${symbol}(${Math.abs(value).toLocaleString(
+        undefined,
+        {
+          minimumFractionDigits: minDigits,
+          maximumFractionDigits: numberOfDigits,
+        }
+      )})`;
+
+      console.log(value);
   }
 
   public prev() {
@@ -305,6 +341,18 @@ export default class AdjustmentsBoard extends Vue {
     if (self.firmMaximumFee) {
       if (self.maximumFeeAmount && !this.isNumeric(self.maximumFeeAmount))
         valid = true;
+      else valid = false;
+    } else valid = true;
+
+    return valid;
+  }
+
+  get validation() {
+    let valid = false;
+    const self = this.request;
+
+    if (self.firmMinimumFee && self.firmMaximumFee) {
+      if (parseInt(self.maximumFeeAmount) >= parseInt(self.minimumFeeAmount)) valid = true;
       else valid = false;
     } else valid = true;
 

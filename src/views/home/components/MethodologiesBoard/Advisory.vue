@@ -207,6 +207,7 @@ export default class Advisory extends Vue {
   public updateValuationMethod(valuationMethod: Array<ListItem>) {
     this.request.valuationMethod = [];
     this.defaultValuationMethod = [];
+    this.request.defaultValuationMethod = '';
 
     valuationMethod.forEach((item) => {
       if (item.selected) {
@@ -238,17 +239,7 @@ export default class Advisory extends Vue {
           this.request.defaultValuationMethod = item.value;
         }
       });
-    }
-
-    const ValuationMethod = this.defaultValuationMethod.find(
-      (o) => o.value === this.request.defaultValuationMethod
-    );
-
-    if (ValuationMethod == undefined || ValuationMethod == null) {
-      this.defaultValuationMethod[0].selected = true;
-      this.request.defaultValuationMethod = this.defaultValuationMethod[0].value;
-    }
-      
+    } 
   }
 
   public updateDefaultValuationMethod(defaultValuationMethod: string) {

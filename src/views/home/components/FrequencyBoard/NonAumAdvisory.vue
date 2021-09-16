@@ -2,6 +2,28 @@
   <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
+        Is your {{ response.feeTypeName }} a re-occuring fee(e.g.,
+        subscription)?
+      </div>
+      <div class="ms-5">
+        <i class="fa fa-question-circle fs-4 text-dark"></i>
+      </div>
+    </div>
+    <div class="mt-6 ms-6">
+      <div class="form-check form-check-solid form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          v-model="request.recurringFeeFlag"
+        />
+        <label
+          class="fs-7 form-check-label"
+          >{{request.recurringFeeFlag ? 'Yes, this non-AUM fee is re-occuring.' : 'No, this non-AUM fee is not re-occuring.'}}</label
+        >
+      </div>
+    </div>
+    <div class="d-flex fs-7 mt-10">
+      <div class="fw-bolder">
         How frequently do you bill your {{ response.feeTypeName }}?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
@@ -18,8 +40,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        For {{ response.feeTypeName }}, what frequency do you want to default
-        for new accounts?
+        What frequency do you want to default
+        for new {{ response.feeTypeName }} set-ups?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -49,8 +71,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        For {{ response.feeTypeName }}, what billing timing do you want to
-        default for new accounts?
+        What billing timing do you want to default for new {{ response.feeTypeName }} set-ups?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -85,7 +106,11 @@
           <label
             class="fs-8 text-muted form-check-label"
             for="flexSwitchCheckChecked"
-            >Yes, I bill quarterly on off-cycle months</label
+            >{{
+            request.offsetCycleFlag
+              ? "Yes, I bill quarterly on off-cycle months"
+              : "No I'm not bill quarterly on off-cycle moths"
+          }}</label
           >
         </div>
       </div>
@@ -94,8 +119,7 @@
     <template v-if="request.offsetCycleFlag">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          For {{ response.feeTypeName }}, what quarterly cycle do you want to
-          default for new accounts?
+          What quarterly cycle do you want to default for new {{ response.feeTypeName }} set-ups?
         </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -153,7 +177,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class AdvisoryAndSubscription extends Vue {
+export default class NonAumAdvisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
 
@@ -235,6 +259,7 @@ export default class AdvisoryAndSubscription extends Vue {
   public updatebillingFrequency(billingFrequency: Array<ListItem>) {
     this.request.billingFrequency = [];
     this.defaultBillingFrequency = [];
+    this.request.defaultBillingFrequency = "";
 
     billingFrequency.forEach((item) => {
       if (item.selected) {
@@ -270,16 +295,6 @@ export default class AdvisoryAndSubscription extends Vue {
       });
     }
 
-    const frequency = this.defaultBillingFrequency.find(
-      (o) => o.value === this.request.defaultBillingFrequency
-    );
-
-    if (frequency == undefined || frequency == null) {
-      this.defaultBillingFrequency[0].selected = true;
-      this.request.defaultBillingFrequency =
-        this.defaultBillingFrequency[0].value;
-    }
-
     if (!this.isQuarterlySelected) {
       this.request.offsetCycleFlag = false;
       this.request.defaultOffsetCycle = null;
@@ -293,6 +308,7 @@ export default class AdvisoryAndSubscription extends Vue {
   public updateBillingMethod(billingMethod: Array<ListItem>) {
     this.request.billingMethod = [];
     this.defaultBillingMethod = [];
+    this.request.defaultBillingMethod = "";
 
     billingMethod.forEach((item) => {
       if (item.selected) {
@@ -329,15 +345,6 @@ export default class AdvisoryAndSubscription extends Vue {
           this.request.defaultBillingMethod = item.value;
         }
       });
-    }
-
-    const BillingMethod = this.defaultBillingMethod.find(
-      (o) => o.value === this.request.defaultBillingMethod
-    );
-
-    if (BillingMethod == undefined || BillingMethod == null) {
-      this.defaultBillingMethod[0].selected = true;
-      this.request.defaultBillingMethod = this.defaultBillingMethod[0].value;
     }
   }
 

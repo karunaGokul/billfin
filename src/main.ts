@@ -5,11 +5,13 @@ import { ListItem, feeTypes } from "./model";
 
 import router from "./router";
 import store from "./store";
+import keycloak from "./plugins/keycloak";
 
 // BillFin styles
 import "./styles/main.scss";
 
 const app = createApp(App);
+app.use(keycloak);
 app.use(store);
 app.use(router);
 
@@ -84,3 +86,32 @@ app.config.globalProperties.$filters = {
       })})%`;
   },
 };
+
+app.directive("currencyDisplay", {
+  updated(el) {
+    console.log(el.value);
+    const numberOfDigits: number = 2,
+      minDigits: number = 2
+
+    if (!el.value) el.value =`0`;
+
+    if (isNaN(parseFloat(el.value))) el.value;
+
+    el.value = parseFloat(el.value);
+
+    console.log('float', el.value);
+
+    if (el.value >= 0)
+      el.value = `${el.value.toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      el.value = `(${Math.abs(el.value).toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
+
+    console.log(el.value);
+  },
+});

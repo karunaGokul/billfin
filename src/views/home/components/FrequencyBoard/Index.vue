@@ -13,7 +13,9 @@
         "
       >
         <div class="col-5">
-          <div class="tab-header__title fw-bolder fs-3 pb-5">Frequency & Timing</div>
+          <div class="tab-header__title fw-bolder fs-3 pb-5">
+            Frequency & Timing
+          </div>
         </div>
         <div class="col-7">
           <ul class="tab-header__scroll mt-4">
@@ -32,11 +34,17 @@
         </div>
       </div>
       <div class="tab-content-group m-0">
-        <advisory-and-subscription
+        <aum-advisory
           :response="response"
           @prev="onPrev"
           @next="onNext"
-          v-if="response"
+          v-if="response && response.aumFlag"
+        />
+        <non-aum-advisory
+          :response="response"
+          @prev="onPrev"
+          @next="onNext"
+          v-if="response && !response.aumFlag"
         />
       </div>
     </div>
@@ -49,18 +57,15 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import {
-  firmRequestModel,
-  frequencyRequestModel,
-  aumFeeTypes,
-  aumDetails,
-} from "@/model";
+import { firmRequestModel, frequencyRequestModel, aumFeeTypes } from "@/model";
 
-import AdvisoryAndSubscription from "./AdvisoryAndSubscription.vue";
+import AumAdvisory from "./AumAdvisory.vue";
+import NonAumAdvisory from "./NonAumAdvisory.vue";
 
 @Options({
   components: {
-    AdvisoryAndSubscription,
+    AumAdvisory,
+    NonAumAdvisory,
   },
 })
 export default class FrequencyBoard extends Vue {
@@ -69,6 +74,8 @@ export default class FrequencyBoard extends Vue {
   public store = useStore();
   public request: frequencyRequestModel = new frequencyRequestModel();
   public response: aumFeeTypes = null;
+
+  public step: number = 0;
 
   created() {
     this.getFrequncyAndTiming();
@@ -81,7 +88,7 @@ export default class FrequencyBoard extends Vue {
       .getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-        this.response = this.request.aumFeeTypes[0];
+        this.response = this.request.aumFeeTypes[this.step];
         this.showMethodolgiesAndAdjustments();
       })
       .catch((err) => {
@@ -100,24 +107,36 @@ export default class FrequencyBoard extends Vue {
   }
 
   onPrev() {
-    let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.response.feeTypeCode
-    );
-    index = index - 1;
-    if (this.request.aumFeeTypes[index] != undefined) {
-      this.response = this.request.aumFeeTypes[index];
-      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
-    } else this.$emit("prev");
+    this.step = this.step - 1;
+    if (this.step >= 0) this.response = this.request.aumFeeTypes[this.step];
+    else this.$emit("prev");
   }
 
   onNext() {
-    let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.response.feeTypeCode
-    );
-    index = index + 1;
-    if (this.request.aumFeeTypes[index] != undefined) {
-      this.response = this.request.aumFeeTypes[index];
-      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+    this.step = this.step + 1;
+    if (this.request.aumFeeTypes.length > this.step) {
+      if (
+        this.request.aumFeeTypes[this.step].aumFlag &&
+        !this.request.aumCommonFrequencyTimingFlag
+      ) {
+        if (!this.request.aumFeeTypes[this.step].aumDetails) {
+          this.response = this.request.aumFeeTypes[this.step];
+          this.response.aumDetails = this.request.aumFeeTypes[0].aumDetails;
+        } else this.response = this.request.aumFeeTypes[this.step];
+      } else if (
+        !this.request.aumFeeTypes[this.step].aumFlag &&
+        !this.request.nonAumCommonFrequencyTimingFlag
+      ) {
+        if (!this.request.aumFeeTypes[this.step].aumDetails) {
+          const nonAumFeeTypes: frequencyRequestModel =
+            new frequencyRequestModel();
+          this.request.aumFeeTypes.forEach((item) => {
+            if (!item.aumFlag) nonAumFeeTypes.aumFeeTypes.push(item);
+          });
+          this.response = this.request.aumFeeTypes[this.step];
+          this.response.aumDetails = nonAumFeeTypes.aumFeeTypes[0].aumDetails;
+        } else this.response = this.request.aumFeeTypes[this.step];
+      } else this.response = this.request.aumFeeTypes[this.step];
     } else this.$emit("next");
   }
 }

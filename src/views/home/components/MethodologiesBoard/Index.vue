@@ -65,6 +65,8 @@ export default class MethodologiesBoard extends Vue {
   public request = new frequencyRequestModel();
   public response: aumFeeTypes = null;
 
+  public step: number = 0;
+
   created() {
     this.getMethodologies();
   }
@@ -79,7 +81,7 @@ export default class MethodologiesBoard extends Vue {
         response.aumFeeTypes.forEach((item) => {
           if (item.aumFlag) this.request.aumFeeTypes.push(item);
         });
-        this.response = this.request.aumFeeTypes[0];
+        this.response = this.request.aumFeeTypes[this.step];
       })
       .catch((err) => {
         console.log(err);
@@ -87,24 +89,23 @@ export default class MethodologiesBoard extends Vue {
   }
 
   onPrev() {
-    let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.response.feeTypeCode
-    );
-    index = index - 1;
-    if (this.request.aumFeeTypes[index] != undefined) {
-      this.response = this.request.aumFeeTypes[index];
-      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
-    } else this.$emit("prev");
+    this.step = this.step - 1;
+    if (this.step >= 0) this.response = this.request.aumFeeTypes[this.step];
+    else this.$emit("prev");
   }
 
   onNext() {
-    let index = this.request.aumFeeTypes.findIndex(
-      (item) => item.feeTypeCode == this.response.feeTypeCode
-    );
-    index = index + 1;
-    if (this.request.aumFeeTypes[index] != undefined) {
-      this.response = this.request.aumFeeTypes[index];
-      this.response.aumDetails = this.request.aumFeeTypes[index].aumDetails;
+    this.step = this.step + 1;
+    if (this.request.aumFeeTypes.length > this.step) {
+      if (
+        this.request.aumFeeTypes[this.step].aumFlag &&
+        !this.request.aumCommonFrequencyTimingFlag
+      ) {
+        if (!this.request.aumFeeTypes[this.step].aumDetails) {
+          this.response = this.request.aumFeeTypes[this.step];
+          this.response.aumDetails = this.request.aumFeeTypes[0].aumDetails;
+        } else this.response = this.request.aumFeeTypes[this.step];
+      } else this.response = this.request.aumFeeTypes[this.step];
     } else this.$emit("next");
   }
 }

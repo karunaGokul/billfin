@@ -174,7 +174,7 @@
 
       <router-view></router-view>
     </div>
-    <Welcome :step="lastOnboardingStep" v-if="showOnBoard" />
+    <Welcome :step="lastOnboardingStep" @closeOnBoard="onCloseOnBoard" v-if="showOnBoard" />
   </div>
 </template>
 <script lang="ts">
@@ -223,6 +223,10 @@ export default class Home extends Vue {
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
       }
     });
+  }
+
+  public onCloseOnBoard() {
+    this.showOnBoard = false;
   }
 
   logout() {

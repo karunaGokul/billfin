@@ -66,6 +66,7 @@
               />
               <ConfirmBoard
                 @prev="activeTab = 5"
+                @close="onClose"
                 v-if="activeTab == 6"
               />
             </div>
@@ -120,6 +121,10 @@ export default class Welcome extends Vue {
 
   public updateAumTabs(control: string) {
     this.showAumTab = control == "show" ? true : false;
+  }
+
+  public onClose() {
+    this.$emit('closeOnBoard');
   }
 }
 </script>

@@ -10,16 +10,21 @@
         class="form-control text-start"
         :id="label"
         v-model="controls.$model"
-        @blur="label == 'Work email' || label == 'Confirm password' && !controls.$invalid ? emitEvent() : ''"
+        @blur="
+          label == 'Work email' ||
+          (label == 'Confirm password' && !controls.$invalid)
+            ? emitEvent()
+            : ''
+        "
+        @input="label == 'Phone number' ? acceptNumber() : ''"
       />
-      <span class="input-group-text">
+      <span class="input-group-text" v-if="inputType == 'password'">
         <i
           class="fa"
           :class="{
             'fa-eye': showPassword,
             'fa-eye-slash': !showPassword,
           }"
-          v-if="inputType == 'password'"
           style="cursor: pointer"
           @click="showPassword = !showPassword"
         >
@@ -53,6 +58,7 @@
           type="text"
           class="form-control"
           v-model="controls.$model"
+          @input="label == 'Company Phone' ? acceptNumber() : ''"
           :readonly="readonly"
         />
       </div>
@@ -78,7 +84,18 @@ export default class TextInput extends Vue {
   public showPassword: boolean = false;
 
   public emitEvent() {
-    this.$emit(this.label == 'Work email' ? "validateEmail": "validatePassword");
+    this.$emit(
+      this.label == "Work email" ? "validateEmail" : "validatePassword"
+    );
+  }
+
+  public acceptNumber() {
+    const value = this.controls.$model
+      .replace(/\D/g, "")
+      .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    this.controls.$model = !value[2]
+      ? value[1]
+      : value[1] + "-" + value[2] + (value[3] ? "-" + value[3] : "");
   }
 
   get errorMessage() {

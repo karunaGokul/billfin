@@ -1,19 +1,19 @@
 <template>
   <div class="tab-content mt-10">
-    <div class="row pb-8 g-0">
-      <div class="col-lg-8 fw-bolder">
+    <div class="row pb-9 g-0">
+      <div class="col-lg-9 fw-bolder">
         What valuation methodologies do you use for AUM advisory billing?
       </div>
-      <div class="col-lg-4 fw-bold">
+      <div class="col-lg-3">
         {{$filters.filterArray(valuationMethod).join(', ')}}
       </div>
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-8 fw-bolder">
+      <div class="col-lg-9 fw-bolder">
         What valuation methodology do you want default for new accounts?
       </div>
-      <div class="col-lg-4 fw-bold">
+      <div class="col-lg-3">
         <span v-for="(data, i) in defaultValuationMethod" :key="i">
           <template v-if="data.selected">
             {{ data.text }}
@@ -23,10 +23,10 @@
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-8 fw-bolder">
+      <div class="col-lg-9 fw-bolder">
         What valuation date do you use for initial billing of advance fees?
       </div>
-      <div class="col-lg-4 fw-bold">
+      <div class="col-lg-3">
         <span v-for="(data, i) in initialBillingValuationMethod" :key="i">
           <template v-if="data.selected">
             {{ data.text }}
@@ -36,10 +36,10 @@
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-8 fw-bolder">
+      <div class="col-lg-9 fw-bolder">
         How do you prorate your annualized rates for the billing period?
       </div>
-      <div class="col-lg-4 fw-bold">
+      <div class="col-lg-3">
         <span v-for="(data, i) in defaultProrationMethod" :key="i">
           <template v-if="data.selected">
             {{ data.text }}
@@ -49,10 +49,10 @@
     </div>
 
     <div class="row pb-8 g-0">
-      <div class="col-lg-8 fw-bolder">
+      <div class="col-lg-9 fw-bolder">
         How would you like to express your billing rates?
       </div>
-      <div class="col-lg-4 fw-bold">
+      <div class="col-lg-3">
         <span v-for="(data, i) in expressRatesAs" :key="i">
           <template v-if="data.selected">
             {{ data.text }}

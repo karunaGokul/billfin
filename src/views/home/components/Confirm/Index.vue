@@ -3,88 +3,88 @@
     <div class="p-8">
       <p class="fs-3 fw-bolder pb-3 mb-5 border-bottom">Confirm your setup</p>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5">General</p>
+      <p class="fs-3 text-center fw-bolder pb-4 mb-5 border-bottom">General</p>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">Company</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.company }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">Company Phone</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.companyPhone }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">Company Site</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.companyDomain }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">Company Address</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.companyAddress1 }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">City</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.city }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">State</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.state }}
         </div>
       </div>
 
       <div class="row ps-4 pe-4 mt-5 pb-5">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="fw-bolder">Postal Code</div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           {{ generalResponse.postalCode }}
         </div>
       </div>
 
       <fee-types-advisory />
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Frequency & Timing</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Frequency & Timing</p>
 
       <div
         v-for="(item, index) in frequencyRequest.aumFeeTypes"
         :key="index"
         class="ps-4 pe-4"
       >
-        <p class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom">
+        <p class="fw-bolder pb-3 mb-5 text-dark border-bottom">
           {{ item.feeTypeName }}
         </p>
 
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Methodologies</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Methodologies</p>
 
       <div
         v-for="(item, index) in methodologiesRequest.aumFeeTypes"
@@ -92,7 +92,7 @@
         class="ps-4 pe-4"
       >
         <p
-          class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
+          class="fw-bolder pb-3 mb-5 text-dark border-bottom"
           v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
@@ -101,7 +101,7 @@
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <p class="fs-3 fw-bolder pb-3 mb-5 pt-5 border-top">Adjustments</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Adjustments</p>
 
       <div
         v-for="(item, index) in adjustmentsResponse.aumFeeTypes"
@@ -109,7 +109,7 @@
         class="ps-4 pe-4"
       >
         <p
-          class="fw-bolder pb-3 mb-5 text-dark text-center border-bottom"
+          class="fw-bolder pb-3 mb-5 text-dark border-bottom"
           v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
@@ -237,6 +237,7 @@ export default class ConfirmBoard extends Vue {
     request.firmId = this.store.getters.selectedFirmId;
     this.service.saveConfirm(request).then((response) => {
       console.log(response);
+      this.$emit("close");
     }).catch((err) => {
       console.log(err);
     });

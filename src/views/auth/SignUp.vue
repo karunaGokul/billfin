@@ -346,7 +346,7 @@ import { ISignUpService } from "@/service";
         phone: (value: any) => {
           let validation = false;
           if (value && value != "" && /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)) validation = true;
-          else if(value && value != "" && /^[0-9]*\d$/.test(value)) validation = true;
+          //else if(value && value != "" && /^[0-9]*\d$/.test(value)) validation = true;
           return validation;
         },
         minLength: minLength(10),
