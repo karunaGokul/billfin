@@ -5,13 +5,13 @@ import { ListItem, feeTypes } from "./model";
 
 import router from "./router";
 import store from "./store";
-import keycloak from "./plugins/keycloak";
+//import keycloak from "./plugins/keycloak";
 
 // BillFin styles
 import "./styles/main.scss";
 
 const app = createApp(App);
-app.use(keycloak);
+//app.use(keycloak);
 app.use(store);
 app.use(router);
 
@@ -86,6 +86,20 @@ app.config.globalProperties.$filters = {
       })})%`;
   },
 };
+
+app.directive("click-outside", { 
+  beforeMount: function (el: any, binding: any) {
+      el.clickOutsideEvent = function (event: any) {
+        if (!(el == event.target || el.contains(event.target))) {
+          binding.value(event, el);
+        }
+      };
+      document.body.addEventListener("click", el.clickOutsideEvent);
+    },
+    unmounted: function (el: any) {
+      document.body.removeEventListener("click", el.clickOutsideEvent);
+    },
+});
 
 app.directive("currencyDisplay", {
   updated(el) {

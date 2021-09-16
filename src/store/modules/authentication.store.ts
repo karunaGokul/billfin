@@ -63,7 +63,6 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
-    //console.log(keycloak);
     const options: KeycloakInitOptions = {
       onLoad: "login-required",
       checkLoginIframe: false,
@@ -99,9 +98,6 @@ const actions: ActionTree<AuthenticationState, any> = {
               refreshToken: keycloak.refreshToken,
             });
           }
-
-          
-
           resolve(authenticated);
         })
         .catch((kcError) => {

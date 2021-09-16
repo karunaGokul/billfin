@@ -1,82 +1,145 @@
 <template>
   <div class="tab-content mt-10">
-    <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
-        How frequently do you bill your {{ response.feeTypeName }}?
-      </div>
-      <div class="col-lg-3">
-          {{$filters.filterArray(billingFrequency).join(', ')}}
-      </div>
-    </div>
-
-    <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
-        For {{ response.feeTypeName }}, what frequency do you want to default
-        for new accounts?
-      </div>
-      <div class="col-lg-3">
-        <span v-for="(data, i) in defaultBillingFrequency" :key="i">
-          <template v-if="data.selected">
-            {{ data.text }}
-          </template>
-        </span>
-      </div>
-    </div>
-
-    <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
-        Do you bill your {{ response.feeTypeName }} in advance or in arrears?
-      </div>
-      <div class="col-lg-3">
-          {{$filters.filterArray(billingMethod).join(', ')}}
-      </div>
-    </div>
-
-    <div class="row pb-8 g-0">
-      <div class="col-lg-9 fw-bolder">
-        For {{ response.feeTypeName }}, what billing timing do you want to
-        default for new accounts?
-      </div>
-      <div class="col-lg-3">
-        <span v-for="(data, i) in defaultBillingMethod" :key="i">
-          <template v-if="data.selected">
-            {{ data.text }}
-          </template>
-        </span>
-      </div>
-    </div>
-
-    <template v-if="isQuarterlySelected">
+    <template v-if="response.aumFlag">
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
-          Do you bill your full-quarter {{ response.feeTypeName }} during
-          off-cycle months?
+          How frequently do you bill your {{ response.feeTypeName }}?
         </div>
         <div class="col-lg-3">
-          {{
-            request.offsetCycleFlag
-              ? "Yes, I bill quarterly on off-cycle months"
-              : "No I'm not bill quarterly on off-cycle moths"
-          }}
+          {{ $filters.filterArray(billingFrequency).join(", ") }}
         </div>
       </div>
-    </template>
 
-    <template v-if="request.offsetCycleFlag">
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
-          For {{ response.feeTypeName }}, what quarterly cycle do you want to
+          For {{ response.feeTypeName }}, what frequency do you want to default
+          for new accounts?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(defaultBillingFrequency).join(", ") }}
+        </div>
+      </div>
+
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          Do you bill your {{ response.feeTypeName }} in advance or in arrears?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(billingMethod).join(", ") }}
+        </div>
+      </div>
+
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          For {{ response.feeTypeName }}, what billing timing do you want to
           default for new accounts?
         </div>
         <div class="col-lg-3">
-          <span v-for="(data, i) in defaultOffsetCycle" :key="i">
-            <template v-if="data.selected">
-              {{ data.text }}
-            </template>
-          </span>
+          {{ $filters.filterArray(defaultBillingMethod).join(", ") }}
         </div>
       </div>
+
+      <template v-if="isQuarterlySelected">
+        <div class="row pb-8 g-0">
+          <div class="col-lg-9 fw-bolder">
+            Do you bill your full-quarter {{ response.feeTypeName }} during
+            off-cycle months?
+          </div>
+          <div class="col-lg-3">
+            {{
+              request.offsetCycleFlag
+                ? "Yes, I bill quarterly on off-cycle months"
+                : "No I'm not bill quarterly on off-cycle moths"
+            }}
+          </div>
+        </div>
+      </template>
+
+      <template v-if="request.offsetCycleFlag">
+        <div class="row pb-8 g-0">
+          <div class="col-lg-9 fw-bolder">
+            For {{ response.feeTypeName }}, what quarterly cycle do you want to
+            default for new accounts?
+          </div>
+          <div class="col-lg-3">
+            {{ $filters.filterArray(defaultOffsetCycle).join(", ") }}
+          </div>
+        </div>
+      </template>
     </template>
+
+    <template v-if="!response.aumFlag">
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          Is your {{ response.feeTypeName }} a re-occuring fee(e.g.,
+          subscription)?
+        </div>
+        <div class="col-lg-3">
+          {{response.aumDetails.recurringFeeFlag ? 'Yes, this non-AUM fee is re-occuring.' : 'No, this non-AUM fee is not re-occuring.'}}
+        </div>
+      </div>
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          How frequently do you bill your {{ response.feeTypeName }}?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(billingFrequency).join(", ") }}
+        </div>
+      </div>
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          What frequency do you want to default for new
+          {{ response.feeTypeName }} set-ups?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(defaultBillingFrequency).join(", ") }}
+        </div>
+      </div>
+
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          Do you bill your {{ response.feeTypeName }} in advance or in arrears?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(billingMethod).join(", ") }}
+        </div>
+      </div>
+
+      <div class="row pb-8 g-0">
+        <div class="col-lg-9 fw-bolder">
+          What billing timing do you want to default for new {{ response.feeTypeName }} set-ups?
+        </div>
+        <div class="col-lg-3">
+          {{ $filters.filterArray(defaultBillingMethod).join(", ") }}
+        </div>
+      </div>
+      <template v-if="isQuarterlySelected">
+        <div class="row pb-8 g-0">
+          <div class="col-lg-9 fw-bolder">
+            Do you bill your full-quarter {{ response.feeTypeName }} during off-cycle months?
+          </div>
+          <div class="col-lg-3">
+            {{
+              request.offsetCycleFlag
+                ? "Yes, I bill quarterly on off-cycle months"
+                : "No I'm not bill quarterly on off-cycle moths"
+            }}
+          </div>
+        </div>
+      </template>
+
+      <template v-if="request.offsetCycleFlag">
+        <div class="row pb-8 g-0">
+          <div class="col-lg-9 fw-bolder">
+            What quarterly cycle do you want to default for new {{ response.feeTypeName }} set-ups?
+          </div>
+          <div class="col-lg-3">
+            {{ $filters.filterArray(defaultOffsetCycle).join(", ") }}
+          </div>
+        </div>
+      </template>
+    </template>
+
   </div>
 </template>
 <script lang="ts">

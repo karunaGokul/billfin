@@ -14,6 +14,7 @@
           class="form-check-input"
           type="checkbox"
           v-model="request.firmMinimumFee"
+          @change="updateMinimunFee"
         />
         <label class="fs-7 text-muted form-check-label">{{
           request.firmMinimumFee
@@ -31,7 +32,7 @@
                 class="form-control text-start"
                 v-model="request.minimumFeeAmount"
                 v-currencyDisplay
-              /> 
+              />
             </div>
           </div>
           <div class="col-6 text-dark fw-bold ms-6">annual minimum</div>
@@ -51,6 +52,7 @@
           class="form-check-input"
           type="checkbox"
           v-model="request.firmMaximumFee"
+          @change="updateMaximunFee"
         />
         <label class="fs-7 text-muted form-check-label">{{
           request.firmMaximumFee
@@ -89,6 +91,7 @@
           class="form-check-input"
           type="checkbox"
           v-model="request.adjustForFlows"
+          @change="updateAdjustForFlows"
         />
         <label class="fs-7 text-muted form-check-label">{{
           request.adjustForFlows
@@ -185,8 +188,10 @@
       <button
         class="btn btn-primary me-10"
         :class="{
-          'btn-secondary': !formValidation || !minimumFee || !maximumFee || !validation,
-          'btn-primary': formValidation && minimumFee && maximumFee && validation,
+          'btn-secondary':
+            !formValidation || !minimumFee || !maximumFee || !validation,
+          'btn-primary':
+            formValidation && minimumFee && maximumFee && validation,
         }"
         :disabled="!formValidation || !minimumFee || !maximumFee || !validation"
         @click="saveAdjustments"
@@ -209,7 +214,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 
 @Options({
   components: {
-    SingleCheckBox
+    SingleCheckBox,
   },
 })
 export default class AdjustmentsBoard extends Vue {
@@ -258,11 +263,6 @@ export default class AdjustmentsBoard extends Vue {
       });
   }
 
-  public updateFlowThresholdType(value: string) {
-    this.request.flowThresholdType = value;
-    this.request.flowThresholdValue = "";
-  }
-
   private bindValues() {
     if (this.request.minimumFeeAmount) this.request.firmMinimumFee = true;
     if (this.request.maximumFeeAmount) this.request.firmMaximumFee = true;
@@ -272,9 +272,27 @@ export default class AdjustmentsBoard extends Vue {
     });
   }
 
-  public updateCurrency(value: any) {
+  public updateMinimunFee() {
+    if (!this.request.firmMinimumFee) this.request.minimumFeeAmount = null;
+  }
 
-    console.log(value);
+  public updateMaximunFee() {
+    if (!this.request.firmMaximumFee) this.request.maximumFeeAmount = null;
+  }
+
+  public updateAdjustForFlows() {
+    if (!this.request.adjustForFlows) {
+      this.request.flowThresholdType = null;
+      this.request.flowThresholdValue = null;
+    }
+  }
+
+  public updateFlowThresholdType(value: string) {
+    this.request.flowThresholdType = value;
+    this.request.flowThresholdValue = "";
+  }
+
+  public updateCurrency(value: any) {
     const numberOfDigits: number = 2,
       minDigits: number = 2,
       symbol: string = "$";
@@ -290,15 +308,12 @@ export default class AdjustmentsBoard extends Vue {
         maximumFractionDigits: numberOfDigits,
       })}`;
     else
-      value = `${symbol}(${Math.abs(value).toLocaleString(
-        undefined,
-        {
-          minimumFractionDigits: minDigits,
-          maximumFractionDigits: numberOfDigits,
-        }
-      )})`;
+      value = `${symbol}(${Math.abs(value).toLocaleString(undefined, {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
 
-      console.log(value);
+    console.log(value);
   }
 
   public prev() {
@@ -352,7 +367,8 @@ export default class AdjustmentsBoard extends Vue {
     const self = this.request;
 
     if (self.firmMinimumFee && self.firmMaximumFee) {
-      if (parseInt(self.maximumFeeAmount) >= parseInt(self.minimumFeeAmount)) valid = true;
+      if (parseInt(self.maximumFeeAmount) >= parseInt(self.minimumFeeAmount))
+        valid = true;
       else valid = false;
     } else valid = true;
 

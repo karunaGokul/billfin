@@ -104,12 +104,12 @@
             @change="updateOffsetCycleFlag"
           />
           <label
-            class="fs-8 text-muted form-check-label"
+            class="form-check-label"
             for="flexSwitchCheckChecked"
             >{{
             request.offsetCycleFlag
               ? "Yes, I bill quarterly on off-cycle months"
-              : "No I'm not bill quarterly on off-cycle moths"
+              : "No"
           }}</label
           >
         </div>
@@ -424,6 +424,7 @@ export default class NonAumAdvisory extends Vue {
           response.defaultOffsetCycle.includes(item.value)
         )
           item.selected = true;
+        else item.selected = false;
       });
     }
   }
