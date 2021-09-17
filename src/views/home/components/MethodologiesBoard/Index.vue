@@ -99,7 +99,7 @@ export default class MethodologiesBoard extends Vue {
     if (this.request.aumFeeTypes.length > this.step) {
       if (
         this.request.aumFeeTypes[this.step].aumFlag &&
-        !this.request.aumCommonFrequencyTimingFlag
+        !this.request.aumCommonAssetMethodologyFlag
       ) {
         if (!this.request.aumFeeTypes[this.step].aumDetails) {
           this.response = this.request.aumFeeTypes[this.step];

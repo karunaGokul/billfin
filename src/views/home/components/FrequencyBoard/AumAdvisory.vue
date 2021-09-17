@@ -405,6 +405,7 @@ export default class AumAdvisory extends Vue {
           response.defaultOffsetCycle.includes(item.value)
         )
           item.selected = true;
+        else item.selected = false;
       });
     }
   }
