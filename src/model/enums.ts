@@ -1,6 +1,6 @@
 export enum BillingTypes {
     "AUM Advisory" = "AUM",
-    "Non-AUM (e.g., subscriptions, one-time)" = "NON-AUM"
+    "Non-AUM Subscriptions" = "NON-AUM"
 }
 export enum BillingFrequency {
     Monthly = "MONTHLY",
@@ -52,7 +52,7 @@ export enum ProrationMethodType {
 }
 export enum expressRatesAs {
     "Basis Point" = "BASIS_POINT",
-    "Percentages" = "PERCENTAGES"
+    "Percentage" = "PERCENTAGES"
 }
 export enum flowThresholdType {
     "Dollar amount" = "DOLLAR_AMOUNT", 

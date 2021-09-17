@@ -49,7 +49,7 @@
             {{
               request.offsetCycleFlag
                 ? "Yes, I bill quarterly on off-cycle months"
-                : "No I'm not bill quarterly on off-cycle moths"
+                : "No"
             }}
           </div>
         </div>
@@ -71,16 +71,7 @@
     <template v-if="!response.aumFlag">
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
-          Is your {{ response.feeTypeName }} a re-occuring fee(e.g.,
-          subscription)?
-        </div>
-        <div class="col-lg-3">
-          {{response.aumDetails.recurringFeeFlag ? 'Yes, this non-AUM fee is re-occuring.' : 'No, this non-AUM fee is not re-occuring.'}}
-        </div>
-      </div>
-      <div class="row pb-8 g-0">
-        <div class="col-lg-9 fw-bolder">
-          How frequently do you bill your {{ response.feeTypeName }}?
+          How frequently do you bill your {{ response.feeTypeName }} subscriptions?
         </div>
         <div class="col-lg-3">
           {{ $filters.filterArray(billingFrequency).join(", ") }}
@@ -89,7 +80,7 @@
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
           What frequency do you want to default for new
-          {{ response.feeTypeName }} set-ups?
+          {{ response.feeTypeName }} subscriptions?
         </div>
         <div class="col-lg-3">
           {{ $filters.filterArray(defaultBillingFrequency).join(", ") }}
@@ -98,7 +89,7 @@
 
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
-          Do you bill your {{ response.feeTypeName }} in advance or in arrears?
+          Do you bill your {{ response.feeTypeName }} subscriptions in advance or in arrears?
         </div>
         <div class="col-lg-3">
           {{ $filters.filterArray(billingMethod).join(", ") }}
@@ -107,7 +98,7 @@
 
       <div class="row pb-8 g-0">
         <div class="col-lg-9 fw-bolder">
-          What billing timing do you want to default for new {{ response.feeTypeName }} set-ups?
+          What billing timing do you want to default for new {{ response.feeTypeName }} subscriptions?
         </div>
         <div class="col-lg-3">
           {{ $filters.filterArray(defaultBillingMethod).join(", ") }}
@@ -116,13 +107,13 @@
       <template v-if="isQuarterlySelected">
         <div class="row pb-8 g-0">
           <div class="col-lg-9 fw-bolder">
-            Do you bill your full-quarter {{ response.feeTypeName }} during off-cycle months?
+            Do you bill your full-quarter {{ response.feeTypeName }} subscriptions during off-cycle months?
           </div>
           <div class="col-lg-3">
             {{
               request.offsetCycleFlag
                 ? "Yes, I bill quarterly on off-cycle months"
-                : "No I'm not bill quarterly on off-cycle moths"
+                : "No"
             }}
           </div>
         </div>
@@ -131,7 +122,7 @@
       <template v-if="request.offsetCycleFlag">
         <div class="row pb-8 g-0">
           <div class="col-lg-9 fw-bolder">
-            What quarterly cycle do you want to default for new {{ response.feeTypeName }} set-ups?
+            What quarterly cycle do you want to default for new {{ response.feeTypeName }} subscriptions?
           </div>
           <div class="col-lg-3">
             {{ $filters.filterArray(defaultOffsetCycle).join(", ") }}

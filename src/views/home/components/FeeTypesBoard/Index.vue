@@ -30,7 +30,7 @@
               @change="updateBillingTypes"
               value="NON-AUM"
             />
-            Non-AUM(e.g., subscriptions, one-time)
+            Non-AUM Subscriptions
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@
 
       <template v-if="showNonAUMAdvisory">
         <div class="fw-bolder mt-10">
-          For your non-AUM billing,which fees do you bill? Feel free to edit
+          For your non-AUM subscription billing,which fees do you bill? Feel free to edit
           descriptions as needed
           <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>
@@ -135,7 +135,7 @@
 
       <template v-if="showNonAUMAdvisoryFees.length > 1">
         <div class="fw-bolder mt-10">
-          Do you bill your various non-AUM fees on different frequencies and/or
+          Do you bill your various non-AUM subscription fees on different frequencies and/or
           timing relative to each other?
           <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>

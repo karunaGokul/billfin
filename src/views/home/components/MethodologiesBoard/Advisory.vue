@@ -15,7 +15,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What valuation methodology do you want default for new accounts?
+        What valuation methodology do you want to default for new accounts?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>

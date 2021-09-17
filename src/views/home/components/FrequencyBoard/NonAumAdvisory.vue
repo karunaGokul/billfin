@@ -2,29 +2,7 @@
   <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        Is your {{ response.feeTypeName }} a re-occuring fee(e.g.,
-        subscription)?
-      </div>
-      <div class="ms-5">
-        <i class="fa fa-question-circle fs-4 text-dark"></i>
-      </div>
-    </div>
-    <div class="mt-6 ms-6">
-      <div class="form-check form-check-solid form-switch">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          v-model="request.recurringFeeFlag"
-        />
-        <label
-          class="fs-7 form-check-label"
-          >{{request.recurringFeeFlag ? 'Yes, this non-AUM fee is re-occuring.' : 'No, this non-AUM fee is not re-occuring.'}}</label
-        >
-      </div>
-    </div>
-    <div class="d-flex fs-7 mt-10">
-      <div class="fw-bolder">
-        How frequently do you bill your {{ response.feeTypeName }}?
+        How frequently do you bill your {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -41,7 +19,7 @@
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
         What frequency do you want to default
-        for new {{ response.feeTypeName }} set-ups?
+        for new {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -57,7 +35,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        Do you bill your {{ response.feeTypeName }} in advance or in arrears?
+        Do you bill your {{ response.feeTypeName }} subscriptions in advance or in arrears?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -71,7 +49,7 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What billing timing do you want to default for new {{ response.feeTypeName }} set-ups?
+        What billing timing do you want to default for new {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -88,7 +66,7 @@
     <template v-if="isQuarterlySelected">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          Do you bill your full-quarter {{ response.feeTypeName }} during
+          Do you bill your full-quarter {{ response.feeTypeName }} subscriptions during
           off-cycle months?
         </div>
         <div class="ms-5">
@@ -119,7 +97,7 @@
     <template v-if="request.offsetCycleFlag">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          What quarterly cycle do you want to default for new {{ response.feeTypeName }} set-ups?
+          What quarterly cycle do you want to default for new {{ response.feeTypeName }} subscriptions?
         </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>

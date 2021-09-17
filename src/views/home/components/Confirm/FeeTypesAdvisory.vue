@@ -59,7 +59,7 @@
         <template v-if="showNonAUMAdvisory">
           <div class="row pb-8 g-0">
             <div class="col-lg-9 fw-bolder">
-              For your non-AUM billing,which fees do you bill?
+              For your non-AUM subscription billing,which fees do you bill?
             </div>
             <div class="col-lg-3">
               {{$filters.filterFeeTypes(nonAUMFeeTypes).join(', ')}}

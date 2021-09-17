@@ -49,6 +49,4 @@ export class aumDetails {
     firmMaximumFee:boolean = false;
 
     aumAdvisoryBill: Array<string> | Array<any> = [];
-
-    recurringFeeFlag: boolean = false;
 }
