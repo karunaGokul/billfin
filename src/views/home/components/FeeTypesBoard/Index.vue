@@ -298,11 +298,11 @@ export default class FeeTypesBoard extends Vue {
   }
 
   get showAUMAdvisory() {
-    return this.request.billingType.includes("AUM");
+    return this.request.billingType && this.request.billingType.includes("AUM") ? true : false;
   }
 
   get showNonAUMAdvisory() {
-    return this.request.billingType.includes("NON-AUM");
+    return this.request.billingType && this.request.billingType.includes("NON-AUM") ? true : false;
   }
 
   get showAUMAdvisoryFees() {
