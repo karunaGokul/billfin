@@ -283,7 +283,7 @@ export default class Home extends Vue {
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        this.showOnBoard = false;
+        this.showOnBoard = true;
         if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else
