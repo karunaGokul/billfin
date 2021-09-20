@@ -1,128 +1,178 @@
 <template>
   <div class="home-page d-flex">
     <div
-      class="sidebar border"
+      class="sidebar"
       :class="{
-        'sidebar-small': sideBar,
-        'sidebar-medium': !sideBar,
+        show: !sideBar,
+        hide: sideBar,
       }"
     >
-      <div class="p-4 ps-7">
+      <div class="pt-4 ps-1">
         <img src="@/assets/billfin.svg" alt="Logo" width="40" />
       </div>
 
-      <div class="mt-2">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link active" href="#">
-              <i class="fas fa-box p-4 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Dashboard</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <ul class="nav flex-column mt-10 mb-10">
+        <router-link
+          to="/"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="nav-item__active"
+          exact
+        >
+          <i class="fas fa-box fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Dashboard</span>
+          <span class="tooltip">Dashboard</span>
+        </router-link>
+      </ul>
 
       <div class="mt-4">
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-if="!sideBar">
+        <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__name">
           CLIENT INFO
         </p>
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-else>
+        <p class="mb-0 ps-5 pt-0 pb-0 fs-8 nav-header nav-header__icon">
           <i class="fas fa-ellipsis-h"></i>
         </p>
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-user-friends p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Clients</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-grip-lines p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Fee Schedules</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-tags p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Products</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-grip-lines-vertical p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Subscriptions</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-clock p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Timesheets</span>
-            </a>
-          </li>
-        </ul>
       </div>
 
+      <ul class="nav flex-column mt-2">
+        <router-link
+          to="/clients"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-user-friends fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Clients</span>
+          <span class="tooltip">Clients</span>
+        </router-link>
+        <router-link
+          to="/fee-schedules"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-grip-lines fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Fee Schedules</span>
+          <span class="tooltip">Fee Schedules</span>
+        </router-link>
+        <router-link
+          to="/products"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-tags fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Products</span>
+          <span class="tooltip">Products</span>
+        </router-link>
+        <router-link
+          to="/subscriptions"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-grip-lines-vertical fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Subscriptions</span>
+          <span class="tooltip">Subscriptions</span>
+        </router-link>
+        <router-link
+          to="/timesheets"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-clock fs-7"></i>
+          <span class="nav-item__name fs-7 fw-bold">Timesheets</span>
+          <span class="tooltip">Timesheets</span>
+        </router-link>
+      </ul>
+
       <div class="mt-4">
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-if="!sideBar">
-          BILLNG & PAYMENTS
+        <p class="mb-0 ps-5 pt-0 pb-0 fs-8 nav-header nav-header__name">
+          BILLING & PAYMENTS
         </p>
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-else>
+        <p class="mb-0 ps-6 pt-0 pb-0 fs-8 nav-header nav-header__icon">
           <i class="fas fa-ellipsis-h"></i>
         </p>
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-dollar-sign p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Fees</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-money-check-alt p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Invoices</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-tags p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Payments</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-chart-line p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Reports</span>
-            </a>
-          </li>
-        </ul>
       </div>
 
+      <ul class="nav flex-column mt-2">
+        <router-link
+          to="/fees"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-dollar-sign fs-7"></i>
+          <span class="nav-item__name fs-7">Fees</span>
+          <span class="tooltip">Fees</span>
+        </router-link>
+        <router-link
+          to="/invoices"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-money-check-alt fs-7"></i>
+          <span class="nav-item__name fs-7">Invoices</span>
+          <span class="tooltip">Invoices</span>
+        </router-link>
+        <router-link
+          to="/Payments"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-tags fs-7"></i>
+          <span class="nav-item__name fs-7">Payments</span>
+          <span class="tooltip">Payments</span>
+        </router-link>
+        <router-link
+          to="/Reports"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-chart-line fs-7"></i>
+          <span class="nav-item__name fs-7">Reports</span>
+          <span class="tooltip">Reports</span>
+        </router-link>
+      </ul>
+
       <div class="mt-4">
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-if="!sideBar">
+        <p class="mb-0 ps-5 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__name">
           ADMINSTRATION
         </p>
-        <p class="mb-0 ps-10 pt-0 pb-0 fw-bold nav-bar__name" v-else>
+        <p class="mb-0 ps-6 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__icon">
           <i class="fas fa-ellipsis-h"></i>
         </p>
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-cog p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Settings</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="d-flex align-items-center nav-link" href="#">
-              <i class="fas fa-question p-3 ps-6 fs-7"></i>
-              <span class="fs-7 nav-link__name">Help</span>
-            </a>
-          </li>
-        </ul>
       </div>
+
+      <ul class="nav flex-column mt-2">
+        <router-link
+          to="/Settings"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-cog fs-7"></i>
+          <span class="nav-item__name fs-7">Settings</span>
+          <span class="tooltip">Settings</span>
+        </router-link>
+        <router-link
+          to="/Help"
+          tag="li"
+          class="d-flex align-items-center nav-item"
+          active-class="text-primary"
+        >
+          <i class="fas fa-question fs-7"></i>
+          <span class="nav-item__name fs-7">Help</span>
+          <span class="tooltip">Help</span>
+        </router-link>
+      </ul>
     </div>
     <div class="w-100 vh-100 bg-light overflow-hidden" v-if="firms">
-      <nav class="navbar border-bottom bg-white">
+      <nav class="navbar bg-white">
         <div class="row w-100 align-items-center">
           <div class="col-lg-1 pe-0">
             <button class="btn float-start" @click="sideBar = !sideBar">
@@ -138,7 +188,10 @@
             <div class="d-flex align-items-center justify-content-start">
               <div class="dropdown" v-click-outside="clickOutSideFirm">
                 <div
-                  class="dropdown-toggle fw-bold"
+                  class="fw-bold"
+                  :class="{
+                    'dropdown-toggle': firms.length > 1
+                  }"
                   @click="firms.length > 1 ? (toggleFirms = true) : ''"
                 >
                   {{ selectedFirm }}
@@ -219,13 +272,20 @@
           </div>
           <div class="col-5 p-4">
             <div
-              class="alert alert-danger fs-8 text-center fw-bolder text-dark border-0"
+              class="
+                alert alert-danger
+                fs-8
+                text-center
+                fw-bolder
+                text-dark
+                border-0
+              "
               role="alert"
               v-if="firms"
             >
-              <i class="fas fa-info-circle text-danger"></i> You only have {{showTrailExpireDays}} more day(s) in
-              your trial. Ready to sign-up? Click <a href="">here</a> to get
-              started
+              <i class="fas fa-info-circle text-danger"></i> You only have
+              {{ showTrailExpireDays }} more day(s) in your trial. Ready to
+              sign-up? Click <a href="">here</a> to get started
             </div>
           </div>
         </div>
@@ -283,8 +343,8 @@ export default class Home extends Vue {
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        this.showOnBoard = true;
-        if (this.firms[0].trialOnboardingStatus == 'NOT_STARTED')
+        this.showOnBoard = false;
+        if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
