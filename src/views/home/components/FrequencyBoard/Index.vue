@@ -117,7 +117,7 @@ export default class FrequencyBoard extends Vue {
   onNext(tab: string, response: aumFeeTypes) {
     console.log('child to parent');
     console.log(response);
-    //this.response = response;
+    this.response = response;
     console.log('request');
     console.log(this.request);
     console.log('response')
