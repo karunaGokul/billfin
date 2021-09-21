@@ -37,13 +37,13 @@
         <aum-advisory
           :response="response"
           @prev="onPrev"
-          @next="onNext"
+          @next="onNext($event, response)"
           v-if="response && response.aumFlag"
         />
         <non-aum-advisory
           :response="response"
           @prev="onPrev"
-          @next="onNext"
+          @next="onNext($event, response)"
           v-if="response && !response.aumFlag"
         />
       </div>
@@ -114,16 +114,22 @@ export default class FrequencyBoard extends Vue {
     console.log(this.response);
   }
 
-  onNext(response: aumFeeTypes) {
-    this.response = response;
+  onNext(tab: string, response: aumFeeTypes) {
+    console.log('child to parent');
+    console.log(response);
+    //this.response = response;
+    console.log('request');
     console.log(this.request);
+    console.log('response')
     console.log(this.response);
-    this.step = this.step + 1;   
+    this.step = this.step + 1; 
+    console.log('aumFlag', this.request.aumFeeTypes[this.step].aumFlag, 'aumCommonFrequencyTimingFlag', this.request.aumCommonFrequencyTimingFlag);  
     if (this.request.aumFeeTypes.length > this.step) {
       if (
         this.request.aumFeeTypes[this.step].aumFlag &&
         !this.request.aumCommonFrequencyTimingFlag
       ) {
+        console.log('if flag false and aumFlag true');
         if (!this.request.aumFeeTypes[this.step].aumDetails) {
           this.response = this.request.aumFeeTypes[this.step];
           this.response.aumDetails = this.request.aumFeeTypes[0].aumDetails;
@@ -132,6 +138,7 @@ export default class FrequencyBoard extends Vue {
         !this.request.aumFeeTypes[this.step].aumFlag &&
         !this.request.nonAumCommonFrequencyTimingFlag
       ) {
+        console.log('else if flag false and aumFlag true');
         if (!this.request.aumFeeTypes[this.step].aumDetails) {
           const nonAumFeeTypes: frequencyRequestModel =
             new frequencyRequestModel();
@@ -142,7 +149,12 @@ export default class FrequencyBoard extends Vue {
           this.response.aumDetails = nonAumFeeTypes.aumFeeTypes[0].aumDetails;
         } else this.response = this.request.aumFeeTypes[this.step];
       } else this.response = this.request.aumFeeTypes[this.step];
-    } else this.$emit("next");
+    } else  {
+      this.$emit(tab);
+      console.log('else next');
+    }
+    console.log(this.response);
   }
+  
 }
 </script>

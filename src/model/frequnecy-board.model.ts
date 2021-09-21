@@ -6,7 +6,7 @@ export class frequencyRequestModel {
     nonAumCommonFrequencyTimingFlag: boolean = false;
 }
 
-export class frequencyResponseModel {
+export class frequencyResponseModel extends frequencyRequestModel {
     status: string | any;
 }
 export class aumFeeTypes {
