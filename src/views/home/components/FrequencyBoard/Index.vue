@@ -24,8 +24,7 @@
               :key="index"
               class="tab-label border-1 pb-4"
               :class="{
-                'tab-active-border-bottom':
-                  response.feeTypeName == item.feeTypeName,
+                'tab-active-border-bottom': item.feeTypeName == feeTypeName,
               }"
             >
               {{ item.feeTypeName }}
@@ -34,7 +33,16 @@
         </div>
       </div>
       <div class="tab-content-group m-0">
-        <aum-advisory
+        <template v-for="(item, index) in request.aumFeeTypes" :key="index">
+          <aum-advisory
+            :response="item"
+            :prevNext="index"
+            @prev="onPrev($event, index)"
+            @next="onNext($event, data)"
+            v-if="item.aumFlag && item.feeTypeName == feeTypeName"
+          />
+        </template>
+        <!--<aum-advisory
           :response="response"
           @prev="onPrev"
           @next="onNext($event, response)"
@@ -45,7 +53,7 @@
           @prev="onPrev"
           @next="onNext($event, response)"
           v-if="response && !response.aumFlag"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -73,7 +81,9 @@ export default class FrequencyBoard extends Vue {
 
   public store = useStore();
   public request: frequencyRequestModel = new frequencyRequestModel();
-  public response: aumFeeTypes = null;
+  //public response: aumFeeTypes = null;
+
+  public feeTypeName: string = "";
 
   public step: number = 0;
 
@@ -88,7 +98,8 @@ export default class FrequencyBoard extends Vue {
       .getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-        this.response = this.request.aumFeeTypes[this.step];
+        //this.response = this.request.aumFeeTypes[0];
+        this.feeTypeName = this.request.aumFeeTypes[0].feeTypeName;
         this.showMethodolgiesAndAdjustments();
       })
       .catch((err) => {
@@ -106,7 +117,32 @@ export default class FrequencyBoard extends Vue {
     else this.$emit("showAumTabs", "hide");
   }
 
-  onPrev() {
+  onPrev(index: number) {
+    console.log(index);
+    if (index == 0) this.$emit("prev");
+    else this.feeTypeName = this.request.aumFeeTypes[index - 1].feeTypeName;
+  }
+
+  onNext(data: any) {
+    const index = data.index;
+    const response = data.response;
+    if (index == this.request.aumFeeTypes.length) this.$emit("next");
+    else {
+      this.request.aumFeeTypes[index].aumDetails = response;
+      this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
+      if (
+        this.request.aumFeeTypes[index+1].aumFlag &&
+        !this.request.aumCommonFrequencyTimingFlag
+      ) {
+        console.log(this.request.aumFeeTypes[index+1].aumDetails);
+        if (this.request.aumFeeTypes[index+1].aumDetails == null) {
+          this.request.aumFeeTypes[index+1].aumDetails = this.request.aumFeeTypes[index].aumDetails;
+        }
+      }
+    }
+  }
+
+  /*onPrev() {
     this.step = this.step - 1;
     if (this.step >= 0) this.response = this.request.aumFeeTypes[this.step];
     else this.$emit("prev");
@@ -154,7 +190,6 @@ export default class FrequencyBoard extends Vue {
       console.log('else next');
     }
     console.log(this.response);
-  }
-  
+  }*/
 }
 </script>

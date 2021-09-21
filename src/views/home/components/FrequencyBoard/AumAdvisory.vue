@@ -82,15 +82,11 @@
             v-model="request.offsetCycleFlag"
             @change="updateOffsetCycleFlag"
           />
-          <label
-            class="form-check-label"
-            for="flexSwitchCheckChecked"
-            >{{
+          <label class="form-check-label" for="flexSwitchCheckChecked">{{
             request.offsetCycleFlag
               ? "Yes, I bill quarterly on off-cycle months"
               : "No"
-          }}</label
-          >
+          }}</label>
         </div>
       </div>
     </template>
@@ -160,6 +156,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 export default class AumAdvisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
+  @Prop() prevNext: number;
 
   public store = useStore();
   public request: aumDetails = new aumDetails();
@@ -230,7 +227,7 @@ export default class AumAdvisory extends Vue {
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
         if (response.status == "SUCCESS") {
-          this.$emit("next", response);
+          this.$emit("next", {response: response, index: this.prevNext});
         }
       })
       .catch((err) => {
@@ -241,7 +238,7 @@ export default class AumAdvisory extends Vue {
   public updatebillingFrequency(billingFrequency: Array<ListItem>) {
     this.request.billingFrequency = [];
     this.defaultBillingFrequency = [];
-    this.request.defaultBillingFrequency = '';
+    this.request.defaultBillingFrequency = "";
 
     billingFrequency.forEach((item) => {
       if (item.selected) {
@@ -290,7 +287,7 @@ export default class AumAdvisory extends Vue {
   public updateBillingMethod(billingMethod: Array<ListItem>) {
     this.request.billingMethod = [];
     this.defaultBillingMethod = [];
-    this.request.defaultBillingMethod = '';
+    this.request.defaultBillingMethod = "";
 
     billingMethod.forEach((item) => {
       if (item.selected) {
@@ -328,7 +325,6 @@ export default class AumAdvisory extends Vue {
         }
       });
     }
-
   }
 
   public updateDefaultBillingMethod(defaultBillingMethod: string) {
@@ -413,7 +409,7 @@ export default class AumAdvisory extends Vue {
   }
 
   public prev() {
-    this.$emit("prev");
+    this.$emit("prev", this.prevNext);
   }
 
   public nullCheck(value: any) {
