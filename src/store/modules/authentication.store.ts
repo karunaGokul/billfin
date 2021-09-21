@@ -63,6 +63,7 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
+
     const options: KeycloakInitOptions = {
       onLoad: "login-required",
       checkLoginIframe: false,
@@ -89,7 +90,6 @@ const actions: ActionTree<AuthenticationState, any> = {
         .then(async (authenticated) => {
           if (!authenticated) {
             console.log("NOT Authenticated");
-
             context.commit("onLogin", { success: false });
           } else {
             context.commit("onLogin", {
@@ -114,7 +114,7 @@ const actions: ActionTree<AuthenticationState, any> = {
           reject(msg);
         });
     });
-  },
+  }, 
   logout(context) {
     const logoutOptions = { redirectUri: window.location.href };
     keycloak.logout(logoutOptions);
@@ -122,6 +122,17 @@ const actions: ActionTree<AuthenticationState, any> = {
       context.commit("onLogout");
       resolve("");
     });
+  },
+  validateKeyCloak(context) {
+    if (!keycloak.token) {
+      const options: KeycloakInitOptions = {
+        onLoad: "login-required",
+        checkLoginIframe: false,
+        token: localStorage.getItem('accessToken'),
+        refreshToken: localStorage.getItem('refresh_token')
+      };
+      keycloak.init(options);
+    }
   },
 };
 

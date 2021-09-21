@@ -229,7 +229,9 @@ export default class AumAdvisory extends Vue {
     this.service
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next");
+        if (response.status == "SUCCESS") {
+          this.$emit("next", response);
+        }
       })
       .catch((err) => {
         console.log(err);

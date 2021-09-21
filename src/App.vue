@@ -11,5 +11,9 @@ import { useStore } from "vuex";
 
 export default class App extends DIContainer {
   public store = useStore();
+
+  created() {
+    if (this.store.getters.isLoggedIn) this.store.dispatch("validateKeyCloak");
+  }
 }
 </script>

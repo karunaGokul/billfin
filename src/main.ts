@@ -102,7 +102,7 @@ app.directive("click-outside", {
 });
 
 app.directive("currencyDisplay", {
-  updated(el) {
+  updated(el, binding) {
     console.log(el.value);
     const numberOfDigits: number = 2,
       minDigits: number = 2

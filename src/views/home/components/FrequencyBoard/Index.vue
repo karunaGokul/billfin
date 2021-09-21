@@ -112,8 +112,10 @@ export default class FrequencyBoard extends Vue {
     else this.$emit("prev");
   }
 
-  onNext() {
-    this.step = this.step + 1;
+  onNext(response: aumFeeTypes) {
+    console.log(this.request);
+    this.response = response;
+    this.step = this.step + 1;   
     if (this.request.aumFeeTypes.length > this.step) {
       if (
         this.request.aumFeeTypes[this.step].aumFlag &&
