@@ -74,7 +74,12 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel, frequencyRequestModel, aumFeeTypes } from "@/model";
+import {
+  firmRequestModel,
+  frequencyRequestModel,
+  aumFeeTypes,
+  aumDetails,
+} from "@/model";
 
 import AumAdvisory from "./AumAdvisory.vue";
 import NonAumAdvisory from "./NonAumAdvisory.vue";
@@ -126,7 +131,8 @@ export default class FrequencyBoard extends Vue {
     this.isBinding = data.isBinding;
     if (data.index == 0) this.$emit("prev");
     else {
-      if(this.isBinding)  this.request.aumFeeTypes[data.index].aumDetails = null;
+      if (this.isBinding)
+        this.request.aumFeeTypes[data.index].aumDetails = null;
       this.isBinding = false;
       this.feeTypeName = this.request.aumFeeTypes[data.index - 1].feeTypeName;
     }
@@ -135,22 +141,35 @@ export default class FrequencyBoard extends Vue {
   onNext(data: any) {
     const index = data.index;
     const response = data.response;
+
+    /*console.log(index);
+    console.log(this.request.aumFeeTypes[index]);
+    this.request.aumFeeTypes[index].aumDetails = this.clone(response);
+    this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
+    console.log(this.request.aumFeeTypes[0]);
+    console.log(this.request.aumFeeTypes[index]);
+    this.request.aumFeeTypes[index + 1].aumDetails = this.clone(this.request.aumFeeTypes[0].aumDetails);
+    console.log(typeof this.request.aumFeeTypes[index].aumDetails.billingFrequency);
+
+    console.log(data);
+    const index = data.index;
+    const response = data.response;*/
+
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
-      this.request.aumFeeTypes[index].aumDetails = response;
+      this.request.aumFeeTypes[index].aumDetails = this.clone(response);
+
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
         !this.request.aumCommonFrequencyTimingFlag
       ) {
-        console.log(this.request.aumFeeTypes[index + 1]);
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isBinding = true;
-          console.log(this.request.aumFeeTypes[index + 1]);
-          console.log(this.request.aumFeeTypes[0]);
-          this.request.aumFeeTypes[index + 1].aumDetails =
-            this.request.aumFeeTypes[0].aumDetails;
-            console.log(this.request.aumFeeTypes[index + 1]);
+
+          this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
+            this.request.aumFeeTypes[0].aumDetails
+          );
         }
       } else if (
         !this.request.aumFeeTypes[index + 1].aumFlag &&
@@ -165,9 +184,45 @@ export default class FrequencyBoard extends Vue {
           this.isBinding = true;
           this.request.aumFeeTypes[index + 1].aumDetails =
             nonAumFeeTypes.aumFeeTypes[0].aumDetails;
+
+          this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
+            nonAumFeeTypes.aumFeeTypes[0].aumDetails
+          );
         }
       }
     }
+  }
+
+  clone<T>(object: T): T {
+    return this._clone(object);
+  }
+
+  /*private _clone(object: any) {
+    let cloned: any = new (<any>object).constructor();
+
+    for (let key in object) {
+      try {
+        cloned[key] = object[key];
+
+        if (typeof object[key].getMonth === "function") {
+          let date = new Date(object[key]);
+          if (isNaN(date.getFullYear())) date = null;
+
+          cloned[key] = date;
+        } else if (typeof object[key] === "object")
+          cloned[key] = this._clone(object[key]);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    return cloned;
+  }*/
+
+  private _clone(obj: any) {
+    if (obj == null || typeof obj != "object") return obj;
+    var temp = new obj.constructor();
+    for (var key in obj) temp[key] = this._clone(obj[key]);
+    return temp;
   }
 }
 </script>

@@ -109,7 +109,7 @@ export default class MethodologiesBoard extends Vue {
     const response = data.response;
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
-      this.request.aumFeeTypes[index].aumDetails = response;
+      this.request.aumFeeTypes[index].aumDetails = this.clone(response);
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
@@ -118,10 +118,21 @@ export default class MethodologiesBoard extends Vue {
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isBinding = true;
           this.request.aumFeeTypes[index + 1].aumDetails =
-            this.request.aumFeeTypes[0].aumDetails;
+            this.clone(this.request.aumFeeTypes[0].aumDetails);
         }
       }
     }
+  }
+
+  clone<T>(object: T): T {
+    return this._clone(object);
+  }
+
+  private _clone(obj: any) {
+    if (obj == null || typeof obj != "object") return obj;
+    var temp = new obj.constructor();
+    for (var key in obj) temp[key] = this._clone(obj[key]);
+    return temp;
   }
   
 }
