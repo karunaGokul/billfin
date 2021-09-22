@@ -143,10 +143,14 @@ export default class FrequencyBoard extends Vue {
         this.request.aumFeeTypes[index + 1].aumFlag &&
         !this.request.aumCommonFrequencyTimingFlag
       ) {
+        console.log(this.request.aumFeeTypes[index + 1]);
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isBinding = true;
+          console.log(this.request.aumFeeTypes[index + 1]);
+          console.log(this.request.aumFeeTypes[0]);
           this.request.aumFeeTypes[index + 1].aumDetails =
             this.request.aumFeeTypes[0].aumDetails;
+            console.log(this.request.aumFeeTypes[index + 1]);
         }
       } else if (
         !this.request.aumFeeTypes[index + 1].aumFlag &&
