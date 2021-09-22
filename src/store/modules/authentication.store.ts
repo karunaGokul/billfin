@@ -13,7 +13,13 @@ const config: KeycloakConfig = {
   realm: "BillFin-Dev",
   clientId: "reference-service",
 };
+
 const keycloak = Keycloak(config);
+
+const options: KeycloakInitOptions = {
+  onLoad: "login-required",
+  checkLoginIframe: false,
+};
 
 const state: AuthenticationState = {
   accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || "",
@@ -63,11 +69,6 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
-
-    const options: KeycloakInitOptions = {
-      onLoad: "login-required",
-      checkLoginIframe: false,
-    };
 
     keycloak.onTokenExpired = () => {
       keycloak
@@ -124,13 +125,8 @@ const actions: ActionTree<AuthenticationState, any> = {
     });
   },
   validateKeyCloak(context) {
+    console.log(keycloak);
     if (!keycloak.token) {
-      const options: KeycloakInitOptions = {
-        onLoad: "login-required",
-        checkLoginIframe: false,
-        token: localStorage.getItem('accessToken'),
-        refreshToken: localStorage.getItem('refresh_token')
-      };
       keycloak.init(options);
     }
   },

@@ -2,7 +2,8 @@
   <div class="tab-content tab-content-lg__scroll overflow-auto mt-4">
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        How frequently do you bill your {{ response.feeTypeName }} subscriptions?
+        How frequently do you bill your
+        {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -18,8 +19,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What frequency do you want to default
-        for new {{ response.feeTypeName }} subscriptions?
+        What frequency do you want to default for new
+        {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -35,7 +36,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        Do you bill your {{ response.feeTypeName }} subscriptions in advance or in arrears?
+        Do you bill your {{ response.feeTypeName }} subscriptions in advance or
+        in arrears?
       </div>
       <div class="text-muted ms-4 fs-8">Check all that apply</div>
       <div class="ms-5">
@@ -49,7 +51,8 @@
 
     <div class="d-flex fs-7 mt-10">
       <div class="fw-bolder">
-        What billing timing do you want to default for new {{ response.feeTypeName }} subscriptions?
+        What billing timing do you want to default for new
+        {{ response.feeTypeName }} subscriptions?
       </div>
       <div class="ms-5">
         <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -66,8 +69,8 @@
     <template v-if="isQuarterlySelected">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          Do you bill your full-quarter {{ response.feeTypeName }} subscriptions during
-          off-cycle months?
+          Do you bill your full-quarter {{ response.feeTypeName }} subscriptions
+          during off-cycle months?
         </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -81,15 +84,11 @@
             v-model="request.offsetCycleFlag"
             @change="updateOffsetCycleFlag"
           />
-          <label
-            class="form-check-label"
-            for="flexSwitchCheckChecked"
-            >{{
+          <label class="form-check-label" for="flexSwitchCheckChecked">{{
             request.offsetCycleFlag
               ? "Yes, I bill quarterly on off-cycle months"
               : "No"
-          }}</label
-          >
+          }}</label>
         </div>
       </div>
     </template>
@@ -97,7 +96,8 @@
     <template v-if="request.offsetCycleFlag">
       <div class="d-flex fs-7 mt-10">
         <div class="fw-bolder">
-          What quarterly cycle do you want to default for new {{ response.feeTypeName }} subscriptions?
+          What quarterly cycle do you want to default for new
+          {{ response.feeTypeName }} subscriptions?
         </div>
         <div class="ms-5">
           <i class="fa fa-question-circle fs-4 text-dark"></i>
@@ -158,6 +158,8 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 export default class NonAumAdvisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
+  @Prop() prevNext: number;
+  @Prop() isBinding: boolean;
 
   public store = useStore();
   public request: aumDetails = new aumDetails();
@@ -227,7 +229,9 @@ export default class NonAumAdvisory extends Vue {
     this.service
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next");
+        if (response.status == "SUCCESS") {
+          this.$emit("next", {response: response, index: this.prevNext, isBinding: false});
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -408,7 +412,7 @@ export default class NonAumAdvisory extends Vue {
   }
 
   public prev() {
-    this.$emit("prev");
+    this.$emit("prev", {index: this.prevNext, isBinding: this.isBinding});
   }
 
   public nullCheck(value: any) {

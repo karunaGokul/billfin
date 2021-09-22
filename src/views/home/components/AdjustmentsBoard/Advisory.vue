@@ -31,7 +31,7 @@
                 type="text"
                 class="form-control text-start"
                 v-model="request.minimumFeeAmount"
-                v-currencyDisplay
+                @blur="convertMinimunFeeDollar"
               />
             </div>
           </div>
@@ -69,6 +69,7 @@
                 type="text"
                 class="form-control text-start"
                 v-model="request.maximumFeeAmount"
+                @blur="convertMaximumFeeDollar"
               />
             </div>
           </div>
@@ -292,32 +293,51 @@ export default class AdjustmentsBoard extends Vue {
     this.request.flowThresholdValue = "";
   }
 
-  public updateCurrency(value: any) {
+  public convertMinimunFeeDollar() {
+    this.request.minimumFeeAmount = this.updateCurrency(
+      this.request.minimumFeeAmount
+    );
+  }
+
+  public convertMaximumFeeDollar() {
+    this.request.maximumFeeAmount = this.updateCurrency(
+      this.request.maximumFeeAmount
+    );
+  }
+
+  private updateCurrency(value: any) {
     const numberOfDigits: number = 2,
-      minDigits: number = 2,
-      symbol: string = "$";
-    if (!value) return `${symbol}0`;
+      minDigits: number = 2;
+
+    if (!value) return ``;
 
     if (isNaN(parseFloat(value))) return value;
 
     value = parseFloat(value);
 
     if (value >= 0)
-      value = `${symbol}${value.toLocaleString(undefined, {
+      value = `${value.toLocaleString(undefined, {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })}`;
     else
-      value = `${symbol}(${Math.abs(value).toLocaleString(undefined, {
+      value = `(${Math.abs(value).toLocaleString(undefined, {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })})`;
 
-    console.log(value);
+    return value;
   }
 
   public prev() {
     this.$emit("prev");
+  }
+
+  private isNumeric(value: any) {
+    let validation = false;
+    if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
+
+    return validation;
   }
 
   get formValidation() {
@@ -367,7 +387,9 @@ export default class AdjustmentsBoard extends Vue {
     const self = this.request;
 
     if (self.firmMinimumFee && self.firmMaximumFee) {
-      if (parseInt(self.maximumFeeAmount) >= parseInt(self.minimumFeeAmount))
+      if (
+        this.currencyToNumber(self.maximumFeeAmount) >= this.currencyToNumber(self.minimumFeeAmount)
+      )
         valid = true;
       else valid = false;
     } else valid = true;
@@ -375,11 +397,13 @@ export default class AdjustmentsBoard extends Vue {
     return valid;
   }
 
-  private isNumeric(value: any) {
-    let validation = false;
-    if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
+  private currencyToNumber(value: any) {
+    if (!value) return 0;
 
-    return validation;
+    value = value.replace(",", "");
+    value = parseFloat(value);
+
+    return value;
   }
 }
 </script>

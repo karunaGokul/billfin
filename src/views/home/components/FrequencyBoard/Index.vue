@@ -37,9 +37,18 @@
           <aum-advisory
             :response="item"
             :prevNext="index"
-            @prev="onPrev($event, index)"
+            :isBinding="isBinding"
+            @prev="onPrev($event, data)"
             @next="onNext($event, data)"
             v-if="item.aumFlag && item.feeTypeName == feeTypeName"
+          />
+          <non-aum-advisory
+            :response="item"
+            :prevNext="index"
+            :isBinding="isBinding"
+            @prev="onPrev($event, data)"
+            @next="onNext($event, data)"
+            v-if="!item.aumFlag && item.feeTypeName == feeTypeName"
           />
         </template>
         <!--<aum-advisory
@@ -81,11 +90,8 @@ export default class FrequencyBoard extends Vue {
 
   public store = useStore();
   public request: frequencyRequestModel = new frequencyRequestModel();
-  //public response: aumFeeTypes = null;
-
   public feeTypeName: string = "";
-
-  public step: number = 0;
+  public isBinding: boolean = false;
 
   created() {
     this.getFrequncyAndTiming();
@@ -98,7 +104,6 @@ export default class FrequencyBoard extends Vue {
       .getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-        //this.response = this.request.aumFeeTypes[0];
         this.feeTypeName = this.request.aumFeeTypes[0].feeTypeName;
         this.showMethodolgiesAndAdjustments();
       })
@@ -117,79 +122,48 @@ export default class FrequencyBoard extends Vue {
     else this.$emit("showAumTabs", "hide");
   }
 
-  onPrev(index: number) {
-    console.log(index);
-    if (index == 0) this.$emit("prev");
-    else this.feeTypeName = this.request.aumFeeTypes[index - 1].feeTypeName;
+  onPrev(data: { index: number; isBinding: boolean }) {
+    this.isBinding = data.isBinding;
+    if (data.index == 0) this.$emit("prev");
+    else {
+      if(this.isBinding)  this.request.aumFeeTypes[data.index].aumDetails = null;
+      this.isBinding = false;
+      this.feeTypeName = this.request.aumFeeTypes[data.index - 1].feeTypeName;
+    }
   }
 
   onNext(data: any) {
     const index = data.index;
     const response = data.response;
-    if (index == this.request.aumFeeTypes.length) this.$emit("next");
+    if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
       this.request.aumFeeTypes[index].aumDetails = response;
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
-        this.request.aumFeeTypes[index+1].aumFlag &&
+        this.request.aumFeeTypes[index + 1].aumFlag &&
         !this.request.aumCommonFrequencyTimingFlag
       ) {
-        console.log(this.request.aumFeeTypes[index+1].aumDetails);
-        if (this.request.aumFeeTypes[index+1].aumDetails == null) {
-          this.request.aumFeeTypes[index+1].aumDetails = this.request.aumFeeTypes[index].aumDetails;
+        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
+          this.isBinding = true;
+          this.request.aumFeeTypes[index + 1].aumDetails =
+            this.request.aumFeeTypes[0].aumDetails;
+        }
+      } else if (
+        !this.request.aumFeeTypes[index + 1].aumFlag &&
+        !this.request.nonAumCommonFrequencyTimingFlag
+      ) {
+        const nonAumFeeTypes: frequencyRequestModel =
+          new frequencyRequestModel();
+        this.request.aumFeeTypes.forEach((item) => {
+          if (!item.aumFlag) nonAumFeeTypes.aumFeeTypes.push(item);
+        });
+        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
+          this.isBinding = true;
+          this.request.aumFeeTypes[index + 1].aumDetails =
+            nonAumFeeTypes.aumFeeTypes[0].aumDetails;
         }
       }
     }
   }
-
-  /*onPrev() {
-    this.step = this.step - 1;
-    if (this.step >= 0) this.response = this.request.aumFeeTypes[this.step];
-    else this.$emit("prev");
-    console.log(this.request);
-    console.log(this.response);
-  }
-
-  onNext(tab: string, response: aumFeeTypes) {
-    console.log('child to parent');
-    console.log(response);
-    this.response = response;
-    console.log('request');
-    console.log(this.request);
-    console.log('response')
-    console.log(this.response);
-    this.step = this.step + 1; 
-    console.log('aumFlag', this.request.aumFeeTypes[this.step].aumFlag, 'aumCommonFrequencyTimingFlag', this.request.aumCommonFrequencyTimingFlag);  
-    if (this.request.aumFeeTypes.length > this.step) {
-      if (
-        this.request.aumFeeTypes[this.step].aumFlag &&
-        !this.request.aumCommonFrequencyTimingFlag
-      ) {
-        console.log('if flag false and aumFlag true');
-        if (!this.request.aumFeeTypes[this.step].aumDetails) {
-          this.response = this.request.aumFeeTypes[this.step];
-          this.response.aumDetails = this.request.aumFeeTypes[0].aumDetails;
-        } else this.response = this.request.aumFeeTypes[this.step];
-      } else if (
-        !this.request.aumFeeTypes[this.step].aumFlag &&
-        !this.request.nonAumCommonFrequencyTimingFlag
-      ) {
-        console.log('else if flag false and aumFlag true');
-        if (!this.request.aumFeeTypes[this.step].aumDetails) {
-          const nonAumFeeTypes: frequencyRequestModel =
-            new frequencyRequestModel();
-          this.request.aumFeeTypes.forEach((item) => {
-            if (!item.aumFlag) nonAumFeeTypes.aumFeeTypes.push(item);
-          });
-          this.response = this.request.aumFeeTypes[this.step];
-          this.response.aumDetails = nonAumFeeTypes.aumFeeTypes[0].aumDetails;
-        } else this.response = this.request.aumFeeTypes[this.step];
-      } else this.response = this.request.aumFeeTypes[this.step];
-    } else  {
-      this.$emit(tab);
-      console.log('else next');
-    }
-    console.log(this.response);
-  }*/
 }
 </script>

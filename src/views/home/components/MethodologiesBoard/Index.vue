@@ -23,7 +23,7 @@
               class="tab-label border-1 pb-4"
               :class="{
                 'tab-active-border-bottom':
-                  response.feeTypeName == item.feeTypeName,
+                  item.feeTypeName == feeTypeName,
               }"
             >
               {{ item.feeTypeName }}
@@ -32,12 +32,16 @@
         </div>
       </div>
       <div class="tab-content-group m-0">
-        <advisory
-          :response="response"
-          @prev="onPrev"
-          @next="onNext"
-          v-if="response"
-        />
+        <template v-for="(item, index) in request.aumFeeTypes" :key="index">
+          <advisory
+            :response="item"
+            :prevNext="index"
+            :isBinding="isBinding"
+            @prev="onPrev($event, data)"
+            @next="onNext($event, data)"
+            v-if="item.feeTypeName == feeTypeName"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -48,7 +52,7 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import { firmRequestModel, aumFeeTypes, frequencyRequestModel } from "@/model";
+import { firmRequestModel, frequencyRequestModel } from "@/model";
 import { IFirmService } from "@/service";
 
 import Advisory from "./Advisory.vue";
@@ -63,7 +67,9 @@ export default class MethodologiesBoard extends Vue {
 
   public store = useStore();
   public request = new frequencyRequestModel();
-  public response: aumFeeTypes = null;
+  public feeTypeName: string = "";
+  public isBinding: boolean = false;
+
 
   public step: number = 0;
 
@@ -81,32 +87,42 @@ export default class MethodologiesBoard extends Vue {
         response.aumFeeTypes.forEach((item) => {
           if (item.aumFlag) this.request.aumFeeTypes.push(item);
         });
-        this.response = this.request.aumFeeTypes[this.step];
+        this.feeTypeName = this.request.aumFeeTypes[0].feeTypeName;
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  onPrev() {
-    this.step = this.step - 1;
-    if (this.step >= 0) this.response = this.request.aumFeeTypes[this.step];
-    else this.$emit("prev");
+  onPrev(data: { index: number; isBinding: boolean }) {
+     this.isBinding = data.isBinding;
+    if (data.index == 0) this.$emit("prev");
+    else {
+      if(this.isBinding)  this.request.aumFeeTypes[data.index].aumDetails = null;
+      this.isBinding = false;
+      this.feeTypeName = this.request.aumFeeTypes[data.index - 1].feeTypeName;
+    }
   }
 
-  onNext() {
-    this.step = this.step + 1;
-    if (this.request.aumFeeTypes.length > this.step) {
+  onNext(data: any) {
+    const index = data.index;
+    const response = data.response;
+    if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
+    else {
+      this.request.aumFeeTypes[index].aumDetails = response;
+      this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
-        this.request.aumFeeTypes[this.step].aumFlag &&
-        !this.request.aumCommonAssetMethodologyFlag
+        this.request.aumFeeTypes[index + 1].aumFlag &&
+        !this.request.aumCommonFrequencyTimingFlag
       ) {
-        if (!this.request.aumFeeTypes[this.step].aumDetails) {
-          this.response = this.request.aumFeeTypes[this.step];
-          this.response.aumDetails = this.request.aumFeeTypes[0].aumDetails;
-        } else this.response = this.request.aumFeeTypes[this.step];
-      } else this.response = this.request.aumFeeTypes[this.step];
-    } else this.$emit("next");
+        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
+          this.isBinding = true;
+          this.request.aumFeeTypes[index + 1].aumDetails =
+            this.request.aumFeeTypes[0].aumDetails;
+        }
+      }
+    }
   }
+  
 }
 </script>

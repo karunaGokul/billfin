@@ -123,10 +123,12 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 export default class Advisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
+  @Prop() prevNext: number;
+  @Prop() isBinding: boolean;
 
   public store = useStore();
   public request: aumDetails = new aumDetails();
-
+  
   public valuationMethod: Array<ListItem> = [];
   public defaultValuationMethod: Array<ListItem> = [];
   public initialBillingValuationMethod: Array<ListItem> = [];
@@ -197,7 +199,7 @@ export default class Advisory extends Vue {
     this.service
       ?.saveMethodologies(this.request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next");
+        if (response.status == "SUCCESS") this.$emit("next", {response: response, index: this.prevNext, isBinding: false});
       })
       .catch((err) => {
         console.log(err);
@@ -318,7 +320,7 @@ export default class Advisory extends Vue {
   }
 
   public prev() {
-    this.$emit("prev");
+    this.$emit("prev", {index: this.prevNext, isBinding: this.isBinding});
   }
 
   get formValidation() {

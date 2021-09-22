@@ -87,45 +87,16 @@ app.config.globalProperties.$filters = {
   },
 };
 
-app.directive("click-outside", { 
-  beforeMount: function (el: any, binding: any) {
-      el.clickOutsideEvent = function (event: any) {
-        if (!(el == event.target || el.contains(event.target))) {
-          binding.value(event, el);
-        }
-      };
-      document.body.addEventListener("click", el.clickOutsideEvent);
-    },
-    unmounted: function (el: any) {
-      document.body.removeEventListener("click", el.clickOutsideEvent);
-    },
-});
-
-app.directive("currencyDisplay", {
-  updated(el, binding) {
-    console.log(el.value);
-    const numberOfDigits: number = 2,
-      minDigits: number = 2
-
-    if (!el.value) el.value =`0`;
-
-    if (isNaN(parseFloat(el.value))) el.value;
-
-    el.value = parseFloat(el.value);
-
-    console.log('float', el.value);
-
-    if (el.value >= 0)
-      el.value = `${el.value.toLocaleString(undefined, {
-        minimumFractionDigits: minDigits,
-        maximumFractionDigits: numberOfDigits,
-      })}`;
-    else
-      el.value = `(${Math.abs(el.value).toLocaleString(undefined, {
-        minimumFractionDigits: minDigits,
-        maximumFractionDigits: numberOfDigits,
-      })})`;
-
-    console.log(el.value);
+app.directive("click-outside", {
+  beforeMount: function(el: any, binding: any) {
+    el.clickOutsideEvent = function(event: any) {
+      if (!(el == event.target || el.contains(event.target))) {
+        binding.value(event, el);
+      }
+    };
+    document.body.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted: function(el: any) {
+    document.body.removeEventListener("click", el.clickOutsideEvent);
   },
 });

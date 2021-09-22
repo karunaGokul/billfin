@@ -107,7 +107,7 @@ import ConfirmBoard from "./Confirm/Index.vue";
 export default class Welcome extends Vue {
   @Prop() step: number | any;
 
-  public activeTab: number = 1;
+  public activeTab: number = 0;
   public tabs: Array<string> = [];
   public showAumTab: boolean = true;
 

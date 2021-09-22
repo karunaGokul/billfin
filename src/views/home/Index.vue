@@ -326,7 +326,7 @@ export default class Home extends Vue {
 
   public firms = new Array<firmsResponseModel>();
   public selectedFirm: string = "";
-  public lastOnboardingStep: number | any = 0;
+  public lastOnboardingStep: number | any = 1;
   public showTrailExpireDays: number = 0;
 
   mounted() {
