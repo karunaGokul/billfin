@@ -471,6 +471,7 @@ export default class SignUp extends Vue {
       !this.validateEmailResponse.userRegistered &&
       !this.validateEmailResponse.firmRegistered
     ) {
+      this.request.roleName = "FIRM_ADMIN";
       this.service
         ?.createAccount(this.request)
         .then((response) => {

@@ -11,6 +11,7 @@ export class signUpRequest extends DataRequest {
     password: string | any;
     confirmPassword: string | any;
     hasAgreed: boolean | any;
+    roleName: string;
 }
 export class signUpResponse extends BaseModel {
     email: string | any;
