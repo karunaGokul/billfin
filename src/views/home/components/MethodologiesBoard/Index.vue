@@ -113,7 +113,7 @@ export default class MethodologiesBoard extends Vue {
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
-        !this.request.aumCommonFrequencyTimingFlag
+        !this.request.aumCommonAssetMethodologyFlag
       ) {
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isBinding = true;

@@ -36,7 +36,7 @@
 
       <ul class="nav flex-column mt-2">
         <router-link
-          to="/clients"
+          to="/sign-up-plan"
           tag="li"
           class="d-flex align-items-center nav-item"
           active-class="text-primary"
@@ -171,7 +171,7 @@
         </router-link>
       </ul>
     </div>
-    <div class="w-100 vh-100 bg-light overflow-hidden" v-if="firms">
+    <div class="w-100 bg-light overflow-hidden" v-if="firms">
       <nav class="navbar bg-white">
         <div class="row w-100 align-items-center">
           <div class="col-lg-1 pe-0">
@@ -336,14 +336,14 @@ export default class Home extends Vue {
   private getFirms() {
     this.service.getFirms().then((response) => {
       this.firms = response;
-      this.trailExpireDays();
+      if(this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)  this.trailExpireDays();
       this.store.dispatch("loadEntitlements", response);
       this.selectedFirm = this.store.getters.selectedFirmName;
       if (
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        this.showOnBoard = true;
+        this.showOnBoard = false;
         if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else

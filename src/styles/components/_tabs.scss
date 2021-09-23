@@ -2,25 +2,30 @@
     position: relative;
     clear: both;
     width: 100%;
+
     .tab-header {
         .tab-label-group {
             margin: 0;
             padding: 0;
             display: flex;
+
             .tab-label {
                 list-style-type: none;
                 margin: 0 4rem;
                 font-weight: $font-weight-bolder;
                 color: $secondary-active;
             }
+
             .tab-active {
                 color: $primary;
                 border-bottom: 2px solid $primary;
             }
+
             .tab-active-border-bottom {
                 border-bottom: 2px solid $primary;
             }
         }
+
         &__scroll {
             overflow-x: auto;
             overflow-y: hidden;
@@ -28,32 +33,96 @@
             display: -moz-box;
             margin: 0;
             padding: 0;
-            
+
             .tab-label {
                 list-style-type: none;
                 margin: 0 2rem;
                 font-weight: $font-weight-bolder;
             }
+
             .tab-active {
                 color: $primary;
                 border-bottom: 2px solid $primary;
             }
+
             .tab-active-border-bottom {
                 border-bottom: 2px solid $primary;
             }
         }
-        
+
+        &-icon {
+            .tab-label {
+                &-icon {
+                    height: 35px;
+                    width: 35px;
+                    line-height: 35px;
+                    color: $primary;
+                    border-radius: 5px;
+                    background-color: #F1FAFF;
+                    text-align: center;
+                }
+
+                &-name {
+                    color: #474D70;
+                }
+
+                &-active {
+                    .tab-label-icon {
+                        background-color: $primary;
+                        color: white;
+                    }
+
+                    .tab-label-name {
+                        color: $primary;
+                        border-bottom: 2px solid $primary;
+                    }
+                }
+            }
+        }
+
     }
+
     .tab-content-group {
+
         //margin: 1rem 2rem;
         .tab-content__scroll {
             height: calc(66vh - 60px);
         }
+
         .tab-content-sm__scroll {
             height: calc(66vh - 18px);
         }
+
         .tab-content-lg__scroll {
             height: calc(66vh - 90px);
         }
     }
+
+    .tab-plan {
+        &-name {
+            font-size: 1.3rem;
+        }
+
+        &-price {
+            font-size: 2rem;
+        }
+
+        &-msg {
+            font-size: 0.9rem;
+            color: $gray-600;
+        }
+
+        &-active {
+            background-color: $primary;
+            color: white !important;
+
+            .tab-plan-msg {
+                color: white !important;
+            }
+        }
+    }
 }
+
+/*.border-dotted {
+    border-style: dotted;
+}*/
