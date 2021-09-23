@@ -254,6 +254,9 @@ export default class AdjustmentsBoard extends Vue {
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
 
+    this.request.minimumFeeAmount = this.currencyToNumber(this.request.minimumFeeAmount);
+    this.request.maximumFeeAmount = this.currencyToNumber(this.request.maximumFeeAmount);
+
     this.service
       ?.saveAdjustments(this.request)
       .then((response) => {
@@ -306,6 +309,7 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private updateCurrency(value: any) {
+    value = this.currencyToNumber(value);
     const numberOfDigits: number = 2,
       minDigits: number = 2;
 
