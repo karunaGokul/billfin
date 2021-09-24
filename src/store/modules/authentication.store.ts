@@ -125,7 +125,6 @@ const actions: ActionTree<AuthenticationState, any> = {
     });
   },
   validateKeyCloak(context) {
-    console.log(keycloak);
     if (!keycloak.token) {
       keycloak.init(options);
     }

@@ -25,7 +25,9 @@
       <template v-if="request.firmMinimumFee">
         <div class="row g-0 align-items-center">
           <div class="col-4">
-            <div class="input-group input-group-solid ms-4">
+            <div
+              class="input-group input-group-solid ms-4"
+            >
               <span class="input-group-text">$</span>
               <input
                 type="text"
@@ -63,7 +65,11 @@
       <template v-if="request.firmMaximumFee">
         <div class="row g-0 align-items-center">
           <div class="col-4">
-            <div class="input-group input-group-solid ms-4">
+            <div
+              class="input-group input-group-solid ms-4"
+              :class="{ 'border border-danger': !validation }"
+              :title="!validation ? 'Maximum Fee should be greater than Minimum fee' : ''"
+            >
               <span class="input-group-text">$</span>
               <input
                 type="text"
@@ -254,8 +260,12 @@ export default class AdjustmentsBoard extends Vue {
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
 
-    this.request.minimumFeeAmount = this.currencyToNumber(this.request.minimumFeeAmount);
-    this.request.maximumFeeAmount = this.currencyToNumber(this.request.maximumFeeAmount);
+    this.request.minimumFeeAmount = this.currencyToNumber(
+      this.request.minimumFeeAmount
+    );
+    this.request.maximumFeeAmount = this.currencyToNumber(
+      this.request.maximumFeeAmount
+    );
 
     this.service
       ?.saveAdjustments(this.request)
@@ -268,8 +278,14 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private bindValues() {
-    if (this.request.minimumFeeAmount) this.request.firmMinimumFee = true;
-    if (this.request.maximumFeeAmount) this.request.firmMaximumFee = true;
+    if (this.request.minimumFeeAmount) {
+      this.request.firmMinimumFee = true;
+      this.convertMinimunFeeDollar();
+    }
+    if (this.request.maximumFeeAmount) {
+      this.request.firmMaximumFee = true;
+      this.convertMaximumFeeDollar();
+    }
     this.flowThresholdType.forEach((item: ListItem) => {
       if (item.value == this.request.flowThresholdType) item.selected = true;
       else item.selected = false;
@@ -392,7 +408,8 @@ export default class AdjustmentsBoard extends Vue {
 
     if (self.firmMinimumFee && self.firmMaximumFee) {
       if (
-        this.currencyToNumber(self.maximumFeeAmount) >= this.currencyToNumber(self.minimumFeeAmount)
+        this.currencyToNumber(self.maximumFeeAmount) >=
+        this.currencyToNumber(self.minimumFeeAmount)
       )
         valid = true;
       else valid = false;
@@ -404,7 +421,7 @@ export default class AdjustmentsBoard extends Vue {
   private currencyToNumber(value: any) {
     if (!value) return 0;
 
-    value = value.replace(",", "");
+    if (isNaN(value)) value = value.replace(",", "");
     value = parseFloat(value);
 
     return value;
