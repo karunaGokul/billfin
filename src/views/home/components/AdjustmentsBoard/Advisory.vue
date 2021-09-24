@@ -263,22 +263,36 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   public saveAdjustments() {
-    this.request.firmId = this.store.getters.selectedFirmId;
-    this.request.feeTypeName = this.response.feeTypeName;
-    this.request.onboardingFeeTypeId = this.response.id;
-    this.request.aumFeeTypeFlag = this.response.aumFlag;
+    const request: aumDetails = new aumDetails();
 
-    this.request.minimumFeeAmount = this.currencyToNumber(
+    request.firmId = this.store.getters.selectedFirmId;
+    request.feeTypeName = this.response.feeTypeName;
+    request.onboardingFeeTypeId = this.response.id;
+    request.aumFeeTypeFlag = this.response.aumFlag;
+
+    request.adjustForFlows = this.request.adjustForFlows;
+    request.flowThresholdType = this.request.flowThresholdType;
+    request.flowThresholdValue = this.request.flowThresholdValue;
+    request.dollarRoundingFlag = this.request.dollarRoundingFlag
+
+    request.minimumFeeAmount = this.currencyToNumber(
       this.request.minimumFeeAmount
     );
-    this.request.maximumFeeAmount = this.currencyToNumber(
+    //console.log('before', typeof  this.request.maximumFeeAmount);
+    request.maximumFeeAmount = this.currencyToNumber(
       this.request.maximumFeeAmount
     );
+    /*console.log('after', typeof   this.request.maximumFeeAmount);
+
+    console.log('after', typeof   request.maximumFeeAmount);
+
+    console.log(request);*/
 
     this.service
-      ?.saveAdjustments(this.request)
+      ?.saveAdjustments(request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next");
+        //console.log(response);
+        if (response.status == "SUCCESS") this.$emit("next", response);
       })
       .catch((err) => {
         console.log(err);
@@ -333,7 +347,9 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private updateCurrency(value: any) {
+    //console.log('before uC', value);
     value = this.currencyToNumber(value);
+    //console.log('after uC', value);
     const numberOfDigits: number = 2,
       minDigits: number = 2;
 
@@ -362,15 +378,20 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   public maximumFeeValidation() {
-    if(!this.validation) this.maximumFeeError = true;
+    if (!this.validation) this.maximumFeeError = true;
     else this.maximumFeeError = false;
   }
 
   private currencyToNumber(value: any) {
+    //console.log('currencyToNumber', value);
     if (!value) return 0;
+
+    //console.log('isNaN', isNaN(value));
 
     if (isNaN(value)) value = value.replace(",", "");
     value = parseFloat(value);
+
+    //console.log('currencyToNumber', value);
 
     return value;
   }

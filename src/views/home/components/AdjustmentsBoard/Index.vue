@@ -35,7 +35,7 @@
         <advisory
           :response="response"
           @prev="onPrev"
-          @next="onNext"
+          @next="onNext($event)"
           v-if="response"
         />
       </div>
@@ -48,7 +48,7 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import { firmRequestModel, aumFeeTypes, frequencyRequestModel } from "@/model";
+import { firmRequestModel, aumFeeTypes, frequencyRequestModel, aumDetails } from "@/model";
 import { IFirmService } from "@/service";
 
 import Advisory from "./Advisory.vue";
@@ -94,7 +94,9 @@ export default class AdjustmentsBoard extends Vue {
     else this.$emit("prev");
   }
 
-  onNext() {
+  onNext(response: aumDetails) {
+    console.log(response);
+    this.request.aumFeeTypes[this.step].aumDetails = response;
     this.step = this.step + 1;
     if (this.request.aumFeeTypes.length > this.step)
       this.response = this.request.aumFeeTypes[this.step];
