@@ -95,7 +95,6 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   onNext(response: aumDetails) {
-    console.log(response);
     this.request.aumFeeTypes[this.step].aumDetails = response;
     this.step = this.step + 1;
     if (this.request.aumFeeTypes.length > this.step)
