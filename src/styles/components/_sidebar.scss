@@ -21,7 +21,7 @@
                     display: block;
                 }
 
-                .tooltip {
+                .custom-tooltip {
                     display: none;
                 }
             }
@@ -97,7 +97,7 @@
                 text-align: center;
             }
 
-            .tooltip {
+            .custom-tooltip {
                 position: absolute;
                 top: -20px;
                 left: calc(100% + 15px);
@@ -115,7 +115,7 @@
             }
 
             &:hover {
-                .tooltip {
+                .custom-tooltip {
                     opacity: 1;
                     pointer-events: auto;
                     transition: all 0.4s ease;

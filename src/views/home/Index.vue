@@ -13,15 +13,16 @@
 
       <ul class="nav flex-column mt-10 mb-10">
         <router-link
-          to="/"
+          to="/dashboard"
           tag="li"
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
           exact
+          title="Dashboard"
         >
           <i class="fas fa-box fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Dashboard</span>
-          <span class="tooltip">Dashboard</span>
+          <span class="custom-tooltip">Dashboard</span>
         </router-link>
       </ul>
 
@@ -36,54 +37,58 @@
 
       <ul class="nav flex-column mt-2">
         <router-link
-          to="/sign-up-plan"
+          to="/clients"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
         >
           <i class="fas fa-user-friends fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Clients</span>
-          <span class="tooltip">Clients</span>
+          <span class="custom-tooltip">Clients</span>
         </router-link>
         <router-link
           to="/fee-schedules"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Fee Schedules"
         >
           <i class="fas fa-grip-lines fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Fee Schedules</span>
-          <span class="tooltip">Fee Schedules</span>
+          <span class="custom-tooltip">Fee Schedules</span>
         </router-link>
         <router-link
           to="/products"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Products"
         >
           <i class="fas fa-tags fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Products</span>
-          <span class="tooltip">Products</span>
+          <span class="custom-tooltip">Products</span>
         </router-link>
         <router-link
           to="/subscriptions"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Subscriptions"
         >
           <i class="fas fa-grip-lines-vertical fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Subscriptions</span>
-          <span class="tooltip">Subscriptions</span>
+          <span class="custom-tooltip">Subscriptions</span>
         </router-link>
         <router-link
           to="/timesheets"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Timesheets"
         >
           <i class="fas fa-clock fs-7"></i>
           <span class="nav-item__name fs-7 fw-bold">Timesheets</span>
-          <span class="tooltip">Timesheets</span>
+          <span class="custom-tooltip">Timesheets</span>
         </router-link>
       </ul>
 
@@ -101,41 +106,45 @@
           to="/fees"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Fees"
         >
           <i class="fas fa-dollar-sign fs-7"></i>
           <span class="nav-item__name fs-7">Fees</span>
-          <span class="tooltip">Fees</span>
+          <span class="custom-tooltip">Fees</span>
         </router-link>
         <router-link
           to="/invoices"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Invoices"
         >
           <i class="fas fa-money-check-alt fs-7"></i>
           <span class="nav-item__name fs-7">Invoices</span>
-          <span class="tooltip">Invoices</span>
+          <span class="custom-tooltip">Invoices</span>
         </router-link>
         <router-link
           to="/Payments"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Payments"
         >
           <i class="fas fa-tags fs-7"></i>
           <span class="nav-item__name fs-7">Payments</span>
-          <span class="tooltip">Payments</span>
+          <span class="custom-tooltip">Payments</span>
         </router-link>
         <router-link
           to="/Reports"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Reports"
         >
           <i class="fas fa-chart-line fs-7"></i>
           <span class="nav-item__name fs-7">Reports</span>
-          <span class="tooltip">Reports</span>
+          <span class="custom-tooltip">Reports</span>
         </router-link>
       </ul>
 
@@ -149,25 +158,48 @@
       </div>
 
       <ul class="nav flex-column mt-2">
-        <router-link
-          to="/Settings"
-          tag="li"
-          class="d-flex align-items-center nav-item"
-          active-class="text-primary"
-        >
+        <div class="dropdown d-flex align-items-center nav-item">
           <i class="fas fa-cog fs-7"></i>
           <span class="nav-item__name fs-7">Settings</span>
-          <span class="tooltip">Settings</span>
-        </router-link>
+          <i class="fas fa-angle-down" @click="showSettingsDropdown = !showSettingsDropdown"></i>
+          <span class="custom-tooltip">Settings</span>
+        </div>
+
+        <ul class="nav flex-column mt-2 ms-2" v-if="showSettingsDropdown">
+          <router-link
+            to="/setup"
+            tag="li"
+            class="d-flex align-items-center nav-item"
+            active-class="nav-item__active"
+            title="Setup"
+          >
+            <i class="fas fa-circle fs-10"></i>
+            <span class="nav-item__name fs-7">Setup</span>
+            <span class="custom-tooltip">Setup</span>
+          </router-link>
+          <router-link
+            to="/sign-up-plan"
+            tag="li"
+            class="d-flex align-items-center nav-item"
+            active-class="nav-item__active"
+            title="Sign Up"
+          >
+            <i class="fas fa-circle fs-10"></i>
+            <span class="nav-item__name fs-7">Sign Up</span>
+            <span class="custom-tooltip">Sign Up</span>
+          </router-link>
+        </ul>
+
         <router-link
           to="/Help"
           tag="li"
           class="d-flex align-items-center nav-item"
-          active-class="text-primary"
+          active-class="nav-item__active"
+          title="Help"
         >
           <i class="fas fa-question fs-7"></i>
           <span class="nav-item__name fs-7">Help</span>
-          <span class="tooltip">Help</span>
+          <span class="custom-tooltip">Help</span>
         </router-link>
       </ul>
     </div>
@@ -190,7 +222,7 @@
                 <div
                   class="fw-bold"
                   :class="{
-                    'dropdown-toggle': firms.length > 1
+                    'dropdown-toggle': firms.length > 1,
                   }"
                   @click="firms.length > 1 ? (toggleFirms = true) : ''"
                 >
@@ -329,6 +361,8 @@ export default class Home extends Vue {
   public lastOnboardingStep: number | any = 1;
   public showTrailExpireDays: number = 0;
 
+  public showSettingsDropdown:boolean = false;
+
   mounted() {
     this.getFirms();
   }
@@ -336,14 +370,15 @@ export default class Home extends Vue {
   private getFirms() {
     this.service.getFirms().then((response) => {
       this.firms = response;
-      if(this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)  this.trailExpireDays();
+      if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
+        this.trailExpireDays();
       this.store.dispatch("loadEntitlements", response);
       this.selectedFirm = this.store.getters.selectedFirmName;
       if (
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        this.showOnBoard = true;
+        this.showOnBoard = true; // Change true after fixed the changes
         if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else

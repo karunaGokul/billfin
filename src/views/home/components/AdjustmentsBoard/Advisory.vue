@@ -25,14 +25,13 @@
       <template v-if="request.firmMinimumFee">
         <div class="row g-0 align-items-center">
           <div class="col-4">
-            <div
-              class="input-group input-group-solid ms-4"
-            >
+            <div class="input-group input-group-solid ms-4">
               <span class="input-group-text">$</span>
               <input
                 type="text"
                 class="form-control text-start"
                 v-model="request.minimumFeeAmount"
+                @input="maximumFeeValidation"
                 @blur="convertMinimunFeeDollar"
               />
             </div>
@@ -67,14 +66,21 @@
           <div class="col-4">
             <div
               class="input-group input-group-solid ms-4"
-              :class="{ 'border border-danger': !validation }"
-              :title="!validation ? 'Maximum Fee should be greater than Minimum fee' : ''"
+              :class="{
+                'border border-danger': maximumFeeError,
+              }"
+              :title="
+                maximumFeeError
+                  ? 'Maximum Fee should be greater than Minimum fee'
+                  : ''
+              "
             >
               <span class="input-group-text">$</span>
               <input
                 type="text"
                 class="form-control text-start"
                 v-model="request.maximumFeeAmount"
+                @input="maximumFeeValidation"
                 @blur="convertMaximumFeeDollar"
               />
             </div>
@@ -232,6 +238,8 @@ export default class AdjustmentsBoard extends Vue {
   public flowThresholdType: Array<ListItem> = [];
   public store = useStore();
 
+  public maximumFeeError: boolean = false;
+
   created() {
     this.flowThresholdType = Object.entries(flowThresholdType).map(
       ([key]) =>
@@ -353,6 +361,20 @@ export default class AdjustmentsBoard extends Vue {
     this.$emit("prev");
   }
 
+  public maximumFeeValidation() {
+    if(!this.validation) this.maximumFeeError = true;
+    else this.maximumFeeError = false;
+  }
+
+  private currencyToNumber(value: any) {
+    if (!value) return 0;
+
+    if (isNaN(value)) value = value.replace(",", "");
+    value = parseFloat(value);
+
+    return value;
+  }
+
   private isNumeric(value: any) {
     let validation = false;
     if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
@@ -416,15 +438,6 @@ export default class AdjustmentsBoard extends Vue {
     } else valid = true;
 
     return valid;
-  }
-
-  private currencyToNumber(value: any) {
-    if (!value) return 0;
-
-    if (isNaN(value)) value = value.replace(",", "");
-    value = parseFloat(value);
-
-    return value;
   }
 }
 </script>

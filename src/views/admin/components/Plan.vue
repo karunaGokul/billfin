@@ -1,40 +1,46 @@
 <template>
   <div class="m-4">
-    <div class="d-flex justify-content-center align-items-center">
-      <div class="fw-bold me-4">Commitment term</div>
-      <div class="btn-group border rounded p-1">
-        <button
-          type="button"
-          class="btn rounded"
-          :class="{
-            'btn-success': commitmentTerm == 'Annual',
-            'text-muted': commitmentTerm != 'Annual',
-          }"
-          @click="updateCommitmentTerm('Annual')"
-        >
-          Annual
-        </button>
-        <button
-          type="button"
-          class="btn rounded"
-          :class="{
-            'btn-success': commitmentTerm == 'Monthly',
-            'text-muted': commitmentTerm != 'Monthly',
-          }"
-          @click="updateCommitmentTerm('Monthly')"
-        >
-          Monthly
-        </button>
+   
+    <div class="row">
+      <div class="col-6 mt-4">
+        <div class="fw-bold me-4 text-end">Commitment term</div>
+      </div>
+      <div class="col-6">
+        <div class="btn-group border rounded p-1">
+          <button
+            type="button"
+            class="btn rounded"
+            :class="{
+              'btn-success': commitmentTerm == 'Annual',
+              'text-muted': commitmentTerm != 'Annual',
+            }"
+            @click="updateCommitmentTerm('Annual')"
+          >
+            Annual
+          </button>
+          <button
+            type="button"
+            class="btn rounded"
+            :class="{
+              'btn-success': commitmentTerm == 'Monthly',
+              'text-muted': commitmentTerm != 'Monthly',
+            }"
+            @click="updateCommitmentTerm('Monthly')"
+          >
+            Monthly
+          </button>
+        </div>
+        <div class="text-start text-success p-2">
+          {{ selectedCommitment.offerMsg }}
+        </div>
       </div>
     </div>
-    <div class="text-center text-success p-2">
-      {{ selectedCommitment.offerMsg }}
-    </div>
+
     <div class="row g-0 mt-6">
       <div class="col-6">
         <div v-for="(item, index) in selectedCommitment.plans" :key="index">
           <div
-            class="tab-plan border rounded mt-4 position-relative"
+            class="tab-plan border rounded mb-4 position-relative"
             :class="{
               'tab-plan-active': item.planName == selectedPlan.planName,
               'border-dashed': item.planName != selectedPlan.planName,
