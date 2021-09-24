@@ -87,6 +87,9 @@ export default class MethodologiesBoard extends Vue {
         response.aumFeeTypes.forEach((item) => {
           if (item.aumFlag) this.request.aumFeeTypes.push(item);
         });
+        this.request.firmId = response.firmId;
+        this.request.aumCommonAssetMethodologyFlag = response.aumCommonAssetMethodologyFlag;
+
         this.feeTypeName = this.request.aumFeeTypes[0].feeTypeName;
       })
       .catch((err) => {
