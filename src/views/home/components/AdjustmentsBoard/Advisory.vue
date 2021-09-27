@@ -263,35 +263,20 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   public saveAdjustments() {
-    const request: aumDetails = new aumDetails();
+    let request: aumDetails = new aumDetails();
 
+    request = this.clone(this.request);
     request.firmId = this.store.getters.selectedFirmId;
     request.feeTypeName = this.response.feeTypeName;
     request.onboardingFeeTypeId = this.response.id;
     request.aumFeeTypeFlag = this.response.aumFlag;
 
-    request.adjustForFlows = this.request.adjustForFlows;
-    request.flowThresholdType = this.request.flowThresholdType;
-    request.flowThresholdValue = this.request.flowThresholdValue;
-    request.dollarRoundingFlag = this.request.dollarRoundingFlag
-
-    request.minimumFeeAmount = this.currencyToNumber(
-      this.request.minimumFeeAmount
-    );
-    //console.log('before', typeof  this.request.maximumFeeAmount);
-    request.maximumFeeAmount = this.currencyToNumber(
-      this.request.maximumFeeAmount
-    );
-    /*console.log('after', typeof   this.request.maximumFeeAmount);
-
-    console.log('after', typeof   request.maximumFeeAmount);
-
-    console.log(request);*/
+    request.minimumFeeAmount = this.currencyToNumber(request.minimumFeeAmount);
+    request.maximumFeeAmount = this.currencyToNumber(request.maximumFeeAmount);
 
     this.service
       ?.saveAdjustments(request)
       .then((response) => {
-        //console.log(response);
         if (response.status == "SUCCESS") this.$emit("next", response);
       })
       .catch((err) => {
@@ -347,9 +332,7 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private updateCurrency(value: any) {
-    //console.log('before uC', value);
     value = this.currencyToNumber(value);
-    //console.log('after uC', value);
     const numberOfDigits: number = 2,
       minDigits: number = 2;
 
@@ -383,15 +366,10 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private currencyToNumber(value: any) {
-    //console.log('currencyToNumber', value);
     if (!value) return 0;
 
-    //console.log('isNaN', isNaN(value));
-
-    if (isNaN(value)) value = value.replace(",", "");
+    if (isNaN(value)) value = value.replaceAll(",", "");
     value = parseFloat(value);
-
-    //console.log('currencyToNumber', value);
 
     return value;
   }
@@ -401,6 +379,17 @@ export default class AdjustmentsBoard extends Vue {
     if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
 
     return validation;
+  }
+
+  private clone<T>(object: T): T {
+    return this._clone(object);
+  }
+
+  private _clone(obj: any) {
+    if (obj == null || typeof obj != "object") return obj;
+    var temp = new obj.constructor();
+    for (var key in obj) temp[key] = this._clone(obj[key]);
+    return temp;
   }
 
   get formValidation() {
