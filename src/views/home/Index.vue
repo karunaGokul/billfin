@@ -161,7 +161,10 @@
         <div class="dropdown d-flex align-items-center nav-item">
           <i class="fas fa-cog fs-7"></i>
           <span class="nav-item__name fs-7">Settings</span>
-          <i class="fas fa-angle-down" @click="showSettingsDropdown = !showSettingsDropdown"></i>
+          <i
+            class="fas fa-angle-down"
+            @click="showSettingsDropdown = !showSettingsDropdown"
+          ></i>
           <span class="custom-tooltip">Settings</span>
         </div>
 
@@ -278,9 +281,24 @@
                 <img src="@/assets/User.png" alt="User Photo" />
               </div>
               <div class="dropdown-menu p-4" :class="{ show: toggleUser }">
-                <button class="dropdown-item btn" @click="logout">
-                  <i class="fas fs-3 fa-sign-out-alt"></i> Sign out
-                </button>
+                <li class="mt-2 mb-2">
+                  <a class="dropdown-item d-flex align-items-md-stretchd-flex align-items-center rounded-1 p-4" href="#" @click="openAvatarUpload()">
+                    <i class="fas fs-3 fa-edit me-3"></i>
+                    <span>Upload</span></a
+                  >
+                  <input
+                    type="file"
+                    ref="avatarUpload"
+                    @change="uploadAvatar"
+                    class="d-none"
+                  />
+                </li>
+                <li class="mt-2 mb-2">
+                  <a class="dropdown-item d-flex align-items-center rounded-1 p-4" href="#" @click="logout"
+                    ><i class="fas fs-3 fa-sign-out-alt me-3"></i>
+                    <span>Sign out</span>
+                  </a>
+                </li>
               </div>
             </div>
           </div>
@@ -361,7 +379,7 @@ export default class Home extends Vue {
   public lastOnboardingStep: number | any = 1;
   public showTrailExpireDays: number = 0;
 
-  public showSettingsDropdown:boolean = false;
+  public showSettingsDropdown: boolean = false;
 
   mounted() {
     this.getFirms();
@@ -385,6 +403,21 @@ export default class Home extends Vue {
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
       }
     });
+  }
+
+  public openAvatarUpload() {
+    const file: any = this.$refs.avatarUpload;
+
+    file.click();
+  }
+
+  public uploadAvatar(event: any) {
+    const file: File = event.target.files[0];
+    if (!file) return;
+
+    console.log(file);
+
+    //this.$store.dispatch("updateUserAvatar", file);
   }
 
   public onCloseOnBoard() {
