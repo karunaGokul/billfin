@@ -24,7 +24,7 @@
       </div>
       <template v-if="request.firmMinimumFee">
         <div class="row g-0 align-items-center">
-          <div class="col-4">
+          <div class="col-5">
             <div class="input-group input-group-solid ms-4">
               <span class="input-group-text">$</span>
               <input
@@ -36,7 +36,7 @@
               />
             </div>
           </div>
-          <div class="col-6 text-dark fw-bold ms-6">annual minimum</div>
+          <div class="col-5 text-dark fw-bold ms-6">annual minimum</div>
         </div>
       </template>
     </div>
@@ -63,7 +63,7 @@
       </div>
       <template v-if="request.firmMaximumFee">
         <div class="row g-0 align-items-center">
-          <div class="col-4">
+          <div class="col-5">
             <div
               class="input-group input-group-solid ms-4"
               :class="{
@@ -85,7 +85,7 @@
               />
             </div>
           </div>
-          <div class="col-6 text-dark fw-bold ms-6">annual maximum</div>
+          <div class="col-5 text-dark fw-bold ms-6">annual maximum</div>
         </div>
       </template>
     </div>
@@ -343,12 +343,12 @@ export default class AdjustmentsBoard extends Vue {
     value = parseFloat(value);
 
     if (value >= 0)
-      value = `${value.toLocaleString(undefined, {
+      value = `${value.toLocaleString('en-US', {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })}`;
     else
-      value = `(${Math.abs(value).toLocaleString(undefined, {
+      value = `(${Math.abs(value).toLocaleString('en-US', {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })})`;
