@@ -146,6 +146,7 @@
               type="text"
               class="form-control text-start"
               v-model="request.flowThresholdValue"
+              @change="updateFlowThresholdValue"
             />
           </div>
         </div>
@@ -274,6 +275,15 @@ export default class AdjustmentsBoard extends Vue {
     request.minimumFeeAmount = this.currencyToNumber(request.minimumFeeAmount);
     request.maximumFeeAmount = this.currencyToNumber(request.maximumFeeAmount);
 
+    if (request.flowThresholdType == "DOLLAR_AMOUNT")
+      request.flowThresholdValue = this.currencyToNumber(
+        request.flowThresholdValue
+      );
+    else if (request.flowThresholdType == "PERCENT")
+      request.flowThresholdValue = this.currencyToNumber(
+        request.flowThresholdValue
+      );
+
     this.service
       ?.saveAdjustments(request)
       .then((response) => {
@@ -319,6 +329,17 @@ export default class AdjustmentsBoard extends Vue {
     this.request.flowThresholdValue = "";
   }
 
+  public updateFlowThresholdValue() {
+    if (this.request.flowThresholdType == "DOLLAR_AMOUNT")
+      this.request.flowThresholdValue = this.updateCurrency(
+        this.request.flowThresholdValue
+      );
+    else if (this.request.flowThresholdType == "PERCENT")
+      this.request.flowThresholdValue = this.updatePercentage(
+        this.request.flowThresholdValue
+      );
+  }
+
   public convertMinimunFeeDollar() {
     this.request.minimumFeeAmount = this.updateCurrency(
       this.request.minimumFeeAmount
@@ -343,17 +364,35 @@ export default class AdjustmentsBoard extends Vue {
     value = parseFloat(value);
 
     if (value >= 0)
-      value = `${value.toLocaleString('en-US', {
+      value = `${value.toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })}`;
     else
-      value = `(${Math.abs(value).toLocaleString('en-US', {
+      value = `(${Math.abs(value).toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })})`;
 
     return value;
+  }
+
+  private updatePercentage(value: any) {
+    value = this.currencyToNumber(value);
+    const numberOfDigits: number = 2;
+    if (!value && value != null) value = 0;
+    if (!value) return "N/A";
+
+    if (value >= 0)
+      return `${value.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      return `(${Math.abs(value).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
   }
 
   public prev() {

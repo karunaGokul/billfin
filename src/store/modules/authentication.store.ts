@@ -14,7 +14,7 @@ const config: KeycloakConfig = {
   clientId: "reference-service",
 };
 
-const keycloak = Keycloak(config);
+let keycloak = Keycloak(config);
 
 const options: KeycloakInitOptions = {
   onLoad: "login-required",
@@ -74,6 +74,7 @@ const actions: ActionTree<AuthenticationState, any> = {
       keycloak
         .updateToken(30)
         .then(() => {
+          console.log(keycloak);
           context.commit("onLogin", {
             success: true,
             accessToken: keycloak.token,
@@ -121,6 +122,7 @@ const actions: ActionTree<AuthenticationState, any> = {
     keycloak.logout(logoutOptions);
     return new Promise((resolve, reject) => {
       context.commit("onLogout");
+      keycloak = null;
       resolve("");
     });
   },

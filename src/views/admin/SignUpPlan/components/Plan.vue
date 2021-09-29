@@ -46,7 +46,7 @@
               'border-dashed': item.planName != selectedPlan.planName,
             }"
           >
-            <div class="row g-0 pt-6 pb-6">
+            <div class="row g-0 pt-6 pb-6 h-100">
               <div
                 class="col-2 d-flex align-items-center justify-content-center"
               >
@@ -66,9 +66,9 @@
               <div class="col-4">
                 <template v-if="item.planName != 'Enterprise'">
                   <div class="tab-plan-price fw-bolder text-center">
-                    <sub class="fs-8 fw-normal">$</sub>
+                    <span class="fs-7">$</span>
                     {{ item.planPrice }}
-                    <sub class="fs-9 fw-normal">/ {{ item.planType }}</sub>
+                    <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
                   </div>
                   <div
                     class="tab-plan-extra fs-9 text-center"
@@ -78,7 +78,7 @@
                   </div>
                 </template>
                 <template v-else>
-                  <div class="text-center">
+                  <div class="text-center lh-5">
                     <button type="button" class="btn btn-warning btn-sm">
                       Contact Us
                     </button>
@@ -89,7 +89,7 @@
             <div
               class="
                 tab-plan-extra
-                fs-7
+                fs-8
                 text-end
                 position-absolute
                 bottom-0
@@ -105,7 +105,7 @@
       </div>
       <div class="col-1"></div>
       <div class="col-5">
-        <div class="card bg-light h-100 p-8">
+        <div class="card bg-light p-8">
           <div class="fs-2 fw-bolder">
             What’s in the {{ selectedPlan.planName }} Plan?
           </div>
@@ -133,6 +133,11 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="text-center mt-10">
+      <button class="btn btn-light me-5">Cancel</button>
+      <button class="btn btn-primary ms-5" @click="next">Continue</button>
     </div>
   </div>
 </template>
@@ -162,6 +167,10 @@ export default class Plan extends Vue {
 
   updatePlan(plan: any) {
     this.selectedPlan = plan;
+  }
+
+  public next() {
+    this.$emit('next');
   }
 
   public planList: any = {

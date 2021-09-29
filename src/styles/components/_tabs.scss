@@ -52,7 +52,7 @@
 
         &-icon {
             .tab-label {
-                &-icon {
+                &-box {
                     height: 35px;
                     width: 35px;
                     line-height: 35px;
@@ -60,6 +60,10 @@
                     border-radius: 5px;
                     background-color: #F1FAFF;
                     text-align: center;
+
+                    .tab-label-icon {
+                        display: none;
+                    }
                 }
 
                 &-name {
@@ -67,14 +71,26 @@
                 }
 
                 &-active {
-                    .tab-label-icon {
+                    .tab-label-box {
                         background-color: $primary;
                         color: white;
+
+                        .tab-label-count {
+                            display: block;
+                        }
                     }
 
                     .tab-label-name {
                         color: $primary;
                         border-bottom: 2px solid $primary;
+                    }
+                }
+                &-complete {
+                    .tab-label-count {
+                        display: none;
+                    }
+                    .tab-label-icon {
+                        display: inline;
                     }
                 }
             }
@@ -99,6 +115,9 @@
     }
 
     .tab-plan {
+        height: 92px;
+        width: 450px;
+
         &-name {
             font-size: 1.3rem;
         }
@@ -111,10 +130,18 @@
             font-size: 0.9rem;
             color: $gray-600;
         }
+        .lh-5 {
+            line-height: 5;
+        }
 
         &-active {
             background-color: $primary;
             color: white !important;
+
+            .form-check-input:checked {
+                background-color: $success !important;
+                border-color: $success !important;
+            }
 
             .tab-plan-msg {
                 color: white !important;
@@ -122,7 +149,3 @@
         }
     }
 }
-
-/*.border-dotted {
-    border-style: dotted;
-}*/

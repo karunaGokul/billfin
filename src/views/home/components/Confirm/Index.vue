@@ -5,7 +5,7 @@
 
       <p class="fs-3 text-center fw-bolder pb-4 mb-5 border-bottom">General</p>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">Company</div>
         </div>
@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">Company Phone</div>
         </div>
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">Company Site</div>
         </div>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">Company Address</div>
         </div>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">City</div>
         </div>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">State</div>
         </div>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <div class="row ps-4 pe-4 mt-5 pb-5">
+      <div class="row g-0 ps-4 pe-4 mt-5 pb-5">
         <div class="col-lg-9">
           <div class="fw-bolder">Postal Code</div>
         </div>
@@ -92,7 +92,7 @@
         class="ps-4 pe-4"
       >
         <p
-          class="fw-bolder pb-3 mb-5 text-dark border-bottom"
+          class="fw-bolder pb-5 mb-5 text-dark border-bottom"
           v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
