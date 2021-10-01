@@ -231,18 +231,13 @@
                 >
                   {{ selectedFirm }}
                 </div>
-                <ul
-                  v-for="(item, index) of firms"
-                  :key="index"
-                  class="dropdown-menu"
-                  :class="{ show: toggleFirms }"
-                >
-                  <li><a class="dropdown-item" href="#">Firm 1</a></li>
-                  <li>
-                    <a class="dropdown-item" href="#">Firm 2</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">Firm 3</a>
+                <ul class="dropdown-menu overflow-auto" :class="{ show: toggleFirms }" style="height: 350px;">
+                  <li
+                    class="mt-2 mb-2"
+                    v-for="(item, index) of firms"
+                    :key="index"
+                  >
+                    <a class="dropdown-item p-4" href="#">{{ item.name }}</a>
                   </li>
                 </ul>
               </div>
@@ -282,7 +277,17 @@
               </div>
               <div class="dropdown-menu p-4" :class="{ show: toggleUser }">
                 <li class="mt-2 mb-2">
-                  <a class="dropdown-item d-flex align-items-md-stretchd-flex align-items-center rounded-1 p-4" href="#" @click="openAvatarUpload()">
+                  <a
+                    class="
+                      dropdown-item
+                      d-flex
+                      align-items-md-stretchd-flex align-items-center
+                      rounded-1
+                      p-4
+                    "
+                    href="#"
+                    @click="openAvatarUpload()"
+                  >
                     <i class="fas fs-3 fa-edit me-3"></i>
                     <span>Upload</span></a
                   >
@@ -294,7 +299,16 @@
                   />
                 </li>
                 <li class="mt-2 mb-2">
-                  <a class="dropdown-item d-flex align-items-center rounded-1 p-4" href="#" @click="logout"
+                  <a
+                    class="
+                      dropdown-item
+                      d-flex
+                      align-items-center
+                      rounded-1
+                      p-4
+                    "
+                    href="#"
+                    @click="logout"
                     ><i class="fas fs-3 fa-sign-out-alt me-3"></i>
                     <span>Sign out</span>
                   </a>

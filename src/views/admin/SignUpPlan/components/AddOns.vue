@@ -56,12 +56,12 @@
       </div>
     </div>
 
-    <div class="row mt-6">
+    <div class="row mt-2">
       <div class="col-6">
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-md-between">
           <div class="fw-bolder">Number of admin user licenses?</div>
           <div class="w-50">
-            <select class="form-select form-select-solid">
+            <select class="form-select form-select-solid" style="width: 220px">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -89,7 +89,7 @@ export default class AddOns extends Vue {
       planMsg: "Support ADB calculations and reporting",
       planType: "Mon",
       extraMsg: "",
-      selected: false,
+      selected: true,
     },
     {
       planName: "Flow Billing",
@@ -100,12 +100,12 @@ export default class AddOns extends Vue {
       selected: false,
     },
     {
-      planName: "Admin User Licensetimate",
+      planName: "Admin User License",
       planPrice: "20",
       planMsg: "Additional admin user access license",
       planType: "Mon",
       extraMsg: "per user",
-      selected: false,
+      selected: true,
     },
     {
       planName: "Multi-Fee Accounts",
@@ -121,11 +121,11 @@ export default class AddOns extends Vue {
       planMsg: "Flexible revenue sharing and fee splitting",
       planType: "Mon",
       extraMsg: "",
-      selected: false,
+      selected: true,
     },
     {
       planName: "Multiple Connectors",
-      planPrice: "40",
+      planPrice: "20",
       planMsg: "Connect BillFin to multiple custody sources",
       planType: "Mon",
       extraMsg: "per connector",

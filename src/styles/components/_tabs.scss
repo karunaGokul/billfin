@@ -134,11 +134,17 @@
             line-height: 5;
         }
 
+        .form-check-input {
+            border-width: 6px;
+            border-color: #EFF2F5 !important;
+        }
+
         &-active {
             background-color: $primary;
             color: white !important;
 
             .form-check-input:checked {
+                border-width: 1px;
                 background-color: $success !important;
                 border-color: $success !important;
             }

@@ -30,7 +30,7 @@
             Monthly
           </button>
         </div>
-        <div class="text-start text-success p-2">
+        <div class="text-start text-success p-2 fw-bold">
           {{ selectedCommitment.offerMsg }}
         </div>
       </div>
