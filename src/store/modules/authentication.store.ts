@@ -18,6 +18,7 @@ let keycloak = Keycloak(config);
 
 const options: KeycloakInitOptions = {
   onLoad: "login-required",
+  responseMode: 'query',
   checkLoginIframe: false,
 };
 
@@ -69,6 +70,10 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
+
+    keycloak.createRegisterUrl = () => {
+      return '/sign-up';
+    }
 
     keycloak.onTokenExpired = () => {
       keycloak

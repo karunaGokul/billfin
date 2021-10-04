@@ -135,10 +135,10 @@ import { useStore } from "vuex";
 import { IFirmService } from "@/service";
 import {
   BillingFrequency,
-  defaultBillingFrequency,
-  billingMethod,
-  defaultBillingMethod,
-  defaultOffsetCycle,
+  DefaultBillingFrequency,
+  BillingMethod,
+  DefaultBillingMethod,
+  DefaultOffsetCycle,
   aumFeeTypes,
   aumDetails,
   ListItem,
@@ -176,29 +176,29 @@ export default class AumAdvisory extends Vue {
           BillingFrequency[key as keyof typeof BillingFrequency]
         )
     );
-    this.defaultBillingFrequency = Object.entries(defaultBillingFrequency).map(
+    this.defaultBillingFrequency = Object.entries(DefaultBillingFrequency).map(
       ([key]) =>
         new ListItem(
           key,
-          defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+          DefaultBillingFrequency[key as keyof typeof DefaultBillingFrequency]
         )
     );
-    this.billingMethod = Object.entries(billingMethod).map(
+    this.billingMethod = Object.entries(BillingMethod).map(
       ([key]) =>
-        new ListItem(key, billingMethod[key as keyof typeof billingMethod])
+        new ListItem(key, BillingMethod[key as keyof typeof BillingMethod])
     );
-    this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+    this.defaultBillingMethod = Object.entries(DefaultBillingMethod).map(
       ([key]) =>
         new ListItem(
           key,
-          defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+          DefaultBillingMethod[key as keyof typeof DefaultBillingMethod]
         )
     );
-    this.defaultOffsetCycle = Object.entries(defaultOffsetCycle).map(
+    this.defaultOffsetCycle = Object.entries(DefaultOffsetCycle).map(
       ([key]) =>
         new ListItem(
           key,
-          defaultOffsetCycle[key as keyof typeof defaultOffsetCycle]
+          DefaultOffsetCycle[key as keyof typeof DefaultOffsetCycle]
         )
     );
   }
@@ -257,12 +257,12 @@ export default class AumAdvisory extends Vue {
     if (this.request.billingFrequency.length == 0) {
       this.defaultBillingFrequency = [];
       this.defaultBillingFrequency = Object.entries(
-        defaultBillingFrequency
+        DefaultBillingFrequency
       ).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+            DefaultBillingFrequency[key as keyof typeof DefaultBillingFrequency]
           )
       );
     }
@@ -310,11 +310,11 @@ export default class AumAdvisory extends Vue {
       this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));
 
     if (this.request.billingMethod.length == 0)
-      this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+      this.defaultBillingMethod = Object.entries(DefaultBillingMethod).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+            DefaultBillingMethod[key as keyof typeof DefaultBillingMethod]
           )
       );
 
@@ -355,12 +355,12 @@ export default class AumAdvisory extends Vue {
 
     if (this.defaultBillingFrequency.length == 0)
       this.defaultBillingFrequency = Object.entries(
-        defaultBillingFrequency
+        DefaultBillingFrequency
       ).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultBillingFrequency[key as keyof typeof defaultBillingFrequency]
+            DefaultBillingFrequency[key as keyof typeof DefaultBillingFrequency]
           )
       );
     else
@@ -380,11 +380,11 @@ export default class AumAdvisory extends Vue {
     });
 
     if (this.defaultBillingMethod.length == 0)
-      this.defaultBillingMethod = Object.entries(defaultBillingMethod).map(
+      this.defaultBillingMethod = Object.entries(DefaultBillingMethod).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultBillingMethod[key as keyof typeof defaultBillingMethod]
+            DefaultBillingMethod[key as keyof typeof DefaultBillingMethod]
           )
       );
     else this.defaultBillingMethod.push(new ListItem("Don't Default", "NONE"));

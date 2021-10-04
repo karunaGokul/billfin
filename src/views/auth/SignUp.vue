@@ -32,7 +32,7 @@
                   label="First name"
                   :controls="v$.request.firstName"
                   inputType="text"
-                  formFieldType ="inputBlock"
+                  formFieldType="inputBlock"
                   :validation="['required']"
                 />
               </div>
@@ -41,7 +41,7 @@
                   label="Last name"
                   :controls="v$.request.lastName"
                   inputType="text"
-                  formFieldType ="inputBlock"
+                  formFieldType="inputBlock"
                   :validation="['required']"
                 />
               </div>
@@ -51,7 +51,7 @@
               label="Company"
               :controls="v$.request.companyName"
               inputType="text"
-              formFieldType ="inputBlock"
+              formFieldType="inputBlock"
               :validation="['required']"
             />
 
@@ -61,7 +61,7 @@
                   label="Phone number"
                   :controls="v$.request.phoneNumber"
                   inputType="text"
-                  formFieldType ="inputBlock"
+                  formFieldType="inputBlock"
                   :validation="[
                     'required',
                     'phone',
@@ -71,23 +71,26 @@
                 />
               </div>
               <div class="col-6">
-                <label for="aum" class="form-label fw-bolder"> AUM </label>
-                <select
-                  class="form-select form-select-solid"
-                  v-model="v$.request.aumRange.$model"
-                >
-                  <option selected value="">$</option>
-                  <option v-for="(item, i) in aum" :key="i" :value="item">
-                    {{ item }}
-                  </option>
-                </select>
-                <div
-                  class="invalid-feedback"
-                  v-if="
-                    v$.request.aumRange.$dirty && v$.request.aumRange.$invalid
-                  "
-                >
-                  AUM is required
+                <div class="position-relative mb-4">
+                  <label for="aum" class="form-label fw-bolder"> AUM </label>
+                  <select
+                    class="form-select form-select-solid"
+                    v-model="v$.request.aumRange.$model"
+                  >
+                    <option selected value="">$</option>
+                    <option v-for="(item, i) in aum" :key="i" :value="item">
+                      {{ item }}
+                    </option>
+                  </select>
+
+                  <div
+                    class="invalid-feedback position-absolute m-0"
+                    v-if="
+                      v$.request.aumRange.$dirty && v$.request.aumRange.$invalid
+                    "
+                  >
+                    AUM is required
+                  </div>
                 </div>
               </div>
             </div>
@@ -102,7 +105,6 @@
                 justify-content-between
                 align-items-center
                 flex-wrap
-                mb-2
               "
             >
               <div
@@ -126,46 +128,59 @@
                 </label>
               </div>
             </div>
-            <div
-              class="invalid-feedback mb-4"
-              v-if="v$.request.custodians.$dirty && v$.request.custodians.$invalid"
-            >
-              Custodian selection is required
+
+            <div class="position-relative mb-6">
+              <div
+                class="invalid-feedback position-absolute m-0"
+                v-if="
+                  v$.request.custodians.$dirty && v$.request.custodians.$invalid
+                "
+              >
+                Custodian selection is required
+              </div>
             </div>
 
             <TextInput
               label="Work email"
               :controls="v$.request.email"
               inputType="text"
-              formFieldType ="inputBlock"
+              formFieldType="inputBlock"
               :validation="['required', 'email', 'domain']"
               @validateEmail="validateEmail"
             />
 
-            <div
-              class="invalid-feedback"
-              v-if="
-                !v$.request.email.$invalid && validateEmailResponse.userRegistered
-              "
-            >
-              An account with this email address already exists
-              <a href="#" class="border-bottom border-primary"> Contact us </a>
-            </div>
+            <div class="position-relative mb-6">
+              <div
+                class="invalid-feedback"
+                v-if="
+                  !v$.request.email.$invalid &&
+                  validateEmailResponse.userRegistered
+                "
+              >
+                An account with this email address already exists
+                <a href="#" class="border-bottom border-primary">
+                  Contact us
+                </a>
+              </div>
 
-            <div
-              class="invalid-feedback"
-              v-if="
-                !v$.request.email.$invalid && validateEmailResponse.firmRegistered
-              "
-            >
-              The {{ request.email.split("@")[1] }} domain already exists
-              <a href="#" class="border-bottom border-primary"> Contact us </a>
+              <div
+                class="invalid-feedback"
+                v-if="
+                  !v$.request.email.$invalid &&
+                  validateEmailResponse.firmRegistered
+                "
+              >
+                The {{ request.email.split("@")[1] }} domain already exists
+                <a href="#" class="border-bottom border-primary">
+                  Contact us
+                </a>
+              </div>
             </div>
 
             <TextInput
               label="Password"
               inputType="password"
-              formFieldType ="inputBlock"
+              formFieldType="inputBlock"
               :controls="v$.request.password"
               :validation="[
                 'required',
@@ -240,16 +255,14 @@
             <TextInput
               label="Confirm password"
               inputType="password"
-              formFieldType ="inputBlock"
+              formFieldType="inputBlock"
               :controls="v$.request.confirmPassword"
               :validation="['required']"
               @validatePassword="validatePassword"
             />
             <div
               class="invalid-feedback"
-              v-if="
-              !v$.request.confirmPassword.$invalid &&
-              showPasswordError"
+              v-if="!v$.request.confirmPassword.$invalid && showPasswordError"
             >
               Password and Confirmation password does't match.
             </div>
@@ -282,20 +295,21 @@
                 class="fw-bolder"
               >
                 Conditions
-              </a> policy
-            </p>
-            <p
-              class="invalid-feedback"
-              v-if="v$.request.$dirty && !v$.request.hasAgreed.$model"
-            >
-              You must agree to terms and conditions to create an account.
+              </a>
+              policy
             </p>
 
-            <div class="text-center mt-6 mb-6">
-              <button 
-                type="submit" 
-                class="btn btn-primary"
+            <div class="position-relative mb-6">
+              <div
+                class="invalid-feedback position-absolute m-0"
+                v-if="v$.request.$dirty && !v$.request.hasAgreed.$model"
               >
+                You must agree to terms and conditions to create an account.
+              </div>
+            </div>
+
+            <div class="text-center mt-6 mb-6">
+              <button type="submit" class="btn btn-primary">
                 Create Account
               </button>
             </div>
@@ -345,14 +359,23 @@ import { ISignUpService } from "@/service";
         required,
         phone: (value: any) => {
           let validation = false;
-          if (value && value != "" && /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)) validation = true;
+          if (
+            value &&
+            value != "" &&
+            /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)
+          )
+            validation = true;
           //else if(value && value != "" && /^[0-9]*\d$/.test(value)) validation = true;
           return validation;
         },
         minLength: minLength(10),
         phoneLength: (value: any) => {
           let validation = false;
-          if(value && value != '' && value.length == 10 || value.length == 12) validation = true;
+          if (
+            (value && value != "" && value.length == 10) ||
+            value.length == 12
+          )
+            validation = true;
           return validation;
         },
       },
@@ -392,7 +415,8 @@ import { ISignUpService } from "@/service";
         },
         special: (value: any) => {
           let validation = false;
-          if (value && value != "") validation = /[!@#$%^&*()_+={};':"\\|,.<>]/.test(value);
+          if (value && value != "")
+            validation = /[!@#$%^&*()_+={};':"\\|,.<>]/.test(value);
           return validation;
         },
       },
@@ -400,7 +424,7 @@ import { ISignUpService } from "@/service";
         required,
       },
       hasAgreed: {
-        required
+        required,
       },
     },
   },
@@ -458,7 +482,8 @@ export default class SignUp extends Vue {
   }
 
   public validatePassword() {
-    if(this.request.password != this.request.confirmPassword) this.showPasswordError = true;
+    if (this.request.password != this.request.confirmPassword)
+      this.showPasswordError = true;
     else this.showPasswordError = false;
   }
 
@@ -478,10 +503,10 @@ export default class SignUp extends Vue {
           console.log(response);
           this.response = response;
           if (response.status == "FAILED") this.showInfomationModel = true;
-          else if(response.status == "SUCCESS") {
+          else if (response.status == "SUCCESS") {
             this.$router.push("/verification-email");
             localStorage.setItem("email", response.email);
-            localStorage.setItem("uuid", response.uuid)
+            localStorage.setItem("uuid", response.uuid);
           }
         })
         .catch((err) => {

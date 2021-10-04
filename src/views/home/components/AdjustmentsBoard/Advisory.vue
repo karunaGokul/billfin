@@ -222,7 +222,7 @@ import { Prop, Inject, Watch } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import { ListItem, flowThresholdType, aumFeeTypes, aumDetails } from "@/model";
+import { ListItem, FlowThresholdType, aumFeeTypes, aumDetails } from "@/model";
 
 import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
 
@@ -242,11 +242,11 @@ export default class AdjustmentsBoard extends Vue {
   public maximumFeeError: boolean = false;
 
   created() {
-    this.flowThresholdType = Object.entries(flowThresholdType).map(
+    this.flowThresholdType = Object.entries(FlowThresholdType).map(
       ([key]) =>
         new ListItem(
           key,
-          flowThresholdType[key as keyof typeof flowThresholdType]
+          FlowThresholdType[key as keyof typeof FlowThresholdType]
         )
     );
   }

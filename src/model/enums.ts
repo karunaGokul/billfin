@@ -8,23 +8,23 @@ export enum BillingFrequency {
     "Semi-Annually" =  "SEMI_ANNUALLY",
     Annually = "ANNUALLY"
 }
-export enum defaultBillingFrequency {
+export enum DefaultBillingFrequency {
     Monthly = "MONTHLY",
     Quarterly = "QUARTERLY",
     "Semi-Annually" =  "SEMI_ANNUALLY",
     Annually = "ANNUALLY",
     "Don't Default"= "NONE"
 }
-export enum billingMethod {
+export enum BillingMethod {
     Advance = "ADVANCE",
     Arrears = "ARREARS"
 }
-export enum defaultBillingMethod {
+export enum DefaultBillingMethod {
     Advance = "ADVANCE",
     Arrears = "ARREARS",
     "Don't Default"= "NONE",
 }
-export enum defaultOffsetCycle {
+export enum DefaultOffsetCycle {
     "Jan-Apr-Jul-Oct" = "JAN_APR_JUL_OCT",
     "Feb-May-Aug-Nov" = "FEB_MAY_AUG_NOV",
     "Mar-Jun-Sep-Dec" = "MAR_JUN_SEP_DEC",
@@ -37,12 +37,12 @@ export enum ValuationMethodType {
     "Period End" = "PERIOD_END",
     "Average Daily Balance" = "AVERAGE_DAILY_BALANCE"
 }
-export enum defaultValuationMethod {
+export enum DefaultValuationMethod {
     "Period End" = "PERIOD_END",
     "Average Daily Balance" = "AVERAGE_DAILY_BALANCE",
     "Don't default" = "NONE"
 }
-export enum initialBillingValuationMethod {
+export enum InitialBillingValuationMethod {
     "Period End" = "PERIOD_END", 
     "Billing Start Date" = "BILLING_START_DATE"
 }
@@ -50,11 +50,11 @@ export enum ProrationMethodType {
 	"Days in period divided by days in the year" = "STANDARD",
     "Divide by number of billing periods in the year" = "ACTUAL"
 }
-export enum expressRatesAs {
+export enum ExpressRatesAs {
     "Basis Point" = "BASIS_POINT",
     "Percentage" = "PERCENTAGES"
 }
-export enum flowThresholdType {
+export enum FlowThresholdType {
     "Dollar amount" = "DOLLAR_AMOUNT", 
     "% of AUM" = "PERCENT", 
     "None" = "NONE"

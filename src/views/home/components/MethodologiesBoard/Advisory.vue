@@ -104,10 +104,10 @@ import {
   aumDetails,
   aumFeeTypes,
   ValuationMethodType,
-  defaultValuationMethod,
-  initialBillingValuationMethod,
+  DefaultValuationMethod,
+  InitialBillingValuationMethod,
   ProrationMethodType,
-  expressRatesAs,
+  ExpressRatesAs,
   ListItem,
 } from "@/model";
 
@@ -144,21 +144,21 @@ export default class Advisory extends Vue {
         )
     );
 
-    this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+    this.defaultValuationMethod = Object.entries(DefaultValuationMethod).map(
       ([key]) =>
         new ListItem(
           key,
-          defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+          DefaultValuationMethod[key as keyof typeof DefaultValuationMethod]
         )
     );
     this.initialBillingValuationMethod = Object.entries(
-      initialBillingValuationMethod
+      InitialBillingValuationMethod
     ).map(
       ([key]) =>
         new ListItem(
           key,
-          initialBillingValuationMethod[
-            key as keyof typeof initialBillingValuationMethod
+          InitialBillingValuationMethod[
+            key as keyof typeof InitialBillingValuationMethod
           ]
         )
     );
@@ -169,9 +169,9 @@ export default class Advisory extends Vue {
           ProrationMethodType[key as keyof typeof ProrationMethodType]
         )
     );
-    this.expressRatesAs = Object.entries(expressRatesAs).map(
+    this.expressRatesAs = Object.entries(ExpressRatesAs).map(
       ([key]) =>
-        new ListItem(key, expressRatesAs[key as keyof typeof expressRatesAs])
+        new ListItem(key, ExpressRatesAs[key as keyof typeof ExpressRatesAs])
     );
   }
 
@@ -225,11 +225,11 @@ export default class Advisory extends Vue {
 
     if (this.request.valuationMethod.length == 0) {
       this.defaultValuationMethod = [];
-      this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+      this.defaultValuationMethod = Object.entries(DefaultValuationMethod).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+            DefaultValuationMethod[key as keyof typeof DefaultValuationMethod]
           )
       );
     }
@@ -275,11 +275,11 @@ export default class Advisory extends Vue {
     });
 
     if (this.defaultValuationMethod.length == 0)
-      this.defaultValuationMethod = Object.entries(defaultValuationMethod).map(
+      this.defaultValuationMethod = Object.entries(DefaultValuationMethod).map(
         ([key]) =>
           new ListItem(
             key,
-            defaultValuationMethod[key as keyof typeof defaultValuationMethod]
+            DefaultValuationMethod[key as keyof typeof DefaultValuationMethod]
           )
       );
     else

@@ -5,16 +5,11 @@ import { ListItem, feeTypes } from "./model";
 
 import router from "./router";
 import store from "./store";
-//import keycloak from "./plugins/keycloak";
-
-//import VueHelper from './plugins/vue-helper';
 
 // BillFin styles
 import "./styles/main.scss";
 
 const app = createApp(App);
-//app.use(keycloak);
-//app.use(VueHelper);
 app.use(store);
 app.use(router);
 
@@ -63,12 +58,12 @@ app.config.globalProperties.$filters = {
     value = parseFloat(value);
 
     if (value >= 0)
-      return `${symbol}${value.toLocaleString('en-US', {
+      return `${symbol}${value.toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })}`;
     else
-      return `${symbol}(${Math.abs(value).toLocaleString('en-US', {
+      return `${symbol}(${Math.abs(value).toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,
       })})`;

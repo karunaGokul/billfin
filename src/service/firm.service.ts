@@ -8,10 +8,7 @@ import {
     feeTypesRequestModel,
     frequencyRequestModel, 
     aumDetails,
-    frequencyResponseModel, 
-    methodologiesRequestModel,
-    adjustmentsBoardRequestModel,
-    ListItem
+    frequencyResponseModel
 } from "@/model";
 
 export interface IFirmService extends IBaseService<any, any> {

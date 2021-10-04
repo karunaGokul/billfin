@@ -74,7 +74,7 @@
 import { Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
 
-import { ListItem, flowThresholdType, aumFeeTypes, aumDetails } from "@/model";
+import { ListItem, FlowThresholdType, aumFeeTypes, aumDetails } from "@/model";
 
 export default class AdjustmentsAdvisory extends Vue {
   @Prop() response: aumFeeTypes;
@@ -83,11 +83,11 @@ export default class AdjustmentsAdvisory extends Vue {
   public flowThresholdType: Array<ListItem> = [];
 
   created() {
-    this.flowThresholdType = Object.entries(flowThresholdType).map(
+    this.flowThresholdType = Object.entries(FlowThresholdType).map(
       ([key]) =>
         new ListItem(
           key,
-          flowThresholdType[key as keyof typeof flowThresholdType]
+          FlowThresholdType[key as keyof typeof FlowThresholdType]
         )
     );
   }

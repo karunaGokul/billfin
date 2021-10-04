@@ -41,7 +41,7 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">3</span>
               </div>
-              <div class="tab-label-name">Checkout</div>
+              <div class="tab-label-name">Payment</div>
             </li>
             <li
               class="tab-label d-flex align-items-center"
@@ -61,7 +61,7 @@
         <div class="tab-content-group w-75 mx-auto">
           <plan @next="step = 2" v-if="step == 1" />
           <add-ons @next="step = 3" v-if="step == 2" />
-          <div v-if="step == 3">3</div>
+          <payment v-if="step == 3" />
           <div v-if="step == 4">4</div>
         </div>
       </div>
@@ -73,11 +73,13 @@ import { Vue, Options } from "vue-class-component";
 
 import Plan from "./components/Plan.vue";
 import AddOns from "./components/AddOns.vue";
+import Payment from "./components/Payment.vue";
 
 @Options({
   components: {
     Plan,
     AddOns,
+    Payment,
   },
 })
 export default class SignUpPlan extends Vue {

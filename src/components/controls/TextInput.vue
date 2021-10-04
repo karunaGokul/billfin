@@ -1,5 +1,5 @@
 <template>
-  <div v-if="formFieldType == 'inputBlock'">
+  <div v-if="formFieldType == 'inputBlock'" class="position-relative mb-8">
     <label :for="label" class="form-label fw-bolder">
       {{ label }}
     </label>
@@ -31,7 +31,7 @@
         </i>
       </span>
     </div>
-    <div class="invalid-feedback" v-if="errorMessage != null">
+    <div class="invalid-feedback position-absolute m-0" v-if="errorMessage != null">
       {{ errorMessage }}
       <a
         href="#"
