@@ -37,7 +37,7 @@
           <aum-advisory
             :response="item"
             :prevNext="index"
-            :isBinding="isBinding"
+            :isCopied="isCopied"
             @prev="onPrev($event, data)"
             @next="onNext($event, data)"
             v-if="item.aumFlag && item.feeTypeName == feeTypeName"
@@ -45,24 +45,12 @@
           <non-aum-advisory
             :response="item"
             :prevNext="index"
-            :isBinding="isBinding"
+            :isCopied="isCopied"
             @prev="onPrev($event, data)"
             @next="onNext($event, data)"
             v-if="!item.aumFlag && item.feeTypeName == feeTypeName"
           />
         </template>
-        <!--<aum-advisory
-          :response="response"
-          @prev="onPrev"
-          @next="onNext($event, response)"
-          v-if="response && response.aumFlag"
-        />
-        <non-aum-advisory
-          :response="response"
-          @prev="onPrev"
-          @next="onNext($event, response)"
-          v-if="response && !response.aumFlag"
-        /> -->
       </div>
     </div>
   </div>
@@ -96,7 +84,11 @@ export default class FrequencyBoard extends Vue {
   public store = useStore();
   public request: frequencyRequestModel = new frequencyRequestModel();
   public feeTypeName: string = "";
-  public isBinding: boolean = false;
+  private selectedAumDetails: frequencyRequestModel =
+    new frequencyRequestModel();
+  private selectedNonAumDetails: frequencyRequestModel =
+    new frequencyRequestModel();
+  public isCopied: boolean = false;
 
   created() {
     this.getFrequncyAndTiming();
@@ -109,7 +101,8 @@ export default class FrequencyBoard extends Vue {
       .getFrequencyAndTiming(request)
       .then((response) => {
         this.request = response;
-        this.feeTypeName = this.request.aumFeeTypes[0].feeTypeName;
+        this.feeTypeName = response.aumFeeTypes[0].feeTypeName;
+        this.bindFees(response);
         this.showMethodolgiesAndAdjustments();
       })
       .catch((err) => {
@@ -127,48 +120,129 @@ export default class FrequencyBoard extends Vue {
     else this.$emit("showAumTabs", "hide");
   }
 
-  onPrev(data: { index: number; isBinding: boolean }) {
-    this.isBinding = data.isBinding;
-    if (data.index == 0) this.$emit("prev");
-    else {
-      if (this.isBinding)
-        this.request.aumFeeTypes[data.index].aumDetails = null;
-      this.isBinding = false;
-      this.feeTypeName = this.request.aumFeeTypes[data.index - 1].feeTypeName;
+  private bindFees(response: frequencyRequestModel) {
+    const aum: frequencyRequestModel = new frequencyRequestModel(),
+      nonAum: frequencyRequestModel = new frequencyRequestModel();
+    response.aumFeeTypes.forEach((item) => {
+      if (item.aumFlag) aum.aumFeeTypes.push(item);
+      else nonAum.aumFeeTypes.push(item);
+    });
+    if (!response.aumCommonFrequencyTimingFlag && aum.aumFeeTypes.length > 0) {
+      for (var i in response.aumFeeTypes) {
+        if (
+          response.aumFeeTypes[i].aumDetails &&
+          response.aumFeeTypes[i].aumFlag
+        ) {
+          const object = {
+            id: response.aumFeeTypes[i].id,
+            feeTypeName: response.aumFeeTypes[i].feeTypeName,
+            feeTypeCode: response.aumFeeTypes[i].feeTypeCode,
+            aumFlag: true,
+            aumDetails: response.aumFeeTypes[i].aumDetails,
+          };
+          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+          break;
+        }
+      }
+      if (
+        !this.request.aumFeeTypes[0].aumDetails &&
+        this.selectedAumDetails.aumFeeTypes.length > 0
+      )
+        this.request.aumFeeTypes[0].aumDetails = this.clone(
+          this.selectedAumDetails.aumFeeTypes[0].aumDetails
+        );
+    }
+    if (
+      !response.nonAumCommonFrequencyTimingFlag &&
+      nonAum.aumFeeTypes.length > 0
+    ) {
+      for (var j in nonAum.aumFeeTypes) {
+        if (
+          response.aumFeeTypes[j].aumDetails &&
+          !response.aumFeeTypes[j].aumFlag
+        ) {
+          const object = {
+            id: response.aumFeeTypes[j].id,
+            feeTypeName: response.aumFeeTypes[j].feeTypeName,
+            feeTypeCode: response.aumFeeTypes[j].feeTypeCode,
+            aumFlag: true,
+            aumDetails: response.aumFeeTypes[j].aumDetails,
+          };
+          this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
+          break;
+        }
+      }
+      if (
+        !nonAum.aumFeeTypes[0].aumDetails &&
+        this.selectedNonAumDetails.aumFeeTypes.length > 0
+      )
+        nonAum.aumFeeTypes[0].aumDetails = this.clone(
+          this.selectedNonAumDetails.aumFeeTypes[0].aumDetails
+        );
+
+      this.request.aumFeeTypes.forEach((item) => {
+        if (item.feeTypeName == nonAum.aumFeeTypes[0].feeTypeName)
+          item.aumDetails = nonAum.aumFeeTypes[0].aumDetails;
+      });
     }
   }
 
-  onNext(data: any) {
+  public onPrev(data: {
+    index: number;
+    response: aumFeeTypes;
+    copiedStatus: boolean;
+  }) {
+    const index = data.index;
+    this.isCopied = data.copiedStatus;
+
+    console.log(data.copiedStatus);
+
+    if (data.index == 0) this.$emit("prev");
+    else {
+      if (data.copiedStatus) this.request.aumFeeTypes[index].aumDetails = null;
+      this.isCopied = false;
+      this.feeTypeName = this.request.aumFeeTypes[index - 1].feeTypeName;
+    }
+  }
+
+  public onNext(data: { index: number; response: aumDetails }) {
     const index = data.index;
     const response = data.response;
-
-    /*console.log(index);
-    console.log(this.request.aumFeeTypes[index]);
-    this.request.aumFeeTypes[index].aumDetails = this.clone(response);
-    this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
-    console.log(this.request.aumFeeTypes[0]);
-    console.log(this.request.aumFeeTypes[index]);
-    this.request.aumFeeTypes[index + 1].aumDetails = this.clone(this.request.aumFeeTypes[0].aumDetails);
-    console.log(typeof this.request.aumFeeTypes[index].aumDetails.billingFrequency);
-
-    console.log(data);
-    const index = data.index;
-    const response = data.response;*/
+    this.isCopied = false;
 
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
       this.request.aumFeeTypes[index].aumDetails = this.clone(response);
-
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
+
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
         !this.request.aumCommonFrequencyTimingFlag
       ) {
-        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
-          this.isBinding = true;
+        if (this.selectedAumDetails.aumFeeTypes.length == 0) {
+          const object = {
+            id: this.request.aumFeeTypes[0].id,
+            feeTypeName: this.request.aumFeeTypes[0].feeTypeName,
+            feeTypeCode: this.request.aumFeeTypes[0].feeTypeCode,
+            aumFlag: true,
+            aumDetails: this.request.aumFeeTypes[0].aumDetails,
+          };
+          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+        }
+        if (
+          this.request.aumFeeTypes[index].feeTypeName ==
+            this.selectedAumDetails.aumFeeTypes[0].feeTypeName &&
+          this.request.aumFeeTypes[index].aumDetails !=
+            this.selectedAumDetails.aumFeeTypes[0].aumDetails
+        ) {
+          this.selectedAumDetails.aumFeeTypes[0].aumDetails =
+            this.request.aumFeeTypes[index].aumDetails;
+        }
 
+        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
+          this.isCopied = true;
           this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
-            this.request.aumFeeTypes[0].aumDetails
+            this.selectedAumDetails.aumFeeTypes[0].aumDetails
           );
         }
       } else if (
@@ -180,43 +254,40 @@ export default class FrequencyBoard extends Vue {
         this.request.aumFeeTypes.forEach((item) => {
           if (!item.aumFlag) nonAumFeeTypes.aumFeeTypes.push(item);
         });
-        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
-          this.isBinding = true;
-          this.request.aumFeeTypes[index + 1].aumDetails =
-            nonAumFeeTypes.aumFeeTypes[0].aumDetails;
 
+        if (this.selectedNonAumDetails.aumFeeTypes.length == 0) {
+          const object = {
+            id: nonAumFeeTypes.aumFeeTypes[0].id,
+            feeTypeName: nonAumFeeTypes.aumFeeTypes[0].feeTypeName,
+            feeTypeCode: nonAumFeeTypes.aumFeeTypes[0].feeTypeCode,
+            aumFlag: false,
+            aumDetails: nonAumFeeTypes.aumFeeTypes[0].aumDetails,
+          };
+          this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
+        }
+        if (
+          this.request.aumFeeTypes[index].feeTypeName ==
+            this.selectedNonAumDetails.aumFeeTypes[0].feeTypeName &&
+          this.request.aumFeeTypes[index].aumDetails !=
+            this.selectedNonAumDetails.aumFeeTypes[0].aumDetails
+        ) {
+          this.selectedNonAumDetails.aumFeeTypes[0].aumDetails =
+            this.request.aumFeeTypes[index].aumDetails;
+        }
+
+        if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
+          this.isCopied = true;
           this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
-            nonAumFeeTypes.aumFeeTypes[0].aumDetails
+            this.selectedNonAumDetails.aumFeeTypes[0].aumDetails
           );
         }
       }
     }
   }
 
-  clone<T>(object: T): T {
+  public clone<T>(object: T): T {
     return this._clone(object);
   }
-
-  /*private _clone(object: any) {
-    let cloned: any = new (<any>object).constructor();
-
-    for (let key in object) {
-      try {
-        cloned[key] = object[key];
-
-        if (typeof object[key].getMonth === "function") {
-          let date = new Date(object[key]);
-          if (isNaN(date.getFullYear())) date = null;
-
-          cloned[key] = date;
-        } else if (typeof object[key] === "object")
-          cloned[key] = this._clone(object[key]);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    return cloned;
-  }*/
 
   private _clone(obj: any) {
     if (obj == null || typeof obj != "object") return obj;

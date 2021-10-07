@@ -45,6 +45,7 @@
               <FeeTypesBoard
                 @prev="activeTab = 1"
                 @next="activeTab = 3"
+                @showAumTabs="updateAumTabs"
                 v-if="activeTab == 2"
               />
               <FrequencyBoard

@@ -231,7 +231,11 @@
                 >
                   {{ selectedFirm }}
                 </div>
-                <ul class="dropdown-menu overflow-auto" :class="{ show: toggleFirms }" style="height: 350px;">
+                <ul
+                  class="dropdown-menu overflow-auto"
+                  :class="{ show: toggleFirms }"
+                  style="height: 350px"
+                >
                   <li
                     class="mt-2 mb-2"
                     v-for="(item, index) of firms"
@@ -410,7 +414,7 @@ export default class Home extends Vue {
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
       ) {
-        this.showOnBoard = true; // Change true after fixed the changes
+        this.showOnBoard = true;
         if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else

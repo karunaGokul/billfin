@@ -310,6 +310,8 @@ export default class FeeTypesBoard extends Vue {
       (a, o) => (o.selected && a.push(o.feeTypeName), a),
       []
     );
+    if (data && data.length > 0) this.$emit("showAumTabs", "show");
+    else this.$emit("showAumTabs", "hide");
     return data;
   }
 

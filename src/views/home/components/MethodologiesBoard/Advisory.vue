@@ -124,11 +124,11 @@ export default class Advisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
   @Prop() prevNext: number;
-  @Prop() isBinding: boolean;
+  @Prop() isCopied: boolean;
 
   public store = useStore();
   public request: aumDetails = new aumDetails();
-  
+
   public valuationMethod: Array<ListItem> = [];
   public defaultValuationMethod: Array<ListItem> = [];
   public initialBillingValuationMethod: Array<ListItem> = [];
@@ -190,6 +190,14 @@ export default class Advisory extends Vue {
     }
   }
 
+  public prev() {
+    this.$emit("prev", {
+      response: this.response,
+      index: this.prevNext,
+      copiedStatus: this.isCopied,
+    });
+  }
+
   public saveMethodologies() {
     this.request.firmId = this.store.getters.selectedFirmId;
     this.request.feeTypeName = this.response.feeTypeName;
@@ -199,7 +207,8 @@ export default class Advisory extends Vue {
     this.service
       ?.saveMethodologies(this.request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("next", {response: response, index: this.prevNext, isBinding: false});
+        if (response.status == "SUCCESS")
+          this.$emit("next", { response: response, index: this.prevNext });
       })
       .catch((err) => {
         console.log(err);
@@ -209,7 +218,7 @@ export default class Advisory extends Vue {
   public updateValuationMethod(valuationMethod: Array<ListItem>) {
     this.request.valuationMethod = [];
     this.defaultValuationMethod = [];
-    this.request.defaultValuationMethod = '';
+    this.request.defaultValuationMethod = "";
 
     valuationMethod.forEach((item) => {
       if (item.selected) {
@@ -236,12 +245,12 @@ export default class Advisory extends Vue {
 
     if (this.request.valuationMethod.length == 1) {
       this.defaultValuationMethod.forEach((item: ListItem) => {
-        if(this.request.valuationMethod.includes(item.value)) {
+        if (this.request.valuationMethod.includes(item.value)) {
           item.selected = true;
           this.request.defaultValuationMethod = item.value;
         }
       });
-    } 
+    }
   }
 
   public updateDefaultValuationMethod(defaultValuationMethod: string) {
@@ -317,10 +326,6 @@ export default class Advisory extends Vue {
         item.selected = true;
       else item.selected = false;
     });
-  }
-
-  public prev() {
-    this.$emit("prev", {index: this.prevNext, isBinding: this.isBinding});
   }
 
   get formValidation() {

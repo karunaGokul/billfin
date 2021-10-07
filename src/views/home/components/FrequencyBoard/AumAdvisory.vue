@@ -157,7 +157,7 @@ export default class AumAdvisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
   @Prop() prevNext: number;
-  @Prop() isBinding: boolean;
+  @Prop() isCopied: boolean;
 
   public store = useStore();
   public request: aumDetails = new aumDetails();
@@ -218,6 +218,10 @@ export default class AumAdvisory extends Vue {
     }
   }
 
+  public prev() {
+    this.$emit("prev", {response: this.response, index: this.prevNext, copiedStatus: this.isCopied});
+  }
+
   public saveFrequncyAndTiming() {
     this.request.firmId = this.store.getters.selectedFirmId;
     this.request.feeTypeName = this.response.feeTypeName;
@@ -228,7 +232,7 @@ export default class AumAdvisory extends Vue {
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
         if (response.status == "SUCCESS") {
-          this.$emit("next", {response: response, index: this.prevNext, isBinding: false});
+          this.$emit("next", {response: response, index: this.prevNext});
         }
       })
       .catch((err) => {
@@ -407,10 +411,6 @@ export default class AumAdvisory extends Vue {
         else item.selected = false;
       });
     }
-  }
-
-  public prev() {
-    this.$emit("prev", {index: this.prevNext, isBinding: this.isBinding});
   }
 
   public nullCheck(value: any) {

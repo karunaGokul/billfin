@@ -84,7 +84,7 @@
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Methodologies</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top" v-if="methodologiesRequest.aumFeeTypes.length > 0">Methodologies</p>
 
       <div
         v-for="(item, index) in methodologiesRequest.aumFeeTypes"
@@ -93,7 +93,6 @@
       >
         <p
           class="fw-bolder pb-5 mb-5 text-dark border-bottom"
-          v-if="item.aumFlag"
         >
           {{ item.feeTypeName }}
         </p>
@@ -101,7 +100,7 @@
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Adjustments</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top" v-if="adjustmentsResponse.aumFeeTypes.length > 0">Adjustments</p>
 
       <div
         v-for="(item, index) in adjustmentsResponse.aumFeeTypes"
@@ -211,7 +210,9 @@ export default class ConfirmBoard extends Vue {
     this.service
       ?.getMethodologies(request)
       .then((response) => {
-        this.methodologiesRequest = response;
+        response.aumFeeTypes.forEach((item) => {
+          if (item.aumFlag) this.methodologiesRequest.aumFeeTypes.push(item);
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -225,7 +226,9 @@ export default class ConfirmBoard extends Vue {
     this.service
       ?.getAdjustments(request)
       .then((response) => {
-        this.adjustmentsResponse = response;
+        response.aumFeeTypes.forEach((item) => {
+          if (item.aumFlag) this.adjustmentsResponse.aumFeeTypes.push(item);
+        });
       })
       .catch((err) => {
         console.log(err);
