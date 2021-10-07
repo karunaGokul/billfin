@@ -170,7 +170,7 @@ export default class Plan extends Vue {
   }
 
   public next() {
-    this.$emit('next');
+    this.$emit('firstStep', {planType: this.commitmentTerm, selectedPlan: this.selectedPlan});
   }
 
   public planList: any = {

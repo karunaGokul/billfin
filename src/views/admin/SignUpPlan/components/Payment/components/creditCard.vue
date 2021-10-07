@@ -1,42 +1,14 @@
 <template>
-  <div class="row mt-8 mb-8">
-    <div class="col-4">
-      <div class="btn-group border rounded p-1">
-        <button
-          type="button"
-          class="btn rounded"
-          :class="{
-            'btn-success': paymenyType == 'ACH',
-            'text-muted': paymenyType != 'ACH',
-          }"
-          @click="paymenyType = 'ACH'"
-        >
-          ACH
-        </button>
-        <button
-          type="button"
-          class="btn rounded"
-          :class="{
-            'btn-success': paymenyType == 'Credit card',
-            'text-muted': paymenyType != 'Credit card',
-          }"
-          @click="paymenyType = 'Credit card'"
-        >
-          Credit card
-        </button>
+  <div
+    class="w-50 mx-auto m-4 p-4 overflow-auto"
+    style="height: calc(100vh - 20vh - 200px)"
+  >
+    <div class="d-flex align-items-center justify-content-lg-between">
+      <div class="fw-bolder fs-3 me-4 text-center">Enter a credit card details</div>
+      <div>
+        <img src="@/assets/all.svg" alt="Visa Card" />
       </div>
     </div>
-    <div class="col-4 mt-4">
-      <div class="fw-bolder fs-3 me-4 text-center">Enter a credit card</div>
-    </div>
-    <div class="col-4">
-      <img src="@/assets/visa.svg" alt="Visa Card" />
-      <img src="@/assets/master-card.svg" alt="Visa Card" />
-      <img src="@/assets/american-express.svg" alt="Visa Card" />
-      <img src="@/assets/discover-network.svg" alt="Visa Card" />
-    </div>
-  </div>
-  <div class="w-50 mx-auto m-4 mt-10">
     <form @submit.prevent="payNow">
       <div class="mt-6">
         <TextInput
@@ -160,7 +132,7 @@ import { required, numeric } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
 
-import { paymentRequestModel } from "@/model";
+import { creditCardRequestModel } from "@/model";
 
 @Options({
   components: {
@@ -181,10 +153,8 @@ import { paymentRequestModel } from "@/model";
     },
   },
 })
-export default class Payment extends Vue {
-  public request: paymentRequestModel = new paymentRequestModel();
-
-  public paymenyType: string = "Credit card";
+export default class CreditCard extends Vue {
+  public request: creditCardRequestModel = new creditCardRequestModel();
 
   public v$: any = setup(() => this.validate());
 

@@ -158,15 +158,14 @@ export default class FrequencyBoard extends Vue {
     ) {
       for (var j in nonAum.aumFeeTypes) {
         if (
-          response.aumFeeTypes[j].aumDetails &&
-          !response.aumFeeTypes[j].aumFlag
+          nonAum.aumFeeTypes[j].aumDetails
         ) {
           const object = {
-            id: response.aumFeeTypes[j].id,
-            feeTypeName: response.aumFeeTypes[j].feeTypeName,
-            feeTypeCode: response.aumFeeTypes[j].feeTypeCode,
-            aumFlag: true,
-            aumDetails: response.aumFeeTypes[j].aumDetails,
+            id: nonAum.aumFeeTypes[j].id,
+            feeTypeName: nonAum.aumFeeTypes[j].feeTypeName,
+            feeTypeCode: nonAum.aumFeeTypes[j].feeTypeCode,
+            aumFlag: false,
+            aumDetails: nonAum.aumFeeTypes[j].aumDetails,
           };
           this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
           break;
@@ -184,6 +183,9 @@ export default class FrequencyBoard extends Vue {
         if (item.feeTypeName == nonAum.aumFeeTypes[0].feeTypeName)
           item.aumDetails = nonAum.aumFeeTypes[0].aumDetails;
       });
+
+      console.log(this.selectedNonAumDetails);
+
     }
   }
 
@@ -194,8 +196,6 @@ export default class FrequencyBoard extends Vue {
   }) {
     const index = data.index;
     this.isCopied = data.copiedStatus;
-
-    console.log(data.copiedStatus);
 
     if (data.index == 0) this.$emit("prev");
     else {
@@ -265,6 +265,7 @@ export default class FrequencyBoard extends Vue {
           };
           this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
         }
+        console.log(this.selectedNonAumDetails);
         if (
           this.request.aumFeeTypes[index].feeTypeName ==
             this.selectedNonAumDetails.aumFeeTypes[0].feeTypeName &&
@@ -274,7 +275,7 @@ export default class FrequencyBoard extends Vue {
           this.selectedNonAumDetails.aumFeeTypes[0].aumDetails =
             this.request.aumFeeTypes[index].aumDetails;
         }
-
+        console.log(this.request.aumFeeTypes[index + 1]);
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isCopied = true;
           this.request.aumFeeTypes[index + 1].aumDetails = this.clone(

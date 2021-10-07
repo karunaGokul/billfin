@@ -1,4 +1,4 @@
-export class paymentRequestModel {
+export class creditCardRequestModel {
     cardNumber: number;
     expirationMonth: number;
     expirationYear: number;
@@ -9,4 +9,14 @@ export class paymentRequestModel {
     billingState: string;
     postalCode: number;
     country: string;
+}
+export class achRequestModel {
+    accountNo: number;
+    routingNo: number;
+    accountHolder: string;
+    billingAddresss: string;
+    billingCity: string;
+    billingState: string;
+    country: string;
+    postalCode: string;
 }

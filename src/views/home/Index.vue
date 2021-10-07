@@ -353,7 +353,13 @@
             >
               <i class="fas fa-info-circle text-danger"></i> You only have
               {{ showTrailExpireDays }} more day(s) in your trial. Ready to
-              sign-up? Click <a href="">here</a> to get started
+              sign-up? Click
+              <router-link
+                to="/sign-up-plan"
+                tag="a"
+                >here
+              </router-link>
+              to get started
             </div>
           </div>
         </div>

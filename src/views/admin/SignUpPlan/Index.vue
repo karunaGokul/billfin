@@ -59,8 +59,13 @@
           </ul>
         </div>
         <div class="tab-content-group w-75 mx-auto">
-          <plan @next="step = 2" v-if="step == 1" />
-          <add-ons @next="step = 3" v-if="step == 2" />
+          <plan @firstStep="onUpdatePlan($event, data)" v-if="step == 1" />
+          <add-ons
+            @back="step = 1"
+            @next="step = 3"
+            :planType="planType"
+            v-if="step == 2"
+          />
           <payment v-if="step == 3" />
           <div v-if="step == 4">4</div>
         </div>
@@ -73,7 +78,7 @@ import { Vue, Options } from "vue-class-component";
 
 import Plan from "./components/Plan.vue";
 import AddOns from "./components/AddOns.vue";
-import Payment from "./components/Payment.vue";
+import Payment from "./components/Payment/Index.vue";
 
 @Options({
   components: {
@@ -84,5 +89,13 @@ import Payment from "./components/Payment.vue";
 })
 export default class SignUpPlan extends Vue {
   public step: number = 1;
+
+  public planType: string = "";
+
+  public onUpdatePlan(data: { planType: string; selectedPlan: any }) {
+    console.log(data);
+    this.planType = data.planType;
+    this.step = 2;
+  }
 }
 </script>
