@@ -60,6 +60,7 @@
                 <select
                   class="form-select form-select-solid"
                   style="width: 100px"
+                  v-model="item.noOfAdminUserLicenses"
                 >
                   <option selected value="1">1</option>
                   <option value="2">2</option>
@@ -80,13 +81,15 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+
+import { useStore } from "vuex";
 
 export default class AddOns extends Vue {
-  @Prop() planType: string;
 
   public itemsPerRow: number = 3;
   public plans: any[] = [];
+
+  public store = useStore();
 
   mounted() {
     this.plans = this.planList[this.planType].plans;
@@ -118,6 +121,7 @@ export default class AddOns extends Vue {
           planType: "Yr",
           extraMsg: "per user",
           selected: true,
+          noOfAdminUserLicenses: '1',
         },
         {
           planName: "Multi-Fee Accounts",
@@ -200,6 +204,9 @@ export default class AddOns extends Vue {
   };
 
   public next() {
+    let payload: any[] = [];
+    payload = this.plans.filter((item) => item.selected);
+    this.store.dispatch('updateAddons', payload);
     this.$emit("next");
   }
 
@@ -211,6 +218,10 @@ export default class AddOns extends Vue {
     return Array.from(
       Array(Math.ceil(this.plans.length / this.itemsPerRow)).keys()
     );
+  }
+
+  get planType() {
+    return this.store.getters.getPlanType;
   }
 }
 </script>

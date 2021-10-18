@@ -16,7 +16,7 @@ export default class App extends DIContainer {
 
   created() {
     if (this.store.getters.isLoggedIn) this.store.dispatch("validateKeyCloak");
-    this.tokenInterceptor();
+    //this.tokenInterceptor();
   }
 
   tokenInterceptor() {
@@ -40,8 +40,6 @@ export default class App extends DIContainer {
 
         if (status !== 401) return Promise.reject(error);
         if (status == 401) {
-          this.store.dispatch("clearEntitlements");
-          this.store.dispatch("clearSession");
           this.store.dispatch("logout");
           this.$router.push("/").catch((err) => {});
           return Promise.reject(error);

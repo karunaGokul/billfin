@@ -4,9 +4,14 @@
     style="height: calc(100vh - 20vh - 200px)"
   >
     <div class="d-flex align-items-center justify-content-lg-between">
-      <div class="fw-bolder fs-3 me-4 text-center">Enter a credit card details</div>
+      <div class="fw-bolder fs-3 me-4 text-center">
+        Enter a credit card details
+      </div>
       <div>
-        <img src="@/assets/all.svg" alt="Visa Card" />
+        <img src="@/assets/mastercard.png" alt="Master Card" class="me-2"/>
+        <img src="@/assets/visa.png" alt="Visa Card" class="me-2"/>
+        <img src="@/assets/amex.png" alt="AMEX Card" class="me-2"/>
+        <img src="@/assets/discover.png" alt="Discover Card" class="me-2"/>
       </div>
     </div>
     <form @submit.prevent="payNow">
@@ -16,13 +21,13 @@
           :controls="v$.request.cardNumber"
           inputType="text"
           formFieldType="inputBlock"
-          :validation="['required', 'numeric']"
+          :validation="['required', 'numeric', 'minLength', 'maxLength', 'validateCardNumber']"
         />
       </div>
       <div class="row">
         <div class="col-4">
           <TextInput
-            label="Expiration Month"
+            label="Expiration Month" 
             :controls="v$.request.expirationMonth"
             inputType="text"
             formFieldType="inputBlock"
@@ -128,11 +133,31 @@
 import { Vue, Options, setup } from "vue-class-component";
 
 import useVuelidate from "@vuelidate/core";
-import { required, numeric } from "@vuelidate/validators";
+import { required, numeric, helpers, minLength, maxLength } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
 
 import { creditCardRequestModel } from "@/model";
+
+declare let ChargeOver: any;
+
+const validateCardNumber = (value: string) => {
+  if (!helpers.req(value)) return false;
+  const my_data = {
+    number: value,
+  };
+  console.log(value);
+  if (value.length == 16) {
+    ChargeOver.CreditCard.type(
+      my_data,
+      (code: number, message: string, response: any) => {
+        console.log(code, message, response);
+        if (code == 200) return true;
+        else return false;
+      }
+    );
+  }
+};
 
 @Options({
   components: {
@@ -140,7 +165,7 @@ import { creditCardRequestModel } from "@/model";
   },
   validations: {
     request: {
-      cardNumber: { required, numeric },
+      cardNumber: { required, numeric, minLength: minLength(16), maxLength: maxLength(16), validateCardNumber },
       expirationMonth: { required, numeric },
       expirationYear: { required, numeric },
       cvv: { required, numeric },
@@ -167,8 +192,22 @@ export default class CreditCard extends Vue {
   }
 
   public payNow() {
-    this.v$.$touch();
-    if (!this.v$.$invalid) console.log(this.request);
+    this.$emit('next');
+    /*this.v$.$touch();
+    if (!this.v$.$invalid) console.log(this.request);*/
+  }
+
+  private checkCardisValid() {
+    const my_data = {
+      number: this.request.cardNumber,
+    };
+    console.log(ChargeOver);
+    ChargeOver.CreditCard.type(
+      my_data,
+      (code: any, message: any, response: any) => {
+        console.log(code, message, response);
+      }
+    );
   }
 
   public country: any[] = [

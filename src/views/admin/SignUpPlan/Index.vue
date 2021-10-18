@@ -54,20 +54,28 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">4</span>
               </div>
-              <div class="tab-label-name">Finish</div>
+              <div class="tab-label-name">Review & Confirm</div>
+            </li>
+            <li
+              class="tab-label d-flex align-items-center"
+              :class="{
+                'tab-label-active': step == 5
+              }"
+            >
+              <div class="tab-label-box me-4">
+                <i class="fas fa-check text-primary tab-label-icon"></i>
+                <span class="tab-label-count">5</span>
+              </div>
+              <div class="tab-label-name">Sign & Subscribe</div>
             </li>
           </ul>
         </div>
         <div class="tab-content-group w-75 mx-auto">
-          <plan @firstStep="onUpdatePlan($event, data)" v-if="step == 1" />
-          <add-ons
-            @back="step = 1"
-            @next="step = 3"
-            :planType="planType"
-            v-if="step == 2"
-          />
-          <payment v-if="step == 3" />
-          <div v-if="step == 4">4</div>
+          <plan @next="step = 2" v-if="step == 1" />
+          <add-ons @back="step = 1" @next="step = 3" v-if="step == 2" />
+          <payment @back="step = 2" @next="step = 4" v-if="step == 3" />
+          <review @back="step = 3" @next="step = 5" v-if="step == 4" />
+          <subscribe @back="step = 4" v-if="step == 5" />
         </div>
       </div>
     </div>
@@ -79,23 +87,19 @@ import { Vue, Options } from "vue-class-component";
 import Plan from "./components/Plan.vue";
 import AddOns from "./components/AddOns.vue";
 import Payment from "./components/Payment/Index.vue";
+import Review from "./components/Review.vue";
+import Subscribe from "./components/Subscribe.vue";
 
 @Options({
   components: {
     Plan,
     AddOns,
     Payment,
+    Review,
+    Subscribe
   },
 })
 export default class SignUpPlan extends Vue {
-  public step: number = 1;
-
-  public planType: string = "";
-
-  public onUpdatePlan(data: { planType: string; selectedPlan: any }) {
-    console.log(data);
-    this.planType = data.planType;
-    this.step = 2;
-  }
+  public step: number = 3;
 }
 </script>

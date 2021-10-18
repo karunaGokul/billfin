@@ -18,6 +18,7 @@ export default class ValidationService {
       number: "Please enter one number",
       special: `Please enter one special character: !@#$%&*`,
       letter: "Please enter one letter",
+      validateCardNumber: "Please enter a valid credit card number."
     };
 
     return config[validatorName];

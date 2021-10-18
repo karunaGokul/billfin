@@ -25,22 +25,26 @@
       </button>
     </div>
   </div>
-  <ACH v-if="paymenyType == 'ACH'"/>
-  <credit-card v-if="paymenyType == 'Credit card'"/>
+  <ACH v-if="paymenyType == 'ACH'" />
+  <credit-card @next="onNext" v-if="paymenyType == 'Credit card'" />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 
 import ACH from "./components/ACH.vue";
-import CreditCard from "./components/creditCard.vue"
+import CreditCard from "./components/creditCard.vue";
 
 @Options({
-    components: {
-        ACH,
-        CreditCard
-    }
+  components: {
+    ACH,
+    CreditCard,
+  },
 })
 export default class Index extends Vue {
   public paymenyType: string = "Credit card";
+
+  onNext() {
+    this.$emit("next");
+  }
 }
 </script>

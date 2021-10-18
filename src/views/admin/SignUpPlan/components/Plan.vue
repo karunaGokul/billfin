@@ -144,7 +144,12 @@
 <script lang="ts">
 import { Vue } from "vue-class-component";
 
+import { useStore } from "vuex";
+
 export default class Plan extends Vue {
+
+  public store = useStore();
+
   public commitmentTerm: string = "Annual";
 
   public selectedCommitment: any = {
@@ -170,7 +175,9 @@ export default class Plan extends Vue {
   }
 
   public next() {
-    this.$emit('firstStep', {planType: this.commitmentTerm, selectedPlan: this.selectedPlan});
+    const payload = {planType: this.commitmentTerm, planName: this.selectedPlan.planName, planPrice: this.selectedPlan.planPrice};
+    this.store.dispatch('updatePlan', payload);
+    this.$emit('next');
   }
 
   public planList: any = {
