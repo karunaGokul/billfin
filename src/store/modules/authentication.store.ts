@@ -3,7 +3,11 @@ import { GetterTree, MutationTree, ActionTree } from "vuex";
 import Keycloak, { KeycloakConfig, KeycloakInitOptions } from "keycloak-js";
 import JwtDecode from "jwt-decode";
 
-import { AuthenticationState, AuthenticationResponse } from "@/model";
+import {
+  AuthenticationState,
+  AuthenticationResponse,
+  UserModel,
+} from "@/model";
 
 const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
@@ -18,7 +22,7 @@ let keycloak = Keycloak(config);
 
 const options: KeycloakInitOptions = {
   onLoad: "login-required",
-  responseMode: 'query',
+  responseMode: "query",
   checkLoginIframe: false,
 };
 
@@ -29,6 +33,25 @@ const state: AuthenticationState = {
 const getters: GetterTree<AuthenticationState, any> = {
   accessToken: (state) => {
     return state.accessToken;
+  },
+  userInfo: (state) => {
+    let userInfo: UserModel = null;
+
+    if (state.accessToken) {
+      const tokenParsed: any = JwtDecode(state.accessToken);
+
+      console.log(tokenParsed);
+
+      userInfo = new UserModel();
+      userInfo.email = tokenParsed.email;
+      userInfo.userName = tokenParsed.preferred_username;
+      userInfo.fullName = tokenParsed.name;
+      userInfo.firstName = tokenParsed.given_name;
+      userInfo.lastName = tokenParsed.family_name;
+      userInfo.emailVerified = tokenParsed.email_verified;
+    }
+
+    return userInfo;
   },
   isTokenExpired: (state) => {
     let expired = true;
@@ -70,10 +93,9 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
-
     keycloak.createRegisterUrl = () => {
-      return '/sign-up';
-    }
+      return "/sign-up";
+    };
 
     keycloak.onTokenExpired = () => {
       keycloak
@@ -121,7 +143,7 @@ const actions: ActionTree<AuthenticationState, any> = {
           reject(msg);
         });
     });
-  }, 
+  },
   logout(context) {
     const logoutOptions = { redirectUri: window.location.href };
     keycloak.logout(logoutOptions);

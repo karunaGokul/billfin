@@ -18,7 +18,7 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 import ValidationService from "@/components/validation/validation.service";
 
 export default class SelectBox extends Vue {

@@ -59,3 +59,7 @@ export enum FlowThresholdType {
     "% of AUM" = "PERCENT", 
     "None" = "NONE"
 }
+export enum paycycle {
+    Monthly = "mom",
+    Annual = "yrl"
+}

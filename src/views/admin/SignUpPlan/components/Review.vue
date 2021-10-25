@@ -9,7 +9,7 @@
         Standard Plan
         <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
       </div>
-      <div>$100</div>
+      <div>{{ $filters.currencyDisplay(planRate) }}</div>
     </div>
 
     <div class="row g-0 mt-8" v-for="(item, index) of addons" :key="index">
@@ -18,7 +18,9 @@
         {{ item.planName }}
         <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
       </div>
-      <div class="col-2 text-end">{{ $filters.currencyDisplay(item.planPrice) }}</div>
+      <div class="col-2 text-end">
+        {{ $filters.currencyDisplay(item.rate) }}
+      </div>
     </div>
 
     <div
@@ -30,11 +32,30 @@
         pb-5
         d-flex
         justify-content-between
-        border-top border-bottom
+        border-top
+        border-bottom
+        border-dashed
+        border-start-0
+        border-end-0
       "
     >
       <div>Total Due Today</div>
       <div>{{ $filters.currencyDisplay(totalFees) }}</div>
+    </div>
+
+    <h4 class="fw-bold mt-10 pb-4 border-bottom">Payment Method</h4>
+
+    <h4 class="fw-bold mt-10 pb-4 border-bottom">Billing Address</h4>
+
+    <div class="text-muted mt-4">{{ address.bill_addr1 }}</div>
+    <div class="text-muted">{{ address.bill_city }}</div>
+    <div class="text-muted">{{ address.bill_state }}</div>
+    <div class="text-muted">{{ address.bill_postcode }}</div>
+    <div class="text-muted">{{ address.bill_country }}.</div>
+
+    <div class="text-center mt-10">
+      <button class="btn btn-light me-5" @click="back">Cancel</button>
+      <button class="btn btn-primary ms-5" @click="next">Continue</button>
     </div>
   </div>
 </template>
@@ -45,6 +66,14 @@ import { useStore } from "vuex";
 
 export default class Review extends Vue {
   public store = useStore();
+
+  back() {
+    this.$emit("back");
+  }
+
+  next() {
+    this.$emit("next");
+  }
 
   private currencyToNumber(value: any) {
     if (!value) return 0;
@@ -62,11 +91,29 @@ export default class Review extends Vue {
   get totalFees() {
     let addons: number = 0;
     addons = this.addons.reduce((prev: number, cur: any) => {
-      return prev + parseInt(cur.planPrice);
+      return prev + parseInt(cur.rate);
     }, 0);
-    addons = addons + this.currencyToNumber(this.store.getters.getPlanFee);
+    addons = addons + this.planRate;
     return addons;
   }
-  
+
+  get planRate() {
+    return this.currencyToNumber(this.store.getters.getPlan.rate);
+  }
+
+  get paymentType() {
+    return this.store.getters.getPaymentType;
+  }
+
+  get creditCard() {
+    return this.store.getters.getCreditCard;
+  }
+
+  get ach() {
+    return this.store.getters.getAch;
+  }
+  get address() {
+    return this.store.getters.getCustomer;
+  }
 }
 </script>

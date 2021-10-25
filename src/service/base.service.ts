@@ -94,8 +94,9 @@ export class BaseService<R extends IBaseRequest, T extends IBaseModel> extends S
 
     protected eType?: EntityType<T>;
     
-    constructor(protected path: string) {
+    constructor(protected path: string, apiUrl?: string) {
         super();
+        if(apiUrl) this.apiUrl = apiUrl;
     }
 
     protected format(item: T) { }
@@ -134,8 +135,8 @@ export class BaseService<R extends IBaseRequest, T extends IBaseModel> extends S
 
     getItems(request: R, additionalPath?:string): Promise<DataResponse<T>> {
         if (request._skipPaging) {
-            //request.page = undefined;
-            //request.pageSize = undefined;
+            request.page = undefined;
+            request.pageSize = undefined;
         }
 
         let path = '';

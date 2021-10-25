@@ -12,6 +12,8 @@ export default class ValidationService {
       phone: "Please enter valid number",
       minLength: `Minimum ${propertyValue.min} characters`,
       maxLength: `Maximum ${propertyValue.max} characters`,
+      cvvMinLength: 'Minimum 3 or 4 characters',
+      cvvMaxLength: 'Maximum 3 or 4 characters',
       phoneLength: `Phone number 10 or 12 charaters`,
       email: "Please enter a valid email address",
       domain: `Please enter your business email. Don't have one?`,

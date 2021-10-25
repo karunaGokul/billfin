@@ -8,30 +8,96 @@
         Enter a credit card details
       </div>
       <div>
-        <img src="@/assets/mastercard.png" alt="Master Card" class="me-2"/>
-        <img src="@/assets/visa.png" alt="Visa Card" class="me-2"/>
-        <img src="@/assets/amex.png" alt="AMEX Card" class="me-2"/>
-        <img src="@/assets/discover.png" alt="Discover Card" class="me-2"/>
+        <img src="@/assets/mastercard.png" alt="Master Card" class="me-2" />
+        <img src="@/assets/visa.png" alt="Visa Card" class="me-2" />
+        <img src="@/assets/amex.png" alt="AMEX Card" class="me-2" />
+        <img src="@/assets/discover.png" alt="Discover Card" class="me-2" />
       </div>
     </div>
     <form @submit.prevent="payNow">
-      <div class="mt-6">
-        <TextInput
-          label="Card Number"
-          :controls="v$.request.cardNumber"
-          inputType="text"
-          formFieldType="inputBlock"
-          :validation="['required', 'numeric', 'minLength', 'maxLength', 'validateCardNumber']"
-        />
+      <div class="mt-6 position-relative mb-8">
+        <label class="form-label fw-bolder"> Card Number </label>
+        <div class="input-group input-group-solid">
+          <input
+            type="text"
+            v-model="v$.request.cardNumber.$model"
+            class="form-control text-start"
+            @input="!v$.request.cardNumber.$invalid ? cardNoValidation() : ''"
+          />
+          <span class="input-group-text" v-if="card">
+            <img
+              src="@/assets/mastercard.png"
+              alt="Card Type"
+              v-if="card == 'mast'"
+            />
+            <img
+              src="@/assets/visa.png"
+              alt="Card Type"
+              v-if="card == 'visa'"
+            />
+            <img
+              src="@/assets/amex.png"
+              alt="Card Type"
+              v-if="card == 'amex'"
+            />
+            <img
+              src="@/assets/discover.png"
+              alt="Card Type"
+              v-if="card == 'disc'"
+            />
+          </span>
+        </div>
+        <div
+          class="invalid-feedback position-absolute m-0"
+          v-if="
+            v$.request.cardNumber.$dirty &&
+            v$.request.cardNumber.required.$invalid
+          "
+        >
+          Card Number is required
+        </div>
+        <div
+          class="invalid-feedback position-absolute m-0"
+          v-if="v$.request.cardNumber.numeric.$invalid"
+        >
+          Please enter valid number
+        </div>
+        <div
+          class="invalid-feedback position-absolute m-0"
+          v-if="
+            !v$.request.cardNumber.required.$invalid &&
+            !v$.request.cardNumber.numeric.$invalid &&
+            v$.request.cardNumber.minLength.$invalid
+          "
+        >
+          Minimum 15 or 16 characters
+        </div>
+        <div
+          class="invalid-feedback position-absolute m-0"
+          v-if="
+            !v$.request.cardNumber.required.$invalid &&
+            !v$.request.cardNumber.numeric.$invalid &&
+            !v$.request.cardNumber.minLength.$invalid &&
+            v$.request.cardNumber.maxLength.$invalid
+          "
+        >
+          Maximum 15 or 16 charaters
+        </div>
+        <div
+          class="invalid-feedback position-absolute m-0"
+          v-if="!isCardNumberValid && !v$.request.cardNumber.$invalid"
+        >
+          {{ cardError }}
+        </div>
       </div>
-      <div class="row">
+      <div class="row position-relative">
         <div class="col-4">
           <TextInput
-            label="Expiration Month" 
+            label="Expiration Month"
             :controls="v$.request.expirationMonth"
             inputType="text"
             formFieldType="inputBlock"
-            :validation="['required', 'numeric']"
+            :validation="['required', 'numeric', 'minLength', 'maxLength']"
           />
         </div>
         <div class="col-4">
@@ -40,7 +106,7 @@
             :controls="v$.request.expirationYear"
             inputType="text"
             formFieldType="inputBlock"
-            :validation="['required', 'numeric']"
+            :validation="['required', 'numeric', 'minLength', 'maxLength']"
           />
         </div>
         <div class="col-4">
@@ -49,10 +115,22 @@
             :controls="v$.request.cvv"
             inputType="text"
             formFieldType="inputBlock"
-            :validation="['required', 'numeric']"
+            :validation="[
+              'required',
+              'numeric',
+              'cvvMinLength',
+              'cvvMaxLength',
+            ]"
           />
         </div>
+        <div
+          class="invalid-feedback position-absolute m-0 bottom-0"
+          v-if="!isCardValid"
+        >
+          {{ cardMessage }}
+        </div>
       </div>
+
       <div class="mt-6">
         <TextInput
           label="Name on Credit Card"
@@ -73,25 +151,83 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <TextInput
-            label="Billing City"
-            :controls="v$.request.billingCity"
-            inputType="text"
-            formFieldType="inputBlock"
-            :validation="['required']"
-          />
+          <div class="position-relative mb-8">
+            <label for="Country" class="form-label fw-bolder"> Country </label>
+            <select
+              class="form-select form-select-solid"
+              v-model="v$.request.country.$model"
+              @change="getState(v$.request.country.$model.iso2)"
+            >
+              <option v-for="(item, i) in country" :key="i" :value="item">
+                {{ item.name }}
+              </option>
+            </select>
+
+            <div
+              class="invalid-feedback position-absolute m-0"
+              v-if="v$.request.country.$dirty && v$.request.country.$invalid"
+            >
+              Country is required
+            </div>
+          </div>
         </div>
         <div class="col-6">
-          <TextInput
-            label="Billing State"
-            :controls="v$.request.billingState"
-            inputType="text"
-            formFieldType="inputBlock"
-            :validation="['required']"
-          />
+          <div class="position-relative mb-8">
+            <label for="Country" class="form-label fw-bolder">
+              Billing State
+            </label>
+            <select
+              class="form-select form-select-solid"
+              v-model="v$.request.billingState.$model"
+              @change="
+                getCity(
+                  request.country.iso2,
+                  v$.request.billingState.$model.iso2
+                )
+              "
+            >
+              <option v-for="(item, i) in state" :key="i" :value="item">
+                {{ item.name }}
+              </option>
+            </select>
+
+            <div
+              class="invalid-feedback position-absolute m-0"
+              v-if="
+                v$.request.billingState.$dirty &&
+                v$.request.billingState.$invalid
+              "
+            >
+              Billing State is required
+            </div>
+          </div>
         </div>
       </div>
       <div class="row">
+        <div class="col-6">
+          <div class="position-relative mb-8">
+            <label for="Country" class="form-label fw-bolder">
+              Billing City
+            </label>
+            <select
+              class="form-select form-select-solid"
+              v-model="v$.request.billingCity.$model"
+            >
+              <option v-for="(item, i) in city" :key="i" :value="item">
+                {{ item.name }}
+              </option>
+            </select>
+
+            <div
+              class="invalid-feedback position-absolute m-0"
+              v-if="
+                v$.request.billingCity.$dirty && v$.request.billingCity.$invalid
+              "
+            >
+              Billing City is required
+            </div>
+          </div>
+        </div>
         <div class="col-6">
           <TextInput
             label="Postal Code"
@@ -101,30 +237,14 @@
             :validation="['required', 'numeric']"
           />
         </div>
-        <div class="col-6">
-          <div class="position-relative mb-4">
-            <label for="Country" class="form-label fw-bolder"> Country </label>
-            <select
-              class="form-select form-select-solid"
-              v-model="v$.request.country.$model"
-            >
-              <option v-for="(item, i) in country" :key="i" :value="item.name">
-                {{ item.name }}
-              </option>
-            </select>
-
-            <div
-              class="invalid-feedback position-absolute m-0"
-              v-if="v$.request.country.$dirty && v$.request.country.$invalid"
-            >
-              Country
-            </div>
-          </div>
-        </div>
       </div>
       <div class="mt-6 d-flex align-items-center justify-content-between">
-        <button type="button" class="btn btn-secondary">Back</button>
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button type="button" class="btn btn-secondary" @click="back">
+          Back
+        </button>
+        <button type="submit" class="btn btn-primary" @click="payNow">
+          Continue
+        </button>
       </div>
     </form>
   </div>
@@ -133,44 +253,80 @@
 import { Vue, Options, setup } from "vue-class-component";
 
 import useVuelidate from "@vuelidate/core";
-import { required, numeric, helpers, minLength, maxLength } from "@vuelidate/validators";
+import { Inject } from "vue-property-decorator";
+
+import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import SelectBox from "@/components/controls/SelectBox.vue";
 
-import { creditCardRequestModel } from "@/model";
+import { creditCardRequestModel, stateModel, cityModel } from "@/model";
+
+import { IAddressService } from "@/service";
+
+import { useStore } from "vuex";
 
 declare let ChargeOver: any;
-
-const validateCardNumber = (value: string) => {
-  if (!helpers.req(value)) return false;
-  const my_data = {
-    number: value,
-  };
-  console.log(value);
-  if (value.length == 16) {
-    ChargeOver.CreditCard.type(
-      my_data,
-      (code: number, message: string, response: any) => {
-        console.log(code, message, response);
-        if (code == 200) return true;
-        else return false;
-      }
-    );
-  }
-};
 
 @Options({
   components: {
     TextInput,
+    SelectBox,
   },
   validations: {
     request: {
-      cardNumber: { required, numeric, minLength: minLength(16), maxLength: maxLength(16), validateCardNumber },
-      expirationMonth: { required, numeric },
-      expirationYear: { required, numeric },
-      cvv: { required, numeric },
+      cardNumber: {
+        required,
+        numeric,
+        minLength: (value: any) => {
+          let validation = false;
+          if (
+            (value && value != "" && value.length == 15) ||
+            value.length == 16
+          )
+            validation = true;
+          return validation;
+        },
+        maxLength: (value: any) => {
+          let validation = false;
+          if (
+            (value && value != "" && value.length == 15) ||
+            value.length == 16
+          )
+            validation = true;
+          return validation;
+        },
+      },
+      expirationMonth: {
+        required,
+        numeric,
+        minLength: minLength(2),
+        maxLength: maxLength(2),
+      },
+      expirationYear: {
+        required,
+        numeric,
+        minLength: minLength(4),
+        maxLength: maxLength(4),
+      },
+      cvv: {
+        required,
+        numeric,
+        cvvMinLength: (value: any) => {
+          let validation = false;
+          if ((value && value != "" && value.length == 3) || value.length == 4)
+            validation = true;
+          return validation;
+        },
+        cvvMaxLength: (value: any) => {
+          let validation = false;
+          if ((value && value != "" && value.length == 3) || value.length == 4)
+            validation = true;
+          return validation;
+        },
+      },
       cardHolderName: { required },
-      billingAddress: { required, numeric },
+      billingAddress: { required },
       billingCity: { required },
       billingState: { required },
       postalCode: { required, numeric },
@@ -179,7 +335,20 @@ const validateCardNumber = (value: string) => {
   },
 })
 export default class CreditCard extends Vue {
+  @Inject("addressService") service: IAddressService;
+
   public request: creditCardRequestModel = new creditCardRequestModel();
+  public store = useStore();
+
+  public state: Array<stateModel> = [];
+  public city: Array<cityModel> = [];
+
+  public card: string = "";
+  public cardError: string = null;
+  public isCardNumberValid: boolean = false;
+
+  public cardMessage: string = null;
+  public isCardValid: boolean = false;
 
   public v$: any = setup(() => this.validate());
 
@@ -187,273 +356,105 @@ export default class CreditCard extends Vue {
     return useVuelidate();
   }
 
-  created() {
-    this.request.country = "United States";
+  mounted() {
+    this.request.country = { id: 233, name: "United States", iso2: "US" };
+    this.getState("US");
+    this.service.getPick();
   }
 
   public payNow() {
-    this.$emit('next');
-    /*this.v$.$touch();
-    if (!this.v$.$invalid) console.log(this.request);*/
+    this.v$.$touch();
+
+    if (!this.v$.$invalid) {
+      if (this.isCardNumberValid) {
+        const request = {
+          number: this.request.cardNumber,
+          expdate_month: this.request.expirationMonth,
+          expdate_year: this.request.expirationYear,
+          name: this.request.cardHolderName,
+        };
+        ChargeOver.CreditCard.validate(
+          request,
+          (code: number, message: any, response: any) => {
+            console.log(code, message, response);
+            if (code == 200) {
+              this.isCardValid = true;
+              const payload = {
+                company: this.store.getters.selectedFirmName,
+                bill_addr1: this.request.billingAddress,
+                bill_city: this.request.billingCity.name,
+                bill_state: this.request.billingState.name,
+                bill_postcode: this.request.postalCode,
+                bill_country: this.request.country.name,
+              };
+              const cardDetails = {
+                number: this.request.cardNumber,
+                expdate_month: this.request.expirationMonth,
+                expdate_year: this.request.expirationYear,
+                name: this.request.cardHolderName,
+                cvv: this.request.cvv,
+              };
+              this.store.dispatch("updateCreditCard", cardDetails);
+              this.store.dispatch("updateCustomer", payload);
+              this.$emit("next");
+            } else if (code == 400) {
+              this.cardMessage = message;
+              this.isCardValid = false;
+            } else {
+              this.isCardNumberValid = false;
+              this.cardMessage = `Something went wrong, Please try again`;
+            }
+          }
+        );
+      }
+    }
   }
 
-  private checkCardisValid() {
-    const my_data = {
+  public back() {
+    this.$emit("back");
+  }
+
+  private cardNoValidation() {
+    this.card = "";
+    this.cardError = null;
+    const request = {
       number: this.request.cardNumber,
     };
-    console.log(ChargeOver);
     ChargeOver.CreditCard.type(
-      my_data,
+      request,
       (code: any, message: any, response: any) => {
         console.log(code, message, response);
+        if (code == 200) {
+          this.card = response;
+          this.isCardNumberValid = true;
+        } else if (code == 400) {
+          this.isCardNumberValid = false;
+          this.cardError = message;
+        } else {
+          this.isCardNumberValid = false;
+          this.cardError = `Something went wrong, Please try again`;
+        }
       }
     );
   }
 
-  public country: any[] = [
-    { name: "Afghanistan", code: "AF" },
-    { name: "Åland Islands", code: "AX" },
-    { name: "Albania", code: "AL" },
-    { name: "Algeria", code: "DZ" },
-    { name: "American Samoa", code: "AS" },
-    { name: "AndorrA", code: "AD" },
-    { name: "Angola", code: "AO" },
-    { name: "Anguilla", code: "AI" },
-    { name: "Antarctica", code: "AQ" },
-    { name: "Antigua and Barbuda", code: "AG" },
-    { name: "Argentina", code: "AR" },
-    { name: "Armenia", code: "AM" },
-    { name: "Aruba", code: "AW" },
-    { name: "Australia", code: "AU" },
-    { name: "Austria", code: "AT" },
-    { name: "Azerbaijan", code: "AZ" },
-    { name: "Bahamas", code: "BS" },
-    { name: "Bahrain", code: "BH" },
-    { name: "Bangladesh", code: "BD" },
-    { name: "Barbados", code: "BB" },
-    { name: "Belarus", code: "BY" },
-    { name: "Belgium", code: "BE" },
-    { name: "Belize", code: "BZ" },
-    { name: "Benin", code: "BJ" },
-    { name: "Bermuda", code: "BM" },
-    { name: "Bhutan", code: "BT" },
-    { name: "Bolivia", code: "BO" },
-    { name: "Bosnia and Herzegovina", code: "BA" },
-    { name: "Botswana", code: "BW" },
-    { name: "Bouvet Island", code: "BV" },
-    { name: "Brazil", code: "BR" },
-    { name: "British Indian Ocean Territory", code: "IO" },
-    { name: "Brunei Darussalam", code: "BN" },
-    { name: "Bulgaria", code: "BG" },
-    { name: "Burkina Faso", code: "BF" },
-    { name: "Burundi", code: "BI" },
-    { name: "Cambodia", code: "KH" },
-    { name: "Cameroon", code: "CM" },
-    { name: "Canada", code: "CA" },
-    { name: "Cape Verde", code: "CV" },
-    { name: "Cayman Islands", code: "KY" },
-    { name: "Central African Republic", code: "CF" },
-    { name: "Chad", code: "TD" },
-    { name: "Chile", code: "CL" },
-    { name: "China", code: "CN" },
-    { name: "Christmas Island", code: "CX" },
-    { name: "Cocos (Keeling) Islands", code: "CC" },
-    { name: "Colombia", code: "CO" },
-    { name: "Comoros", code: "KM" },
-    { name: "Congo", code: "CG" },
-    { name: "Congo, The Democratic Republic of the", code: "CD" },
-    { name: "Cook Islands", code: "CK" },
-    { name: "Costa Rica", code: "CR" },
-    { name: "Cote D'Ivoire", code: "CI" },
-    { name: "Croatia", code: "HR" },
-    { name: "Cuba", code: "CU" },
-    { name: "Cyprus", code: "CY" },
-    { name: "Czech Republic", code: "CZ" },
-    { name: "Denmark", code: "DK" },
-    { name: "Djibouti", code: "DJ" },
-    { name: "Dominica", code: "DM" },
-    { name: "Dominican Republic", code: "DO" },
-    { name: "Ecuador", code: "EC" },
-    { name: "Egypt", code: "EG" },
-    { name: "El Salvador", code: "SV" },
-    { name: "Equatorial Guinea", code: "GQ" },
-    { name: "Eritrea", code: "ER" },
-    { name: "Estonia", code: "EE" },
-    { name: "Ethiopia", code: "ET" },
-    { name: "Falkland Islands (Malvinas)", code: "FK" },
-    { name: "Faroe Islands", code: "FO" },
-    { name: "Fiji", code: "FJ" },
-    { name: "Finland", code: "FI" },
-    { name: "France", code: "FR" },
-    { name: "French Guiana", code: "GF" },
-    { name: "French Polynesia", code: "PF" },
-    { name: "French Southern Territories", code: "TF" },
-    { name: "Gabon", code: "GA" },
-    { name: "Gambia", code: "GM" },
-    { name: "Georgia", code: "GE" },
-    { name: "Germany", code: "DE" },
-    { name: "Ghana", code: "GH" },
-    { name: "Gibraltar", code: "GI" },
-    { name: "Greece", code: "GR" },
-    { name: "Greenland", code: "GL" },
-    { name: "Grenada", code: "GD" },
-    { name: "Guadeloupe", code: "GP" },
-    { name: "Guam", code: "GU" },
-    { name: "Guatemala", code: "GT" },
-    { name: "Guernsey", code: "GG" },
-    { name: "Guinea", code: "GN" },
-    { name: "Guinea-Bissau", code: "GW" },
-    { name: "Guyana", code: "GY" },
-    { name: "Haiti", code: "HT" },
-    { name: "Heard Island and Mcdonald Islands", code: "HM" },
-    { name: "Holy See (Vatican City State)", code: "VA" },
-    { name: "Honduras", code: "HN" },
-    { name: "Hong Kong", code: "HK" },
-    { name: "Hungary", code: "HU" },
-    { name: "Iceland", code: "IS" },
-    { name: "India", code: "IN" },
-    { name: "Indonesia", code: "ID" },
-    { name: "Iran, Islamic Republic Of", code: "IR" },
-    { name: "Iraq", code: "IQ" },
-    { name: "Ireland", code: "IE" },
-    { name: "Isle of Man", code: "IM" },
-    { name: "Israel", code: "IL" },
-    { name: "Italy", code: "IT" },
-    { name: "Jamaica", code: "JM" },
-    { name: "Japan", code: "JP" },
-    { name: "Jersey", code: "JE" },
-    { name: "Jordan", code: "JO" },
-    { name: "Kazakhstan", code: "KZ" },
-    { name: "Kenya", code: "KE" },
-    { name: "Kiribati", code: "KI" },
-    { name: "Korea, Democratic People'S Republic of", code: "KP" },
-    { name: "Korea, Republic of", code: "KR" },
-    { name: "Kuwait", code: "KW" },
-    { name: "Kyrgyzstan", code: "KG" },
-    { name: "Lao People'S Democratic Republic", code: "LA" },
-    { name: "Latvia", code: "LV" },
-    { name: "Lebanon", code: "LB" },
-    { name: "Lesotho", code: "LS" },
-    { name: "Liberia", code: "LR" },
-    { name: "Libyan Arab Jamahiriya", code: "LY" },
-    { name: "Liechtenstein", code: "LI" },
-    { name: "Lithuania", code: "LT" },
-    { name: "Luxembourg", code: "LU" },
-    { name: "Macao", code: "MO" },
-    { name: "Macedonia, The Former Yugoslav Republic of", code: "MK" },
-    { name: "Madagascar", code: "MG" },
-    { name: "Malawi", code: "MW" },
-    { name: "Malaysia", code: "MY" },
-    { name: "Maldives", code: "MV" },
-    { name: "Mali", code: "ML" },
-    { name: "Malta", code: "MT" },
-    { name: "Marshall Islands", code: "MH" },
-    { name: "Martinique", code: "MQ" },
-    { name: "Mauritania", code: "MR" },
-    { name: "Mauritius", code: "MU" },
-    { name: "Mayotte", code: "YT" },
-    { name: "Mexico", code: "MX" },
-    { name: "Micronesia, Federated States of", code: "FM" },
-    { name: "Moldova, Republic of", code: "MD" },
-    { name: "Monaco", code: "MC" },
-    { name: "Mongolia", code: "MN" },
-    { name: "Montserrat", code: "MS" },
-    { name: "Morocco", code: "MA" },
-    { name: "Mozambique", code: "MZ" },
-    { name: "Myanmar", code: "MM" },
-    { name: "Namibia", code: "NA" },
-    { name: "Nauru", code: "NR" },
-    { name: "Nepal", code: "NP" },
-    { name: "Netherlands", code: "NL" },
-    { name: "Netherlands Antilles", code: "AN" },
-    { name: "New Caledonia", code: "NC" },
-    { name: "New Zealand", code: "NZ" },
-    { name: "Nicaragua", code: "NI" },
-    { name: "Niger", code: "NE" },
-    { name: "Nigeria", code: "NG" },
-    { name: "Niue", code: "NU" },
-    { name: "Norfolk Island", code: "NF" },
-    { name: "Northern Mariana Islands", code: "MP" },
-    { name: "Norway", code: "NO" },
-    { name: "Oman", code: "OM" },
-    { name: "Pakistan", code: "PK" },
-    { name: "Palau", code: "PW" },
-    { name: "Palestinian Territory, Occupied", code: "PS" },
-    { name: "Panama", code: "PA" },
-    { name: "Papua New Guinea", code: "PG" },
-    { name: "Paraguay", code: "PY" },
-    { name: "Peru", code: "PE" },
-    { name: "Philippines", code: "PH" },
-    { name: "Pitcairn", code: "PN" },
-    { name: "Poland", code: "PL" },
-    { name: "Portugal", code: "PT" },
-    { name: "Puerto Rico", code: "PR" },
-    { name: "Qatar", code: "QA" },
-    { name: "Reunion", code: "RE" },
-    { name: "Romania", code: "RO" },
-    { name: "Russian Federation", code: "RU" },
-    { name: "RWANDA", code: "RW" },
-    { name: "Saint Helena", code: "SH" },
-    { name: "Saint Kitts and Nevis", code: "KN" },
-    { name: "Saint Lucia", code: "LC" },
-    { name: "Saint Pierre and Miquelon", code: "PM" },
-    { name: "Saint Vincent and the Grenadines", code: "VC" },
-    { name: "Samoa", code: "WS" },
-    { name: "San Marino", code: "SM" },
-    { name: "Sao Tome and Principe", code: "ST" },
-    { name: "Saudi Arabia", code: "SA" },
-    { name: "Senegal", code: "SN" },
-    { name: "Serbia and Montenegro", code: "CS" },
-    { name: "Seychelles", code: "SC" },
-    { name: "Sierra Leone", code: "SL" },
-    { name: "Singapore", code: "SG" },
-    { name: "Slovakia", code: "SK" },
-    { name: "Slovenia", code: "SI" },
-    { name: "Solomon Islands", code: "SB" },
-    { name: "Somalia", code: "SO" },
-    { name: "South Africa", code: "ZA" },
-    { name: "South Georgia and the South Sandwich Islands", code: "GS" },
-    { name: "Spain", code: "ES" },
-    { name: "Sri Lanka", code: "LK" },
-    { name: "Sudan", code: "SD" },
-    { name: "Suriname", code: "SR" },
-    { name: "Svalbard and Jan Mayen", code: "SJ" },
-    { name: "Swaziland", code: "SZ" },
-    { name: "Sweden", code: "SE" },
-    { name: "Switzerland", code: "CH" },
-    { name: "Syrian Arab Republic", code: "SY" },
-    { name: "Taiwan, Province of China", code: "TW" },
-    { name: "Tajikistan", code: "TJ" },
-    { name: "Tanzania, United Republic of", code: "TZ" },
-    { name: "Thailand", code: "TH" },
-    { name: "Timor-Leste", code: "TL" },
-    { name: "Togo", code: "TG" },
-    { name: "Tokelau", code: "TK" },
-    { name: "Tonga", code: "TO" },
-    { name: "Trinidad and Tobago", code: "TT" },
-    { name: "Tunisia", code: "TN" },
-    { name: "Turkey", code: "TR" },
-    { name: "Turkmenistan", code: "TM" },
-    { name: "Turks and Caicos Islands", code: "TC" },
-    { name: "Tuvalu", code: "TV" },
-    { name: "Uganda", code: "UG" },
-    { name: "Ukraine", code: "UA" },
-    { name: "United Arab Emirates", code: "AE" },
-    { name: "United Kingdom", code: "GB" },
-    { name: "United States", code: "US" },
-    { name: "United States Minor Outlying Islands", code: "UM" },
-    { name: "Uruguay", code: "UY" },
-    { name: "Uzbekistan", code: "UZ" },
-    { name: "Vanuatu", code: "VU" },
-    { name: "Venezuela", code: "VE" },
-    { name: "Viet Nam", code: "VN" },
-    { name: "Virgin Islands, British", code: "VG" },
-    { name: "Virgin Islands, U.S.", code: "VI" },
-    { name: "Wallis and Futuna", code: "WF" },
-    { name: "Western Sahara", code: "EH" },
-    { name: "Yemen", code: "YE" },
-    { name: "Zambia", code: "ZM" },
-    { name: "Zimbabwe", code: "ZW" },
-  ];
+  public getState(selectedCountry: string) {
+    this.service.getState(selectedCountry).then((response) => {
+      this.state = response;
+      this.request.billingState = this.state[0];
+      this.getCity(selectedCountry, this.state[0].iso2);
+    });
+  }
+
+  public getCity(selectedCountry: string, selectedState: string) {
+    this.service.getCity(selectedCountry, selectedState).then((response) => {
+      this.city = response;
+      this.request.billingCity = this.city[0];
+    });
+  }
+
+  get country() {
+    return this.store.getters.getCountry;
+  }
 }
 </script>

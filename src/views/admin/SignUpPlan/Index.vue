@@ -100,6 +100,6 @@ import Subscribe from "./components/Subscribe.vue";
   },
 })
 export default class SignUpPlan extends Vue {
-  public step: number = 3;
+  public step: number = 1;
 }
 </script>

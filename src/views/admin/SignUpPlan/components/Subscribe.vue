@@ -48,16 +48,101 @@
 
     <div class="text-center mt-8 mb-8">
       <button class="btn btn-light me-5" @click="back">Back</button>
-      <button class="btn btn-primary ms-5">Subscribe</button>
+      <button class="btn btn-primary ms-5" @click="subscribe">Subscribe</button>
     </div>
   </div>
 </template>
 <script lang="ts">
+import { required } from "@vuelidate/validators";
 import { Vue } from "vue-class-component";
+import { useStore } from "vuex";
+
+import { paycycle, subscribeModel, productsModel } from "@/model";
+
+declare let ChargeOver: any;
 
 export default class Subscribe extends Vue {
+  public store = useStore();
+
+  created() {
+    //console.log(ChargeOver);
+  }
+
   back() {
     this.$emit("back");
+  }
+
+  subscribe() {
+    const products: productsModel[] = [];
+    products.push({ item_id: this.store.getters.getPlan.id });
+    this.store.getters.getAddons.forEach((item: any) => {
+      products.push({ item_id: item.id });
+    });
+    const request: subscribeModel = {
+      customer: this.store.getters.getCustomer,
+      user: {
+        name: this.store.getters.userInfo.firstName,
+        email: this.store.getters.userInfo.email,
+        phone: "952-455-1568",
+      },
+      package: {
+        paycycle:
+          paycycle[
+            this.store.getters.getCommitmentTerm as keyof typeof paycycle
+          ],
+      },
+      line_items: products,
+      creditcard: null,
+      ach: null,
+    };
+
+    if (this.store.getters.getPaymentType == "Credit card") {
+      request["creditcard"] = this.store.getters.getCreditCard;
+      delete request["ach"];
+    } else {
+      request["ach"] = this.store.getters.getAch;
+      delete request["creditcard"];
+    }
+
+    console.log(request);
+
+    ChargeOver.Signup.signup(
+      request,
+      (code: any, message: any, response: any) => {
+        console.log(code, message, response);
+      }
+    );
+
+    /* const my_data = {
+      customer: {
+        company: "Yectra Technologies",
+        bill_addr1: "56 Cowles Road",
+        bill_city: "Mt Pleasant",
+        bill_state: "MI",
+        bill_postcode: "48858",
+        bill_country: "United States",
+      },
+      user: {
+        name: "Logeswaran Sugumaran",
+        email: "logeswaran@yectra.com",
+        phone: "952-455-1568",
+      },
+      package: {
+        paycycle: "mon",
+      },
+      line_items: [
+        {
+          item_id: 3,
+        },
+      ],
+    };
+
+    ChargeOver.Signup.signup(
+      my_data,
+      (code: any, message: any, response: any) => {
+        console.log(code, message, response);
+      }
+    );*/
   }
 }
 </script>

@@ -25,11 +25,17 @@
       </button>
     </div>
   </div>
-  <ACH v-if="paymenyType == 'ACH'" />
-  <credit-card @next="onNext" v-if="paymenyType == 'Credit card'" />
+  <ACH @back="onBack" @next="onNext" v-if="paymenyType == 'ACH'" />
+  <credit-card
+    @back="onBack"
+    @next="onNext"
+    v-if="paymenyType == 'Credit card'"
+  />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+
+import { useStore } from "vuex";
 
 import ACH from "./components/ACH.vue";
 import CreditCard from "./components/creditCard.vue";
@@ -43,7 +49,18 @@ import CreditCard from "./components/creditCard.vue";
 export default class Index extends Vue {
   public paymenyType: string = "Credit card";
 
+  public store = useStore();
+
+  created() {
+    this.store.dispatch("updateCountry");
+  }
+
+  onBack() {
+    this.$emit("back");
+  }
+
   onNext() {
+    this.store.dispatch("updatePaymentType", this.paymenyType);
     this.$emit("next");
   }
 }

@@ -42,8 +42,8 @@
           <div
             class="tab-plan border rounded mb-4 position-relative"
             :class="{
-              'tab-plan-active': item.planName == selectedPlan.planName,
-              'border-dashed': item.planName != selectedPlan.planName,
+              'tab-plan-active': item.product == selectedPlan.product,
+              'border-dashed': item.product != selectedPlan.product,
             }"
           >
             <div class="row g-0 pt-6 pb-6 h-100">
@@ -55,19 +55,19 @@
                     class="form-check-input"
                     type="radio"
                     @change="updatePlan(item)"
-                    :checked="item.planName == selectedPlan.planName"
+                    :checked="item.product == selectedPlan.product"
                   />
                 </div>
               </div>
               <div class="col-6">
-                <div class="tab-plan-name fw-bolder">{{ item.planName }}</div>
-                <div class="tab-plan-msg">{{ item.planMsg }}</div>
+                <div class="tab-plan-name fw-bolder">{{ item.product }}</div>
+                <div class="tab-plan-msg">{{ item.description }}</div>
               </div>
               <div class="col-4">
-                <template v-if="item.planName != 'Enterprise'">
+                <template v-if="item.product != 'Enterprise'">
                   <div class="tab-plan-price fw-bolder text-center">
                     <span class="fs-7">$</span>
-                    {{ item.planPrice }}
+                    {{ item.rate }}
                     <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
                   </div>
                   <div
@@ -107,7 +107,7 @@
       <div class="col-5">
         <div class="card bg-light p-8">
           <div class="fs-2 fw-bolder">
-            What’s in the {{ selectedPlan.planName }} Plan?
+            What’s in the {{ selectedPlan.product }} Plan?
           </div>
           <div class="text-muted mt-3">
             Designed for the starting to small RIA
@@ -162,6 +162,7 @@ export default class Plan extends Vue {
   created() {
     this.selectedCommitment = this.planList[this.commitmentTerm];
     this.selectedPlan = this.selectedCommitment.plans[0];
+    console.log(this.store.getters.userInfo);
   }
 
   updateCommitmentTerm(plan: string) {
@@ -175,8 +176,8 @@ export default class Plan extends Vue {
   }
 
   public next() {
-    const payload = {planType: this.commitmentTerm, planName: this.selectedPlan.planName, planPrice: this.selectedPlan.planPrice};
-    this.store.dispatch('updatePlan', payload);
+    this.store.dispatch('updateTerm', this.commitmentTerm);
+    this.store.dispatch('updatePlan', this.selectedPlan);
     this.$emit('next');
   }
 
@@ -185,9 +186,10 @@ export default class Plan extends Vue {
       offerMsg: "Hooray, you are saving 20% with a 1 year commitment!",
       plans: [
         {
-          planName: "Standard",
-          planPrice: "1,188",
-          planMsg: "Essentials for the starting to small RIA",
+          id: 3,
+          product: "Standard",
+          rate: "1,188",
+          description: "Essentials for the starting to small RIA",
           planType: "Yr",
           extraMsg: "($99/month)",
           planDetails: [
@@ -223,9 +225,10 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Professional",
-          planPrice: "2,388",
-          planMsg: "For small to medium-sized RIAs",
+          id: 4,
+          product: "Professional",
+          rate: "2,388",
+          description: "For small to medium-sized RIAs",
           planType: "Yr",
           extraMsg: "($199/month)",
           planDetails: [
@@ -261,9 +264,10 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Ultimate",
-          planPrice: "4,788",
-          planMsg: "For medium to large-sized RIAs",
+          id: 5,
+          product: "Ultimate",
+          rate: "4,788",
+          description: "For medium to large-sized RIAs",
           planType: "Yr",
           extraMsg: "($399/month)",
           planDetails: [
@@ -299,9 +303,9 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Enterprise",
-          planPrice: "",
-          planMsg: "For large RIAs requiring custom license",
+          product: "Enterprise",
+          rate: "",
+          description: "For large RIAs requiring custom license",
           planType: "Yr",
           extraMsg: "",
           planDetails: [
@@ -342,9 +346,9 @@ export default class Plan extends Vue {
       offerMsg: "Commit for a year and save up to 20%",
       plans: [
         {
-          planName: "Standard",
-          planPrice: "125",
-          planMsg: "Essentials for the starting to small RIA",
+          product: "Standard",
+          rate: "125",
+          description: "Essentials for the starting to small RIA",
           planType: "Mo",
           extraMsg: "(Save $25 per month with an annual term)",
           planDetails: [
@@ -380,9 +384,9 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Professional",
-          planPrice: "250",
-          planMsg: "For small to medium-sized RIAs",
+          product: "Professional",
+          rate: "250",
+          description: "For small to medium-sized RIAs",
           planType: "Mo",
           extraMsg: "(Save $51 per month with an annual term)",
           planDetails: [
@@ -418,9 +422,9 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Ultimate",
-          planPrice: "500",
-          planMsg: "For medium to large-sized RIAs",
+          product: "Ultimate",
+          rate: "500",
+          description: "For medium to large-sized RIAs",
           planType: "Mo",
           extraMsg: "(Save $101 per month with an annual term)",
           planDetails: [
@@ -456,9 +460,9 @@ export default class Plan extends Vue {
           ],
         },
         {
-          planName: "Enterprise",
-          planPrice: "",
-          planMsg: "For large RIAs requiring custom license",
+          product: "Enterprise",
+          rate: "",
+          description: "For large RIAs requiring custom license",
           planType: "Mo",
           extraMsg: "",
           planDetails: [
@@ -495,6 +499,6 @@ export default class Plan extends Vue {
         },
       ],
     },
-  };
+  };  
 }
 </script>

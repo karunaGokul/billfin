@@ -191,6 +191,17 @@
             <span class="nav-item__name fs-7">Sign Up</span>
             <span class="custom-tooltip">Sign Up</span>
           </router-link>
+          <router-link
+            to="/my-subscription"
+            tag="li"
+            class="d-flex align-items-center nav-item"
+            active-class="nav-item__active"
+            title="My Subscription"
+          >
+            <i class="fas fa-circle fs-10"></i>
+            <span class="nav-item__name fs-7">My Subscription</span>
+            <span class="custom-tooltip">My Subscription</span>
+          </router-link>
         </ul>
 
         <router-link
