@@ -40,8 +40,6 @@ const getters: GetterTree<AuthenticationState, any> = {
     if (state.accessToken) {
       const tokenParsed: any = JwtDecode(state.accessToken);
 
-      console.log(tokenParsed);
-
       userInfo = new UserModel();
       userInfo.email = tokenParsed.email;
       userInfo.userName = tokenParsed.preferred_username;
@@ -49,6 +47,7 @@ const getters: GetterTree<AuthenticationState, any> = {
       userInfo.firstName = tokenParsed.given_name;
       userInfo.lastName = tokenParsed.family_name;
       userInfo.emailVerified = tokenParsed.email_verified;
+      userInfo.phoneNumber = tokenParsed.phoneNumber;
     }
 
     return userInfo;

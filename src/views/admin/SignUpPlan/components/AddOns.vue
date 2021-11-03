@@ -2,7 +2,7 @@
   <div class="m-4">
     <div class="text-center fs-4 fw-bolder mt-10">Choose your Add-ons</div>
 
-    <div class="row mt-10">
+    <div class="row mt-10" v-if="addons.length > 0">
       <div v-for="(plan, i) in getPlanList" :key="i" class="col-6">
         <div
           v-for="(item, index) in addons.slice(
@@ -38,21 +38,21 @@
               </div>
             </div>
             <div class="col-7">
-              <div class="tab-plan-name fw-bolder">{{ item.product }}</div>
+              <div class="tab-plan-name fw-bolder">{{ item.addOnName }}</div>
               <div class="tab-plan-msg">{{ item.description }}</div>
             </div>
             <div class="col-3">
               <div class="tab-plan-price fw-bolder text-center">
                 <span class="fs-7">$</span>
-                {{ item.rate }}
+                {{ item.planAddOnamount }}
                 <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
               </div>
               <div class="tab-plan-extra fs-9 text-left ms-5">
-                {{ item.extraMsg }}
+                {{ item.extraInfo }}
               </div>
             </div>
           </div>
-          <div v-if="item.planName == 'Admin User License'">
+          <div v-if="item.addOnName == 'Admin User License'">
             <div class="row g-0 mt-6">
               <div class="col-2"></div>
               <div class="fw-bolder col-7" style="line-height: 3;">Number of admin user licenses?</div>
@@ -60,7 +60,7 @@
                 <select
                   class="form-select form-select-solid"
                   style="width: 100px"
-                  v-model="item.noOfAdminUserLicenses"
+                  v-model="item.quantity"
                 >
                   <option selected value="1">1</option>
                   <option value="2">2</option>
@@ -81,138 +81,156 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import { ISubscripeService } from "@/service";
+import { addonsRequestModel, addonsResponseModel } from "@/model";
+
 export default class AddOns extends Vue {
+  @Inject("subscripeService") service: ISubscripeService;
 
   public itemsPerRow: number = 3;
-  public addons: any[] = [];
-
   public store = useStore();
+  public addons: Array<addonsResponseModel> = [];
 
-  mounted() {
-    this.addons = this.planList[this.commitmentTerm].plans;
+   public Annual: any = [
+    {
+      addOnName: "Average Daily Balances",
+      description: "Support ADB calculations and reporting",
+      planType: "Yr",
+      extraInfo: "",
+      selected: true,
+      quantity: '1',
+    },
+    {
+      addOnName: "Flow Billing",
+      description: "Adjust billing for intra-period flows",
+      planType: "Yr",
+      extraInfo: "",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Admin User License",
+      description: "Additional admin user access license",
+      planType: "Yr",
+      extraInfo: "per user",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Multi-Fee Accounts",
+      description: "ultiple fee calculations per account",
+      planType: "Yr",
+      extraInfo: "",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Revenue Sharing",
+      description: "Flexible revenue sharing and fee splitting",
+      planType: "Yr",
+      extraInfo: "",
+      quantity: '1',
+      selected: false,
+    },
+    {
+      addOnName: "Multiple Connectors",
+      description: "Connect BillFin to multiple custody sources",
+      planType: "Yr",
+      extraInfo: "per connector",
+      quantity: '1',
+      selected: false,
+    }
+  ];
+
+  public Monthly: any = [
+   {
+      addOnName: "Average Daily Balances",
+      description: "Support ADB calculations and reporting",
+      planType: "Mon",
+      extraInfo: "",
+      selected: true,
+      quantity: '1',
+    },
+    {
+      addOnName: "Flow Billing",
+      description: "Adjust billing for intra-period flows",
+      planType: "Mon",
+      extraInfo: "",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Admin User License",
+      description: "Additional admin user access license",
+      planType: "Mon",
+      extraInfo: "per user",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Multi-Fee Accounts",
+      description: "ultiple fee calculations per account",
+      planType: "Mon",
+      extraInfo: "",
+      selected: false,
+      quantity: '1',
+    },
+    {
+      addOnName: "Revenue Sharing",
+      description: "Flexible revenue sharing and fee splitting",
+      planType: "Mon",
+      extraInfo: "",
+      quantity: '1',
+      selected: false,
+    },
+    {
+      addOnName: "Multiple Connectors",
+      description: "Connect BillFin to multiple custody sources",
+      planType: "Yr",
+      extraInfo: "per connector",
+      quantity: '1',
+      selected: false,
+    }
+  ];
+  
+
+  created() {
+    this.getAddons();
   }
 
-  public planList: any = {
-    Annual: {
-      plans: [
-        {
-          id: 6,
-          product: "Average Daily Balances",
-          rate: "120",
-          description: "Support ADB calculations and reporting",
-          planType: "Yr",
-          extraMsg: "",
-          selected: true,
-        },
-        {
-          id: 7,
-          product: "Flow Billing",
-          rate: "480",
-          description: "Adjust billing for intra-period flows",
-          planType: "Yr",
-          extraMsg: "",
-          selected: false,
-        },
-        {
-          id: 8,
-          product: "Admin User License",
-          rate: "240",
-          description: "Additional admin user access license",
-          planType: "Yr",
-          extraMsg: "per user",
-          selected: true,
-          noOfAdminUserLicenses: '1',
-        },
-        {
-          id: 9,
-          product: "Multi-Fee Accounts",
-          rate: "480",
-          description: "Multiple fee calculations per account",
-          planType: "Yr",
-          extraMsg: "",
-          selected: false,
-        },
-        {
-          id: 10,
-          product: "Revenue Sharing",
-          rate: "480",
-          description: "Flexible revenue sharing and fee splitting",
-          planType: "Yr",
-          extraMsg: "",
-          selected: true,
-        },
-        {
-          id: 11,
-          product: "Multiple Connectors",
-          rate: "240",
-          description: "Connect BillFin to multiple custody sources",
-          planType: "Yr",
-          extraMsg: "per connector",
-          selected: false,
-        },
-      ],
-    },
-    Monthly: {
-      plans: [
-        {
-          id: 0,
-          product: "Average Daily Balances",
-          rate: "12",
-          description: "Support ADB calculations and reporting",
-          planType: "Mon",
-          extraMsg: "",
-          selected: true,
-        },
-        {
-          id: 0,
-          product: "Flow Billing",
-          rate: "50",
-          description: "Adjust billing for intra-period flows",
-          planType: "Mon",
-          extraMsg: "",
-          selected: false,
-        },
-        {
-          id: 0,
-          product: "Admin User License",
-          rate: "25",
-          description: "Additional admin user access license",
-          planType: "Mon",
-          extraMsg: "per user",
-          selected: true,
-        },
-        {
-          product: "Multi-Fee Accounts",
-          rate: "50",
-          description: "Multiple fee calculations per account",
-          planType: "Mon",
-          extraMsg: "",
-          selected: false,
-        },
-        {
-          id: 0,
-          product: "Revenue Sharing",
-          rate: "50",
-          description: "Flexible revenue sharing and fee splitting",
-          planType: "Mon",
-          extraMsg: "",
-          selected: true,
-        },
-        {
-          id: 0,
-          product: "Multiple Connectors",
-          rate: "25",
-          description: "Connect BillFin to multiple custody sources",
-          planType: "Mon",
-          extraMsg: "per connector",
-          selected: false,
-        },
-      ],
-    },
-  };
+  private getAddons() {
+    const request = new addonsRequestModel();
+    request.termPlanId = this.store.getters.getPlan.termPlanId;
+    this.service.getAddons(request).then((response) => {
+      this.bindAddons(response, this.commitmentTerm == "Annual" ? this.Annual: this.Monthly);
+    }).catch((err) =>{
+      console.log(err);
+    })
+  }
+
+  private bindAddons(response: Array<addonsResponseModel>, selectedTerm: any) {
+    this.addons = [];
+    response.forEach((item) => {
+        selectedTerm.forEach((addons: { addOnName: string; description: string; planType: string; extraInfo: string; selected: boolean; quantity: string; }) => {
+          if (item.addOnName == addons.addOnName) {
+            this.addons.push({
+              termPlanAddOnId: item.termPlanAddOnId,
+              addOnName: item.addOnName,
+              planAddOnamount: item.planAddOnamount,
+              description: addons.description,
+              planType: addons.planType,
+              extraInfo: addons.extraInfo,
+              selected: addons.selected,
+              quantity: addons.quantity
+            });
+          }
+        });
+    });
+  }
 
   public next() {
     let payload: any[] = [];

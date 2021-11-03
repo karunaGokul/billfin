@@ -206,7 +206,6 @@ export default class ACH extends Vue {
   public payNow() {
     this.v$.$touch();
     if (!this.v$.$invalid) {
-      console.log(this.request);
       const request = {
         number: this.request.accountNo,
         routing: this.request.routingNo,
@@ -214,7 +213,6 @@ export default class ACH extends Vue {
       ChargeOver.ACH.validate(
         request,
         (code: number, message: any, response: any) => {
-          console.log(code, message, response);
           if (code == 200) {
             this.isAccountValid = true;
             const payload = {
@@ -232,7 +230,7 @@ export default class ACH extends Vue {
             };
             this.store.dispatch("updateCustomer", payload);
             this.store.dispatch("updateACH", ach);
-            this.$emit("next");
+            this.$emit("pay");
           } else if(code == 400) {
             this.isAccountValid = false;
             this.accountError = message;
@@ -248,6 +246,7 @@ export default class ACH extends Vue {
   public getState(selectedCountry: string) {
     this.service.getState(selectedCountry).then((response) => {
       this.state = response;
+      this.state.sort((a, b) => a.name.localeCompare(b.name));
       this.request.billingState = this.state[0];
       this.getCity(selectedCountry, this.state[0].iso2);
     });

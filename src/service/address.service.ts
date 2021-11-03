@@ -7,7 +7,6 @@ export interface IAddressService extends IBaseService<any, any> {
   getCountrys(): Promise<Array<countryModel>>;
   getState(country: string): Promise<Array<stateModel>>;
   getCity(country: string, state: string): Promise<Array<stateModel>>;
-  getPick(): Promise<any>;
 }
 
 export class AddressService extends BaseService<any, any>
@@ -38,26 +37,5 @@ export class AddressService extends BaseService<any, any>
         return response;
       }
     );
-  }
-
-  getPick(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      axios.defaults.headers["Authorization"] = `Basic ${btoa(
-        "JdUksla7QE1mM3DNvH4xWhZPzqIRy956" +
-          ":" +
-          "2zv8pO3Lfbs0r5hVgeHaXDynRWoK4dY1"
-      )}`;
-      axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-      axios
-        .get<any>("https://redi2-staging.chargeover.com/api/v3/item")
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      const response: any = "";
-      resolve(response);
-    });
   }
 }

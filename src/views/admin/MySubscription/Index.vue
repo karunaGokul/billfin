@@ -28,7 +28,7 @@ export default class Index extends Vue {
   @Inject("addressService") service: IAddressService;
 
   mounted() {
-    this.service.getPick();
+    //this.service.getPick();
   }
 
   plans: any = [

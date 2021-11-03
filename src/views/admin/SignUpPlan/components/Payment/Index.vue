@@ -25,20 +25,27 @@
       </button>
     </div>
   </div>
-  <ACH @back="onBack" @next="onNext" v-if="paymenyType == 'ACH'" />
+  <ACH @back="onBack" @pay="onPayNow" v-if="paymenyType == 'ACH'" />
   <credit-card
     @back="onBack"
-    @next="onNext"
+    @pay="onPayNow"
     v-if="paymenyType == 'Credit card'"
   />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
 import ACH from "./components/ACH.vue";
 import CreditCard from "./components/creditCard.vue";
+
+import { createCustomerRequestModel, paymentFirmRequestModel, paymentTokenRequestModel } from "@/model";
+
+import { ISubscripeService } from "@/service";
+
+declare let ChargeOver: any;
 
 @Options({
   components: {
@@ -47,8 +54,9 @@ import CreditCard from "./components/creditCard.vue";
   },
 })
 export default class Index extends Vue {
-  public paymenyType: string = "Credit card";
+  @Inject("subscripeService") service: ISubscripeService;
 
+  public paymenyType: string = "Credit card";
   public store = useStore();
 
   created() {
@@ -59,9 +67,127 @@ export default class Index extends Vue {
     this.$emit("back");
   }
 
-  onNext() {
+  onPayNow() {
     this.store.dispatch("updatePaymentType", this.paymenyType);
-    this.$emit("next");
+    this.checkCustomerIsExists();
+  }
+
+  public checkCustomerIsExists() {
+    const request = new paymentFirmRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+
+    this.service
+      .getCustomerId(request)
+      .then((response) => {
+        if (!response.paymentCustomerId)
+          this.createCustomer(this.store.getters.selectedFirmId);
+        else {
+          if (this.paymentType == "Credit card") this.tokenizingCreditCard();
+          else this.tokenizingAch();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private createCustomer(externalKey: string) {
+    const request: createCustomerRequestModel = {
+      company: this.adddress.company,
+      bill_addr1: this.adddress.bill_addr1,
+      bill_city: this.adddress.bill_city,
+      bill_state: this.adddress.bill_state,
+      bill_postcode: this.adddress.bill_postcode,
+      bill_country: this.adddress.bill_country,
+      external_key: externalKey,
+      superuser_name: this.userInfo.firstName,
+      superuser_email: this.userInfo.email,
+      superuser_phone: this.phoneNumber,
+    };
+
+    this.service
+      .createCustomer(request)
+      .then((response) => {
+        if (this.paymentType == "Credit card") this.tokenizingCreditCard();
+        else this.tokenizingAch();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private tokenizingCreditCard() {
+    let request: any = {};
+    request = this.store.getters.getCreditCard;
+    request.customer_external_key = this.store.getters.selectedFirmId;
+    ChargeOver.CreditCard.tokenize(
+      request,
+      (code: any, message: any, response: any) => {
+        if (code == 200) {
+          this.updateToken(response.creditcard.token);
+          this.$emit("next");
+        } else if (code == 400) {
+          console.log(message);
+        } else {
+          console.log(`Something went wrong, Please try again`);
+        }
+      }
+    );
+  }
+
+  private tokenizingAch() {
+    let request: any = {};
+    request = this.store.getters.getAch;
+    request.customer_external_key = this.store.getters.selectedFirmId;
+    ChargeOver.ACH.tokenize(
+      request,
+      (code: any, message: any, response: any) => {
+        if (code == 200) {
+          this.updateToken(response.ach.token);
+          this.$emit("next");
+        } else if (code == 400) {
+          console.log(message);
+        } else {
+          console.log(`Something went wrong, Please try again`);
+        }
+      }
+    );
+  }
+
+  private updateToken(token: string) {
+    const request = new paymentTokenRequestModel();
+    request.token = token;
+    this.service.updatePaymentToken(request).then((response) => {
+      console.log(response);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  get adddress() {
+    return this.store.getters.getCustomer;
+  }
+
+  get userInfo() {
+    return this.store.getters.userInfo;
+  }
+
+  get phoneNumber() {
+    let phoneNumber = this.userInfo.phoneNumber;
+    phoneNumber = phoneNumber
+      .replace(/\D/g, "")
+      .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    phoneNumber = !phoneNumber[2]
+      ? phoneNumber[1]
+      : phoneNumber[1] +
+        "-" +
+        phoneNumber[2] +
+        (phoneNumber[3] ? "-" + phoneNumber[3] : "");
+    return phoneNumber;
+  }
+
+  get paymentType() {
+    return this.store.getters.getPaymentType;
   }
 }
 </script>

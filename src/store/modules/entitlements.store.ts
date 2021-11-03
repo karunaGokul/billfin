@@ -2,20 +2,20 @@ import { GetterTree, MutationTree, ActionTree } from "vuex";
 import { firmsResponseModel } from "@/model";
 
 const state: any = {
-  firms: new Array<firmsResponseModel>(),
+  firms: new firmsResponseModel(),
 };
 const getters: GetterTree<any, any> = {
   firms: (state) => {
     return state.firms;
   },
   selectedFirmDomain: (state) => {
-    return state.firms[0].domain;
+    return state.firms.domain;
   },
   selectedFirmName: (state) => {
-    return state.firms[0].name;
+    return state.firms.name;
   },
   selectedFirmId: (state) => {
-    return state.firms[0].firmId;
+    return state.firms.firmId;
   }
 };
 const mutations: MutationTree<any> = {

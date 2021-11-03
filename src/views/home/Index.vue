@@ -251,6 +251,7 @@
                     class="mt-2 mb-2"
                     v-for="(item, index) of firms"
                     :key="index"
+                    @click="updateFirm(item)"
                   >
                     <a class="dropdown-item p-4" href="#">{{ item.name }}</a>
                   </li>
@@ -287,7 +288,7 @@
 
             <div class="dropdown" v-click-outside="clickOutSideUser">
               <div class="dropdown-toggle" @click="toggleUser = true">
-                <span class="me-3">Hi Zoe</span>
+                <span class="me-3">Hi {{ user.firstName }}</span>
                 <img src="@/assets/User.png" alt="User Photo" />
               </div>
               <div class="dropdown-menu p-4" :class="{ show: toggleUser }">
@@ -365,11 +366,7 @@
               <i class="fas fa-info-circle text-danger"></i> You only have
               {{ showTrailExpireDays }} more day(s) in your trial. Ready to
               sign-up? Click
-              <router-link
-                to="/sign-up-plan"
-                tag="a"
-                >here
-              </router-link>
+              <router-link to="/sign-up-plan" tag="a">here </router-link>
               to get started
             </div>
           </div>
@@ -393,7 +390,7 @@ import { useStore } from "vuex";
 import Welcome from "./components/OnBoard.vue";
 
 import { IFirmService } from "@/service";
-import { firmsResponseModel } from "@/model";
+import { firmRequestModel, firmsResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -410,7 +407,6 @@ export default class Home extends Vue {
   public toggleUser: boolean = false;
 
   public firms = new Array<firmsResponseModel>();
-  public selectedFirm: string = "";
   public lastOnboardingStep: number | any = 1;
   public showTrailExpireDays: number = 0;
 
@@ -425,8 +421,7 @@ export default class Home extends Vue {
       this.firms = response;
       if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
         this.trailExpireDays();
-      this.store.dispatch("loadEntitlements", response);
-      this.selectedFirm = this.store.getters.selectedFirmName;
+      this.store.dispatch("loadEntitlements", response[0]);
       if (
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
@@ -438,6 +433,11 @@ export default class Home extends Vue {
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
       }
     });
+  }
+
+  public updateFirm(firm: firmRequestModel) {
+    this.toggleFirms = false;
+    this.store.dispatch("loadEntitlements", firm);
   }
 
   public openAvatarUpload() {
@@ -491,6 +491,14 @@ export default class Home extends Vue {
     const days = time / (1000 * 3600 * 24);
 
     this.showTrailExpireDays = days;
+  }
+
+  get user() {
+    return this.store.getters.userInfo;
+  }
+
+  get selectedFirm() {
+    return this.store.getters.selectedFirmName;
   }
 }
 </script>

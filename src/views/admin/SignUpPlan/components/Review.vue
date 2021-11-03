@@ -3,23 +3,22 @@
     <h4 class="fw-bold mt-4 pb-4 border-bottom">
       Review and Confirm your order
     </h4>
-
     <div class="mt-8 d-flex justify-content-between">
       <div class="fw-bold">
-        Standard Plan
+        {{plan.planName}}
         <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
       </div>
-      <div>{{ $filters.currencyDisplay(planRate) }}</div>
+      <div>{{ $filters.currencyDisplay(currencyToNumber(plan.termPlanAmount)) }}</div>
     </div>
 
     <div class="row g-0 mt-8" v-for="(item, index) of addons" :key="index">
       <div class="col-1 fw-bold">Add On:</div>
       <div class="col-9 fw-bold">
-        {{ item.planName }}
+        {{ item.addOnName }}
         <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
       </div>
       <div class="col-2 text-end">
-        {{ $filters.currencyDisplay(item.rate) }}
+        {{ $filters.currencyDisplay(item.planAddOnamount) }}
       </div>
     </div>
 
@@ -67,11 +66,11 @@ import { useStore } from "vuex";
 export default class Review extends Vue {
   public store = useStore();
 
-  back() {
+  public back() {
     this.$emit("back");
   }
 
-  next() {
+  public next() {
     this.$emit("next");
   }
 
@@ -91,14 +90,14 @@ export default class Review extends Vue {
   get totalFees() {
     let addons: number = 0;
     addons = this.addons.reduce((prev: number, cur: any) => {
-      return prev + parseInt(cur.rate);
+      return prev + parseInt(cur.planAddOnamount);
     }, 0);
-    addons = addons + this.planRate;
+    addons = addons + this.currencyToNumber(this.plan.termPlanAmount);
     return addons;
   }
 
-  get planRate() {
-    return this.currencyToNumber(this.store.getters.getPlan.rate);
+  get plan() {
+    return this.store.getters.getPlan
   }
 
   get paymentType() {

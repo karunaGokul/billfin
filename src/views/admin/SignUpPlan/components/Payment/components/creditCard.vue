@@ -242,9 +242,7 @@
         <button type="button" class="btn btn-secondary" @click="back">
           Back
         </button>
-        <button type="submit" class="btn btn-primary" @click="payNow">
-          Continue
-        </button>
+        <button type="submit" class="btn btn-primary">Continue</button>
       </div>
     </form>
   </div>
@@ -359,7 +357,6 @@ export default class CreditCard extends Vue {
   mounted() {
     this.request.country = { id: 233, name: "United States", iso2: "US" };
     this.getState("US");
-    this.service.getPick();
   }
 
   public payNow() {
@@ -396,7 +393,7 @@ export default class CreditCard extends Vue {
               };
               this.store.dispatch("updateCreditCard", cardDetails);
               this.store.dispatch("updateCustomer", payload);
-              this.$emit("next");
+              this.$emit("pay");
             } else if (code == 400) {
               this.cardMessage = message;
               this.isCardValid = false;
@@ -423,7 +420,6 @@ export default class CreditCard extends Vue {
     ChargeOver.CreditCard.type(
       request,
       (code: any, message: any, response: any) => {
-        console.log(code, message, response);
         if (code == 200) {
           this.card = response;
           this.isCardNumberValid = true;
@@ -441,6 +437,7 @@ export default class CreditCard extends Vue {
   public getState(selectedCountry: string) {
     this.service.getState(selectedCountry).then((response) => {
       this.state = response;
+      this.state.sort((a, b) => a.name.localeCompare(b.name));
       this.request.billingState = this.state[0];
       this.getCity(selectedCountry, this.state[0].iso2);
     });

@@ -42,107 +42,71 @@
         mt-8
       "
     >
-      <input class="form-check-input" type="checkbox" />
+      <input class="form-check-input" type="checkbox" v-model="isAgreed"/>
       I agree to these terms and conditions
     </p>
 
     <div class="text-center mt-8 mb-8">
       <button class="btn btn-light me-5" @click="back">Back</button>
-      <button class="btn btn-primary ms-5" @click="subscribe">Subscribe</button>
+      <button class="btn btn-primary ms-5" @click="subscribe" :disabled="!isAgreed">Subscribe</button>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { required } from "@vuelidate/validators";
 import { Vue } from "vue-class-component";
 import { useStore } from "vuex";
 
-import { paycycle, subscribeModel, productsModel } from "@/model";
+import { Inject } from "vue-property-decorator";
 
-declare let ChargeOver: any;
+import { subscribeRequestModel, addons } from "@/model";
+
+import { ISubscripeService } from "@/service";
 
 export default class Subscribe extends Vue {
+  @Inject("subscripeService") service: ISubscripeService;
+
   public store = useStore();
 
-  created() {
-    //console.log(ChargeOver);
-  }
+  public isAgreed:boolean = false;
 
-  back() {
+  public back() {
     this.$emit("back");
   }
 
-  subscribe() {
-    const products: productsModel[] = [];
-    products.push({ item_id: this.store.getters.getPlan.id });
-    this.store.getters.getAddons.forEach((item: any) => {
-      products.push({ item_id: item.id });
+  public subscribe() {
+    const request: subscribeRequestModel = new subscribeRequestModel();
+    request.firmId = this.store.getters.firms.firmId;
+    request.termPlanId = this.store.getters.getPlan.termPlanId;
+    request.addons = this.addons;
+    request.startDate =
+      new Date().getMonth() +
+      1 +
+      "/" +
+      new Date().getDate() +
+      "/" +
+      new Date().getFullYear();
+
+    this.service
+      .createSubscription(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  get addons() {
+    const addons: addons[] = [],
+      value: any[] = this.store.getters.getAddons;
+
+    value.forEach((item) => {
+      addons.push({
+        termPlanAddOnId: item.termPlanAddOnId,
+        quantity: item.quantity,
+      });
     });
-    const request: subscribeModel = {
-      customer: this.store.getters.getCustomer,
-      user: {
-        name: this.store.getters.userInfo.firstName,
-        email: this.store.getters.userInfo.email,
-        phone: "952-455-1568",
-      },
-      package: {
-        paycycle:
-          paycycle[
-            this.store.getters.getCommitmentTerm as keyof typeof paycycle
-          ],
-      },
-      line_items: products,
-      creditcard: null,
-      ach: null,
-    };
-
-    if (this.store.getters.getPaymentType == "Credit card") {
-      request["creditcard"] = this.store.getters.getCreditCard;
-      delete request["ach"];
-    } else {
-      request["ach"] = this.store.getters.getAch;
-      delete request["creditcard"];
-    }
-
-    console.log(request);
-
-    ChargeOver.Signup.signup(
-      request,
-      (code: any, message: any, response: any) => {
-        console.log(code, message, response);
-      }
-    );
-
-    /* const my_data = {
-      customer: {
-        company: "Yectra Technologies",
-        bill_addr1: "56 Cowles Road",
-        bill_city: "Mt Pleasant",
-        bill_state: "MI",
-        bill_postcode: "48858",
-        bill_country: "United States",
-      },
-      user: {
-        name: "Logeswaran Sugumaran",
-        email: "logeswaran@yectra.com",
-        phone: "952-455-1568",
-      },
-      package: {
-        paycycle: "mon",
-      },
-      line_items: [
-        {
-          item_id: 3,
-        },
-      ],
-    };
-
-    ChargeOver.Signup.signup(
-      my_data,
-      (code: any, message: any, response: any) => {
-        console.log(code, message, response);
-      }
-    );*/
+    return addons;
   }
 }
 </script>

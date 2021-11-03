@@ -1,6 +1,5 @@
 <template>
   <div class="m-4">
-   
     <div class="row">
       <div class="col-6 mt-4">
         <div class="fw-bold me-4 text-end">Commitment term</div>
@@ -31,19 +30,19 @@
           </button>
         </div>
         <div class="text-start text-success p-2 fw-bold">
-          {{ selectedCommitment.offerMsg }}
+          {{ planOffer }}
         </div>
       </div>
     </div>
 
-    <div class="row g-0 mt-6">
+    <div class="row g-0 mt-6" v-if="plans.length > 0">
       <div class="col-6">
-        <div v-for="(item, index) in selectedCommitment.plans" :key="index">
+        <div v-for="(item, index) in plans" :key="index">
           <div
             class="tab-plan border rounded mb-4 position-relative"
             :class="{
-              'tab-plan-active': item.product == selectedPlan.product,
-              'border-dashed': item.product != selectedPlan.product,
+              'tab-plan-active': item.planName == selectedPlan.planName,
+              'border-dashed': item.planName != selectedPlan.planName,
             }"
           >
             <div class="row g-0 pt-6 pb-6 h-100">
@@ -55,26 +54,26 @@
                     class="form-check-input"
                     type="radio"
                     @change="updatePlan(item)"
-                    :checked="item.product == selectedPlan.product"
+                    :checked="item.planName == selectedPlan.planName"
                   />
                 </div>
               </div>
               <div class="col-6">
-                <div class="tab-plan-name fw-bolder">{{ item.product }}</div>
+                <div class="tab-plan-name fw-bolder">{{ item.planName }}</div>
                 <div class="tab-plan-msg">{{ item.description }}</div>
               </div>
               <div class="col-4">
-                <template v-if="item.product != 'Enterprise'">
+                <template v-if="item.planName != 'Enterprise'">
                   <div class="tab-plan-price fw-bolder text-center">
                     <span class="fs-7">$</span>
-                    {{ item.rate }}
+                    {{ item.termPlanAmount }}
                     <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
                   </div>
                   <div
                     class="tab-plan-extra fs-9 text-center"
                     v-if="commitmentTerm == 'Annual'"
                   >
-                    {{ item.extraMsg }}
+                    {{ item.extraInfo }}
                   </div>
                 </template>
                 <template v-else>
@@ -98,7 +97,7 @@
               "
               v-if="commitmentTerm == 'Monthly'"
             >
-              {{ item.extraMsg }}
+              {{ item.extraInfo }}
             </div>
           </div>
         </div>
@@ -120,12 +119,12 @@
           >
             <div class="row g-0">
               <div class="col-10">
-                {{ data.msg }}
+                {{ data.planInfo }}
               </div>
               <div class="col-2">
                 <i
                   class="fas fa-check-circle text-success"
-                  v-if="data.permission"
+                  v-if="data.access"
                 ></i>
                 <i class="far fa-times-circle text-danger" v-else></i>
               </div>
@@ -135,7 +134,7 @@
       </div>
     </div>
 
-    <div class="text-center mt-10">
+    <div class="text-center mt-10" v-if="plans.length > 0">
       <button class="btn btn-light me-5">Cancel</button>
       <button class="btn btn-primary ms-5" @click="next">Continue</button>
     </div>
@@ -143,362 +142,391 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import { ISubscripeService } from "@/service";
+
+import { planRequestModel, planResponseModel } from "@/model";
+
 export default class Plan extends Vue {
+  @Inject("subscripeService") service: ISubscripeService;
 
   public store = useStore();
-
   public commitmentTerm: string = "Annual";
+  public selectedPlan: planResponseModel = new planResponseModel();
+  public plans: Array<planResponseModel> = [];
 
-  public selectedCommitment: any = {
-    offerMsg: "",
-    plans: [],
-  };
+  private Annual = [
+    {
+      planName: "Standard",
+      description: "Essentials for the starting to small RIA",
+      planType: "Yr",
+      extraInfo: "($99/month)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
 
-  public selectedPlan: any = {};
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Professional",
+      description: "For small to medium-sized RIAs",
+      planType: "Yr",
+      extraInfo: "($199/month)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Ultimate",
+      description: "For medium to large-sized RIAs",
+      planType: "Yr",
+      extraInfo: "($399/month)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Enterprise",
+      description: "For large RIAs requiring custom license",
+      planType: "Yr",
+      extraInfo: "",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+  ];
+
+  private Monthly = [
+    {
+      planName: "Standard",
+      description: "Essentials for the starting to small RIA",
+      planType: "Mo",
+      extraInfo: "(Save $25 per month with an annual term)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Professional",
+      description: "For small to medium-sized RIAs",
+      planType: "Mo",
+      extraInfo: "(Save $51 per month with an annual term)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Ultimate",
+      description: "For medium to large-sized RIAs",
+      planType: "Mo",
+      extraInfo: "(Save $101 per month with an annual term)",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+    {
+      planName: "Enterprise",
+      description: "For large RIAs requiring custom license",
+      planType: "Mo",
+      extraInfo: "",
+      planDetails: [
+        {
+          planInfo: "Up to 3 administrator users",
+          access: true,
+        },
+        {
+          planInfo: "Up to 150 clients",
+          access: true,
+        },
+        {
+          planInfo: "Up to $500M in AUM",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited fee schedules",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited invoices",
+          access: true,
+        },
+
+        {
+          planInfo: "Single custodian connector",
+          access: true,
+        },
+        {
+          planInfo: "Unlimited email/phone support",
+          access: true,
+        },
+      ],
+    },
+  ];
 
   created() {
-    this.selectedCommitment = this.planList[this.commitmentTerm];
-    this.selectedPlan = this.selectedCommitment.plans[0];
-    console.log(this.store.getters.userInfo);
+    this.getPlans();
   }
 
-  updateCommitmentTerm(plan: string) {
+  private getPlans() {
+    const request: planRequestModel = new planRequestModel();
+    request.termPlanType = this.commitmentTerm;
+    this.service
+      .getPlans(request)
+      .then((response) => {
+        this.bindPlans(
+          response,
+          this.commitmentTerm == "Annual" ? this.Annual : this.Monthly
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private bindPlans(response: Array<planResponseModel>, selectedTerm: any) {
+    this.plans = [];
+    response.forEach((item) => {
+      selectedTerm.forEach(
+        (plan: {
+          planName: string;
+          description: any;
+          planType: any;
+          extraInfo: any;
+          planDetails: any;
+        }) => {
+          if (item.planName == plan.planName) {
+            this.plans.push({
+              termPlanId: item.termPlanId,
+              planName: item.planName,
+              termPlanAmount: item.termPlanAmount,
+              description: plan.description,
+              planType: plan.planType,
+              extraInfo: plan.extraInfo,
+              planDetails: plan.planDetails,
+            });
+          }
+        }
+      );
+    });
+    this.selectedPlan = this.plans[0];
+  }
+
+  public updateCommitmentTerm(plan: string) {
     this.commitmentTerm = plan;
-    this.selectedCommitment = this.planList[plan];
-    this.selectedPlan = this.selectedCommitment.plans[0];
+    this.getPlans();
   }
 
-  updatePlan(plan: any) {
+  public updatePlan(plan: any) {
     this.selectedPlan = plan;
   }
 
   public next() {
-    this.store.dispatch('updateTerm', this.commitmentTerm);
-    this.store.dispatch('updatePlan', this.selectedPlan);
-    this.$emit('next');
+    this.store.dispatch("updateTerm", this.commitmentTerm);
+    this.store.dispatch("updatePlan", this.selectedPlan);
+    this.$emit("next");
   }
 
-  public planList: any = {
-    Annual: {
-      offerMsg: "Hooray, you are saving 20% with a 1 year commitment!",
-      plans: [
-        {
-          id: 3,
-          product: "Standard",
-          rate: "1,188",
-          description: "Essentials for the starting to small RIA",
-          planType: "Yr",
-          extraMsg: "($99/month)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          id: 4,
-          product: "Professional",
-          rate: "2,388",
-          description: "For small to medium-sized RIAs",
-          planType: "Yr",
-          extraMsg: "($199/month)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          id: 5,
-          product: "Ultimate",
-          rate: "4,788",
-          description: "For medium to large-sized RIAs",
-          planType: "Yr",
-          extraMsg: "($399/month)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          product: "Enterprise",
-          rate: "",
-          description: "For large RIAs requiring custom license",
-          planType: "Yr",
-          extraMsg: "",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-      ],
-    },
-    Monthly: {
-      offerMsg: "Commit for a year and save up to 20%",
-      plans: [
-        {
-          product: "Standard",
-          rate: "125",
-          description: "Essentials for the starting to small RIA",
-          planType: "Mo",
-          extraMsg: "(Save $25 per month with an annual term)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          product: "Professional",
-          rate: "250",
-          description: "For small to medium-sized RIAs",
-          planType: "Mo",
-          extraMsg: "(Save $51 per month with an annual term)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          product: "Ultimate",
-          rate: "500",
-          description: "For medium to large-sized RIAs",
-          planType: "Mo",
-          extraMsg: "(Save $101 per month with an annual term)",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-        {
-          product: "Enterprise",
-          rate: "",
-          description: "For large RIAs requiring custom license",
-          planType: "Mo",
-          extraMsg: "",
-          planDetails: [
-            {
-              msg: "Up to 3 administrator users",
-              permission: true,
-            },
-            {
-              msg: "Up to 150 clients",
-              permission: true,
-            },
-            {
-              msg: "Up to $500M in AUM",
-              permission: true,
-            },
-            {
-              msg: "Unlimited fee schedules",
-              permission: true,
-            },
-            {
-              msg: "Unlimited invoices",
-              permission: true,
-            },
-
-            {
-              msg: "Single custodian connector",
-              permission: true,
-            },
-            {
-              msg: "Unlimited email/phone support",
-              permission: true,
-            },
-          ],
-        },
-      ],
-    },
-  };  
+  get planOffer() {
+    return this.commitmentTerm
+      ? "Hooray, you are saving 20% with a 1 year commitment!"
+      : "Commit for a year and save up to 20%";
+  }
 }
 </script>
