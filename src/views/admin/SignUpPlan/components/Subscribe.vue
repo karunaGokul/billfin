@@ -74,6 +74,7 @@ export default class Subscribe extends Vue {
   }
 
   public subscribe() {
+    this.$emit("next");
     const request: subscribeRequestModel = new subscribeRequestModel();
     request.firmId = this.store.getters.firms.firmId;
     request.termPlanId = this.store.getters.getPlan.termPlanId;
