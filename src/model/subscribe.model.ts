@@ -56,6 +56,8 @@ export class addonsResponseModel {
 }
 export class paymentTokenRequestModel {
   token: string;
+  paymentMethod: string;
+  firmId: number;
 }
 export class addons {
   termPlanAddOnId: number;

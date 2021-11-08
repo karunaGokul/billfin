@@ -42,19 +42,27 @@
         mt-8
       "
     >
-      <input class="form-check-input" type="checkbox" v-model="isAgreed"/>
+      <input class="form-check-input" type="checkbox" v-model="isAgreed" />
       I agree to these terms and conditions
     </p>
 
     <div class="text-center mt-8 mb-8">
       <button class="btn btn-light me-5" @click="back">Back</button>
-      <button class="btn btn-primary ms-5" @click="subscribe" :disabled="!isAgreed">Subscribe</button>
+      <button
+        class="btn btn-primary ms-5"
+        @click="subscribe"
+        :disabled="!isAgreed"
+      >
+        Subscribe
+      </button>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
 import { useStore } from "vuex";
+
+import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
@@ -67,30 +75,23 @@ export default class Subscribe extends Vue {
 
   public store = useStore();
 
-  public isAgreed:boolean = false;
+  public isAgreed: boolean = false;
 
   public back() {
     this.$emit("back");
   }
 
   public subscribe() {
-    this.$emit("next");
     const request: subscribeRequestModel = new subscribeRequestModel();
     request.firmId = this.store.getters.firms.firmId;
     request.termPlanId = this.store.getters.getPlan.termPlanId;
     request.addons = this.addons;
-    request.startDate =
-      new Date().getMonth() +
-      1 +
-      "/" +
-      new Date().getDate() +
-      "/" +
-      new Date().getFullYear();
-
+    request.startDate = this.startDate;
     this.service
       .createSubscription(request)
       .then((response) => {
         console.log(response);
+        this.$emit("next");
       })
       .catch((err) => {
         console.log(err);
@@ -108,6 +109,10 @@ export default class Subscribe extends Vue {
       });
     });
     return addons;
+  }
+
+  get startDate() {
+    return moment(String(new Date())).format("DD/MM/YYYY");
   }
 }
 </script>

@@ -148,7 +148,7 @@ import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
 
-import { planRequestModel, planResponseModel } from "@/model";
+import { planRequestModel, planResponseModel, CommitmentTerm } from "@/model";
 
 export default class Plan extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
@@ -466,7 +466,7 @@ export default class Plan extends Vue {
 
   private getPlans() {
     const request: planRequestModel = new planRequestModel();
-    request.termPlanType = this.commitmentTerm;
+    request.termPlanType = CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
     this.service
       .getPlans(request)
       .then((response) => {

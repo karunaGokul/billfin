@@ -16,12 +16,12 @@
         type="button"
         class="btn rounded"
         :class="{
-          'btn-success': paymenyType == 'Credit card',
-          'text-muted': paymenyType != 'Credit card',
+          'btn-success': paymenyType == 'Credit Card',
+          'text-muted': paymenyType != 'Credit Card',
         }"
-        @click="paymenyType = 'Credit card'"
+        @click="paymenyType = 'Credit Card'"
       >
-        Credit card
+        Credit Card
       </button>
     </div>
   </div>
@@ -29,7 +29,7 @@
   <credit-card
     @back="onBack"
     @pay="onPayNow"
-    v-if="paymenyType == 'Credit card'"
+    v-if="paymenyType == 'Credit Card'"
   />
 </template>
 <script lang="ts">
@@ -56,7 +56,7 @@ declare let ChargeOver: any;
 export default class Index extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
 
-  public paymenyType: string = "Credit card";
+  public paymenyType: string = "Credit Card";
   public store = useStore();
 
   created() {
@@ -74,15 +74,15 @@ export default class Index extends Vue {
 
   public checkCustomerIsExists() {
     const request = new paymentFirmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firmId;
 
     this.service
       .getCustomerId(request)
       .then((response) => {
         if (!response.paymentCustomerId)
-          this.createCustomer(this.store.getters.selectedFirmId);
+          this.createCustomer();
         else {
-          if (this.paymentType == "Credit card") this.tokenizingCreditCard();
+          if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
           else this.tokenizingAch();
         }
       })
@@ -91,7 +91,7 @@ export default class Index extends Vue {
       });
   }
 
-  private createCustomer(externalKey: string) {
+  private createCustomer() {
     const request: createCustomerRequestModel = {
       company: this.adddress.company,
       bill_addr1: this.adddress.bill_addr1,
@@ -99,7 +99,7 @@ export default class Index extends Vue {
       bill_state: this.adddress.bill_state,
       bill_postcode: this.adddress.bill_postcode,
       bill_country: this.adddress.bill_country,
-      external_key: externalKey,
+      external_key: this.firmId,
       superuser_name: this.userInfo.firstName,
       superuser_email: this.userInfo.email,
       superuser_phone: this.phoneNumber,
@@ -108,7 +108,7 @@ export default class Index extends Vue {
     this.service
       .createCustomer(request)
       .then((response) => {
-        if (this.paymentType == "Credit card") this.tokenizingCreditCard();
+        if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
         else this.tokenizingAch();
       })
       .catch((err) => {
@@ -119,7 +119,7 @@ export default class Index extends Vue {
   private tokenizingCreditCard() {
     let request: any = {};
     request = this.store.getters.getCreditCard;
-    request.customer_external_key = this.store.getters.selectedFirmId;
+    request.customer_external_key = this.firmId;
     ChargeOver.CreditCard.tokenize(
       request,
       (code: any, message: any, response: any) => {
@@ -138,7 +138,7 @@ export default class Index extends Vue {
   private tokenizingAch() {
     let request: any = {};
     request = this.store.getters.getAch;
-    request.customer_external_key = this.store.getters.selectedFirmId;
+    request.customer_external_key = this.firmId;
     ChargeOver.ACH.tokenize(
       request,
       (code: any, message: any, response: any) => {
@@ -157,6 +157,8 @@ export default class Index extends Vue {
   private updateToken(token: string) {
     const request = new paymentTokenRequestModel();
     request.token = token;
+    request.firmId = this.firmId;
+    request.paymentMethod = this.paymenyType.toUpperCase();
     this.service.updatePaymentToken(request).then((response) => {
       console.log(response);
     }).catch((err) => {
@@ -188,6 +190,10 @@ export default class Index extends Vue {
 
   get paymentType() {
     return this.store.getters.getPaymentType;
+  }
+
+  get firmId() {
+    return this.store.getters.firms.firmId;
   }
 }
 </script>
