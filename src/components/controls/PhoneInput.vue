@@ -10,8 +10,7 @@
         class="form-control text-start"
         :id="label"
         v-model="controls.$model"
-        :readonly="readonly"
-        @blur="updateInput"
+        @input="acceptNumber()"
       />
     </div>
     <error-message
@@ -26,14 +25,13 @@
       {{ label }}
     </label>
     <div class="col-sm-8">
-      <div class="input-group input-group-solid">
-        <input
-          type="text"
-          class="form-control"
-          v-model="controls.$model"
-          :readonly="readonly"
-        />
-      </div>
+      <input
+        type="text"
+        class="form-control text-start"
+        :id="label"
+        v-model="controls.$model"
+        @input="acceptNumber()"
+      />
       <error-message
         :label="label"
         :controls="controls"
@@ -52,15 +50,19 @@ import ErrorMessage from "./ErrorMessage.vue";
     ErrorMessage,
   },
 })
-export default class TextInput extends Vue {
+export default class PhoneInput extends Vue {
   @Prop() formFieldType: string | any;
   @Prop() label: string | any;
   @Prop() controls: any;
   @Prop() validation: Array<string> | any;
-  @Prop() readonly: boolean | any;
 
-  updateInput() {
-    this.$emit("updateInput");
+  public acceptNumber() {
+    const value = this.controls.$model
+      .replace(/\D/g, "")
+      .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    this.controls.$model = !value[2]
+      ? value[1]
+      : value[1] + "-" + value[2] + (value[3] ? "-" + value[3] : "");
   }
 }
 </script>

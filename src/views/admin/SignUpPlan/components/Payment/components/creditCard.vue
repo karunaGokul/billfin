@@ -22,7 +22,9 @@
             type="text"
             v-model="v$.request.cardNumber.$model"
             class="form-control text-start"
-            @input="!v$.request.cardNumber.$invalid ? cardNoValidation() : ''"
+            minlength="15"
+            maxlength="16"
+            @input="validateCard"
           />
           <span class="input-group-text" v-if="card">
             <img
@@ -60,7 +62,7 @@
           class="invalid-feedback position-absolute m-0"
           v-if="v$.request.cardNumber.numeric.$invalid"
         >
-          Please enter valid number
+          Please enter valid card number
         </div>
         <div
           class="invalid-feedback position-absolute m-0"
@@ -83,21 +85,29 @@
         >
           Maximum 15 or 16 charaters
         </div>
-        <div
-          class="invalid-feedback position-absolute m-0"
-          v-if="!isCardNumberValid && !v$.request.cardNumber.$invalid"
-        >
-          {{ cardError }}
-        </div>
       </div>
       <div class="row position-relative">
         <div class="col-4">
-          <TextInput
+          <SelectBox
             label="Expiration Month"
             :controls="v$.request.expirationMonth"
-            inputType="text"
+            :data="[
+              '01',
+              '02',
+              '03',
+              '04',
+              '05',
+              '06',
+              '07',
+              '08',
+              '03',
+              '10',
+              '11',
+              '12',
+            ]"
+            :validation="['required']"
             formFieldType="inputBlock"
-            :validation="['required', 'numeric', 'minLength', 'maxLength']"
+            @update="validateCard"
           />
         </div>
         <div class="col-4">
@@ -107,6 +117,7 @@
             inputType="text"
             formFieldType="inputBlock"
             :validation="['required', 'numeric', 'minLength', 'maxLength']"
+            @updateInput="validateCard"
           />
         </div>
         <div class="col-4">
@@ -121,6 +132,7 @@
               'cvvMinLength',
               'cvvMaxLength',
             ]"
+            @updateInput="validateCard"
           />
         </div>
         <div
@@ -245,6 +257,12 @@
         <button type="submit" class="btn btn-primary">Continue</button>
       </div>
     </form>
+    <Information
+      status="FAILED"
+      message="Credit card information is not valid"
+      @closeInformationModel="closeModel"
+      v-if="showInformationError"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -253,16 +271,16 @@ import { Vue, Options, setup } from "vue-class-component";
 import useVuelidate from "@vuelidate/core";
 import { Inject } from "vue-property-decorator";
 
+import { useStore } from "vuex";
+
 import { required, numeric, minLength, maxLength } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
+import Information from "@/components/Models/Information.vue";
 
 import { creditCardRequestModel, stateModel, cityModel } from "@/model";
-
 import { IAddressService } from "@/service";
-
-import { useStore } from "vuex";
 
 declare let ChargeOver: any;
 
@@ -270,6 +288,7 @@ declare let ChargeOver: any;
   components: {
     TextInput,
     SelectBox,
+    Information,
   },
   validations: {
     request: {
@@ -297,9 +316,6 @@ declare let ChargeOver: any;
       },
       expirationMonth: {
         required,
-        numeric,
-        minLength: minLength(2),
-        maxLength: maxLength(2),
       },
       expirationYear: {
         required,
@@ -342,13 +358,13 @@ export default class CreditCard extends Vue {
   public city: Array<cityModel> = [];
 
   public card: string = "";
-  public cardError: string = null;
-  public isCardNumberValid: boolean = false;
 
   public cardMessage: string = null;
   public isCardValid: boolean = false;
 
   public v$: any = setup(() => this.validate());
+
+  public showInformationError: boolean = false;
 
   public validate() {
     return useVuelidate();
@@ -359,51 +375,60 @@ export default class CreditCard extends Vue {
     this.getState("US");
   }
 
+  public validateCard() {
+    this.showInformationError = false;
+    if (
+      !this.v$.request.cardNumber.$invalid &&
+      !this.v$.request.expirationMonth.$invalid &&
+      !this.v$.request.expirationYear.$invalid &&
+      !this.v$.request.cvv.$invalid
+    ) {
+      const request = {
+        number: this.request.cardNumber,
+        expdate_month: this.request.expirationMonth,
+        expdate_year: this.request.expirationYear,
+        name: this.request.cardHolderName,
+      };
+      ChargeOver.CreditCard.validate(
+        request,
+        (code: number, message: any, response: any) => {
+          console.log(code, message);
+          if (code == 200) {
+            this.isCardValid = true;
+            this.showInformationError = false;
+            this.cardNumberValidation();
+          } else if (code == 400) {
+            this.isCardValid = false;
+            this.showInformationError = true;
+          }
+        }
+      );
+    }
+  }
+
   public payNow() {
     this.v$.$touch();
 
-    if (!this.v$.$invalid) {
-      if (this.isCardNumberValid) {
-        const request = {
-          number: this.request.cardNumber,
-          expdate_month: this.request.expirationMonth,
-          expdate_year: this.request.expirationYear,
-          name: this.request.cardHolderName,
-        };
-        ChargeOver.CreditCard.validate(
-          request,
-          (code: number, message: any, response: any) => {
-            console.log(code, message, response);
-            if (code == 200) {
-              this.isCardValid = true;
-              const payload = {
-                company: this.store.getters.selectedFirmName,
-                bill_addr1: this.request.billingAddress,
-                bill_city: this.request.billingCity.name,
-                bill_state: this.request.billingState.name,
-                bill_postcode: this.request.postalCode,
-                bill_country: this.request.country.name,
-              };
-              const cardDetails = {
-                number: this.request.cardNumber,
-                expdate_month: this.request.expirationMonth,
-                expdate_year: this.request.expirationYear,
-                name: this.request.cardHolderName,
-                cvv: this.request.cvv,
-              };
-              this.store.dispatch("updateCreditCard", cardDetails);
-              this.store.dispatch("updateCustomer", payload);
-              this.$emit("pay");
-            } else if (code == 400) {
-              this.cardMessage = message;
-              this.isCardValid = false;
-            } else {
-              this.isCardNumberValid = false;
-              this.cardMessage = `Something went wrong, Please try again`;
-            }
-          }
-        );
-      }
+    if (!this.v$.$invalid && this.isCardValid) {
+      const payload = {
+        company: this.store.getters.selectedFirmName,
+        bill_addr1: this.request.billingAddress,
+        bill_city: this.request.billingCity.name,
+        bill_state: this.request.billingState.name,
+        bill_postcode: this.request.postalCode,
+        bill_country: this.request.country.name,
+      };
+      const cardDetails = {
+        number: this.request.cardNumber,
+        expdate_month: this.request.expirationMonth,
+        expdate_year: this.request.expirationYear,
+        name: this.request.cardHolderName,
+        cvv: this.request.cvv,
+        cardType: this.card
+      };
+      this.store.dispatch("updateCreditCard", cardDetails);
+      this.store.dispatch("updateCustomer", payload);
+      this.$emit("pay");
     }
   }
 
@@ -411,25 +436,19 @@ export default class CreditCard extends Vue {
     this.$emit("back");
   }
 
-  private cardNoValidation() {
+  public closeModel() {
+    this.showInformationError = false;
+  }
+
+  private cardNumberValidation() {
     this.card = "";
-    this.cardError = null;
     const request = {
       number: this.request.cardNumber,
     };
     ChargeOver.CreditCard.type(
       request,
       (code: any, message: any, response: any) => {
-        if (code == 200) {
-          this.card = response;
-          this.isCardNumberValid = true;
-        } else if (code == 400) {
-          this.isCardNumberValid = false;
-          this.cardError = message;
-        } else {
-          this.isCardNumberValid = false;
-          this.cardError = `Something went wrong, Please try again`;
-        }
+        if (code == 200) this.card = response;
       }
     );
   }

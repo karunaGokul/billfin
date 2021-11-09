@@ -57,10 +57,9 @@
 
             <div class="row mt-6 mb-2">
               <div class="col-6">
-                <TextInput
+                <PhoneInput
                   label="Phone number"
                   :controls="v$.request.phoneNumber"
-                  inputType="text"
                   formFieldType="inputBlock"
                   :validation="[
                     'required',
@@ -140,11 +139,9 @@
               </div>
             </div>
 
-            <TextInput
+            <EmailInput
               label="Work email"
               :controls="v$.request.email"
-              inputType="text"
-              formFieldType="inputBlock"
               :validation="['required', 'email', 'domain']"
               @validateEmail="validateEmail"
             />
@@ -177,10 +174,8 @@
               </div>
             </div>
 
-            <TextInput
+            <PasswordInput
               label="Password"
-              inputType="password"
-              formFieldType="inputBlock"
               :controls="v$.request.password"
               :validation="[
                 'required',
@@ -252,10 +247,8 @@
               Use 8 or more characters with a mix of letters, numbers & symbols.
             </p>
 
-            <TextInput
+            <PasswordInput
               label="Confirm password"
-              inputType="password"
-              formFieldType="inputBlock"
               :controls="v$.request.confirmPassword"
               :validation="['required']"
               @validatePassword="validatePassword"
@@ -333,6 +326,9 @@ import useVuelidate from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import PhoneInput from "@/components/controls/PhoneInput.vue";
+import PasswordInput from "@/components/controls/PasswordInput.vue";
+import EmailInput from "@/components/controls/EmailInput.vue";
 import Information from "@/components/Models/Information.vue";
 
 import {
@@ -348,6 +344,9 @@ import { ISignUpService } from "@/service";
 @Options({
   components: {
     TextInput,
+    PhoneInput,
+    EmailInput,
+    PasswordInput,
     Information,
   },
   validations: {

@@ -11,6 +11,7 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
+          @updateInput="validateAch"
         />
       </div>
       <div class="mt-6 position-relative">
@@ -20,10 +21,11 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
+          @updateInput="validateAch"
         />
         <div
-          class="invalid-feedback position-absolute m-0" 
-          style="bottom: -19px;"
+          class="invalid-feedback position-absolute m-0"
+          style="bottom: -19px"
           v-if="!isAccountValid && !v$.request.$invalid"
         >
           {{ accountError }}
@@ -36,6 +38,7 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
+          @updateInput="validateAch"
         />
       </div>
       <div class="mt-6">
@@ -137,10 +140,18 @@
         </div>
       </div>
       <div class="mt-6 d-flex align-items-center justify-content-between">
-        <button type="button" class="btn btn-secondary" @click="back">Back</button>
+        <button type="button" class="btn btn-secondary" @click="back">
+          Back
+        </button>
         <button type="submit" class="btn btn-primary">Continue</button>
       </div>
     </form>
+    <Information
+      status="FAILED"
+      message="ACH information is not valid"
+      @closeInformationModel="closeModel"
+      v-if="showInformationError"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -151,6 +162,7 @@ import useVuelidate from "@vuelidate/core";
 import { required, numeric } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import Information from "@/components/Models/Information.vue";
 
 import { achRequestModel, stateModel, cityModel } from "@/model";
 import { IAddressService } from "@/service";
@@ -162,6 +174,7 @@ declare let ChargeOver: any;
 @Options({
   components: {
     TextInput,
+    Information,
   },
   validations: {
     request: {
@@ -187,12 +200,13 @@ export default class ACH extends Vue {
 
   public accountError: string = null;
   public isAccountValid: boolean = false;
+  public showInformationError: boolean = false;
 
   public v$: any = setup(() => this.validate());
 
   public validate() {
     return useVuelidate();
-  }
+  } 
 
   mounted() {
     this.request.country = { id: 233, name: "United States", iso2: "US" };
@@ -203,9 +217,16 @@ export default class ACH extends Vue {
     this.$emit("back");
   }
 
-  public payNow() {
-    this.v$.$touch();
-    if (!this.v$.$invalid) {
+  public closeModel() {
+    this.showInformationError = false;
+  }
+
+  validateAch() {
+    this.showInformationError = false;
+    if (
+      !this.v$.request.accountNo.$invalid &&
+      !this.v$.request.routingNo.$invalid
+    ) {
       const request = {
         number: this.request.accountNo,
         routing: this.request.routingNo,
@@ -213,33 +234,37 @@ export default class ACH extends Vue {
       ChargeOver.ACH.validate(
         request,
         (code: number, message: any, response: any) => {
+          console.log(code);
           if (code == 200) {
             this.isAccountValid = true;
-            const payload = {
-              company: this.store.getters.selectedFirmName,
-              bill_addr1: this.request.billingAddress,
-              bill_city: this.request.billingCity.name,
-              bill_state: this.request.billingState.name,
-              bill_postcode: this.request.postalCode,
-              bill_country: this.request.country.name,
-            };
-            const ach = {
-              number: this.request.accountNo,
-              routing: this.request.routingNo,
-              name: this.request.accountHolder,
-            };
-            this.store.dispatch("updateCustomer", payload);
-            this.store.dispatch("updateACH", ach);
-            this.$emit("pay");
-          } else if(code == 400) {
+          } else if (code == 400) {
+            this.showInformationError = true;
             this.isAccountValid = false;
-            this.accountError = message;
-          } else {
-              this.isAccountValid = false;
-              this.accountError = `Something went wrong, Please try again`;
-            }
+          }
         }
       );
+    }
+  }
+
+  public payNow() {
+    this.v$.$touch();
+    if (!this.v$.$invalid && this.isAccountValid) {
+      const payload = {
+        company: this.store.getters.selectedFirmName,
+        bill_addr1: this.request.billingAddress,
+        bill_city: this.request.billingCity.name,
+        bill_state: this.request.billingState.name,
+        bill_postcode: this.request.postalCode,
+        bill_country: this.request.country.name,
+      };
+      const ach = {
+        number: this.request.accountNo,
+        routing: this.request.routingNo,
+        name: this.request.accountHolder,
+      };
+      this.store.dispatch("updateCustomer", payload);
+      this.store.dispatch("updateACH", ach);
+      this.$emit("pay");
     }
   }
 

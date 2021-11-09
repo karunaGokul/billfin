@@ -92,11 +92,11 @@
         </div>
         <div class="fw-bold fa-lg">AMOUNT DUE</div>
         <div class="fa-lg text-muted mt-6 mb-6">
-          You’re all set! Your payment of $2,188 is processing.
+          You’re all set! Your payment of {{ $filters.currencyDisplay(totalFees) }} is processing.
         </div>
         <div class="fa-lg text-muted mt-6 mb-6">
           You are also setup for Auto Pay, and your next payment date is
-          10/8/2022.
+          {{nextPaymentDate}}.
         </div>
         <div class="fa-lg mt-4 mb-6 fw-bold">Thank you!</div>
         <div>
@@ -115,6 +115,9 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+
+import moment from "moment";
+import { useStore } from "vuex";
 
 import Plan from "./components/Plan.vue";
 import AddOns from "./components/AddOns.vue";
@@ -135,10 +138,52 @@ export default class SignUpPlan extends Vue {
   public step: number = 1;
   public isSubscriped: boolean = false;
 
+  public store = useStore();
+
   public dueAmount: number = 0;
 
   public onSubscripe() {
     this.isSubscriped = true;
+  }
+
+  get addons() {
+    return this.store.getters.getAddons;
+  }
+
+  get totalFees() {
+    let addons: number = 0;
+    addons = this.addons.reduce((prev: number, cur: any) => {
+      return prev + parseInt(cur.planAddOnamount);
+    }, 0);
+    addons = addons + this.currencyToNumber(this.plan.termPlanAmount);
+    return addons;
+  }
+
+  get plan() {
+    return this.store.getters.getPlan;
+  }
+
+   private currencyToNumber(value: any) {
+    if (!value) return 0;
+
+    if (isNaN(value)) value = value.replaceAll(",", "");
+    value = parseFloat(value);
+
+    return value;
+  }
+
+  get nextPaymentDate() {
+    const currentDate = new Date();
+    const date = new Date(currentDate);
+    if(this.store.getters.getCommitmentTerm == "Monthly")  {
+      date.setMonth(currentDate.getMonth()+1);
+      date.setDate(currentDate.getDate()+1);
+    } else {
+      date.setFullYear(currentDate.getFullYear()+1);
+      date.setDate(currentDate.getDate()+1);
+    }
+
+    return moment(String(date)).format("MM/DD/YYYY");
   }
 }
 </script>

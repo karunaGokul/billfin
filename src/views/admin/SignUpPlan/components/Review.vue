@@ -5,10 +5,12 @@
     </h4>
     <div class="mt-8 d-flex justify-content-between">
       <div class="fw-bold">
-        {{plan.planName}}
+        {{ plan.planName }}
         <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
       </div>
-      <div>{{ $filters.currencyDisplay(currencyToNumber(plan.termPlanAmount)) }}</div>
+      <div>
+        {{ $filters.currencyDisplay(currencyToNumber(plan.termPlanAmount)) }}
+      </div>
     </div>
 
     <div class="row g-0 mt-8" v-for="(item, index) of addons" :key="index">
@@ -31,18 +33,69 @@
         pb-5
         d-flex
         justify-content-between
-        border-top
-        border-bottom
-        border-dashed
-        border-start-0
-        border-end-0
+        border-top border-bottom border-dashed border-start-0 border-end-0
       "
     >
       <div>Total Due Today</div>
       <div>{{ $filters.currencyDisplay(totalFees) }}</div>
     </div>
 
-    <h4 class="fw-bold mt-10 pb-4 border-bottom">Payment Method</h4>
+    <h4 class="fw-bold mt-10 pb-4 mb-8 border-bottom">Payment Method</h4>
+
+    <div
+      class="border border-dashed w-50 p-4"
+      v-if="paymentType == 'Credit Card'"
+    >
+      <div class="fw-bold p-2">{{ creditCard.name }}</div>
+      <div class="d-flex align-items-center">
+        <div>
+          <img
+            src="@/assets/mastercard.png"
+            alt="Card Type"
+            width="100"
+            v-if="this.creditCard.cardType == 'mast'"
+          />
+          <img
+            src="@/assets/visa.png"
+            alt="Card Type"
+            width="100"
+            v-if="this.creditCard.cardType == 'visa'"
+          />
+          <img
+            src="@/assets/amex.png"
+            alt="Card Type"
+            width="100"
+            v-if="this.creditCard.cardType == 'amex'"
+          />
+          <img
+            src="@/assets/discover.png"
+            alt="Card Type"
+            width="100"
+            v-if="this.creditCard.cardType == 'disc'"
+          />
+        </div>
+        <div class="p-4">
+          <div class="fw-bolder p-2">
+            {{ cardType }} ****{{
+              creditCard.number.substr(creditCard.number.length - 4)
+            }}
+          </div>
+          <div class="fw-bold p-2 text-muted">
+            Card expires at {{ creditCard.expdate_month }}/
+            {{
+              creditCard.expdate_year.substr(creditCard.expdate_year.length - 2)
+            }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border border-dashed w-50 p-4" v-else>
+      <div class="fw-bold p-2">{{ ach.name }}</div>
+      <div class="fw-bold p-2">
+        ****{{ ach.number.substr(ach.number.length - 4) }}
+      </div>
+      <div class="fw-bold p-2">{{ ach.routing }}</div>
+    </div>
 
     <h4 class="fw-bold mt-10 pb-4 border-bottom">Billing Address</h4>
 
@@ -97,7 +150,7 @@ export default class Review extends Vue {
   }
 
   get plan() {
-    return this.store.getters.getPlan
+    return this.store.getters.getPlan;
   }
 
   get paymentType() {
@@ -113,6 +166,15 @@ export default class Review extends Vue {
   }
   get address() {
     return this.store.getters.getCustomer;
+  }
+
+  get cardType() {
+    let cardType: string = "";
+    if (this.creditCard.cardType == "mast") cardType = "Master card";
+    else if (this.creditCard.cardType == "visa") cardType = "Visa";
+    else if (this.creditCard.cardType == "amex") cardType = "American Express";
+    else cardType = "Discover";
+    return cardType;
   }
 }
 </script>

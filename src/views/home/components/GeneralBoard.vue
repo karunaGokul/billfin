@@ -16,9 +16,8 @@
             :validation="['required']"
             :readonly="false"
           />
-          <TextInput
+          <PhoneInput
             label="Company Phone"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.companyPhone"
             :validation="['required', 'phone', 'minLength', 'phoneLength']"
@@ -53,6 +52,7 @@
             :controls="v$.request.state"
             :data="states"
             :validation="['required']"
+            formFieldType = 'inputInline'
           />
           <TextInput
             label="Postal Code"
@@ -92,6 +92,7 @@ import { useStore } from "vuex";
 import { IFirmService } from "@/service";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import PhoneInput from "@/components/controls/PhoneInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
 import {

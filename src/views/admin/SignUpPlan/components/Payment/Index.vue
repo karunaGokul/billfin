@@ -69,26 +69,7 @@ export default class Index extends Vue {
 
   onPayNow() {
     this.store.dispatch("updatePaymentType", this.paymenyType);
-    this.checkCustomerIsExists();
-  }
-
-  public checkCustomerIsExists() {
-    const request = new paymentFirmRequestModel();
-    request.firmId = this.firmId;
-
-    this.service
-      .getCustomerId(request)
-      .then((response) => {
-        if (!response.paymentCustomerId)
-          this.createCustomer();
-        else {
-          if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
-          else this.tokenizingAch();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.createCustomer();
   }
 
   private createCustomer() {

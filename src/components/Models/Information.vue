@@ -9,7 +9,7 @@
           <p class="fs-6 fw-bolder ps-10" v-if="status == 'FAILED'">
             Sorry, looks like we encountered errors. Please try again.
           </p>
-          <p class="ps-10 mt-7 invalid-feedback">{{ message }}</p>
+          <p class="ps-10 mt-7 invalid-feedback text-center">{{ message }}</p>
         </div>
         <div class="modal-footer justify-content-center border-0">
           <button type="button" class="btn btn-primary fw-bold" @click="close">
