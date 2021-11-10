@@ -68,6 +68,28 @@ app.config.globalProperties.$filters = {
         maximumFractionDigits: numberOfDigits,
       })})`;
   },
+  currencyDisplayWithoutSymbol(
+    value: any,
+    numberOfDigits: number = 0,
+    minDigits: number = 0
+  ) {
+    if (!value) return `0`;
+
+    if (isNaN(parseFloat(value))) return value;
+
+    value = parseFloat(value);
+
+    if (value >= 0)
+      return `${value.toLocaleString("en-US", {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      return `(${Math.abs(value).toLocaleString("en-US", {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
+  },
   percentDisplay(value: any, numberOfDigits: number = 2) {
     if (!value && value != null) value = 0;
     if (!value) return "N/A";

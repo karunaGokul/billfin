@@ -16,15 +16,6 @@ export class createCustomerResponseModel extends BaseModel {
   id: number;
 }
 
-export class paymentFirmRequestModel {
-  firmId: number;
-}
-export class paymentFirmResponseModel {
-  paymentCustomerId: string;
-  status: string;
-  firmId: number;
-}
-
 export class planDetails {
   planInfo: string;
   access: boolean;

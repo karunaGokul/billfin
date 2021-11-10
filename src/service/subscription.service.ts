@@ -2,8 +2,6 @@ import { IBaseService, BaseService } from "./base.service";
 import {
   createCustomerRequestModel,
   createCustomerResponseModel,
-  paymentFirmRequestModel,
-  paymentFirmResponseModel,
   planRequestModel,
   planResponseModel,
   addonsRequestModel,
@@ -16,9 +14,6 @@ import {
 export interface ISubscripeService extends IBaseService<any, any> {
   getPlans(request: planRequestModel): Promise<Array<planResponseModel>>;
   getAddons(request: addonsRequestModel): Promise<Array<addonsResponseModel>>;
-  getCustomerId(
-    request: paymentFirmRequestModel
-  ): Promise<paymentFirmResponseModel>;
   createCustomer(
     request: createCustomerRequestModel
   ): Promise<createCustomerResponseModel>;
@@ -53,20 +48,10 @@ export class SubscripeService extends BaseService<any, any>
     });
   }
 
-  public getCustomerId(
-    request: paymentFirmRequestModel
-  ): Promise<paymentFirmResponseModel> {
-    return this.httpGet("private/api/v1/paymentFirm", request).then(
-      (response) => {
-        return response.data;
-      }
-    );
-  }
-
   public createCustomer(
     request: createCustomerRequestModel
   ): Promise<createCustomerResponseModel> {
-    return this.post(request, "api/v1/chargeover/customer").then((response) => {
+    return this.post(request, "api/v1/paymentFirm").then((response) => {
       return response.data;
     });
   }

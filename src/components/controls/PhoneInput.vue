@@ -20,18 +20,20 @@
     />
   </div>
 
-  <div class="mb-5 row" v-if="formFieldType == 'inputInline'">
+  <div class="mb-5 row position-relative mb-8" v-if="formFieldType == 'inputInline'">
     <label :for="label" class="col-sm-4 col-form-label fw-bolder">
       {{ label }}
     </label>
     <div class="col-sm-8">
-      <input
-        type="text"
-        class="form-control text-start"
-        :id="label"
-        v-model="controls.$model"
-        @input="acceptNumber()"
-      />
+      <div class="input-group input-group-solid">
+        <input
+          type="text"
+          class="form-control text-start"
+          :id="label"
+          v-model="controls.$model"
+          @input="acceptNumber()"
+        />
+      </div>
       <error-message
         :label="label"
         :controls="controls"

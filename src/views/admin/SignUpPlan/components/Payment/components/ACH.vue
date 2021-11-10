@@ -52,82 +52,34 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <div class="position-relative mb-6">
-            <label for="Country" class="form-label fw-bolder"> Country </label>
-            <select
-              class="form-select form-select-solid"
-              v-model="v$.request.country.$model"
-              @change="getState(v$.request.country.$model.iso2)"
-            >
-              <option v-for="(item, i) in country" :key="i" :value="item">
-                {{ item.name }}
-              </option>
-            </select>
-
-            <div
-              class="invalid-feedback position-absolute m-0"
-              v-if="v$.request.country.$dirty && v$.request.country.$invalid"
-            >
-              Country is required
-            </div>
-          </div>
+          <TextInput
+            label="Country"
+            :controls="v$.request.country"
+            inputType="text"
+            formFieldType="inputBlock"
+            :validation="['required']"
+            :readonly="true"
+          />
         </div>
         <div class="col-6">
-          <div class="position-relative mb-8">
-            <label for="Country" class="form-label fw-bolder">
-              Billing State
-            </label>
-            <select
-              class="form-select form-select-solid"
-              v-model="v$.request.billingState.$model"
-              @change="
-                getCity(
-                  request.country.iso2,
-                  v$.request.billingState.$model.iso2
-                )
-              "
-            >
-              <option v-for="(item, i) in state" :key="i" :value="item">
-                {{ item.name }}
-              </option>
-            </select>
-
-            <div
-              class="invalid-feedback position-absolute m-0"
-              v-if="
-                v$.request.billingState.$dirty &&
-                v$.request.billingState.$invalid
-              "
-            >
-              Billing State is required
-            </div>
-          </div>
+          <SelectBox
+            label="State"
+            :data="state"
+            :controls="v$.request.billingState"
+            formFieldType="inputBlock"
+            :validation="['required']"
+          />
         </div>
       </div>
       <div class="row">
         <div class="col-6">
-          <div class="position-relative mb-8">
-            <label for="Country" class="form-label fw-bolder">
-              Billing City
-            </label>
-            <select
-              class="form-select form-select-solid"
-              v-model="v$.request.billingCity.$model"
-            >
-              <option v-for="(item, i) in city" :key="i" :value="item">
-                {{ item.name }}
-              </option>
-            </select>
-
-            <div
-              class="invalid-feedback position-absolute m-0"
-              v-if="
-                v$.request.billingCity.$dirty && v$.request.billingCity.$invalid
-              "
-            >
-              Billing City is required
-            </div>
-          </div>
+          <TextInput
+            label="City"
+            :controls="v$.request.billingCity"
+            inputType="text"
+            formFieldType="inputBlock"
+            :validation="['required']"
+          />
         </div>
         <div class="col-6">
           <TextInput
@@ -156,16 +108,15 @@
 </template>
 <script lang="ts">
 import { Vue, Options, setup } from "vue-class-component";
-import { Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
 import { required, numeric } from "@vuelidate/validators";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import SelectBox from "@/components/controls/SelectBox.vue";
 import Information from "@/components/Models/Information.vue";
 
-import { achRequestModel, stateModel, cityModel } from "@/model";
-import { IAddressService } from "@/service";
+import { achRequestModel } from "@/model";
 
 import { useStore } from "vuex";
 
@@ -174,6 +125,7 @@ declare let ChargeOver: any;
 @Options({
   components: {
     TextInput,
+    SelectBox,
     Information,
   },
   validations: {
@@ -190,13 +142,8 @@ declare let ChargeOver: any;
   },
 })
 export default class ACH extends Vue {
-  @Inject("addressService") service: IAddressService;
-
   public request: achRequestModel = new achRequestModel();
   public store = useStore();
-
-  public state: Array<stateModel> = [];
-  public city: Array<cityModel> = [];
 
   public accountError: string = null;
   public isAccountValid: boolean = false;
@@ -206,11 +153,11 @@ export default class ACH extends Vue {
 
   public validate() {
     return useVuelidate();
-  } 
+  }
 
   mounted() {
-    this.request.country = { id: 233, name: "United States", iso2: "US" };
-    this.getState("US");
+    this.request.country = "United States";
+    this.request.billingState = this.state[0];
   }
 
   public back() {
@@ -252,10 +199,10 @@ export default class ACH extends Vue {
       const payload = {
         company: this.store.getters.selectedFirmName,
         bill_addr1: this.request.billingAddress,
-        bill_city: this.request.billingCity.name,
-        bill_state: this.request.billingState.name,
+        bill_city: this.request.billingCity,
+        bill_state: this.request.billingState,
         bill_postcode: this.request.postalCode,
-        bill_country: this.request.country.name,
+        bill_country: this.request.country,
       };
       const ach = {
         number: this.request.accountNo,
@@ -268,24 +215,8 @@ export default class ACH extends Vue {
     }
   }
 
-  public getState(selectedCountry: string) {
-    this.service.getState(selectedCountry).then((response) => {
-      this.state = response;
-      this.state.sort((a, b) => a.name.localeCompare(b.name));
-      this.request.billingState = this.state[0];
-      this.getCity(selectedCountry, this.state[0].iso2);
-    });
-  }
-
-  public getCity(selectedCountry: string, selectedState: string) {
-    this.service.getCity(selectedCountry, selectedState).then((response) => {
-      this.city = response;
-      this.request.billingCity = this.city[0];
-    });
-  }
-
-  get country() {
-    return this.store.getters.getCountry;
+  get state() {
+    return this.store.getters.getState;
   }
 }
 </script>

@@ -1,5 +1,4 @@
 import { GetterTree, MutationTree, ActionTree } from "vuex";
-import { AddressService } from "@/service";
 
 const state: any = {
   commitmentTerm: '',
@@ -9,7 +8,7 @@ const state: any = {
   creditCard: {},
   ach: {},
   customer: {},
-  country: []
+  states: ["Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "Baker Island", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Howland Island", "Idaho", "Illinois", "Indiana", "Iowa", "Jarvis Island", "Johnston Atoll", "Kansas", "Kentucky", "Kingman Reef", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Midway Atoll", "Minnesota", "Mississippi", "Missouri", "Montana", "Navassa Island", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Palmyra Atoll", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "United States Minor Outlying Islands", "United States Virgin Islands", "Utah", "Vermont", "Virginia", "Wake Island", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
 };
 const getters: GetterTree<any, any> = {
   getCommitmentTerm: (state) => {
@@ -33,8 +32,8 @@ const getters: GetterTree<any, any> = {
   getAch: (state) => {
     return state.ach;
   },
-  getCountry: (state) => {
-    return state.country;
+  getState: (state) => {
+    return state.states;
   }
 };
 const mutations: MutationTree<any> = {
@@ -58,9 +57,6 @@ const mutations: MutationTree<any> = {
   },
   onUpdateACH(state, payload) {
     state.ach = payload;
-  },
-  onUpdateCountry(state, country) {
-    state.country = country;
   }
 }
 const actions: ActionTree<any, any> = {
@@ -84,12 +80,6 @@ const actions: ActionTree<any, any> = {
   },
   updateACH(context, payload) {
     context.commit('onUpdateACH', payload);
-  },
-  updateCountry(context) {
-    const service = new AddressService();
-    service.getCountrys().then((response) => {
-      context.commit('onUpdateCountry', response);
-    })
   }
 }
 export const SubscriptionModule = {
@@ -98,4 +88,3 @@ export const SubscriptionModule = {
   mutations,
   actions
 };
-//4112165412345678

@@ -2,7 +2,7 @@
   <div class="m-4">
     <div class="row">
       <div class="col-6 mt-4">
-        <div class="fw-bold me-4 text-end">Commitment term</div>
+        <div class="fw-bolder me-4 text-end">Commitment term</div>
       </div>
       <div class="col-6">
         <div class="btn-group border rounded p-1">
@@ -30,7 +30,11 @@
           </button>
         </div>
         <div class="text-start text-success p-2 fw-bold">
-          {{ planOffer }}
+          {{
+            commitmentTerm == "Annual"
+              ? "Hooray, you are saving 20% with a 1 year commitment!"
+              : "Commit for a year and save up to 20%"
+          }}
         </div>
       </div>
     </div>
@@ -66,11 +70,11 @@
                 <template v-if="item.planName != 'Enterprise'">
                   <div class="tab-plan-price fw-bolder text-center">
                     <span class="fs-7">$</span>
-                    {{ item.termPlanAmount }}
-                    <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
+                    {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
+                    <span class="fs-8 fw-light">/ {{ item.planType }}</span>
                   </div>
                   <div
-                    class="tab-plan-extra fs-9 text-center"
+                    class="tab-plan-extra fs-8 text-center fw-light"
                     v-if="commitmentTerm == 'Annual'"
                   >
                     {{ item.extraInfo }}
@@ -106,7 +110,7 @@
       <div class="col-5">
         <div class="card bg-light p-8">
           <div class="fs-2 fw-bolder">
-            What’s in the {{ selectedPlan.product }} Plan?
+            What’s in the {{ selectedPlan.planName }} Plan?
           </div>
           <div class="text-muted mt-3">
             Designed for the starting to small RIA
@@ -160,13 +164,13 @@ export default class Plan extends Vue {
 
   private Annual = [
     {
-      planName: "Standard",
+      planName: "Launch",
       description: "Essentials for the starting to small RIA",
       planType: "Yr",
-      extraInfo: "($99/month)",
+      extraInfo: "($100/month)",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Up to 2 administrator users",
           access: true,
         },
         {
@@ -200,31 +204,30 @@ export default class Plan extends Vue {
       planName: "Professional",
       description: "For small to medium-sized RIAs",
       planType: "Yr",
-      extraInfo: "($199/month)",
+      extraInfo: "($200/month)",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Launch Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "+ 1 adminstrator user, for a total of 3",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "+ 200 clients, for a total of 350",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Average Daily Balanaces",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Flow Billing Calculdations",
           access: true,
         },
-
         {
-          planInfo: "Single custodian connector",
+          planInfo: "+ 1 custodian connector, for a total of 2",
           access: true,
         },
         {
@@ -234,34 +237,33 @@ export default class Plan extends Vue {
       ],
     },
     {
-      planName: "Ultimate",
+      planName: "Elite",
       description: "For medium to large-sized RIAs",
       planType: "Yr",
-      extraInfo: "($399/month)",
+      extraInfo: "($400/month)",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Professional Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "+ 2 adminstrator users, for a total of 5",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "+ 150 clients, for a total of 500",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Multi-Fee Billing Calculations",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Product Categorization",
           access: true,
         },
-
         {
-          planInfo: "Single custodian connector",
+          planInfo: "+ 1 custodian connector, for a total of 3",
           access: true,
         },
         {
@@ -277,32 +279,32 @@ export default class Plan extends Vue {
       extraInfo: "",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Elite Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "Unlimited adminstrator users",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "Unlimited AUM & clients",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Unlimited connector",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Advisor portal access",
           access: true,
         },
 
         {
-          planInfo: "Single custodian connector",
+          planInfo: "Priority email/phone support",
           access: true,
         },
         {
-          planInfo: "Unlimited email/phone support",
+          planInfo: "Custom SLAs",
           access: true,
         },
       ],
@@ -311,13 +313,13 @@ export default class Plan extends Vue {
 
   private Monthly = [
     {
-      planName: "Standard",
+      planName: "Launch",
       description: "Essentials for the starting to small RIA",
       planType: "Mo",
-      extraInfo: "(Save $25 per month with an annual term)",
+      extraInfo: "(Save $25 per month with an annual term  )",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Up to 2 administrator users",
           access: true,
         },
         {
@@ -351,31 +353,30 @@ export default class Plan extends Vue {
       planName: "Professional",
       description: "For small to medium-sized RIAs",
       planType: "Mo",
-      extraInfo: "(Save $51 per month with an annual term)",
+      extraInfo: "(Save $50 per month with an annual term)",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Launch Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "+ 1 adminstrator user, for a total of 3",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "+ 200 clients, for a total of 350",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Average Daily Balanaces",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Flow Billing Calculdations",
           access: true,
         },
-
         {
-          planInfo: "Single custodian connector",
+          planInfo: "+ 1 custodian connector, for a total of 2",
           access: true,
         },
         {
@@ -385,34 +386,33 @@ export default class Plan extends Vue {
       ],
     },
     {
-      planName: "Ultimate",
+      planName: "Elite",
       description: "For medium to large-sized RIAs",
       planType: "Mo",
-      extraInfo: "(Save $101 per month with an annual term)",
+      extraInfo: "(Save $100 per month with an annual term)",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Professional Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "+ 2 adminstrator users, for a total of 5",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "+ 150 clients, for a total of 500",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Multi-Fee Billing Calculations",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Product Categorization",
           access: true,
         },
-
         {
-          planInfo: "Single custodian connector",
+          planInfo: "+ 1 custodian connector, for a total of 3",
           access: true,
         },
         {
@@ -428,32 +428,32 @@ export default class Plan extends Vue {
       extraInfo: "",
       planDetails: [
         {
-          planInfo: "Up to 3 administrator users",
+          planInfo: "Everything from Elite Plan",
           access: true,
         },
         {
-          planInfo: "Up to 150 clients",
+          planInfo: "Unlimited adminstrator users",
           access: true,
         },
         {
-          planInfo: "Up to $500M in AUM",
+          planInfo: "Unlimited AUM & clients",
           access: true,
         },
         {
-          planInfo: "Unlimited fee schedules",
+          planInfo: "Unlimited connector",
           access: true,
         },
         {
-          planInfo: "Unlimited invoices",
+          planInfo: "Advisor portal access",
           access: true,
         },
 
         {
-          planInfo: "Single custodian connector",
+          planInfo: "Priority email/phone support",
           access: true,
         },
         {
-          planInfo: "Unlimited email/phone support",
+          planInfo: "Custom SLAs",
           access: true,
         },
       ],
@@ -466,7 +466,8 @@ export default class Plan extends Vue {
 
   private getPlans() {
     const request: planRequestModel = new planRequestModel();
-    request.termPlanType = CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
+    request.termPlanType =
+      CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
     this.service
       .getPlans(request)
       .then((response) => {
@@ -523,10 +524,5 @@ export default class Plan extends Vue {
     this.$emit("next");
   }
 
-  get planOffer() {
-    return this.commitmentTerm
-      ? "Hooray, you are saving 20% with a 1 year commitment!"
-      : "Commit for a year and save up to 20%";
-  }
 }
 </script>

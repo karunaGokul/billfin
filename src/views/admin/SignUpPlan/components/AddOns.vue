@@ -44,10 +44,10 @@
             <div class="col-3">
               <div class="tab-plan-price fw-bolder text-center">
                 <span class="fs-7">$</span>
-                {{ item.planAddOnamount }}
-                <span class="fs-8 fw-normal">/ {{ item.planType }}</span>
+                {{ $filters.currencyDisplayWithoutSymbol(item.planAddOnamount) }}
+                <span class="fs-8 fw-light">/ {{ item.planType }}</span>
               </div>
-              <div class="tab-plan-extra fs-9 text-left ms-5">
+              <div class="tab-plan-extra fs-9 text-left ms-5 fw-light">
                 {{ item.extraInfo }}
               </div>
             </div>
@@ -55,7 +55,9 @@
           <div v-if="item.addOnName == 'Admin User License'">
             <div class="row g-0 mt-6">
               <div class="col-2"></div>
-              <div class="fw-bolder col-7" style="line-height: 3;">Number of admin user licenses?</div>
+              <div class="fw-bolder col-7" style="line-height: 3">
+                Number of admin user licenses?
+              </div>
               <div class="col-3">
                 <select
                   class="form-select form-select-solid"
@@ -74,7 +76,7 @@
     </div>
 
     <div class="text-center mt-10">
-      <button class="btn btn-light me-5" @click="back">Cancel</button>
+      <button class="btn btn-light me-5" @click="back">Back</button>
       <button class="btn btn-primary ms-5" @click="next">Continue</button>
     </div>
   </div>
@@ -91,18 +93,18 @@ import { addonsRequestModel, addonsResponseModel } from "@/model";
 export default class AddOns extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
 
-  public itemsPerRow: number = 3;
+  public itemsPerRow: number = 0;
   public store = useStore();
   public addons: Array<addonsResponseModel> = [];
 
-   public Annual: any = [
+  public Annual: any = [
     {
       addOnName: "Average Daily Balances",
       description: "Support ADB calculations and reporting",
       planType: "Yr",
       extraInfo: "",
       selected: true,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Flow Billing",
@@ -110,7 +112,7 @@ export default class AddOns extends Vue {
       planType: "Yr",
       extraInfo: "",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Admin User License",
@@ -118,7 +120,7 @@ export default class AddOns extends Vue {
       planType: "Yr",
       extraInfo: "per user",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Multi-Fee Accounts",
@@ -126,14 +128,14 @@ export default class AddOns extends Vue {
       planType: "Yr",
       extraInfo: "",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Revenue Sharing",
       description: "Flexible revenue sharing and fee splitting",
       planType: "Yr",
       extraInfo: "",
-      quantity: '1',
+      quantity: "1",
       selected: false,
     },
     {
@@ -141,19 +143,19 @@ export default class AddOns extends Vue {
       description: "Connect BillFin to multiple custody sources",
       planType: "Yr",
       extraInfo: "per connector",
-      quantity: '1',
+      quantity: "1",
       selected: false,
-    }
+    },
   ];
 
   public Monthly: any = [
-   {
+    {
       addOnName: "Average Daily Balances",
       description: "Support ADB calculations and reporting",
       planType: "Mon",
       extraInfo: "",
       selected: true,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Flow Billing",
@@ -161,7 +163,7 @@ export default class AddOns extends Vue {
       planType: "Mon",
       extraInfo: "",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Admin User License",
@@ -169,7 +171,7 @@ export default class AddOns extends Vue {
       planType: "Mon",
       extraInfo: "per user",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Multi-Fee Accounts",
@@ -177,14 +179,14 @@ export default class AddOns extends Vue {
       planType: "Mon",
       extraInfo: "",
       selected: false,
-      quantity: '1',
+      quantity: "1",
     },
     {
       addOnName: "Revenue Sharing",
       description: "Flexible revenue sharing and fee splitting",
       planType: "Mon",
       extraInfo: "",
-      quantity: '1',
+      quantity: "1",
       selected: false,
     },
     {
@@ -192,11 +194,10 @@ export default class AddOns extends Vue {
       description: "Connect BillFin to multiple custody sources",
       planType: "Yr",
       extraInfo: "per connector",
-      quantity: '1',
+      quantity: "1",
       selected: false,
-    }
+    },
   ];
-  
 
   created() {
     this.getAddons();
@@ -205,17 +206,31 @@ export default class AddOns extends Vue {
   private getAddons() {
     const request = new addonsRequestModel();
     request.termPlanId = this.store.getters.getPlan.termPlanId;
-    this.service.getAddons(request).then((response) => {
-      this.bindAddons(response, this.commitmentTerm == "Annual" ? this.Annual: this.Monthly);
-    }).catch((err) =>{
-      console.log(err);
-    })
+    this.service
+      .getAddons(request)
+      .then((response) => {
+        this.bindAddons(
+          response,
+          this.commitmentTerm == "Annual" ? this.Annual : this.Monthly
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   private bindAddons(response: Array<addonsResponseModel>, selectedTerm: any) {
     this.addons = [];
     response.forEach((item) => {
-        selectedTerm.forEach((addons: { addOnName: string; description: string; planType: string; extraInfo: string; selected: boolean; quantity: string; }) => {
+      selectedTerm.forEach(
+        (addons: {
+          addOnName: string;
+          description: string;
+          planType: string;
+          extraInfo: string;
+          selected: boolean;
+          quantity: string;
+        }) => {
           if (item.addOnName == addons.addOnName) {
             this.addons.push({
               termPlanAddOnId: item.termPlanAddOnId,
@@ -225,17 +240,19 @@ export default class AddOns extends Vue {
               planType: addons.planType,
               extraInfo: addons.extraInfo,
               selected: addons.selected,
-              quantity: addons.quantity
+              quantity: addons.quantity,
             });
           }
-        });
+        }
+      );
     });
+    this.itemsPerRow = Math.round(this.addons.length / 2);
   }
 
   public next() {
     let payload: any[] = [];
     payload = this.addons.filter((item) => item.selected);
-    this.store.dispatch('updateAddons', payload);
+    this.store.dispatch("updateAddons", payload);
     this.$emit("next");
   }
 

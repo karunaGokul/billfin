@@ -41,8 +41,7 @@ import { useStore } from "vuex";
 import ACH from "./components/ACH.vue";
 import CreditCard from "./components/creditCard.vue";
 
-import { createCustomerRequestModel, paymentFirmRequestModel, paymentTokenRequestModel } from "@/model";
-
+import { createCustomerRequestModel, paymentTokenRequestModel } from "@/model";
 import { ISubscripeService } from "@/service";
 
 declare let ChargeOver: any;
@@ -58,10 +57,6 @@ export default class Index extends Vue {
 
   public paymenyType: string = "Credit Card";
   public store = useStore();
-
-  created() {
-    this.store.dispatch("updateCountry");
-  }
 
   onBack() {
     this.$emit("back");

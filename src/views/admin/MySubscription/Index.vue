@@ -13,11 +13,8 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Inject } from "vue-property-decorator";
 
 import PlanAddons from "./components/PlanAddons.vue";
-
-import { IAddressService } from "@/service";
 
 @Options({
   components: {
@@ -25,7 +22,6 @@ import { IAddressService } from "@/service";
   },
 })
 export default class Index extends Vue {
-  @Inject("addressService") service: IAddressService;
 
   mounted() {
     //this.service.getPick();

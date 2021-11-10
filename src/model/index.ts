@@ -9,4 +9,3 @@ export * from './fee-types.model';
 export * from './frequnecy-board.model';
 export * from './payment.model';
 export * from './subscribe.model';
-export * from './address.model';

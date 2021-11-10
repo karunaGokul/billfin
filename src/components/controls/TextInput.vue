@@ -21,7 +21,7 @@
     />
   </div>
 
-  <div class="mb-5 row" v-if="formFieldType == 'inputInline'">
+  <div class="mb-5 row position-relative mb-8" v-if="formFieldType == 'inputInline'">
     <label :for="label" class="col-sm-4 col-form-label fw-bolder">
       {{ label }}
     </label>
@@ -53,11 +53,11 @@ import ErrorMessage from "./ErrorMessage.vue";
   },
 })
 export default class TextInput extends Vue {
-  @Prop() formFieldType: string | any;
-  @Prop() label: string | any;
+  @Prop() formFieldType: string;
+  @Prop() label: string;
   @Prop() controls: any;
-  @Prop() validation: Array<string> | any;
-  @Prop() readonly: boolean | any;
+  @Prop() validation: Array<string>;
+  @Prop() readonly: boolean;
 
   updateInput() {
     this.$emit("updateInput");

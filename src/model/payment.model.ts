@@ -1,12 +1,12 @@
 export class contactsModel {
     billingAddress: string;
-    billingCity: any;
-    billingState: any;
+    billingCity: string;
+    billingState: string;
     postalCode: number;
-    country: any;
+    country: string;
 }
 export class creditCardRequestModel extends contactsModel {
-    cardNumber: number;
+    cardNumber: string;
     expirationMonth: number;
     expirationYear: number;
     cvv: number;
