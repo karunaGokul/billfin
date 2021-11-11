@@ -16,7 +16,11 @@
           <span class="fs-7 text-muted">/{{ item.planType }}</span>
         </div>
         <div class="dropdown" v-click-outside="clickOutSidePlan">
-          <i class="fas fa-ellipsis-v fs-1 ms-4 mt-2" @click="togglePlan = true"></i>
+          <i
+            class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
+            style="cursor: pointer"
+            @click="togglePlan = true"
+          ></i>
           <ul
             class="dropdown-menu overflow-auto"
             :class="{ show: togglePlan }"
@@ -41,7 +45,7 @@ export default class PlanAddons extends Vue {
   togglePlan: boolean = false;
 
   public clickOutSidePlan() {
-    this.togglePlan = false;
+    if (this.togglePlan) this.togglePlan = false;
   }
 }
 </script>

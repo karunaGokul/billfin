@@ -150,7 +150,7 @@
 
       <div class="mt-4">
         <p class="mb-0 ps-5 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__name">
-          ADMINSTRATION
+          ADMINISTRATION
         </p>
         <p class="mb-0 ps-6 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__icon">
           <i class="fas fa-ellipsis-h"></i>
@@ -339,7 +339,7 @@
         <div class="row">
           <div class="col-3">
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
-              Dashboard
+              {{currentPage}}
             </p>
             <ol class="breadcrumb ps-4 pb-4">
               <li class="breadcrumb-item">
@@ -414,6 +414,7 @@ export default class Home extends Vue {
 
   mounted() {
     this.getFirms();
+    console.log(this.$route);
   }
 
   private getFirms() {
@@ -498,7 +499,12 @@ export default class Home extends Vue {
   }
 
   get selectedFirm() {
-    return this.store.getters.selectedFirmName;
+    return this.store.getters.firms.name;
   }
+
+  get currentPage() {
+    return this.$route.name;
+  }
+  
 }
 </script>

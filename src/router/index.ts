@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/sign-up-plan",
-        name: "SignUpPlan",
+        name: "Sign Up Plan",
         component: () => import("@/views/admin/SignUpPlan/Index.vue")
       },
       {
@@ -29,14 +29,14 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/my-subscription",
-        name: 'MySubscription',
+        name: 'Manage Subscription',
         component: () => import("@/views/admin/MySubscription/Index.vue")
       }
     ],
   },
   {
     path: "/sign-up",
-    name: "SignUp",
+    name: "Sign Up",
     component: () => import("@/views/auth/SignUp.vue"),
     meta: { anonymous: true },
   },

@@ -197,7 +197,7 @@ export default class ACH extends Vue {
     this.v$.$touch();
     if (!this.v$.$invalid && this.isAccountValid) {
       const payload = {
-        company: this.store.getters.selectedFirmName,
+        company: this.firms.name,
         bill_addr1: this.request.billingAddress,
         bill_city: this.request.billingCity,
         bill_state: this.request.billingState,
@@ -217,6 +217,10 @@ export default class ACH extends Vue {
 
   get state() {
     return this.store.getters.getState;
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 }
 </script>
