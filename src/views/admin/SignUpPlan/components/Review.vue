@@ -9,7 +9,7 @@
         <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
       </div>
       <div>
-        {{ $filters.currencyDisplay(currencyToNumber(plan.termPlanAmount)) }}
+        {{ $filters.currencyDisplay($currencyToNumber(plan.termPlanAmount)) }}
       </div>
     </div>
 
@@ -127,15 +127,6 @@ export default class Review extends Vue {
     this.$emit("next");
   }
 
-  private currencyToNumber(value: any) {
-    if (!value) return 0;
-
-    if (isNaN(value)) value = value.replaceAll(",", "");
-    value = parseFloat(value);
-
-    return value;
-  }
-
   get addons() {
     return this.store.getters.getAddons;
   }
@@ -145,7 +136,7 @@ export default class Review extends Vue {
     addons = this.addons.reduce((prev: number, cur: any) => {
       return prev + parseInt(cur.planAddOnamount);
     }, 0);
-    addons = addons + this.currencyToNumber(this.plan.termPlanAmount);
+    addons = addons + this.$currencyToNumber(this.plan.termPlanAmount);
     return addons;
   }
 

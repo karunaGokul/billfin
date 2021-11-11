@@ -70,7 +70,9 @@
 
       <fee-types-advisory />
 
-      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">Frequency & Timing</p>
+      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top">
+        Frequency & Timing
+      </p>
 
       <div
         v-for="(item, index) in frequencyRequest.aumFeeTypes"
@@ -84,23 +86,31 @@
         <frequency-advisory :response="item" v-if="item" />
       </div>
 
-      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top" v-if="methodologiesRequest.aumFeeTypes.length > 0">Methodologies</p>
+      <p
+        class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top"
+        v-if="methodologiesRequest.aumFeeTypes.length > 0"
+      >
+        Methodologies
+      </p>
 
       <div
         v-for="(item, index) in methodologiesRequest.aumFeeTypes"
         :key="index"
         class="ps-4 pe-4"
       >
-        <p
-          class="fw-bolder pb-5 mb-5 text-dark border-bottom"
-        >
+        <p class="fw-bolder pb-5 mb-5 text-dark border-bottom">
           {{ item.feeTypeName }}
         </p>
 
         <methodologies-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <p class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top" v-if="adjustmentsResponse.aumFeeTypes.length > 0">Adjustments</p>
+      <p
+        class="fs-3 text-center fw-bolder pb-3 mb-5 pt-5 border-top"
+        v-if="adjustmentsResponse.aumFeeTypes.length > 0"
+      >
+        Adjustments
+      </p>
 
       <div
         v-for="(item, index) in adjustmentsResponse.aumFeeTypes"
@@ -173,9 +183,9 @@ export default class ConfirmBoard extends Vue {
 
   public getGeneralDetails() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
-    request.firmDomain = this.store.getters.selectedFirmDomain;
-    request.firmName = this.store.getters.selectedFirmName;
+    request.firmId = this.firms.firmId;
+    request.firmDomain = this.firms.domain;
+    request.firmName = this.firms.name;
     this.service
       ?.getGeneralDetails(request)
       .then((response) => {
@@ -192,7 +202,7 @@ export default class ConfirmBoard extends Vue {
 
   private getFrequncyAndTiming() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
     this.service
       .getFrequencyAndTiming(request)
       .then((response) => {
@@ -205,7 +215,7 @@ export default class ConfirmBoard extends Vue {
 
   private getMethodologies() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
 
     this.service
       ?.getMethodologies(request)
@@ -221,7 +231,7 @@ export default class ConfirmBoard extends Vue {
 
   private getAdjustments() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
 
     this.service
       ?.getAdjustments(request)
@@ -237,75 +247,20 @@ export default class ConfirmBoard extends Vue {
 
   public confirm() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
-    this.service.saveConfirm(request).then((response) => {
-      console.log(response);
-      this.$emit("close");
-    }).catch((err) => {
-      console.log(err);
-    });
+    request.firmId = this.firms.firmId;
+    this.service
+      .saveConfirm(request)
+      .then((response) => {
+        console.log(response);
+        this.$emit("close");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  public states: Array<string> = [
-    "Alabama",
-    "Alaska",
-    "American Samoa",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "District Of Columbia",
-    "Federated States Of Micronesia",
-    "Florida",
-    "Georgia",
-    "Guam",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Marshall Islands",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Northern Mariana Islands",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Palau",
-    "Pennsylvania",
-    "Puerto Rico",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virgin Islands",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming",
-  ];
+  get firms() {
+    return this.store.getters.firms;
+  }
 }
 </script>

@@ -225,7 +225,7 @@ export default class NonAumAdvisory extends Vue {
   }
 
   public saveFrequncyAndTiming() {
-    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.firmId = this.firms.firmId;
     this.request.feeTypeName = this.response.feeTypeName;
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
@@ -415,13 +415,12 @@ export default class NonAumAdvisory extends Vue {
     }
   }
 
-
-  public nullCheck(value: any) {
-    return value ? value : "";
-  }
-
   get isQuarterlySelected() {
     return this.request.billingFrequency.includes("QUARTERLY");
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get formValidation() {

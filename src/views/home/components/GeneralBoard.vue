@@ -161,9 +161,9 @@ export default class GeneralBoard extends Vue {
   
   public getGeneralDetails() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
-    request.firmDomain = this.store.getters.selectedFirmDomain;
-    request.firmName = this.store.getters.selectedFirmName;
+    request.firmId = this.firms.firmId;
+    request.firmDomain = this.firms.domain;
+    request.firmName = this.firms.name;
     this.service
       ?.getGeneralDetails(request)
       .then((response) => {
@@ -190,6 +190,10 @@ export default class GeneralBoard extends Vue {
           console.log(err);
         });
     }
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get states() {

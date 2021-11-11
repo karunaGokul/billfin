@@ -199,7 +199,7 @@ export default class Advisory extends Vue {
   }
 
   public saveMethodologies() {
-    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.firmId = this.firms.firmId;
     this.request.feeTypeName = this.response.feeTypeName;
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
@@ -326,6 +326,10 @@ export default class Advisory extends Vue {
         item.selected = true;
       else item.selected = false;
     });
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get formValidation() {

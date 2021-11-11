@@ -84,7 +84,7 @@ export default class MethodologiesBoard extends Vue {
 
   private getMethodologies() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
 
     this.service
       ?.getMethodologies(request)
@@ -118,7 +118,7 @@ export default class MethodologiesBoard extends Vue {
             aumFlag: true,
             aumDetails: response.aumFeeTypes[i].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
           break;
         }
       }
@@ -127,7 +127,7 @@ export default class MethodologiesBoard extends Vue {
         this.request.aumFeeTypes[0].aumDetails == null &&
         this.selectedAumDetails.aumFeeTypes.length > 0
       ) {
-        this.request.aumFeeTypes[0].aumDetails = this.clone(
+        this.request.aumFeeTypes[0].aumDetails = this.$vuehelper.clone(
           this.selectedAumDetails.aumFeeTypes[0].aumDetails
         );
       }
@@ -155,7 +155,7 @@ export default class MethodologiesBoard extends Vue {
 
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
-      this.request.aumFeeTypes[index].aumDetails = this.clone(response);
+      this.request.aumFeeTypes[index].aumDetails = this.$vuehelper.clone(response);
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
@@ -169,7 +169,7 @@ export default class MethodologiesBoard extends Vue {
             aumFlag: true,
             aumDetails: this.request.aumFeeTypes[0].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
         }
         if (
           this.request.aumFeeTypes[index].feeTypeName ==
@@ -182,7 +182,7 @@ export default class MethodologiesBoard extends Vue {
         }
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isCopied = true;
-          this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
+          this.request.aumFeeTypes[index + 1].aumDetails = this.$vuehelper.clone(
             this.selectedAumDetails.aumFeeTypes[0].aumDetails
           );
         }
@@ -190,15 +190,8 @@ export default class MethodologiesBoard extends Vue {
     }
   }
 
-  clone<T>(object: T): T {
-    return this._clone(object);
-  }
-
-  private _clone(obj: any) {
-    if (obj == null || typeof obj != "object") return obj;
-    var temp = new obj.constructor();
-    for (var key in obj) temp[key] = this._clone(obj[key]);
-    return temp;
+  get firms() {
+    return this.store.getters.firms;
   }
 }
 </script>

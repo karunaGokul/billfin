@@ -155,21 +155,12 @@ export default class SignUpPlan extends Vue {
     addons = this.addons.reduce((prev: number, cur: any) => {
       return prev + parseInt(cur.planAddOnamount);
     }, 0);
-    addons = addons + this.currencyToNumber(this.plan.termPlanAmount);
+    addons = addons + this.$currencyToNumber(this.plan.termPlanAmount);
     return addons;
   }
 
   get plan() {
     return this.store.getters.getPlan;
-  }
-
-   private currencyToNumber(value: any) {
-    if (!value) return 0;
-
-    if (isNaN(value)) value = value.replaceAll(",", "");
-    value = parseFloat(value);
-
-    return value;
   }
 
   get nextPaymentDate() {

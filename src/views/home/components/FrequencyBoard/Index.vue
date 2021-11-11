@@ -96,7 +96,7 @@ export default class FrequencyBoard extends Vue {
 
   private getFrequncyAndTiming() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
     this.service
       .getFrequencyAndTiming(request)
       .then((response) => {
@@ -140,7 +140,7 @@ export default class FrequencyBoard extends Vue {
             aumFlag: true,
             aumDetails: response.aumFeeTypes[i].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
           break;
         }
       }
@@ -148,7 +148,7 @@ export default class FrequencyBoard extends Vue {
         !this.request.aumFeeTypes[0].aumDetails &&
         this.selectedAumDetails.aumFeeTypes.length > 0
       )
-        this.request.aumFeeTypes[0].aumDetails = this.clone(
+        this.request.aumFeeTypes[0].aumDetails = this.$vuehelper.clone(
           this.selectedAumDetails.aumFeeTypes[0].aumDetails
         );
     }
@@ -167,7 +167,7 @@ export default class FrequencyBoard extends Vue {
             aumFlag: false,
             aumDetails: nonAum.aumFeeTypes[j].aumDetails,
           };
-          this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedNonAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
           break;
         }
       }
@@ -175,7 +175,7 @@ export default class FrequencyBoard extends Vue {
         !nonAum.aumFeeTypes[0].aumDetails &&
         this.selectedNonAumDetails.aumFeeTypes.length > 0
       )
-        nonAum.aumFeeTypes[0].aumDetails = this.clone(
+        nonAum.aumFeeTypes[0].aumDetails = this.$vuehelper.clone(
           this.selectedNonAumDetails.aumFeeTypes[0].aumDetails
         );
 
@@ -183,9 +183,6 @@ export default class FrequencyBoard extends Vue {
         if (item.feeTypeName == nonAum.aumFeeTypes[0].feeTypeName)
           item.aumDetails = nonAum.aumFeeTypes[0].aumDetails;
       });
-
-      console.log(this.selectedNonAumDetails);
-
     }
   }
 
@@ -212,7 +209,7 @@ export default class FrequencyBoard extends Vue {
 
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
-      this.request.aumFeeTypes[index].aumDetails = this.clone(response);
+      this.request.aumFeeTypes[index].aumDetails = this.$vuehelper.clone(response);
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
 
       if (
@@ -227,7 +224,7 @@ export default class FrequencyBoard extends Vue {
             aumFlag: true,
             aumDetails: this.request.aumFeeTypes[0].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
         }
         if (
           this.request.aumFeeTypes[index].feeTypeName ==
@@ -241,7 +238,7 @@ export default class FrequencyBoard extends Vue {
 
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isCopied = true;
-          this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
+          this.request.aumFeeTypes[index + 1].aumDetails = this.$vuehelper.clone(
             this.selectedAumDetails.aumFeeTypes[0].aumDetails
           );
         }
@@ -263,9 +260,8 @@ export default class FrequencyBoard extends Vue {
             aumFlag: false,
             aumDetails: nonAumFeeTypes.aumFeeTypes[0].aumDetails,
           };
-          this.selectedNonAumDetails.aumFeeTypes.push(this.clone(object));
+          this.selectedNonAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
         }
-        console.log(this.selectedNonAumDetails);
         if (
           this.request.aumFeeTypes[index].feeTypeName ==
             this.selectedNonAumDetails.aumFeeTypes[0].feeTypeName &&
@@ -275,10 +271,9 @@ export default class FrequencyBoard extends Vue {
           this.selectedNonAumDetails.aumFeeTypes[0].aumDetails =
             this.request.aumFeeTypes[index].aumDetails;
         }
-        console.log(this.request.aumFeeTypes[index + 1]);
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isCopied = true;
-          this.request.aumFeeTypes[index + 1].aumDetails = this.clone(
+          this.request.aumFeeTypes[index + 1].aumDetails = this.$vuehelper.clone(
             this.selectedNonAumDetails.aumFeeTypes[0].aumDetails
           );
         }
@@ -286,15 +281,8 @@ export default class FrequencyBoard extends Vue {
     }
   }
 
-  public clone<T>(object: T): T {
-    return this._clone(object);
-  }
-
-  private _clone(obj: any) {
-    if (obj == null || typeof obj != "object") return obj;
-    var temp = new obj.constructor();
-    for (var key in obj) temp[key] = this._clone(obj[key]);
-    return temp;
+  get firms() {
+    return this.store.getters.firms;
   }
 }
 </script>

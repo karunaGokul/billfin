@@ -73,7 +73,7 @@ export default class AdjustmentsBoard extends Vue {
 
   private getAdjustments() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
 
     this.service
       ?.getAdjustments(request)
@@ -100,6 +100,10 @@ export default class AdjustmentsBoard extends Vue {
     if (this.request.aumFeeTypes.length > this.step)
       this.response = this.request.aumFeeTypes[this.step];
     else this.$emit("next");
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 }
 </script>

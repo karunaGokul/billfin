@@ -5,6 +5,8 @@ import { ListItem, feeTypes } from "./model";
 
 import router from "./router";
 import store from "./store";
+import customFilters from "./plugins/customFilters";
+import VueHelper from "./plugins/vue-helper";
 
 // BillFin styles
 import "./styles/main.scss";
@@ -12,6 +14,8 @@ import "./styles/main.scss";
 const app = createApp(App);
 app.use(store);
 app.use(router);
+app.use(customFilters);
+app.use(VueHelper);
 
 app.mount("#app");
 

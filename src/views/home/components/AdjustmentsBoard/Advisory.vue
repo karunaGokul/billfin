@@ -231,7 +231,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class AdjustmentsBoard extends Vue {
+export default class Advisory extends Vue {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
 
@@ -266,21 +266,21 @@ export default class AdjustmentsBoard extends Vue {
   public saveAdjustments() {
     let request: aumDetails = new aumDetails();
 
-    request = this.clone(this.request);
-    request.firmId = this.store.getters.selectedFirmId;
+    request = this.$vuehelper.clone(this.request);
+    request.firmId = this.firms.firmId;
     request.feeTypeName = this.response.feeTypeName;
     request.onboardingFeeTypeId = this.response.id;
     request.aumFeeTypeFlag = this.response.aumFlag;
 
-    request.minimumFeeAmount = this.currencyToNumber(request.minimumFeeAmount);
-    request.maximumFeeAmount = this.currencyToNumber(request.maximumFeeAmount);
+    request.minimumFeeAmount = this.$currencyToNumber(request.minimumFeeAmount);
+    request.maximumFeeAmount = this.$currencyToNumber(request.maximumFeeAmount);
 
     if (request.flowThresholdType == "DOLLAR_AMOUNT")
-      request.flowThresholdValue = this.currencyToNumber(
+      request.flowThresholdValue = this.$currencyToNumber(
         request.flowThresholdValue
       );
     else if (request.flowThresholdType == "PERCENT")
-      request.flowThresholdValue = this.currencyToNumber(
+      request.flowThresholdValue = this.$currencyToNumber(
         request.flowThresholdValue
       );
 
@@ -353,7 +353,7 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private updateCurrency(value: any) {
-    value = this.currencyToNumber(value);
+    value = this.$currencyToNumber(value);
     const numberOfDigits: number = 2,
       minDigits: number = 2;
 
@@ -378,7 +378,7 @@ export default class AdjustmentsBoard extends Vue {
   }
 
   private updatePercentage(value: any) {
-    value = this.currencyToNumber(value);
+    value = this.$currencyToNumber(value);
     const numberOfDigits: number = 2;
     if (!value && value != null) value = 0;
     if (!value) return "N/A";
@@ -404,15 +404,6 @@ export default class AdjustmentsBoard extends Vue {
     else this.maximumFeeError = false;
   }
 
-  private currencyToNumber(value: any) {
-    if (!value) return 0;
-
-    if (isNaN(value)) value = value.replaceAll(",", "");
-    value = parseFloat(value);
-
-    return value;
-  }
-
   private isNumeric(value: any) {
     let validation = false;
     if (value) validation = /^(?=.*?[A-Za-z])/.test(value);
@@ -420,15 +411,8 @@ export default class AdjustmentsBoard extends Vue {
     return validation;
   }
 
-  private clone<T>(object: T): T {
-    return this._clone(object);
-  }
-
-  private _clone(obj: any) {
-    if (obj == null || typeof obj != "object") return obj;
-    var temp = new obj.constructor();
-    for (var key in obj) temp[key] = this._clone(obj[key]);
-    return temp;
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get formValidation() {
@@ -479,8 +463,8 @@ export default class AdjustmentsBoard extends Vue {
 
     if (self.firmMinimumFee && self.firmMaximumFee) {
       if (
-        this.currencyToNumber(self.maximumFeeAmount) >=
-        this.currencyToNumber(self.minimumFeeAmount)
+        this.$currencyToNumber(self.maximumFeeAmount) >=
+        this.$currencyToNumber(self.minimumFeeAmount)
       )
         valid = true;
       else valid = false;

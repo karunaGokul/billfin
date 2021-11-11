@@ -219,11 +219,15 @@ export default class AumAdvisory extends Vue {
   }
 
   public prev() {
-    this.$emit("prev", {response: this.response, index: this.prevNext, copiedStatus: this.isCopied});
+    this.$emit("prev", {
+      response: this.response,
+      index: this.prevNext,
+      copiedStatus: this.isCopied,
+    });
   }
 
   public saveFrequncyAndTiming() {
-    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.firmId = this.firms.firmId;
     this.request.feeTypeName = this.response.feeTypeName;
     this.request.onboardingFeeTypeId = this.response.id;
     this.request.aumFeeTypeFlag = this.response.aumFlag;
@@ -232,7 +236,7 @@ export default class AumAdvisory extends Vue {
       ?.saveFrequncyAndTiming(this.request)
       .then((response) => {
         if (response.status == "SUCCESS") {
-          this.$emit("next", {response: response, index: this.prevNext});
+          this.$emit("next", { response: response, index: this.prevNext });
         }
       })
       .catch((err) => {
@@ -412,13 +416,13 @@ export default class AumAdvisory extends Vue {
       });
     }
   }
-
-  public nullCheck(value: any) {
-    return value ? value : "";
-  }
-
+  
   get isQuarterlySelected() {
     return this.request.billingFrequency.includes("QUARTERLY");
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get formValidation() {
