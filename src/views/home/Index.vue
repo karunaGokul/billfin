@@ -335,7 +335,7 @@
         </div>
       </nav>
 
-      <div class="bg-light">
+      <div class="bg-light m-6">
         <div class="row">
           <div class="col-3">
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
@@ -371,8 +371,8 @@
             </div>
           </div>
         </div>
+        <router-view></router-view>
       </div>
-      <router-view></router-view>
     </div>
     <Welcome
       :step="lastOnboardingStep"
