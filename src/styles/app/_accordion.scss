@@ -1,0 +1,6 @@
+.accordion {
+      .accordion-button:not(.collapsed) {
+            background-color: $white;
+            color: $black;
+      }
+}

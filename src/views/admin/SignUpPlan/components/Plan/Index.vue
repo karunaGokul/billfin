@@ -1,153 +1,16 @@
 <template>
-  <div class="m-4">
-    <div class="row">
-      <div class="col-6 mt-4">
-        <div class="fw-bolder me-4 text-end">Commitment term</div>
-      </div>
-      <div class="col-6">
-        <div class="btn-group border rounded p-1">
-          <button
-            type="button"
-            class="btn rounded"
-            :class="{
-              'btn-success': commitmentTerm == 'Annual',
-              'text-muted': commitmentTerm != 'Annual',
-            }"
-            @click="updateCommitmentTerm('Annual')"
-          >
-            Annual
-          </button>
-          <button
-            type="button"
-            class="btn rounded"
-            :class="{
-              'btn-success': commitmentTerm == 'Monthly',
-              'text-muted': commitmentTerm != 'Monthly',
-            }"
-            @click="updateCommitmentTerm('Monthly')"
-          >
-            Monthly
-          </button>
-        </div>
-        <div class="text-start text-success p-2 fw-bold">
-          {{
-            commitmentTerm == "Annual"
-              ? "Hooray, you are saving 20% with a 1 year commitment!"
-              : "Commit for a year and save up to 20%"
-          }}
-        </div>
-      </div>
-    </div>
-
-    <div class="row g-0 mt-6" v-if="plans.length > 0">
-      <div class="col-6">
-        <div v-for="(item, index) in plans" :key="index">
-          <div
-            class="tab-plan border rounded mb-4 position-relative"
-            :class="{
-              'tab-plan-active': item.planName == selectedPlan.planName,
-              'border-dashed': item.planName != selectedPlan.planName,
-            }"
-          >
-            <div class="row g-0 pt-6 pb-6 h-100">
-              <div
-                class="col-2 d-flex align-items-center justify-content-center"
-              >
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    @change="updatePlan(item)"
-                    :checked="item.planName == selectedPlan.planName"
-                  />
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="tab-plan-name fw-bolder">{{ item.planName }}</div>
-                <div class="tab-plan-msg">{{ item.description }}</div>
-              </div>
-              <div class="col-4">
-                <template v-if="item.planName != 'Enterprise'">
-                  <div class="tab-plan-price fw-bolder text-center">
-                    <span class="fs-7">$</span>
-                    {{
-                      $filters.currencyDisplayWithoutSymbol(item.termPlanAmount)
-                    }}
-                    <span class="fs-8 fw-light">/ {{ item.planType }}</span>
-                  </div>
-                  <div
-                    class="tab-plan-extra fs-8 text-center fw-light"
-                    v-if="commitmentTerm == 'Annual'"
-                  >
-                    {{ item.extraInfo }}
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="text-center lh-5">
-                    <button type="button" class="btn btn-warning btn-sm">
-                      Contact Us
-                    </button>
-                  </div>
-                </template>
-              </div>
-            </div>
-            <div
-              class="
-                tab-plan-extra
-                fs-8
-                text-end
-                position-absolute
-                bottom-0
-                end-0
-                me-4
-              "
-              v-if="commitmentTerm == 'Monthly'"
-            >
-              {{ item.extraInfo }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-1"></div>
-      <div class="col-5">
-        <div class="card bg-light p-8">
-          <div class="fs-2 fw-bolder">
-            What’s in the {{ selectedPlan.planName }} Plan?
-          </div>
-          <div class="text-muted mt-3">
-            Designed for the starting to small RIA
-          </div>
-
-          <div
-            v-for="(data, i) in selectedPlan.planDetails"
-            :key="i"
-            class="mt-7 fw-bold text-dark"
-          >
-            <div class="row g-0">
-              <div class="col-10">
-                {{ data.planInfo }}
-              </div>
-              <div class="col-2">
-                <i
-                  class="fas fa-check-circle text-success"
-                  v-if="data.access"
-                ></i>
-                <i class="far fa-times-circle text-danger" v-else></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center mt-10" v-if="plans.length > 0">
-      <button class="btn btn-light me-5">Cancel</button>
-      <button class="btn btn-primary ms-5" @click="next">Continue</button>
-    </div>
+  <AumSubscriptionPlan
+    v-for="(item, index) in products"
+    :key="index"
+    :product="item"
+  />
+  <div class="text-center m-4">
+    <button class="btn btn-light me-5" @click="back">Back</button>
+    <button class="btn btn-primary ms-5" @click="next">Continue</button>
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
@@ -156,7 +19,16 @@ import { ISubscripeService } from "@/service";
 
 import { planRequestModel, planResponseModel, CommitmentTerm } from "@/model";
 
-export default class Plan extends Vue {
+import AumSubscriptionPlan from "./component/AumSubscriptionPlan.vue";
+
+@Options({
+  components: {
+    AumSubscriptionPlan,
+  },
+})
+export default class Index extends Vue {
+  public selectedBilling: string = "";
+
   @Inject("subscripeService") service: ISubscripeService;
 
   public store = useStore();
@@ -318,7 +190,7 @@ export default class Plan extends Vue {
       planName: "Launch",
       description: "Essentials for the starting to small RIA",
       planType: "Mo",
-      extraInfo: "(Save $25 per month with an annual term)",
+      extraInfo: "(Save $25 per month with an annual term  )",
       planDetails: [
         {
           planInfo: "Up to 2 administrator users",
@@ -463,9 +335,9 @@ export default class Plan extends Vue {
   ];
 
   created() {
-    this.products.forEach((item) => {
+    /*this.products.forEach((item) => {
       if (item == "AUM") this.getAumBilling(item);
-    });
+    });*/
   }
 
   private getAumBilling(products: string) {
@@ -526,6 +398,10 @@ export default class Plan extends Vue {
     this.store.dispatch("updateTerm", this.commitmentTerm);
     this.store.dispatch("updatePlan", this.selectedPlan);
     this.$emit("next");
+  }
+
+  public back() {
+    this.$emit("back");
   }
 
   get products() {

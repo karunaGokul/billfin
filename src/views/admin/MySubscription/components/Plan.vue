@@ -84,7 +84,7 @@
     :name="plan.planName"
     type="plan"
     @close="toggleCancelModel = false"
-    @cancel="onCancel"
+    @cancel="onCancelModel"
     v-if="toggleCancelModel"
   />
   <RenewPlanAddOn
@@ -122,7 +122,7 @@ export default class Plan extends Vue {
     if (this.togglePlan) this.togglePlan = false;
   }
 
-  public onCancel() {
+  public onCancelModel() {
     console.log("Plan cancelled");
     this.toggleCancelModel = false;
   }

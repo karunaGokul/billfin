@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content rounded-3">
         <div class="modal-header p-4 pt-6 pb-6">
-          <h5 class="modal-title fs-6 fw-bolder">{{ title }}</h5>
+          <h5 class="modal-title fs-6 fw-bolder">Renew Subscription {{ title }}</h5>
           <button
             type="button"
             class="btn-close"

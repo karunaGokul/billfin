@@ -15,22 +15,24 @@ export class createCustomerRequestModel {
 export class createCustomerResponseModel extends BaseModel {
   id: number;
 }
-
-export class planDetails {
-  planInfo: string;
-  access: boolean;
+export class productsResponseModel {
+  products: Array<string> = [];
 }
 export class planRequestModel {
   termPlanType: string;
+  productCode: string;
 }
 export class planResponseModel {
   termPlanId: number;
   planName: string;
   termPlanAmount: string;
+  aumLevel: string;
+  adminUsers: string;
+  clients: string;
+  connector: string;
   description: string;
   planType: string;
-  extraInfo: string;
-  planDetails: Array<planDetails>;
+  planDetails: Array<string>;
 }
 export class addonsRequestModel {
   termPlanId: number;

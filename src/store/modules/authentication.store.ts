@@ -92,9 +92,6 @@ const mutations: MutationTree<AuthenticationState> = {
 };
 const actions: ActionTree<AuthenticationState, any> = {
   login(context) {
-    keycloak.createRegisterUrl = () => {
-      return "/sign-up";
-    };
 
     keycloak.onTokenExpired = () => {
       keycloak
@@ -154,7 +151,7 @@ const actions: ActionTree<AuthenticationState, any> = {
   },
   validateKeyCloak(context) {
     if (!keycloak.token) {
-      keycloak.init(options);
+      keycloak.init({token: state.accessToken, refreshToken: state.refreshToken});
     }
   },
 };
