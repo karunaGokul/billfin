@@ -90,7 +90,7 @@
         <div class="tab-content-group">
           <products @next="step = 2" v-if="step == 1" />
           <plan @back="step = 1" @next="step = 3" v-if="step == 2" />
-          <add-ons @back="step = 2" @next="step = 4" v-if="step == 3" />
+          <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
           <payment @back="step = 3" @next="step = 5" v-if="step == 4" />
           <review @back="step = 4" @next="step = 6" v-if="step == 5" />
           <subscribe @back="step = 5" @next="onSubscripe" v-if="step == 6" />
@@ -144,7 +144,7 @@ import { useStore } from "vuex";
 
 import Products from "./components/Products.vue";
 import Plan from "./components/Plan/Index.vue";
-import AddOns from "./components/AddOns.vue";
+import Addons from "./components/Addons/Index.vue";
 import Payment from "./components/Payment/Index.vue";
 import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
@@ -153,7 +153,7 @@ import Subscribe from "./components/Subscribe.vue";
   components: {
     Products,
     Plan,
-    AddOns,
+    Addons,
     Payment,
     Review,
     Subscribe,
@@ -171,21 +171,44 @@ export default class SignUpPlan extends Vue {
     this.isSubscriped = true;
   }
 
-  get addons() {
-    return this.store.getters.getAddons;
+  get products() {
+    return this.store.getters.getProducts;
+  }
+
+  get showAumBilling() {
+    return this.products.includes("AUM");
+  }
+
+  get showSubscription() {
+    return this.products.includes("SUBSCRIPTION");
+  }
+
+  get aumBilling() {
+    return this.store.getters.getAumBilling;
+  }
+
+  get subscriptionBilling() {
+    return this.store.getters.getSubscriptionBilling;
   }
 
   get totalFees() {
-    let addons: number = 0;
-    addons = this.addons.reduce((prev: number, cur: any) => {
-      return prev + parseInt(cur.planAddOnamount);
-    }, 0);
-    addons = addons + this.$currencyToNumber(this.plan.termPlanAmount);
-    return addons;
-  }
-
-  get plan() {
-    return this.store.getters.getPlan;
+    let subAmount: number = 0;
+    let aumAmount: number = 0;
+    if (this.showAumBilling) {
+      aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
+        return prev + parseInt(cur.planAddOnamount);
+      }, 0);
+      aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
+    } else {
+      subAmount = this.subscriptionBilling.addons.reduce(
+        (prev: number, cur: any) => {
+          return prev + parseInt(cur.planAddOnamount);
+        },
+        0
+      );
+      subAmount = subAmount + this.subscriptionBilling.plan.termPlanAmount;
+    }
+    return aumAmount + subAmount;
   }
 
   get nextPaymentDate() {

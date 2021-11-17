@@ -1,36 +1,41 @@
 <template>
-  <div class="text-center m-6">
-    <div class="btn-group border rounded p-1">
-      <button
-        type="button"
-        class="btn rounded"
-        :class="{
-          'btn-success': paymenyType == 'ACH',
-          'text-muted': paymenyType != 'ACH',
-        }"
-        @click="paymenyType = 'ACH'"
-      >
-        ACH
-      </button>
-      <button
-        type="button"
-        class="btn rounded"
-        :class="{
-          'btn-success': paymenyType == 'Credit Card',
-          'text-muted': paymenyType != 'Credit Card',
-        }"
-        @click="paymenyType = 'Credit Card'"
-      >
-        Credit Card
-      </button>
+  <div class="card">
+    <div class="p-6 fw-bolder fs-4 border-bottom">
+      Select your Payment Method
     </div>
+    <div class="text-center m-6">
+      <div class="btn-group border rounded p-1">
+        <button
+          type="button"
+          class="btn rounded"
+          :class="{
+            'btn-success': paymenyType == 'ACH',
+            'text-muted': paymenyType != 'ACH',
+          }"
+          @click="paymenyType = 'ACH'"
+        >
+          ACH
+        </button>
+        <button
+          type="button"
+          class="btn rounded"
+          :class="{
+            'btn-success': paymenyType == 'Credit Card',
+            'text-muted': paymenyType != 'Credit Card',
+          }"
+          @click="paymenyType = 'Credit Card'"
+        >
+          Credit Card
+        </button>
+      </div>
+    </div>
+    <ACH @back="onBack" @pay="onPayNow" v-if="paymenyType == 'ACH'" />
+    <credit-card
+      @back="onBack"
+      @pay="onPayNow"
+      v-if="paymenyType == 'Credit Card'"
+    />
   </div>
-  <ACH @back="onBack" @pay="onPayNow" v-if="paymenyType == 'ACH'" />
-  <credit-card
-    @back="onBack"
-    @pay="onPayNow"
-    v-if="paymenyType == 'Credit Card'"
-  />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
@@ -99,6 +104,7 @@ export default class Index extends Vue {
     ChargeOver.CreditCard.tokenize(
       request,
       (code: any, message: any, response: any) => {
+        console.log(message, response);
         if (code == 200) {
           this.updateToken(response.creditcard.token);
           this.$emit("next");
@@ -135,11 +141,14 @@ export default class Index extends Vue {
     request.token = token;
     request.firmId = this.firmId;
     request.paymentMethod = this.paymenyType.toUpperCase();
-    this.service.updatePaymentToken(request).then((response) => {
-      console.log(response);
-    }).catch((err) => {
-      console.log(err);
-    })
+    this.service
+      .updatePaymentToken(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   get adddress() {

@@ -23,17 +23,17 @@
             <input
               class="form-check-input"
               type="checkbox"
-              value="SUBSCRIPTION"
-              v-model="request.products"
+              value="AUM"
+              v-model="products"
             />
           </div>
-          <img src="@/assets/aum-billing.svg" alt="Subscription Billing" />
+          <img src="@/assets/subscription-billing.svg" alt="Aum Billing" />
         </div>
         <div class="col-9">
-          <div class="tab-plan-name fw-bolder">Subscription Billing</div>
+          <div class="fs-3 fw-bolder">AUM Billing</div>
           <div class="text-muted">
-            Subscription Billing subscription lets you setup and bill for your
-            services on a subscription model.
+            AUM Billing subscription lets you easily and intuitely automate your
+            AUM advisory billing operations.
           </div>
         </div>
       </div>
@@ -58,26 +58,27 @@
             <input
               class="form-check-input"
               type="checkbox"
-              value="AUM"
-              v-model="request.products"
+              value="SUBSCRIPTION"
+              v-model="products"
             />
           </div>
-          <img src="@/assets/subscription-billing.svg" alt="Aum Billing" />
+          <img src="@/assets/aum-billing.svg" alt="Subscription Billing" />
         </div>
         <div class="col-9">
-          <div class="tab-plan-name fw-bolder">AUM Billing</div>
+          <div class="fs-3 fw-bolder">Subscription Billing</div>
           <div class="text-muted">
-            AUM Billing subscription lets you easily and intuitely automate your
-            AUM advisory billing operations.
+            Subscription Billing subscription lets you setup and bill for your
+            services on a subscription model.
           </div>
         </div>
       </div>
+
       <div class="text-center mt-10">
         <button class="btn btn-light me-5">Cancel</button>
         <button
           class="btn btn-primary ms-5"
           @click="next"
-          :disabled="request.products.length == 0"
+          :disabled="products.length == 0"
         >
           Continue
         </button>
@@ -90,15 +91,14 @@ import { Vue } from "vue-class-component";
 
 import { useStore } from "vuex";
 
-import { productsResponseModel } from "@/model";
-
 export default class Products extends Vue {
-  public request: productsResponseModel = new productsResponseModel();
+  public products: Array<string> = [];
   public store = useStore();
 
   public next() {
-    this.store.dispatch("updateProducts", this.request.products);
+    this.store.dispatch("updateProducts", this.products.sort());
     this.$emit("next");
   }
+  
 }
 </script>

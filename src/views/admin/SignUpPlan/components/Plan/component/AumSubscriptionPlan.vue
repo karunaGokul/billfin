@@ -3,14 +3,14 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button
-          class="accordion-button fw-bolder"
+          class="accordion-button fw-bolder fs-4"
           type="button"
           :class="{
             collapsed: !toggleAccordion,
           }"
           @click="toggleAccordion = !toggleAccordion"
         >
-          {{ product == 'AUM' ? 'AUM Billing' : 'Subscription Billing'}}
+          {{ product == "AUM" ? "AUM Billing" : "Subscription Billing" }}
         </button>
       </h2>
       <div
@@ -18,9 +18,10 @@
         :class="{ show: toggleAccordion }"
       >
         <div class="card accordion-body">
+          <div class="fs-4 fw-bolder text-center p-4">Choose your Plan</div>
           <div class="row">
             <div class="col-6 mt-4">
-              <div class="fw-bolder me-4 text-end">Commitment term</div>
+              <div class="fw-bolder me-4 text-end fs-5">Commitment term</div>
             </div>
             <div class="col-6">
               <div class="btn-group border rounded p-1">
@@ -47,22 +48,23 @@
                   Monthly
                 </button>
               </div>
-              <div class="text-start text-success p-2 fw-bold">
-                {{
-                  commitmentTerm == "Annual"
-                    ? "Hooray, you are saving 20% with a 1 year commitment!"
-                    : "Commit for a year and save up to 20%"
-                }}
-              </div>
             </div>
+          </div>
+          <div class="text-center text-success p-2 fw-bold">
+            {{
+              commitmentTerm == "Annual"
+                ? "Hooray, you are saving 20% with a 1 year commitment!"
+                : "Commit for a year and save up to 20%"
+            }}
           </div>
 
           <div class="d-flex justify-content-evenly mt-6 mb-6">
             <div
               class="w-25 ms-4 me-4 pt-12 pb-12 rounded"
               :class="{
-                'border border-primary bg-primary-alpha': item.planName == selectedPlan.planName,
-                'bg-light': item.planName != selectedPlan.planName
+                'border border-primary bg-primary-alpha':
+                  item.planName == selectedPlan.planName,
+                'bg-light': item.planName != selectedPlan.planName,
               }"
               @click="updatePlan(item)"
               v-for="(item, index) in plans"
@@ -88,11 +90,13 @@
               <div class="fs-4 text-center fw-bolder pt-4">
                 {{ item.aumLevel }}
               </div>
-              <div class="fs-4 text-center text-light-gray pb-4 ">AUM Level</div>
+              <div class="fs-4 text-center text-light-gray pb-4">AUM Level</div>
               <div class="fs-4 text-center fw-bolder pt-4">
                 {{ item.adminUsers }}
               </div>
-              <div class="fs-4 text-center text-light-gray pb-4">Admin Users</div>
+              <div class="fs-4 text-center text-light-gray pb-4">
+                Admin Users
+              </div>
               <div class="fs-4 text-center fw-bolder pt-4">
                 {{ item.clients }}
               </div>
@@ -131,33 +135,16 @@ export default class AumSubscriptionPlan extends Vue {
 
   @Prop() product: string;
 
-  public toggleAccordion: boolean = false;
+  public toggleAccordion: boolean = true;
   public commitmentTerm: string = "Annual";
 
   public selectedPlan: planResponseModel = new planResponseModel();
   public plans: Array<planResponseModel> = [];
 
-  private Annual = [
-    {
-      planName: "Standard",
-      billingType: "AUM",
-      description: "Essentials for the starting to small RIA",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "2",
-      clients: "150",
-      connector: "1",
-      planDetails: [
-        "Unlimited fee schedules",
-        "Unlimited invoices",
-        "Unlimited email/phone support",
-      ],
-    },
+  private planInfo = [
     {
       planName: "Launch",
-      billingType: "SUBSCRIPTION",
       description: "Essentials for the starting to small RIA",
-      planType: "Yr",
       aumLevel: "$500M",
       adminUsers: "2",
       clients: "150",
@@ -170,24 +157,7 @@ export default class AumSubscriptionPlan extends Vue {
     },
     {
       planName: "Professional",
-      billingType: "AUM",
       description: "For small to medium-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "3",
-      clients: "350",
-      connector: "2",
-      planDetails: [
-        "Everything from Standard Plan",
-        "Average Daily Balanaces",
-        "Flow Billing Calculdations",
-      ],
-    },
-    {
-      planName: "Professional",
-      billingType: "SUBSCRIPTION",
-      description: "For small to medium-sized RIAs",
-      planType: "Yr",
       aumLevel: "$500M",
       adminUsers: "3",
       clients: "350",
@@ -199,25 +169,8 @@ export default class AumSubscriptionPlan extends Vue {
       ],
     },
     {
-      planName: "Ultimate",
-      billingType: "AUM",
-      description: "For medium to large-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "5",
-      clients: "500",
-      connector: "2",
-      planDetails: [
-        "Everything from Professional Plan",
-        "Multi-Fee Billing Calculations",
-        "Product Billing Add-on included",
-      ],
-    },
-    {
       planName: "Elite",
-      billingType: "SUBSCRIPTION",
       description: "For medium to large-sized RIAs",
-      planType: "Yr",
       aumLevel: "$500M",
       adminUsers: "5",
       clients: "500",
@@ -230,147 +183,7 @@ export default class AumSubscriptionPlan extends Vue {
     },
     {
       planName: "Enterprise",
-      billingType: "SUBSCRIPTION",
       description: "For large RIAs requiring custom license",
-      planType: "Yr",
-      aumLevel: "Unlimited",
-      adminUsers: "Unlimited",
-      clients: "Unlimited",
-      connector: "Unlimited",
-      planDetails: [
-        "Everything from Elite Plan",
-        "Advisor Portal",
-        "Custom SLAs",
-      ],
-    },
-    {
-      planName: "Enterprise",
-      billingType: "AUM",
-      description: "For large RIAs requiring custom license",
-      planType: "Yr",
-      aumLevel: "Unlimited",
-      adminUsers: "Unlimited",
-      clients: "Unlimited",
-      connector: "Unlimited",
-      planDetails: [
-        "Everything from Elite Plan",
-        "Advisor Portal",
-        "Custom SLAs",
-      ],
-    },
-  ];
-
-  private Monthly = [
-    {
-      planName: "Standard",
-      billingType: "AUM",
-      description: "Essentials for the starting to small RIA",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "2",
-      clients: "150",
-      connector: "1",
-      planDetails: [
-        "Unlimited fee schedules",
-        "Unlimited invoices",
-        "Unlimited email/phone support",
-      ],
-    },
-    {
-      planName: "Launch",
-      billingType: "SUBSCRIPTION",
-      description: "Essentials for the starting to small RIA",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "2",
-      clients: "150",
-      connector: "1",
-      planDetails: [
-        "Unlimited fee schedules",
-        "Unlimited invoices",
-        "Unlimited email/phone support",
-      ],
-    },
-    {
-      planName: "Professional",
-      billingType: "AUM",
-      description: "For small to medium-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "3",
-      clients: "350",
-      connector: "2",
-      planDetails: [
-        "Everything from Standard Plan",
-        "Average Daily Balanaces",
-        "Flow Billing Calculdations",
-      ],
-    },
-    {
-      planName: "Professional",
-      billingType: "SUBSCRIPTION",
-      description: "For small to medium-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "3",
-      clients: "350",
-      connector: "2",
-      planDetails: [
-        "Everything from Launch Plan",
-        "Average Daily Balanaces",
-        "Flow Billing Calculdations",
-      ],
-    },
-    {
-      planName: "Ultimate",
-      billingType: "AUM",
-      description: "For medium to large-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "5",
-      clients: "500",
-      connector: "2",
-      planDetails: [
-        "Everything from Professional Plan",
-        "Multi-Fee Billing Calculations",
-        "Product Billing Add-on included",
-      ],
-    },
-    {
-      planName: "Elite",
-      billingType: "SUBSCRIPTION",
-      description: "For medium to large-sized RIAs",
-      planType: "Yr",
-      aumLevel: "$500M",
-      adminUsers: "5",
-      clients: "500",
-      connector: "2",
-      planDetails: [
-        "Everything from Professional Plan",
-        "Multi-Fee Billing Calculations",
-        "Product Billing Add-on included",
-      ],
-    },
-    {
-      planName: "Enterprise",
-      billingType: "SUBSCRIPTION",
-      description: "For large RIAs requiring custom license",
-      planType: "Yr",
-      aumLevel: "Unlimited",
-      adminUsers: "Unlimited",
-      clients: "Unlimited",
-      connector: "Unlimited",
-      planDetails: [
-        "Everything from Elite Plan",
-        "Advisor Portal",
-        "Custom SLAs",
-      ],
-    },
-    {
-      planName: "Enterprise",
-      billingType: "AUM",
-      description: "For large RIAs requiring custom license",
-      planType: "Yr",
       aumLevel: "Unlimited",
       adminUsers: "Unlimited",
       clients: "Unlimited",
@@ -395,41 +208,33 @@ export default class AumSubscriptionPlan extends Vue {
     this.service
       .getPlans(request)
       .then((response) => {
-        this.bindPlans(
-          response,
-          this.commitmentTerm == "Annual" ? this.Annual : this.Monthly
-        );
+        this.bindPlans(response);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  private bindPlans(response: Array<planResponseModel>, selectedTerm: any) {
+  private bindPlans(response: Array<planResponseModel>) {
     this.plans = [];
     response.forEach((item) => {
-      selectedTerm.forEach(
+      this.planInfo.forEach(
         (plan: {
           planName: string;
           description: any;
-          planType: any;
           aumLevel: string;
           adminUsers: string;
           clients: string;
           connector: string;
           planDetails: any;
-          billingType: string;
         }) => {
-          if (
-            item.planName == plan.planName &&
-            plan.billingType == this.product
-          ) {
+          if (item.planName == plan.planName) {
             this.plans.push({
               termPlanId: item.termPlanId,
               planName: item.planName,
               termPlanAmount: item.termPlanAmount,
               description: plan.description,
-              planType: plan.planType,
+              planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
               aumLevel: plan.aumLevel,
               adminUsers: plan.adminUsers,
               clients: plan.clients,
@@ -440,8 +245,7 @@ export default class AumSubscriptionPlan extends Vue {
         }
       );
     });
-    this.selectedPlan = this.plans[0];
-    console.log(this.plans);
+    this.updatePlan(this.plans[0]);
   }
 
   public updateCommitmentTerm(plan: string) {
@@ -451,6 +255,7 @@ export default class AumSubscriptionPlan extends Vue {
 
   public updatePlan(plan: any) {
     this.selectedPlan = plan;
+    this.$emit("update", { product: this.product, plan: plan, commitmentTerm: this.commitmentTerm });
   }
 }
 </script>

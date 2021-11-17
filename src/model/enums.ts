@@ -64,7 +64,3 @@ export enum CommitmentTerm {
   Annual = "ANNUAL",
   Monthly = "MONTHLY",
 }
-export enum ProductCode {
-  aum = "AUM",
-  subscription = "SUBSCRIPTION",
-}

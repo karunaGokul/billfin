@@ -3,26 +3,63 @@
     <h4 class="fw-bold mt-4 pb-4 border-bottom">
       Review and Confirm your order
     </h4>
-    <div class="mt-8 d-flex justify-content-between">
-      <div class="fw-bold">
-        {{ plan.planName }}
-        <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
+    <template v-if="showAumBilling">
+      <div class="mt-8 d-flex justify-content-between">
+        <div class="fw-bolder">
+          <span>AUM Billing: </span>
+          <span class="fw-bold">{{ aumBilling.plan.planName }}</span>
+          <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
+        </div>
+        <div class="text-light-gray">
+          {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
+        </div>
       </div>
-      <div>
-        {{ $filters.currencyDisplay($currencyToNumber(plan.termPlanAmount)) }}
-      </div>
-    </div>
 
-    <div class="row g-0 mt-8" v-for="(item, index) of addons" :key="index">
-      <div class="col-1 fw-bold">Add On:</div>
-      <div class="col-9 fw-bold">
-        {{ item.addOnName }}
-        <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
+      <div
+        class="row g-0 mt-8"
+        v-for="(item, index) of aumBilling.addons"
+        :key="index"
+      >
+        <div class="col-1 fw-bold">Add On:</div>
+        <div class="col-9 fw-bold">
+          {{ item.addOnName }}
+          <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
+        </div>
+        <div class="col-2 text-end text-light-gray">
+          {{ $filters.currencyDisplay(item.planAddOnamount) }}
+        </div>
       </div>
-      <div class="col-2 text-end">
-        {{ $filters.currencyDisplay(item.planAddOnamount) }}
+    </template>
+
+    <template v-if="showSubscription">
+      <div class="mt-8 d-flex justify-content-between">
+        <div class="fw-bolder">
+          <span>Subscription Billing: </span>
+          <span class="fw-bold">{{ subscriptionBilling.plan.planName }}</span>
+          <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
+        </div>
+        <div class="text-light-gray">
+          {{
+            $filters.currencyDisplay(subscriptionBilling.plan.termPlanAmount)
+          }}
+        </div>
       </div>
-    </div>
+
+      <div
+        class="row g-0 mt-8"
+        v-for="(item, index) of subscriptionBilling.addons"
+        :key="index"
+      >
+        <div class="col-1 fw-bold">Add On:</div>
+        <div class="col-9 fw-bold">
+          {{ item.addOnName }}
+          <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
+        </div>
+        <div class="col-2 text-end text-light-gray">
+          {{ $filters.currencyDisplay(item.planAddOnamount) }}
+        </div>
+      </div>
+    </template>
 
     <div
       class="
@@ -40,70 +77,71 @@
       <div>{{ $filters.currencyDisplay(totalFees) }}</div>
     </div>
 
-    <h4 class="fw-bold mt-10 pb-4 mb-8 border-bottom">Payment Method</h4>
+    <div class="row g-0">
+      <div class="col-4">
+        <h4 class="fw-bold mt-10 pb-4">Billing Address</h4>
 
-    <div
-      class="border border-dashed w-50 p-4"
-      v-if="paymentType == 'Credit Card'"
-    >
-      <div class="fw-bold p-2">{{ creditCard.name }}</div>
-      <div class="d-flex align-items-center">
-        <div>
-          <img
-            src="@/assets/mastercard.png"
-            alt="Card Type"
-            width="100"
-            v-if="this.creditCard.cardType == 'mast'"
-          />
-          <img
-            src="@/assets/visa.png"
-            alt="Card Type"
-            width="100"
-            v-if="this.creditCard.cardType == 'visa'"
-          />
-          <img
-            src="@/assets/amex.png"
-            alt="Card Type"
-            width="100"
-            v-if="this.creditCard.cardType == 'amex'"
-          />
-          <img
-            src="@/assets/discover.png"
-            alt="Card Type"
-            width="100"
-            v-if="this.creditCard.cardType == 'disc'"
-          />
+        <div class="text-gray mt-4">{{ address.bill_addr1 }}</div>
+        <div class="text-gray">{{ address.bill_city }}</div>
+        <div class="text-gray">{{ address.bill_state }}</div>
+        <div class="text-gray">{{ address.bill_postcode }}</div>
+        <div class="text-gray">{{ address.bill_country }}.</div>
+      </div>
+      <div class="col-5">
+        <h4 class="fw-bold mt-10 pb-4">Payment Method</h4>
+        <div
+          class="border border-dashed p-4"
+          v-if="paymentType == 'Credit Card'"
+        >
+          <div class="fw-bold p-2">{{ creditCard.name }}</div>
+          <div class="d-flex align-items-center">
+            <div>
+              <img
+                src="@/assets/mastercard.png"
+                alt="Card Type"
+                width="100"
+                v-if="creditCard.cardType == 'mast'"
+              />
+              <img
+                src="@/assets/visa.png"
+                alt="Card Type"
+                width="100"
+                v-if="creditCard.cardType == 'visa'"
+              />
+              <img
+                src="@/assets/amex.png"
+                alt="Card Type"
+                width="100"
+                v-if="creditCard.cardType == 'amex'"
+              />
+              <img
+                src="@/assets/discover.png"
+                alt="Card Type"
+                width="100"
+                v-if="creditCard.cardType == 'disc'"
+              />
+            </div>
+            <div class="p-4">
+              <div class="fw-bolder p-2">
+                {{ cardType }} ****{{
+                  creditCard.number.substr(creditCard.number.length - 4)
+                }}
+              </div>
+              <div class="fw-bold p-2 text-muted">
+                Card expires at {{ creditCard.expdate_month }}/{{creditCard.expdate_year.toString().substr(creditCard.expdate_year.toString().length - 2)}}
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="p-4">
-          <div class="fw-bolder p-2">
-            {{ cardType }} ****{{
-              creditCard.number.substr(creditCard.number.length - 4)
-            }}
+        <div class="border border-dashed p-4" v-else>
+          <div class="fw-bold p-2">{{ ach.name }}</div>
+          <div class="fw-bold p-2">
+            ****{{ ach.number.substr(ach.number.length - 4) }}
           </div>
-          <div class="fw-bold p-2 text-muted">
-            Card expires at {{ creditCard.expdate_month }}/
-            {{
-              creditCard.expdate_year.substr(creditCard.expdate_year.length - 2)
-            }}
-          </div>
+          <div class="fw-bold p-2">{{ ach.routing }}</div>
         </div>
       </div>
     </div>
-    <div class="border border-dashed w-50 p-4" v-else>
-      <div class="fw-bold p-2">{{ ach.name }}</div>
-      <div class="fw-bold p-2">
-        ****{{ ach.number.substr(ach.number.length - 4) }}
-      </div>
-      <div class="fw-bold p-2">{{ ach.routing }}</div>
-    </div>
-
-    <h4 class="fw-bold mt-10 pb-4 border-bottom">Billing Address</h4>
-
-    <div class="text-muted mt-4">{{ address.bill_addr1 }}</div>
-    <div class="text-muted">{{ address.bill_city }}</div>
-    <div class="text-muted">{{ address.bill_state }}</div>
-    <div class="text-muted">{{ address.bill_postcode }}</div>
-    <div class="text-muted">{{ address.bill_country }}.</div>
 
     <div class="text-center mt-10">
       <button class="btn btn-light me-5" @click="back">Cancel</button>
@@ -127,21 +165,44 @@ export default class Review extends Vue {
     this.$emit("next");
   }
 
-  get addons() {
-    return this.store.getters.getAddons;
+  get products() {
+    return this.store.getters.getProducts;
+  }
+
+  get showAumBilling() {
+    return this.products.includes("AUM");
+  }
+
+  get showSubscription() {
+    return this.products.includes("SUBSCRIPTION");
+  }
+
+  get aumBilling() {
+    return this.store.getters.getAumBilling;
+  }
+
+  get subscriptionBilling() {
+    return this.store.getters.getSubscriptionBilling;
   }
 
   get totalFees() {
-    let addons: number = 0;
-    addons = this.addons.reduce((prev: number, cur: any) => {
-      return prev + parseInt(cur.planAddOnamount);
-    }, 0);
-    addons = addons + this.$currencyToNumber(this.plan.termPlanAmount);
-    return addons;
-  }
-
-  get plan() {
-    return this.store.getters.getPlan;
+    let subAmount: number = 0;
+    let aumAmount: number = 0;
+    if (this.showAumBilling) {
+      aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
+        return prev + parseInt(cur.planAddOnamount);
+      }, 0);
+      aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
+    } else {
+      subAmount = this.subscriptionBilling.addons.reduce(
+        (prev: number, cur: any) => {
+          return prev + parseInt(cur.planAddOnamount);
+        },
+        0
+      );
+      subAmount = subAmount + this.subscriptionBilling.plan.termPlanAmount;
+    }
+    return aumAmount + subAmount;
   }
 
   get paymentType() {

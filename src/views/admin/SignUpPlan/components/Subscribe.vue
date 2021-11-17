@@ -84,9 +84,15 @@ export default class Subscribe extends Vue {
   public subscribe() {
     const request: subscribeRequestModel = new subscribeRequestModel();
     request.firmId = this.store.getters.firms.firmId;
-    request.termPlanId = this.store.getters.getPlan.termPlanId;
-    request.addons = this.addons;
-    request.startDate = this.startDate;
+
+    if (this.showAumBilling) {
+      request.termPlans.push({termPlanId: this.aumBilling.plan.termPlanId, startDate: this.startDate, addons: this.getAddons(this.aumBilling.addons)});
+    } 
+    if (this.showSubscription) {
+      request.termPlans.push({termPlanId: this.subscriptionBilling.plan.termPlanId, startDate: this.startDate, addons: this.getAddons(this.subscriptionBilling.addons)});
+    } 
+    console.log(request);
+
     this.service
       .createSubscription(request)
       .then((response) => {
@@ -98,17 +104,36 @@ export default class Subscribe extends Vue {
       });
   }
 
-  get addons() {
-    const addons: addons[] = [],
-      value: any[] = this.store.getters.getAddons;
+  getAddons(value: any) {
+    const addons: addons[] = [];
 
-    value.forEach((item) => {
+    value.forEach((item: { termPlanAddOnId: number; quantity: string; }) => {
       addons.push({
         termPlanAddOnId: item.termPlanAddOnId,
         quantity: item.quantity,
       });
     });
     return addons;
+  }
+
+  get products() {
+    return this.store.getters.getProducts;
+  }
+
+  get showAumBilling() {
+    return this.products.includes("AUM");
+  }
+
+  get showSubscription() {
+    return this.products.includes("SUBSCRIPTION");
+  }
+
+  get aumBilling() {
+    return this.store.getters.getAumBilling;
+  }
+
+  get subscriptionBilling() {
+    return this.store.getters.getSubscriptionBilling;
   }
 
   get startDate() {

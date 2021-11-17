@@ -91,11 +91,11 @@
           />
         </div>
       </div>
-      <div class="mt-6 d-flex align-items-center justify-content-between">
-        <button type="button" class="btn btn-secondary" @click="back">
+      <div class="mt-6 d-flex align-items-center justify-content-center">
+        <button type="button" class="btn btn-secondary me-5" @click="back">
           Back
         </button>
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button type="submit" class="btn btn-primary ms-5">Continue</button>
       </div>
     </form>
     <Information

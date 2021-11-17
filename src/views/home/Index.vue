@@ -20,7 +20,7 @@
           exact
           title="Dashboard"
         >
-          <i class="fas fa-box fs-7"></i>
+          <img src="@/assets/sidebar-icon/dashboard.svg" alt="Dashboard" width="25" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Dashboard</span>
           <span class="custom-tooltip">Dashboard</span>
         </router-link>
@@ -30,8 +30,8 @@
         <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__name">
           CLIENT INFO
         </p>
-        <p class="mb-0 ps-5 pt-0 pb-0 fs-8 nav-header nav-header__icon">
-          <i class="fas fa-ellipsis-h"></i>
+        <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+          <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
         </p>
       </div>
 
@@ -42,7 +42,7 @@
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
         >
-          <i class="fas fa-user-friends fs-7"></i>
+          <img src="@/assets/sidebar-icon/clients.svg" alt="Clients" width="20" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Clients</span>
           <span class="custom-tooltip">Clients</span>
         </router-link>
@@ -53,7 +53,7 @@
           active-class="nav-item__active"
           title="Fee Schedules"
         >
-          <i class="fas fa-grip-lines fs-7"></i>
+          <img src="@/assets/sidebar-icon/fee-schedules.svg" alt="Fee Schedules" width="20" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Fee Schedules</span>
           <span class="custom-tooltip">Fee Schedules</span>
         </router-link>
@@ -64,7 +64,7 @@
           active-class="nav-item__active"
           title="Products"
         >
-          <i class="fas fa-tags fs-7"></i>
+          <img src="@/assets/sidebar-icon/products.svg" alt="Products" width="20" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Products</span>
           <span class="custom-tooltip">Products</span>
         </router-link>
@@ -75,7 +75,7 @@
           active-class="nav-item__active"
           title="Subscriptions"
         >
-          <i class="fas fa-grip-lines-vertical fs-7"></i>
+          <img src="@/assets/sidebar-icon/subscriptions.svg" alt="Subscriptions" width="20" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Subscriptions</span>
           <span class="custom-tooltip">Subscriptions</span>
         </router-link>
@@ -86,18 +86,18 @@
           active-class="nav-item__active"
           title="Timesheets"
         >
-          <i class="fas fa-clock fs-7"></i>
+          <img src="@/assets/sidebar-icon/timesheets.svg" alt="Timesheets" width="20" class="m-4"/>
           <span class="nav-item__name fs-7 fw-bold">Timesheets</span>
           <span class="custom-tooltip">Timesheets</span>
         </router-link>
       </ul>
 
       <div class="mt-4">
-        <p class="mb-0 ps-5 pt-0 pb-0 fs-8 nav-header nav-header__name">
+        <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__name">
           BILLING & PAYMENTS
         </p>
-        <p class="mb-0 ps-6 pt-0 pb-0 fs-8 nav-header nav-header__icon">
-          <i class="fas fa-ellipsis-h"></i>
+        <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+          <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
         </p>
       </div>
 
@@ -109,7 +109,7 @@
           active-class="nav-item__active"
           title="Fees"
         >
-          <i class="fas fa-dollar-sign fs-7"></i>
+          <img src="@/assets/sidebar-icon/fees.svg" alt="Fees" width="12" class="m-4"/>
           <span class="nav-item__name fs-7">Fees</span>
           <span class="custom-tooltip">Fees</span>
         </router-link>
@@ -120,7 +120,7 @@
           active-class="nav-item__active"
           title="Invoices"
         >
-          <i class="fas fa-money-check-alt fs-7"></i>
+          <img src="@/assets/sidebar-icon/invoices.svg" alt="Invoices" width="20" class="m-4"/>
           <span class="nav-item__name fs-7">Invoices</span>
           <span class="custom-tooltip">Invoices</span>
         </router-link>
@@ -131,7 +131,7 @@
           active-class="nav-item__active"
           title="Payments"
         >
-          <i class="fas fa-tags fs-7"></i>
+          <img src="@/assets/sidebar-icon/payments.svg" alt="Payments" width="20" class="m-4"/>
           <span class="nav-item__name fs-7">Payments</span>
           <span class="custom-tooltip">Payments</span>
         </router-link>
@@ -142,24 +142,24 @@
           active-class="nav-item__active"
           title="Reports"
         >
-          <i class="fas fa-chart-line fs-7"></i>
+          <img src="@/assets/sidebar-icon/reports.svg" alt="Reports" width="20" class="m-4"/>
           <span class="nav-item__name fs-7">Reports</span>
           <span class="custom-tooltip">Reports</span>
         </router-link>
       </ul>
 
       <div class="mt-4">
-        <p class="mb-0 ps-5 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__name">
+        <p class="mb-0 ps-4 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__name">
           ADMINISTRATION
         </p>
-        <p class="mb-0 ps-6 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__icon">
-          <i class="fas fa-ellipsis-h"></i>
+        <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+          <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
         </p>
       </div>
 
       <ul class="nav flex-column mt-2">
         <div class="dropdown d-flex align-items-center nav-item">
-          <i class="fas fa-cog fs-7"></i>
+          <img src="@/assets/sidebar-icon/settings.svg" alt="Settings" width="20" class="m-4"/>
           <span class="nav-item__name fs-7">Settings</span>
           <i
             class="fas fa-angle-down"
@@ -211,7 +211,7 @@
           active-class="nav-item__active"
           title="Help"
         >
-          <i class="fas fa-question fs-7"></i>
+          <img src="@/assets/sidebar-icon/help.svg" alt="Help" width="12" class="m-4"/>
           <span class="nav-item__name fs-7">Help</span>
           <span class="custom-tooltip">Help</span>
         </router-link>

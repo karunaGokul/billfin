@@ -15,9 +15,6 @@ export class createCustomerRequestModel {
 export class createCustomerResponseModel extends BaseModel {
   id: number;
 }
-export class productsResponseModel {
-  products: Array<string> = [];
-}
 export class planRequestModel {
   termPlanType: string;
   productCode: string;
@@ -44,8 +41,8 @@ export class addonsResponseModel {
   selected: boolean;
   description: string;
   planType: string;
-  extraInfo: string;
   quantity: string;
+  extraInfo: string;
 }
 export class paymentTokenRequestModel {
   token: string;
@@ -56,11 +53,14 @@ export class addons {
   termPlanAddOnId: number;
   quantity: string;
 }
-export class subscribeRequestModel {
-  firmId: number;
+export class termPlans {
   termPlanId: number;
   startDate: string;
   addons: Array<addons>;
+}
+export class subscribeRequestModel {
+  firmId: number;
+  termPlans: Array<termPlans> = [];
 }
 export class subscribeResponseModel {
   status: string;
