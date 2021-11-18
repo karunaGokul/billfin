@@ -1,7 +1,7 @@
 <template>
   <div class="w-50 mx-auto m-4 p-4">
     <div class="d-flex align-items-center justify-content-lg-between">
-      <div class="fw-bolder fs-3 me-4 text-center">
+      <div class="fw-bolder fs-3 text-light-black me-4 text-center">
         Enter a credit card details
       </div>
       <div>
@@ -201,7 +201,7 @@
         </div>
       </div>
       <div class="mt-6 d-flex align-items-center justify-content-center">
-        <button type="button" class="btn btn-secondary me-5" @click="back">
+        <button type="button" class="btn btn-light me-5" @click="back">
           Back
         </button>
         <button type="submit" class="btn btn-primary ms-5">Continue</button>

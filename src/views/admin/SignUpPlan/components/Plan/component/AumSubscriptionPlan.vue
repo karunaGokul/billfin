@@ -3,7 +3,7 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button
-          class="accordion-button fw-bolder fs-4"
+          class="accordion-button fw-bolder fs-4 text-dark-gray"
           type="button"
           :class="{
             collapsed: !toggleAccordion,
@@ -30,7 +30,7 @@
                   class="btn rounded"
                   :class="{
                     'btn-success': commitmentTerm == 'Annual',
-                    'text-muted': commitmentTerm != 'Annual',
+                    'text-gray': commitmentTerm != 'Annual',
                   }"
                   @click="updateCommitmentTerm('Annual')"
                 >
@@ -41,7 +41,7 @@
                   class="btn rounded"
                   :class="{
                     'btn-success': commitmentTerm == 'Monthly',
-                    'text-muted': commitmentTerm != 'Monthly',
+                    'text-gray': commitmentTerm != 'Monthly',
                   }"
                   @click="updateCommitmentTerm('Monthly')"
                 >
@@ -81,7 +81,7 @@
               <div class="fa-2x fw-bolder text-center p-3" v-else>
                 <span class="fs-7">$</span>
                 {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
-                <span class="fs-8 fw-light">/ Yr</span>
+                <span class="fs-8 fw-light text-gray">/ Yr</span>
               </div>
 
               <div class="w-75 mx-auto text-center text-gray p-3">

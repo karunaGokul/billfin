@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="p-6 fw-bolder fs-4 border-bottom">
+    <div class="p-4 fw-bolder fs-4 text-dark-gray border-bottom">
       Select your Payment Method
     </div>
     <div class="text-center m-6">

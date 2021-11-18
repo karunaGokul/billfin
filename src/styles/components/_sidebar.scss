@@ -18,7 +18,7 @@
                 &__name {
                     opacity: 1 !important;
                     pointer-events: auto !important;
-                    display: block;
+                    display: block;            
                 }
 
                 .custom-tooltip {
@@ -79,6 +79,7 @@
                 opacity: 0;
                 pointer-events: none;
                 transition: 0.4s;
+                color: $gray-600;
             }
 
             &__icon {
@@ -128,8 +129,11 @@
                 background-color: #F5F8FA;
                 color: $primary;
 
-                i {
-                    color: $primary;
+                .nav-item {
+                    &__name, &__icon {
+                        color: $primary !important;
+                    }
+
                 }
             }
         }

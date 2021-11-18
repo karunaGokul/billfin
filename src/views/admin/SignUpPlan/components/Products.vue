@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <p class="p-6 fw-bolder fs-4 border-bottom">Select your subscription</p>
+    <p class="p-6 fw-bolder fs-4 border-bottom text-dark-gray">Select the products to which you’d like to subscribe</p>
     <div class="w-50 mx-auto m-12">
       <div
         class="
@@ -31,7 +31,7 @@
         </div>
         <div class="col-9">
           <div class="fs-3 fw-bolder">AUM Billing</div>
-          <div class="text-muted">
+          <div class="text-gray-secondary">
             AUM Billing subscription lets you easily and intuitely automate your
             AUM advisory billing operations.
           </div>
@@ -66,7 +66,7 @@
         </div>
         <div class="col-9">
           <div class="fs-3 fw-bolder">Subscription Billing</div>
-          <div class="text-muted">
+          <div class="text-gray-secondary">
             Subscription Billing subscription lets you setup and bill for your
             services on a subscription model.
           </div>

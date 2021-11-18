@@ -3,7 +3,7 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button
-          class="accordion-button fw-bolder fs-4"
+          class="accordion-button fw-bolder fs-4 text-dark-gray"
           type="button"
           :class="{
             collapsed: !toggleAccordion,
@@ -31,6 +31,7 @@
                 class="
                   tab-plan
                   position-relative
+                  mx-auto
                   mb-4
                   mt-4
                   ps-4
@@ -41,7 +42,7 @@
                   rounded
                 "
                 :class="{
-                  'tab-plan-active': item.selected,
+                  'bg-primary text-white': item.selected,
                   'border-dashed': !item.selected,
                 }"
               >
@@ -64,11 +65,14 @@
                     </div>
                   </div>
                   <div class="col-7 d-flex justify-content-center flex-column">
-                    <div class="tab-plan-name fw-bolder">
+                    <div class="fs-3 fw-bolder">
                       {{ item.addOnName }}
                     </div>
                     <div
-                      class="tab-plan-msg"
+                      :class="{
+                        'text-white': item.selected,
+                        'text-gray': !item.selected,
+                      }"
                       v-if="item.addOnName != 'Admin User License'"
                     >
                       {{ item.description }}
@@ -115,16 +119,31 @@
                     </div>
                   </div>
                   <div class="col-4">
-                    <div class="tab-plan-price fw-bolder text-center">
+                    <div class="text-center">
                       <span class="fs-7">$</span>
-                      {{
-                        $filters.currencyDisplayWithoutSymbol(
-                          item.planAddOnamount
-                        )
-                      }}
-                      <span class="fs-8 fw-light">/ {{ item.planType }}</span>
+                      <span class="fa-3x fw-bolder">
+                        {{
+                          $filters.currencyDisplayWithoutSymbol(
+                            item.planAddOnamount
+                          )
+                        }}</span
+                      >
+                      <span
+                        class="fs-8 fw-light"
+                        :class="{
+                          'text-white': item.selected,
+                          'text-gray-secondary': !item.selected,
+                        }"
+                        >/ {{ item.planType }}</span
+                      >
                     </div>
-                    <div class="tab-plan-extra fs-7 text-center ms-5 fw-light">
+                    <div
+                      class="fs-7 text-center ms-5 fw-light"
+                      :class="{
+                        'text-white': item.selected,
+                        'text-gray': !item.selected,
+                      }"
+                    >
                       ({{ item.extraInfo }})
                     </div>
                   </div>

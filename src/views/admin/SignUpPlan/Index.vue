@@ -28,7 +28,7 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">2</span>
               </div>
-              <div class="tab-label-name">Plan</div>
+              <div class="tab-label-name">Plans</div>
             </li>
             <li
               class="tab-label d-flex align-items-center ms-8 me-8"
@@ -110,13 +110,14 @@
         {{ $filters.currencyDisplay(dueAmount) }}
       </div>
       <div class="fw-bold fa-lg">AMOUNT DUE</div>
-      <div class="fa-lg text-muted mt-6 mb-6">
+      <div class="fa-lg text-gray-secondary mt-6 mb-6">
         You’re all set! Your payment of
-        {{ $filters.currencyDisplay(totalFees) }} is processing.
+        <span class="text-gray">{{ $filters.currencyDisplay(totalFees) }}</span
+        >is processing.
       </div>
-      <div class="fa-lg text-muted mt-6 mb-6">
+      <div class="fa-lg text-gray-secondary mt-6 mb-6">
         You are also setup for Auto Pay, and your next payment date is
-        {{ nextPaymentDate }}.
+        <span class="text-gray">{{ nextPaymentDate }}.</span>
       </div>
       <div class="fa-lg mt-4 mb-6 fw-bold">Thank you!</div>
       <div>
@@ -128,7 +129,7 @@
         <router-link
           to="/my-subscription"
           tag="a"
-          class="btn btn-link text-muted"
+          class="btn btn-link text-gray-secondary"
         >
           Manage subscription
         </router-link>

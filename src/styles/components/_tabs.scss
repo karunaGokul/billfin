@@ -67,7 +67,7 @@
                 }
 
                 &-name {
-                    color: #474D70;
+                    color: #181C32;
                 }
 
                 &-active {
@@ -100,7 +100,6 @@
 
     .tab-content-group {
 
-        //margin: 1rem 2rem;
         .tab-content__scroll {
             height: calc(66vh - 60px);
         }
@@ -117,36 +116,5 @@
     .tab-plan {
         min-height: 92px;
         width: 500px;
-        margin: 0 auto;
-
-        &-name {
-            font-size: 1.3rem;
-        }
-
-        &-price {
-            font-size: 2.5rem;
-        }
-
-        &-msg {
-            font-size: 0.9rem;
-            color: $gray-600;
-        }
-        .lh-5 {
-            line-height: 5;
-        }
-        &-active {
-            background-color: $primary;
-            color: white !important;
-
-            .form-check-input:checked {
-                border-width: 1px;
-                background-color: $success !important;
-                border-color: $success !important;
-            }
-
-            .tab-plan-msg {
-                color: white !important;
-            }
-        }
     }
 }
