@@ -1,0 +1,23 @@
+@font-face {
+      font-family: 'BillFin Icon';
+      font-style: normal;
+      font-weight: 400;
+      src: url('#{$fa-icon-path}/icon.eot');
+      src: url('#{$fa-icon-path}/icon.eot?#iefix') format('embedded-opentype'),
+      url('#{$fa-icon-path}/icon.woff') format('woff'),
+      url('#{$fa-icon-path}/icon.ttf') format('truetype'),
+      url('#{$fa-icon-path}/icon.svg#icon') format('svg');
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+      font-family: 'BillFin Icon' !important;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+}
