@@ -113,7 +113,7 @@
       <div class="fa-lg text-gray-secondary mt-6 mb-6">
         You’re all set! Your payment of
         <span class="text-gray">{{ $filters.currencyDisplay(totalFees) }}</span
-        >is processing.
+        > is processing.
       </div>
       <div class="fa-lg text-gray-secondary mt-6 mb-6">
         You are also setup for Auto Pay, and your next payment date is
