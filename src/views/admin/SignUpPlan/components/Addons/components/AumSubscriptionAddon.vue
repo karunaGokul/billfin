@@ -199,7 +199,7 @@ export default class AumSubscriptionAddon extends Vue {
       quantity: "1",
     },
     {
-      addOnName: "Multi-Fee Accounts",
+      addOnName: "Multi-Fee Billing",
       description: "Multiple fee calculations per account",
       extraInfo: "$150/month",
       selected: false,
@@ -213,7 +213,7 @@ export default class AumSubscriptionAddon extends Vue {
       selected: false,
     },
     {
-      addOnName: "Multiple Connectors Integrations",
+      addOnName: "Multi-Connector Integrations",
       description: "Integrate with multiple custody sources",
       extraInfo: "Per Connector",
       quantity: "1",

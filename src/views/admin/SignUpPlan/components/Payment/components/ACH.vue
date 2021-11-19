@@ -38,7 +38,6 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
-          @updateInput="validateAch"
         />
       </div>
       <div class="mt-6">

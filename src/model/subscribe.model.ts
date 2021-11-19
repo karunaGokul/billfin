@@ -49,18 +49,19 @@ export class paymentTokenRequestModel {
   paymentMethod: string;
   firmId: number;
 }
-export class addonsModel {
+export class addOnsModel {
   termPlanAddOnId: number;
   quantity: string;
   addOnStartDate: string;
 }
 export class termPlanModel {
   termPlanId: number;
-  planStartDate: string;
+  planStartDate: string; 
 }
 export class subscriptions {
+  productCode: string;
   termPlan: termPlanModel;
-  addons: Array<addonsModel> = [];
+  addOns: Array<addOnsModel> = [];
 }
 export class subscribeRequestModel {
   firmId: number;

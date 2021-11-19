@@ -70,7 +70,7 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
-import { subscribeRequestModel, termPlanModel, addonsModel } from "@/model";
+import { subscribeRequestModel, termPlanModel, addOnsModel } from "@/model";
 
 import { ISubscripeService } from "@/service";
 
@@ -95,21 +95,23 @@ export default class Subscribe extends Vue {
       termPlan.termPlanId = this.aumBilling.plan.termPlanId;
       termPlan.planStartDate = this.startDate;
       request.subscriptions.push({
+        productCode: "AUM",
         termPlan: termPlan,
-        addons: this.getAddons(this.aumBilling.addons),
+        addOns: this.getAddons(this.aumBilling.addons),
       });
     }
     if (this.showSubscription) {
       termPlan.termPlanId = this.subscriptionBilling.plan.termPlanId;
       termPlan.planStartDate = this.startDate;
       request.subscriptions.push({
+        productCode: "SUBSCRIPTION",
         termPlan: termPlan,
-        addons: this.getAddons(this.subscriptionBilling.addons),
+        addOns: this.getAddons(this.subscriptionBilling.addons),
       });
     }
     console.log(request);
 
-    /* this.service
+    this.service
       .createSubscription(request)
       .then((response) => {
         console.log(response);
@@ -117,11 +119,11 @@ export default class Subscribe extends Vue {
       })
       .catch((err) => {
         console.log(err);
-      });*/
+      });
   }
 
   getAddons(value: any) {
-    const addons: Array<addonsModel> = [];
+    const addons: Array<addOnsModel> = [];
 
     value.forEach((item: { termPlanAddOnId: number; quantity: string }) => {
       addons.push({

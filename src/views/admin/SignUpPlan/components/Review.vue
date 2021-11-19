@@ -98,25 +98,25 @@
             <div class="d-flex align-items-center">
               <div>
                 <img
-                  src="@/assets/mastercard.png"
+                  src="@/assets/mastercard-hd.png"
                   alt="Card Type"
                   width="100"
                   v-if="creditCard.cardType == 'mast'"
                 />
                 <img
-                  src="@/assets/visa.png"
+                  src="@/assets/visa-hd.png"
                   alt="Card Type"
                   width="100"
                   v-if="creditCard.cardType == 'visa'"
                 />
                 <img
-                  src="@/assets/amex.png"
+                  src="@/assets/amex-hd.png"
                   alt="Card Type"
                   width="100"
                   v-if="creditCard.cardType == 'amex'"
                 />
                 <img
-                  src="@/assets/discover.png"
+                  src="@/assets/discover-hd.png"
                   alt="Card Type"
                   width="100"
                   v-if="creditCard.cardType == 'disc'"
