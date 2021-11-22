@@ -47,7 +47,7 @@
         </div>
 
         <div
-          class="row g-0 mt-8 text-dark-black"
+          class="row g-0 mt-8 ms-4 text-dark-black"
           v-for="(item, index) of subscriptionBilling.addons"
           :key="index"
         >
@@ -149,7 +149,7 @@
       </div>
 
       <div class="text-center mt-10">
-        <button class="btn btn-light me-5" @click="back">Cancel</button>
+        <button class="btn btn-light me-5" @click="back">Back</button>
         <button class="btn btn-primary ms-5" @click="next">Continue</button>
       </div>
     </div>

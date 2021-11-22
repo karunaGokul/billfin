@@ -95,6 +95,10 @@ export default class Products extends Vue {
   public products: Array<string> = [];
   public store = useStore();
 
+  mounted() {
+    this.products = this.store.getters.getProducts;
+  }
+
   public next() {
     this.store.dispatch("updateProducts", this.products.sort());
     this.$emit("next");

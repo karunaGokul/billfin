@@ -63,6 +63,11 @@ export default class Index extends Vue {
   public paymenyType: string = "Credit Card";
   public store = useStore();
 
+  created() {
+    if (this.store.getters.getPaymentType)
+      this.paymenyType = this.store.getters.getPaymentType;
+  }
+
   onBack() {
     this.$emit("back");
   }

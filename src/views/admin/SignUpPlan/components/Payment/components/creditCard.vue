@@ -11,7 +11,7 @@
         <img src="@/assets/discover.png" alt="Discover Card" class="me-2" />
       </div>
     </div>
-    <form @submit.prevent="payNow">
+    <form @submit.prevent="validateCard">
       <div class="mt-6 position-relative mb-8">
         <label class="form-label fw-bolder"> Card Number </label>
         <div class="input-group input-group-solid">
@@ -19,7 +19,7 @@
             type="text"
             v-model="v$.request.cardNumber.$model"
             class="form-control text-start"
-            @input="validateCard"
+            @input="validateCardNumber"
           />
           <span class="input-group-text" v-if="card">
             <img
@@ -105,7 +105,6 @@
             ]"
             :validation="['required']"
             formFieldType="inputBlock"
-            @update="validateCard"
           />
         </div>
         <div class="col-4">
@@ -115,7 +114,6 @@
             :data="expirationYear"
             :validation="['required']"
             formFieldType="inputBlock"
-            @update="validateCard"
           />
         </div>
         <div class="col-4">
@@ -130,14 +128,7 @@
               'cvvMinLength',
               'cvvMaxLength',
             ]"
-            @updateInput="validateCard"
           />
-        </div>
-        <div
-          class="invalid-feedback position-absolute m-0 bottom-0"
-          v-if="!isCardValid"
-        >
-          {{ cardMessage }}
         </div>
       </div>
 
@@ -302,8 +293,6 @@ export default class CreditCard extends Vue {
   public request: creditCardRequestModel = new creditCardRequestModel();
   public store = useStore();
   public card: string = "";
-  public cardMessage: string = null;
-  public isCardValid: boolean = false;
   public showInformationError: boolean = false;
 
   public v$: any = setup(() => this.validate());
@@ -312,70 +301,105 @@ export default class CreditCard extends Vue {
     return useVuelidate();
   }
 
-  mounted() {
+  created() {
     this.request.country = "United States";
     this.request.billingState = this.state[0];
   }
 
-  public validateCard() {
+  mounted() {
+    if (Object.keys(this.creditCardDetails).length > 0) this.bindCard();
+  }
+
+  private bindCard() {
+    this.request.cardNumber = this.creditCardDetails.number;
+    this.request.expirationMonth = this.creditCardDetails.expdate_month;
+    this.request.expirationYear = this.creditCardDetails.expdate_year;
+    this.request.cardHolderName = this.creditCardDetails.name;
+    this.request.billingAddress = this.address.bill_addr1;
+    this.request.billingCity = this.address.bill_city;
+    this.request.billingState = this.address.bill_state;
+    this.request.postalCode = this.address.bill_postcode;
+    this.request.country = this.address.bill_country;
+  }
+
+  public validateCardNumber() {
+    this.card = "";
+    this.request.cardNumber = this.request.cardNumber.replaceAll(" ", "");
     this.request.cardNumber = this.request.cardNumber.replaceAll("-", "");
+    const visaRegex = new RegExp("^4[0-9]{0,15}$"),
+      mastercardRegex = new RegExp("^5$|^5[1-5][0-9]{0,14}$"),
+      amexRegex = new RegExp("^3$|^3[47][0-9]{0,13}$"),
+      dicoverRegex = new RegExp(
+        "^6$|^6[05]$|^601[1]?$|^65[0-9][0-9]?$|^6(?:011|5[0-9]{2})[0-9]{0,12}$"
+      );
+    if (this.request.cardNumber.match(visaRegex)) {
+      this.card = "visa";
+    } else if (this.request.cardNumber.match(mastercardRegex)) {
+      this.card = "mast";
+    } else if (this.request.cardNumber.match(amexRegex)) {
+      this.card = "amex";
+    } else if (this.request.cardNumber.match(dicoverRegex)) {
+      this.card = "disc";
+    }
+
     const value = this.request.cardNumber
       ? this.request.cardNumber.match(/.{1,4}/g).join("-")
       : "";
     this.request.cardNumber = value;
+  }
+
+  public validateCard() {
+    this.v$.$touch();
     this.showInformationError = false;
-    if (
-      !this.v$.request.cardNumber.$invalid &&
-      !this.v$.request.expirationMonth.$invalid &&
-      !this.v$.request.expirationYear.$invalid &&
-      !this.v$.request.cvv.$invalid
-    ) {
+
+    if (!this.v$.$invalid) {
       const request = {
         number: this.request.cardNumber,
         expdate_month: this.request.expirationMonth,
         expdate_year: this.request.expirationYear,
         name: this.request.cardHolderName,
+        cvv: this.request.cvv,
+        address: this.request.billingAddress,
+        city: this.request.billingCity,
+        state: this.request.billingState,
+        postcode: this.request.postalCode,
+        country: this.request.country,
       };
+      console.log(request);
       ChargeOver.CreditCard.validate(
         request,
         (code: number, message: any, response: any) => {
+          console.log(code, message, response);
           if (code == 200) {
-            this.isCardValid = true;
             this.showInformationError = false;
-            this.cardNumberValidation();
+            this.updateCardDetails();
           } else if (code == 400) {
-            this.isCardValid = false;
             this.showInformationError = true;
           }
         }
       );
     }
   }
-
-  public payNow() {
-    this.v$.$touch();
-
-    if (!this.v$.$invalid && this.isCardValid) {
-      const payload = {
-        company: this.firms.name,
-        bill_addr1: this.request.billingAddress,
-        bill_city: this.request.billingCity,
-        bill_state: this.request.billingState,
-        bill_postcode: this.request.postalCode,
-        bill_country: this.request.country,
-      };
-      const cardDetails = {
-        number: this.request.cardNumber,
-        expdate_month: this.request.expirationMonth,
-        expdate_year: this.request.expirationYear,
-        name: this.request.cardHolderName,
-        cvv: this.request.cvv,
-        cardType: this.card,
-      };
-      this.store.dispatch("updateCreditCard", cardDetails);
-      this.store.dispatch("updateCustomer", payload);
-      this.$emit("pay");
-    }
+  private updateCardDetails() {
+    const payload = {
+      company: this.firms.name,
+      bill_addr1: this.request.billingAddress,
+      bill_city: this.request.billingCity,
+      bill_state: this.request.billingState,
+      bill_postcode: this.request.postalCode,
+      bill_country: this.request.country,
+    };
+    const cardDetails = {
+      number: this.request.cardNumber,
+      expdate_month: this.request.expirationMonth,
+      expdate_year: this.request.expirationYear,
+      name: this.request.cardHolderName,
+      cvv: this.request.cvv,
+      cardType: this.card,
+    };
+    this.store.dispatch("updateCreditCard", cardDetails);
+    this.store.dispatch("updateCustomer", payload);
+    this.$emit("pay");
   }
 
   public back() {
@@ -414,6 +438,14 @@ export default class CreditCard extends Vue {
       data.push(currentYear + i);
     }
     return data;
+  }
+
+  get creditCardDetails() {
+    return this.store.getters.getCreditCard;
+  }
+
+  get address() {
+    return this.store.getters.getCustomer;
   }
 }
 </script>

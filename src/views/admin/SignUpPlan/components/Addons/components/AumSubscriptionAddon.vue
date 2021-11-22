@@ -21,7 +21,11 @@
           <div class="text-center fs-4 fw-bolder mt-2">Choose your Add-ons</div>
 
           <div class="row mt-2" v-if="addons.length > 0">
-            <div v-for="(plan, i) in getPlanList" :key="i" class="col-6">
+            <div
+              v-for="(plan, i) in getPlanList"
+              :key="i"
+              class="col-xl-6 col-lg-12"
+            >
               <div
                 v-for="(item, index) in addons.slice(
                   i * itemsPerRow,
@@ -59,7 +63,7 @@
                       <input
                         class="form-check-input"
                         type="checkbox"
-                        :value="item"
+                        :checked="item.selected"
                         @change="updateAddons(item)"
                       />
                     </div>
@@ -96,9 +100,7 @@
                       </div>
                     </div>
                     <div
-                      v-if="
-                        item.addOnName == 'Multiple Connectors Integrations'
-                      "
+                      v-if="item.addOnName == 'Multi-Connector Integrations'"
                     >
                       <div class="row g-0">
                         <div class="fw-bolder col-7" style="line-height: 3">
@@ -222,6 +224,26 @@ export default class AumSubscriptionAddon extends Vue {
   ];
 
   created() {
+    if (this.product == "AUM")
+      this.filterAddons(this.store.getters.getAumBilling.addons);
+    else this.filterAddons(this.store.getters.getSubscriptionBilling.addons);
+  }
+
+  private filterAddons(addons: Array<addonsResponseModel>) {
+    this.addonsList.forEach(
+      (item: {
+        addOnName: string;
+        description: string;
+        planType: string;
+        extraInfo: string;
+        selected: boolean;
+        quantity: string;
+      }) => {
+        addons.forEach((selectedAddons: addonsResponseModel) => {
+          if (item.addOnName == selectedAddons.addOnName) item.selected = true;
+        });
+      }
+    );
     this.getAddons();
   }
 

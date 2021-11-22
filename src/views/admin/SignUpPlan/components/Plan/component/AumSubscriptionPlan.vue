@@ -3,7 +3,7 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button
-          class="accordion-button fw-bolder fs-4 text-dark-gray"
+          class="accordion-button fw-bolder fs-4 text-dark-gray border-bottom"
           type="button"
           :class="{
             collapsed: !toggleAccordion,
@@ -58,13 +58,16 @@
             }}
           </div>
 
-          <div class="d-flex justify-content-evenly mt-6 mb-6">
+          <div class="d-flex justify-content-evenly m-6">
             <div
-              class="w-25 ms-4 me-4 pt-12 pb-12 rounded"
+              class="ms-4 me-4 p-4 pt-12 pb-12 rounded"
               :class="{
                 'border border-primary bg-primary-alpha':
-                  item.planName == selectedPlan.planName,
-                'bg-light': item.planName != selectedPlan.planName,
+                  item.planName == selectedPlan.planName &&
+                  item.planName != 'Enterprise',
+                'bg-light':
+                  item.planName == 'Enterprise' ||
+                  item.planName != selectedPlan.planName,
               }"
               @click="updatePlan(item)"
               v-for="(item, index) in plans"
@@ -81,7 +84,9 @@
               <div class="fa-2x fw-bolder text-center p-3" v-else>
                 <span class="fs-7">$</span>
                 {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
-                <span class="fs-8 fw-light text-gray">/ Yr</span>
+                <span class="fs-8 fw-light text-gray"
+                  >/ {{ item.planType }}</span
+                >
               </div>
 
               <div class="w-75 mx-auto text-center text-gray p-3">
@@ -105,7 +110,7 @@
                 {{ item.custodian }}
               </div>
               <div class="fs-4 text-center text-light-gray pb-4">Connector</div>
-              <ul class="mt-6">
+              <ul class="mt-6 me-4">
                 <li
                   v-for="(details, i) in item.planDetails"
                   :key="i + 1"
@@ -137,6 +142,8 @@ export default class AumSubscriptionPlan extends Vue {
 
   public toggleAccordion: boolean = true;
   public commitmentTerm: string = "Annual";
+
+  public store = useStore();
 
   public selectedPlan: planResponseModel = new planResponseModel();
   public plans: Array<planResponseModel> = [];
@@ -200,6 +207,18 @@ export default class AumSubscriptionPlan extends Vue {
     this.getPlans();
   }
 
+  mounted() {
+    if (this.product == "AUM") {
+      if(this.store.getters.getAumBilling.commitmentTerm)
+        this.commitmentTerm = this.store.getters.getAumBilling.commitmentTerm;
+      this.selectedPlan = this.store.getters.getAumBilling.plan;
+    } else {
+      if(this.store.getters.getSubscriptionBilling.commitmentTerm)
+        this.commitmentTerm = this.store.getters.getSubscriptionBilling.commitmentTerm;
+      this.selectedPlan = this.store.getters.getSubscriptionBilling.plan;
+    }
+  }
+
   private getPlans() {
     const request: planRequestModel = new planRequestModel();
     request.productCode = this.product;
@@ -245,7 +264,8 @@ export default class AumSubscriptionPlan extends Vue {
         }
       );
     });
-    this.updatePlan(this.plans[0]);
+    if (Object.keys(this.selectedPlan).length == 0)
+      this.updatePlan(this.plans[0]);
   }
 
   public updateCommitmentTerm(plan: string) {
@@ -255,7 +275,11 @@ export default class AumSubscriptionPlan extends Vue {
 
   public updatePlan(plan: any) {
     this.selectedPlan = plan;
-    this.$emit("update", { product: this.product, plan: plan, commitmentTerm: this.commitmentTerm });
+    this.$emit("update", {
+      product: this.product,
+      plan: plan,
+      commitmentTerm: this.commitmentTerm,
+    });
   }
 }
 </script>

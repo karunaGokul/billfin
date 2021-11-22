@@ -3,7 +3,7 @@
     Easily make payments with your bank account
   </div>
   <div class="w-50 mx-auto m-4 mt-10">
-    <form @submit.prevent="payNow">
+    <form @submit.prevent="validateAch">
       <div class="mt-6">
         <TextInput
           label="Bank Account Number"
@@ -11,7 +11,6 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
-          @updateInput="validateAch"
         />
       </div>
       <div class="mt-6 position-relative">
@@ -21,15 +20,7 @@
           inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
-          @updateInput="validateAch"
         />
-        <div
-          class="invalid-feedback position-absolute m-0"
-          style="bottom: -19px"
-          v-if="!isAccountValid && !v$.request.$invalid"
-        >
-          {{ accountError }}
-        </div>
       </div>
       <div class="mt-6">
         <TextInput
@@ -144,8 +135,6 @@ export default class ACH extends Vue {
   public request: achRequestModel = new achRequestModel();
   public store = useStore();
 
-  public accountError: string = null;
-  public isAccountValid: boolean = false;
   public showInformationError: boolean = false;
 
   public v$: any = setup(() => this.validate());
@@ -154,9 +143,24 @@ export default class ACH extends Vue {
     return useVuelidate();
   }
 
-  mounted() {
+  created() {
     this.request.country = "United States";
     this.request.billingState = this.state[0];
+  }
+
+  mounted() {
+    if (Object.keys(this.ach).length > 0) this.bindAch();
+  }
+
+  private bindAch() {
+    this.request.accountNo = this.ach.number;
+    this.request.routingNo = this.ach.routing;
+    this.request.accountHolder = this.ach.name;
+    this.request.billingAddress = this.address.bill_addr1;
+    this.request.billingCity = this.address.bill_city;
+    this.request.billingState = this.address.bill_state;
+    this.request.postalCode = this.address.bill_postcode;
+    this.request.country = this.address.bill_country;
   }
 
   public back() {
@@ -168,50 +172,45 @@ export default class ACH extends Vue {
   }
 
   validateAch() {
+    this.v$.$touch();
     this.showInformationError = false;
-    if (
-      !this.v$.request.accountNo.$invalid &&
-      !this.v$.request.routingNo.$invalid
-    ) {
+    if (!this.v$.$invalid) {
       const request = {
         number: this.request.accountNo,
         routing: this.request.routingNo,
       };
+      console.log(request);
       ChargeOver.ACH.validate(
         request,
         (code: number, message: any, response: any) => {
-          console.log(code);
+          console.log(code, message, response);
           if (code == 200) {
-            this.isAccountValid = true;
+            this.updateAch();
           } else if (code == 400) {
             this.showInformationError = true;
-            this.isAccountValid = false;
           }
         }
       );
     }
   }
 
-  public payNow() {
-    this.v$.$touch();
-    if (!this.v$.$invalid && this.isAccountValid) {
-      const payload = {
-        company: this.firms.name,
-        bill_addr1: this.request.billingAddress,
-        bill_city: this.request.billingCity,
-        bill_state: this.request.billingState,
-        bill_postcode: this.request.postalCode,
-        bill_country: this.request.country,
-      };
-      const ach = {
-        number: this.request.accountNo,
-        routing: this.request.routingNo,
-        name: this.request.accountHolder,
-      };
-      this.store.dispatch("updateCustomer", payload);
-      this.store.dispatch("updateACH", ach);
-      this.$emit("pay");
-    }
+  public updateAch() {
+    const payload = {
+      company: this.firms.name,
+      bill_addr1: this.request.billingAddress,
+      bill_city: this.request.billingCity,
+      bill_state: this.request.billingState,
+      bill_postcode: this.request.postalCode,
+      bill_country: this.request.country,
+    };
+    const ach = {
+      number: this.request.accountNo,
+      routing: this.request.routingNo,
+      name: this.request.accountHolder,
+    };
+    this.store.dispatch("updateCustomer", payload);
+    this.store.dispatch("updateACH", ach);
+    this.$emit("pay");
   }
 
   get state() {
@@ -220,6 +219,14 @@ export default class ACH extends Vue {
 
   get firms() {
     return this.store.getters.firms;
+  }
+
+  get ach() {
+    return this.store.getters.getAch;
+  }
+
+  get address() {
+    return this.store.getters.getCustomer;
   }
 }
 </script>
