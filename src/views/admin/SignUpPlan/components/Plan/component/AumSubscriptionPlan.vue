@@ -69,6 +69,7 @@
                   item.planName == 'Enterprise' ||
                   item.planName != selectedPlan.planName,
               }"
+              style="width: 260px;"
               @click="updatePlan(item)"
               v-for="(item, index) in plans"
               :key="index"
@@ -89,7 +90,7 @@
                 >
               </div>
 
-              <div class="w-75 mx-auto text-center text-gray p-3">
+              <div class="w-100 mx-auto text-center text-gray p-3">
                 {{ item.description }}
               </div>
               <div class="fs-4 text-center fw-bolder pt-4">
@@ -110,7 +111,7 @@
                 {{ item.custodian }}
               </div>
               <div class="fs-4 text-center text-light-gray pb-4">Connector</div>
-              <ul class="mt-6 me-4">
+              <ul class="mt-6">
                 <li
                   v-for="(details, i) in item.planDetails"
                   :key="i + 1"
@@ -270,6 +271,11 @@ export default class AumSubscriptionPlan extends Vue {
 
   public updateCommitmentTerm(plan: string) {
     this.commitmentTerm = plan;
+    this.$emit("update", {
+      product: this.product,
+      plan: this.plans[0],
+      commitmentTerm: this.commitmentTerm,
+    });
     this.getPlans();
   }
 

@@ -37,7 +37,7 @@ export class ManageSubscription extends BaseService<
       const response: Array<manageSubscriptionPlanResponseModel> = [];
       response.push({
         termPlanId: 0,
-        planName: "Standard",
+        planName: "Professional Plan",
         termPlanAmount: "1188",
         description: "For small to medium-sized RIAs",
         planType: "Yr",
@@ -47,6 +47,23 @@ export class ManageSubscription extends BaseService<
         endDate: "12/31/2021",
         cardType: "mast",
         cardNumber: "6789",
+        availableCards: [
+          {
+            accountType: "Credit Card",
+            cardType: "mast",
+            cardNumber: "6789"
+          }, 
+          {
+            accountType: "ACH",
+            cardType: "",
+            cardNumber: "7869"
+          },
+          {
+            accountType: "Credit Card",
+            cardType: "visa",
+            cardNumber: "9010"
+          }
+        ]
       });
       return resolve(response);
     });
@@ -67,11 +84,28 @@ export class ManageSubscription extends BaseService<
         startDate: "12/30/2020",
         endDate: "12/31/2021",
         status: "active",
-        cardType: "mastt",
+        cardType: "mast",
         cardNumber: "6789",
+        availableCards: [
+          {
+            accountType: "Credit Card",
+            cardType: "mast",
+            cardNumber: "6789"
+          }, 
+          {
+            accountType: "ACH",
+            cardType: "",
+            cardNumber: "7869"
+          },
+          {
+            accountType: "Credit Card",
+            cardType: "visa",
+            cardNumber: "9010"
+          }
+        ]
       });
       response.push({
-        addOnName: "Admin user License",
+        addOnName: "Admin User License",
         planAddOnamount: "2388",
         termPlanAddOnId: 1,
         description: "Support ADB calculations and reporting",
@@ -80,8 +114,25 @@ export class ManageSubscription extends BaseService<
         startDate: "12/30/2020",
         endDate: "12/31/2021",
         status: "active",
-        cardType: "mastt",
+        cardType: "mast",
         cardNumber: "6789",
+        availableCards: [
+          {
+            accountType: "Credit Card",
+            cardType: "mast",
+            cardNumber: "6789"
+          }, 
+          {
+            accountType: "ACH",
+            cardType: "",
+            cardNumber: "7869"
+          },
+          {
+            accountType: "Credit Card",
+            cardType: "visa",
+            cardNumber: "9010"
+          }
+        ]
       });
       return resolve(response);
     });

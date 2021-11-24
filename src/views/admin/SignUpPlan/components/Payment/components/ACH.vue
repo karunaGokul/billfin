@@ -148,21 +148,6 @@ export default class ACH extends Vue {
     this.request.billingState = this.state[0];
   }
 
-  mounted() {
-    if (Object.keys(this.ach).length > 0) this.bindAch();
-  }
-
-  private bindAch() {
-    this.request.accountNo = this.ach.number;
-    this.request.routingNo = this.ach.routing;
-    this.request.accountHolder = this.ach.name;
-    this.request.billingAddress = this.address.bill_addr1;
-    this.request.billingCity = this.address.bill_city;
-    this.request.billingState = this.address.bill_state;
-    this.request.postalCode = this.address.bill_postcode;
-    this.request.country = this.address.bill_country;
-  }
-
   public back() {
     this.$emit("back");
   }
@@ -221,12 +206,5 @@ export default class ACH extends Vue {
     return this.store.getters.firms;
   }
 
-  get ach() {
-    return this.store.getters.getAch;
-  }
-
-  get address() {
-    return this.store.getters.getCustomer;
-  }
 }
 </script>

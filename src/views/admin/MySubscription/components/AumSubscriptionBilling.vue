@@ -15,7 +15,6 @@
             : "Subscription Billing Subscription"
         }}
       </div>
-      <button type="button" class="btn btn-primary">Change Plan</button>
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in plans" :key="index">

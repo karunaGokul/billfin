@@ -424,6 +424,7 @@ export default class Home extends Vue {
       if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
         this.trailExpireDays();
       this.store.dispatch("loadEntitlements", response[0]);
+      this.store.dispatch("updateState");
       if (
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"

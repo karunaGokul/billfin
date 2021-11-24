@@ -1,0 +1,9 @@
+.dropdown {
+      &-primary {
+            .dropdown-item:hover, .dropdown:focus {
+                  color: #00A3FF;
+                  text-decoration: none;
+                  background-color: #F1FAFF;
+            }
+      }
+}

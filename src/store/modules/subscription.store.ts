@@ -1,4 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from "vuex";
+import { AddressService } from "@/service";
 
 const state: any = {
   products: [],
@@ -9,74 +10,7 @@ const state: any = {
   creditCard: {},
   ach: {},
   customer: {},
-  states: [
-    "Alabama",
-    "Alaska",
-    "American Samoa",
-    "Arizona",
-    "Arkansas",
-    "Baker Island",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "District of Columbia",
-    "Florida",
-    "Georgia",
-    "Guam",
-    "Hawaii",
-    "Howland Island",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Jarvis Island",
-    "Johnston Atoll",
-    "Kansas",
-    "Kentucky",
-    "Kingman Reef",
-    "Louisiana",
-    "Maine",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Midway Atoll",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Navassa Island",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Northern Mariana Islands",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Palmyra Atoll",
-    "Pennsylvania",
-    "Puerto Rico",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "United States Minor Outlying Islands",
-    "United States Virgin Islands",
-    "Utah",
-    "Vermont",
-    "Virginia",
-    "Wake Island",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming",
-  ],
+  states: [],
 };
 const getters: GetterTree<any, any> = {
   getProducts: (state) => {
@@ -111,6 +45,9 @@ const getters: GetterTree<any, any> = {
   },
 };
 const mutations: MutationTree<any> = {
+  onUpdateState(state, response) {
+    state.states = response;
+  },
   onUpdateProducts(state, response) {
     state.products = response;
   },
@@ -144,6 +81,17 @@ const mutations: MutationTree<any> = {
   },
 };
 const actions: ActionTree<any, any> = {
+  updateState(context) {
+    const service = new AddressService();
+    const data: Array<string> = [];
+    service.getState().then((response) => {
+      response.forEach((item) => {
+        data.push(item.name);
+      });
+      data.sort();
+    });
+    context.commit("onUpdateState", data);
+  },
   updateProducts(context, payload) {
     context.commit("onUpdateProducts", payload);
   },

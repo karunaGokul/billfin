@@ -64,3 +64,7 @@ export enum CommitmentTerm {
   Annual = "ANNUAL",
   Monthly = "MONTHLY",
 }
+export enum PaymentMethod {
+  "Credit Card" = "CREDIT_CARD",
+  ACH = "ACH",
+}

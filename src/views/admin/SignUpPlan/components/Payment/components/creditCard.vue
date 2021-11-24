@@ -306,22 +306,6 @@ export default class CreditCard extends Vue {
     this.request.billingState = this.state[0];
   }
 
-  mounted() {
-    if (Object.keys(this.creditCardDetails).length > 0) this.bindCard();
-  }
-
-  private bindCard() {
-    this.request.cardNumber = this.creditCardDetails.number;
-    this.request.expirationMonth = this.creditCardDetails.expdate_month;
-    this.request.expirationYear = this.creditCardDetails.expdate_year;
-    this.request.cardHolderName = this.creditCardDetails.name;
-    this.request.billingAddress = this.address.bill_addr1;
-    this.request.billingCity = this.address.bill_city;
-    this.request.billingState = this.address.bill_state;
-    this.request.postalCode = this.address.bill_postcode;
-    this.request.country = this.address.bill_country;
-  }
-
   public validateCardNumber() {
     this.card = "";
     this.request.cardNumber = this.request.cardNumber.replaceAll(" ", "");
@@ -438,14 +422,6 @@ export default class CreditCard extends Vue {
       data.push(currentYear + i);
     }
     return data;
-  }
-
-  get creditCardDetails() {
-    return this.store.getters.getCreditCard;
-  }
-
-  get address() {
-    return this.store.getters.getCustomer;
   }
 }
 </script>

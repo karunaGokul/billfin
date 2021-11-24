@@ -9,8 +9,14 @@
       </div>
       <div class="fs-6 text-muted">{{ plan.description }}</div>
     </div>
-    <div class="col-3">
-      <div class="fw-bolder mb-2 fs-5">
+    <div
+      class="col-3 dropdown dropdown-primary"
+      v-click-outside="clickOutSideChangePayment"
+    >
+      <div
+        class="dropdown-toggle fw-bolder mb-2 fs-5"
+        @click="toggleChangePayment = true"
+      >
         <img
           src="@/assets/mastercard.png"
           alt="Card Type"
@@ -33,6 +39,47 @@
         />
         {{ cardType }}
         ****{{ plan.cardNumber.substr(plan.cardNumber.length - 4) }}
+        <div class="dropdown-menu" :class="{ show: toggleChangePayment }">
+          <ul class="p-0">
+            <li
+              v-for="(item, index) in plan.availableCards"
+              :key="index"
+              class="dropdown-item p-4 fw-bold ps-6 pe-6"
+              :class="{
+                'bg-primary text-white': item.cardNumber == plan.cardNumber,
+              }"
+            >
+              <img
+                src="@/assets/mastercard.png"
+                alt="Card Type"
+                v-if="item.cardType == 'mast'"
+              />
+              <img
+                src="@/assets/visa.png"
+                alt="Card Type"
+                v-if="item.cardType == 'visa'"
+              />
+              <img
+                src="@/assets/amex.png"
+                alt="Card Type"
+                v-if="item.cardType == 'amex'"
+              />
+              <img
+                src="@/assets/discover.png"
+                alt="Card Type"
+                v-if="item.cardType == 'disc'"
+              />
+              {{ item.accountType == "Credit Card" ? cardType : "Checking" }}
+              **** {{ item.cardNumber }}
+            </li>
+          </ul>
+          <div class="border-top text-center pt-2">
+            <button type="button" class="btn text-primary">
+              <i class="fas fa-plus text-primary"></i>
+              Add New
+            </button>
+          </div>
+        </div>
       </div>
       <div
         class="
@@ -57,24 +104,27 @@
         {{ $filters.currencyDisplayWithoutSymbol(plan.termPlanAmount) }}
         <span class="fs-8 fw-light">/{{ plan.planType }}</span>
       </div>
-      <div class="dropdown ms-4" v-click-outside="clickOutSidePlan">
+      <div
+        class="dropdown dropdown-primary ms-4"
+        v-click-outside="clickOutSidePlan"
+      >
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
           @click="togglePlan = true"
         ></i>
         <ul
-          class="dropdown-menu overflow-auto"
+          class="dropdown-menu overflow-auto p-2"
           :class="{ show: togglePlan }"
           style="right: 0"
         >
+          <li class="dropdown-item pt-2 pb-2" @click="toggleRenewModel = true">
+            Change Plan
+          </li>
+          <li class="dropdown-item pt-2 pb-2">View Invoice</li>
           <li class="dropdown-item pt-2 pb-2" @click="toggleCancelModel = true">
             Cancel Plan
           </li>
-          <li class="dropdown-item pt-2 pb-2" @click="toggleRenewModel = true">
-            Renew Plan
-          </li>
-          <li class="dropdown-item pt-2 pb-2">Invoice</li>
         </ul>
       </div>
     </div>
@@ -118,8 +168,14 @@ export default class Plan extends Vue {
   public toggleCancelModel: boolean = false;
   public toggleRenewModel: boolean = false;
 
+  public toggleChangePayment: boolean = false;
+
   public clickOutSidePlan() {
     if (this.togglePlan) this.togglePlan = false;
+  }
+
+  public clickOutSideChangePayment() {
+    this.toggleChangePayment = false;
   }
 
   public onCancelModel() {

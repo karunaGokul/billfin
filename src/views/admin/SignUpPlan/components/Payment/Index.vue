@@ -46,7 +46,7 @@ import { useStore } from "vuex";
 import ACH from "./components/ACH.vue";
 import CreditCard from "./components/creditCard.vue";
 
-import { createCustomerRequestModel, paymentTokenRequestModel } from "@/model";
+import { createCustomerRequestModel, paymentTokenRequestModel, PaymentMethod } from "@/model";
 import { ISubscripeService } from "@/service";
 
 declare let ChargeOver: any;
@@ -62,11 +62,6 @@ export default class Index extends Vue {
 
   public paymenyType: string = "Credit Card";
   public store = useStore();
-
-  created() {
-    if (this.store.getters.getPaymentType)
-      this.paymenyType = this.store.getters.getPaymentType;
-  }
 
   onBack() {
     this.$emit("back");
@@ -145,7 +140,8 @@ export default class Index extends Vue {
     const request = new paymentTokenRequestModel();
     request.token = token;
     request.firmId = this.firmId;
-    request.paymentMethod = this.paymenyType.toUpperCase();
+    request.paymentMethod = PaymentMethod[this.paymenyType as keyof typeof PaymentMethod];
+    this.paymenyType.toUpperCase();
     this.service
       .updatePaymentToken(request)
       .then((response) => {

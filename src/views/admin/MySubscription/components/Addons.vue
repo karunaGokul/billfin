@@ -59,23 +59,30 @@
         {{ $filters.currencyDisplayWithoutSymbol(addons.planAddOnamount) }}
         <span class="fs-8 fw-light">/{{ addons.planType }}</span>
       </div>
-      <div class="dropdown ms-4" v-click-outside="clickOutSidePlan">
+      <div
+        class="dropdown dropdown-primary ms-4"
+        v-click-outside="clickOutSidePlan"
+      >
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
           @click="togglePlan = true"
         ></i>
         <ul
-          class="dropdown-menu overflow-auto"
+          class="dropdown-menu overflow-auto p-2"
           :class="{ show: togglePlan }"
           style="right: 0"
         >
+          <li
+            class="dropdown-item pt-2 pb-2"
+            v-if="addons.addOnName == 'Admin User License'"
+          >
+            Add User
+          </li>
+          <li class="dropdown-item pt-2 pb-2">View Invoice</li>
           <li class="dropdown-item" @click="showCancelModel = true">
             Cancel Add-On
           </li>
-          <li class="dropdown-item pt-2 pb-2">Renew Add-On</li>
-          <li class="dropdown-item pt-2 pb-2">Add User</li>
-          <li class="dropdown-item pt-2 pb-2">Invoice</li>
         </ul>
       </div>
     </div>
