@@ -31,6 +31,10 @@ const routes: Array<RouteRecordRaw> = [
         path: "/my-subscription",
         name: 'Manage Subscription',
         component: () => import("@/views/admin/MySubscription/Index.vue")
+      },{
+        path: '/bills-payments',
+        name: 'Bills & Payments',
+        component: () => import("@/views/admin/BillsPayments/Index.vue")
       }
     ],
   },

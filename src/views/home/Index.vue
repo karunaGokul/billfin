@@ -202,6 +202,17 @@
             <span class="nav-item__name fs-7">My Subscription</span>
             <span class="custom-tooltip">My Subscription</span>
           </router-link>
+          <router-link
+            to="/bills-payments"
+            tag="li"
+            class="d-flex align-items-center nav-item"
+            active-class="nav-item__active"
+            title="Bills & Payments"
+          >
+            <i class="fas fa-circle fs-10"></i>
+            <span class="nav-item__name fs-7">Bills & Payments</span>
+            <span class="custom-tooltip">Bills & Payments</span>
+          </router-link>
         </ul>
 
         <router-link

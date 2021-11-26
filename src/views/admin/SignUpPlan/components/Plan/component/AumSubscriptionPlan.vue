@@ -161,7 +161,7 @@ export default class AumSubscriptionPlan extends Vue {
         "Unlimited fee schedules",
         "Unlimited invoices",
         "Unlimited email/phone support",
-      ],
+      ]
     },
     {
       planName: "Professional",
@@ -175,6 +175,11 @@ export default class AumSubscriptionPlan extends Vue {
         "Average Daily Balanaces",
         "Flow Billing Calculdations",
       ],
+      preIncludedAddons: [
+        {
+          addOnName: ""
+        }
+      ]
     },
     {
       planName: "Elite",

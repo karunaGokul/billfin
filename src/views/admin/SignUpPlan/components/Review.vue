@@ -199,7 +199,8 @@ export default class Review extends Vue {
         return prev + parseInt(cur.planAddOnamount);
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
-    } else {
+    } 
+    if(this.subscriptionBilling) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
           return prev + parseInt(cur.planAddOnamount);

@@ -20,7 +20,8 @@ export class manageSubscriptionPlanResponseModel {
   status: string;
   cardType: string;
   cardNumber: string;
-  availableCards: Array<availableCardsModel>
+  availableCards: Array<availableCardsModel>;
+  commitmentTerm: string;
 }
 export class manageSubscriptionAddonsResponseModel {
   addOnName: string;
@@ -35,4 +36,5 @@ export class manageSubscriptionAddonsResponseModel {
   cardType: string;
   cardNumber: string;
   availableCards: Array<availableCardsModel>
+  commitmentTerm: string;
 }

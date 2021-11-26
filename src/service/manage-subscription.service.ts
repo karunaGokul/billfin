@@ -42,11 +42,12 @@ export class ManageSubscription extends BaseService<
         description: "For small to medium-sized RIAs",
         planType: "Yr",
         status: "active",
-        planStatus: "Renew",
+        planStatus: "Renewed",
         startDate: "12/30/2020",
         endDate: "12/31/2021",
         cardType: "mast",
         cardNumber: "6789",
+        commitmentTerm: "Annual",
         availableCards: [
           {
             accountType: "Credit Card",
@@ -80,12 +81,13 @@ export class ManageSubscription extends BaseService<
         termPlanAddOnId: 1,
         description: "Support ADB calculations and reporting",
         planType: "Yr",
-        planStatus: "Renew",
+        planStatus: "Renewed",
         startDate: "12/30/2020",
         endDate: "12/31/2021",
         status: "active",
         cardType: "mast",
         cardNumber: "6789",
+        commitmentTerm: "Annual",
         availableCards: [
           {
             accountType: "Credit Card",
@@ -110,12 +112,13 @@ export class ManageSubscription extends BaseService<
         termPlanAddOnId: 1,
         description: "Support ADB calculations and reporting",
         planType: "Yr",
-        planStatus: "Renew",
+        planStatus: "Canceled",
         startDate: "12/30/2020",
         endDate: "12/31/2021",
         status: "active",
         cardType: "mast",
         cardNumber: "6789",
+        commitmentTerm: "Annual",
         availableCards: [
           {
             accountType: "Credit Card",

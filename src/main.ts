@@ -109,6 +109,14 @@ app.config.globalProperties.$filters = {
         maximumFractionDigits: numberOfDigits,
       })})%`;
   },
+  creditCardType(value: any) {
+    let card: string = "";
+    if (value == "mast") card = "Mastercard";
+    else if (value == "visa") card = "Visa";
+    else if (value == "amex") card = "American Express";
+    else card = "Discover";
+    return card;
+  },
 };
 
 app.directive("click-outside", {

@@ -3,14 +3,18 @@
     <div class="col-4">
       <div class="fw-bolder fs-4 mb-2">
         {{ addons.addOnName }}
-        <span class="badge text-success ms-2" style="background-color: #e8fff3"
-          >Active</span
-        >
+        <span class="badge text-success ms-2 bg-success-alpha">Active</span>
       </div>
       <div class="fs-6 text-muted">{{ addons.description }}</div>
     </div>
-    <div class="col-3">
-      <div class="fw-bolder mb-2 fs-5">
+    <div
+      class="col-3 dropdown dropdown-primary"
+      v-click-outside="clickOutSideChangePayment"
+    >
+      <div
+        class="dropdown-toggle fw-bolder mb-2 fs-5"
+        @click="toggleChangePayment = true"
+      >
         <img
           src="@/assets/mastercard.png"
           alt="Card Type"
@@ -31,24 +35,49 @@
           alt="Card Type"
           v-if="addons.cardType == 'disc'"
         />
-        {{ cardType }}
+        {{ $filters.creditCardType(addons.cardType) }}
         ****{{ addons.cardNumber.substr(addons.cardNumber.length - 4) }}
+        <ChangePaymentInfo
+          :selectedCardNumber="addons.cardNumber"
+          :availableCards="addons.availableCards"
+          v-if="toggleChangePayment"
+        />
       </div>
       <div
-        class="
-          border border-dashed border-warning
-          p-2
-          rounded
-          text-warning
-          fw-bolder
-        "
-        style="width: fit-content; background-color: #ffc70014"
+        class="border border-dashed p-2 rounded fw-bolder"
+        style="width: fit-content"
+        :class="{
+          'border-warning bg-warning-alpha text-warning':
+            addons.planStatus == 'Renewed',
+          'border-danger bg-dander-alpha text-danger':
+            addons.planStatus == 'Canceled',
+        }"
       >
-        Auto-renews on 31 Dec, 2021
+        {{
+          addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus
+        }}
+        on 31 Dec, 2021
       </div>
     </div>
-    <div class="col-3">
-      <div class="fw-bolder fs-4 mb-2">Annual Subscription</div>
+    <div
+      class="col-3 dropdown dropdown-primary"
+      v-click-outside="clickOutSideTerm"
+    >
+      <div
+        class="fw-bolder fs-4 mb-2 dropdown-toggle"
+        @click="toggleCommitmentTerm = true"
+      >
+        {{ addons.commitmentTerm }} Subscription
+      </div>
+      <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
+        <ul class="m-2 p-0">
+          <li class="dropdown-item p-4" @click="showCommitmentTermModel = true">
+            Switch to
+            {{ addons.commitmentTerm == "Annual" ? "Monthly" : "Annual" }}
+            Commitment
+          </li>
+        </ul>
+      </div>
       <div class="text-muted">
         {{ addons.startDate }} - {{ addons.endDate }}
       </div>
@@ -95,18 +124,31 @@
     @cancel="onCancel"
     v-if="showCancelModel"
   />
+  <ChangeCommitmentTerm
+    :plan="addons"
+    :currentCommitmentTerm="addons.commitmentTerm"
+    :newCommitmentTerm="
+      addons.commitmentTerm == 'Annual' ? 'Monthly' : 'Annual'
+    "
+    @close="showCommitmentTermModel = false"
+    v-if="showCommitmentTermModel"
+  />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
+import ChangePaymentInfo from "./ChangePaymentInfo.vue";
+import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
 import { manageSubscriptionAddonsResponseModel } from "@/model";
 
 @Options({
   components: {
     CancelPlanAddOn,
+    ChangePaymentInfo,
+    ChangeCommitmentTerm,
   },
 })
 export default class Addons extends Vue {
@@ -114,23 +156,25 @@ export default class Addons extends Vue {
 
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;
+  public toggleChangePayment: boolean = false;
+  public toggleCommitmentTerm: boolean = false;
+
+  public showCommitmentTermModel: boolean = false;
 
   public onCancel() {
-    console.log("Plan cancelled");
     this.showCancelModel = false;
   }
 
   public clickOutSidePlan() {
-    if (this.togglePlan) this.togglePlan = false;
+    this.togglePlan = false;
   }
 
-  get cardType() {
-    let cardType: string = "";
-    if (this.addons.cardType == "mast") cardType = "Mastercard";
-    else if (this.addons.cardType == "visa") cardType = "Visa";
-    else if (this.addons.cardType == "amex") cardType = "American Express";
-    else cardType = "Discover";
-    return cardType;
+  public clickOutSideTerm() {
+    this.toggleCommitmentTerm = false;
+  }
+
+  public clickOutSideChangePayment() {
+    this.toggleChangePayment = false;
   }
 }
 </script>
