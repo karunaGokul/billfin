@@ -64,6 +64,7 @@
                         class="form-check-input"
                         type="checkbox"
                         :checked="item.selected"
+                        :disabled="item.isPreInclueded"
                         @change="updateAddons(item)"
                       />
                     </div>
@@ -84,7 +85,7 @@
                     <div v-if="item.addOnName == 'Admin User License'">
                       <div class="row g-0">
                         <div class="fw-bolder col-7" style="line-height: 3">
-                          Number of users?
+                          Add more users?
                         </div>
                         <div class="col-3">
                           <select
@@ -111,7 +112,7 @@
                     >
                       <div class="row g-0">
                         <div class="fw-bolder col-7" style="line-height: 3">
-                          Number of connectors?
+                          Add more connectors?
                         </div>
                         <div class="col-3">
                           <select
@@ -237,10 +238,24 @@ export default class AumSubscriptionAddon extends Vue {
     },
   ];
 
-  created() {
-    if (this.product == "AUM")
-      this.filterAddons(this.store.getters.getAumBilling.addons);
-    else this.filterAddons(this.store.getters.getSubscriptionBilling.addons);
+  mounted() {
+    let addons: Array<addonsResponseModel> = [];
+    if (this.product == "AUM") {
+      addons = this.aum.plan.preIncludedAddons;
+      addons = addons.concat(this.aum.addons);
+    } else {
+      addons = this.subscription.plan.preIncludedAddons;
+      addons = addons.concat(this.subscription.addons);
+    }
+
+    addons = addons.filter(
+      (v, i, a) =>
+        a.findIndex(
+          (t) => t.addOnName === v.addOnName && t.addOnName === v.addOnName
+        ) === i
+    );
+    this.filterAddons(addons);
+    this.getAddons();
   }
 
   private filterAddons(addons: Array<addonsResponseModel>) {
@@ -252,9 +267,13 @@ export default class AumSubscriptionAddon extends Vue {
         extraInfo: string;
         selected: boolean;
         quantity: string;
+        isPreInclueded: boolean;
       }) => {
         addons.forEach((selectedAddons: addonsResponseModel) => {
-          if (item.addOnName == selectedAddons.addOnName) item.selected = true;
+          if (item.addOnName == selectedAddons.addOnName) {
+            item.selected = true;
+            if (selectedAddons.isPreInclueded) item.isPreInclueded = true;
+          }
         });
       }
     );
@@ -285,6 +304,7 @@ export default class AumSubscriptionAddon extends Vue {
           extraInfo: string;
           selected: boolean;
           quantity: string;
+          isPreInclueded: boolean;
         }) => {
           if (item.addOnName == addons.addOnName) {
             this.addons.push({
@@ -296,12 +316,14 @@ export default class AumSubscriptionAddon extends Vue {
               selected: addons.selected,
               quantity: addons.quantity,
               extraInfo: addons.extraInfo,
+              isPreInclueded: addons.isPreInclueded,
             });
           }
         }
       );
     });
     this.itemsPerRow = Math.round(this.addons.length / 2);
+    console.log(this.addons);
   }
 
   public updateAddons(response: addonsResponseModel) {
@@ -314,6 +336,14 @@ export default class AumSubscriptionAddon extends Vue {
     });
   }
 
+  get aum() {
+    return this.store.getters.getAumBilling;
+  }
+
+  get subscription() {
+    return this.store.getters.getSubscriptionBilling;
+  }
+
   get getPlanList() {
     return Array.from(
       Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
@@ -321,16 +351,9 @@ export default class AumSubscriptionAddon extends Vue {
   }
 
   get commitmentTerm() {
-    let commitmentTerm: string = "";
-    console.log(this.product);
-    console.log(this.store.getters.getAumBilling.commitmentTerm)
-    if (this.product == "AUM")
-      commitmentTerm = this.store.getters.getAumBilling.commitmentTerm;
-    else
-      commitmentTerm = this.store.getters.getSubscriptionBilling.commitmentTerm;
-
-    console.log(commitmentTerm);
-    return commitmentTerm;
+    return this.product == "AUM"
+      ? this.aum.commitmentTerm
+      : this.subscription.commitmentTerm;
   }
 }
 </script>

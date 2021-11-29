@@ -30,6 +30,7 @@ export class planResponseModel {
   description: string;
   planType: string;
   planDetails: Array<string>;
+  preIncludedAddons: Array<addonsResponseModel>;
 }
 export class addonsRequestModel {
   termPlanId: number;
@@ -43,6 +44,7 @@ export class addonsResponseModel {
   planType: string;
   quantity: string;
   extraInfo: string;
+  isPreInclueded: boolean;
 }
 export class paymentTokenRequestModel {
   token: string;

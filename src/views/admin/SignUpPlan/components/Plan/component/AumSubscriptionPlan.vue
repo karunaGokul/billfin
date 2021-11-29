@@ -69,7 +69,7 @@
                   item.planName == 'Enterprise' ||
                   item.planName != selectedPlan.planName,
               }"
-              style="width: 260px;"
+              style="width: 260px"
               @click="updatePlan(item)"
               v-for="(item, index) in plans"
               :key="index"
@@ -108,16 +108,16 @@
               </div>
               <div class="fs-4 text-center text-light-gray pb-4">Clients</div>
               <div class="fs-4 text-center fw-bolder pt-4">
-                {{ item.custodian }}
+                {{ item.connector }}
               </div>
-              <div class="fs-4 text-center text-light-gray pb-4">Connector</div>
+              <div class="fs-4 text-center text-light-gray pb-4">{{item.planName == 'Launch' ? 'Connector' : 'Connectors'}}</div>
               <ul class="mt-6">
                 <li
-                  v-for="(details, i) in item.planDetails"
-                  :key="i + 1"
+                  v-for="(addOnName, i) in item.planDetails"
+                  :key="i"
                   class="fw-bolder text-light-gray pt-2 pb-2"
                 >
-                  {{ details }}
+                  {{ addOnName }}
                 </li>
               </ul>
             </div>
@@ -134,7 +134,11 @@ import { Inject, Prop } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
-import { planRequestModel, planResponseModel, CommitmentTerm } from "@/model";
+import {
+  planRequestModel,
+  planResponseModel,
+  CommitmentTerm
+} from "@/model";
 
 export default class AumSubscriptionPlan extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
@@ -161,7 +165,8 @@ export default class AumSubscriptionPlan extends Vue {
         "Unlimited fee schedules",
         "Unlimited invoices",
         "Unlimited email/phone support",
-      ]
+      ],
+      preIncludedAddons: [],
     },
     {
       planName: "Professional",
@@ -172,14 +177,19 @@ export default class AumSubscriptionPlan extends Vue {
       connector: "2",
       planDetails: [
         "Everything from Launch Plan",
-        "Average Daily Balanaces",
-        "Flow Billing Calculdations",
+        "ADB Add-on included",
+        "Flow Billing Add-on included",
       ],
       preIncludedAddons: [
         {
-          addOnName: ""
-        }
-      ]
+          addOnName: "Average Daily Balances",
+          isPreInclueded: true
+        },
+        {
+          addOnName: "Flow Billing",
+          isPreInclueded: true
+        },
+      ],
     },
     {
       planName: "Elite",
@@ -190,8 +200,26 @@ export default class AumSubscriptionPlan extends Vue {
       connector: "2",
       planDetails: [
         "Everything from Professional Plan",
-        "Multi-Fee Billing Calculations",
+        "Multi-Fee Billing Add-on included",
         "Product Billing Add-on included",
+      ],
+      preIncludedAddons: [
+        {
+          addOnName: "Average Daily Balances",
+          isPreInclueded: true
+        },
+        {
+          addOnName: "Flow Billing",
+          isPreInclueded: true
+        },
+        {
+          addOnName: "Multi-Fee Billing",
+          isPreInclueded: true
+        },
+        {
+          addOnName: "Product Billing",
+          isPreInclueded: true
+        },
       ],
     },
     {
@@ -206,6 +234,7 @@ export default class AumSubscriptionPlan extends Vue {
         "Advisor Portal",
         "Custom SLAs",
       ],
+      preIncludedAddons: [],
     },
   ];
 
@@ -215,12 +244,13 @@ export default class AumSubscriptionPlan extends Vue {
 
   mounted() {
     if (this.product == "AUM") {
-      if(this.store.getters.getAumBilling.commitmentTerm)
+      if (this.store.getters.getAumBilling.commitmentTerm)
         this.commitmentTerm = this.store.getters.getAumBilling.commitmentTerm;
       this.selectedPlan = this.store.getters.getAumBilling.plan;
     } else {
-      if(this.store.getters.getSubscriptionBilling.commitmentTerm)
-        this.commitmentTerm = this.store.getters.getSubscriptionBilling.commitmentTerm;
+      if (this.store.getters.getSubscriptionBilling.commitmentTerm)
+        this.commitmentTerm =
+          this.store.getters.getSubscriptionBilling.commitmentTerm;
       this.selectedPlan = this.store.getters.getSubscriptionBilling.plan;
     }
   }
@@ -251,7 +281,8 @@ export default class AumSubscriptionPlan extends Vue {
           adminUsers: string;
           clients: string;
           connector: string;
-          planDetails: any;
+          planDetails: Array<string>;
+          preIncludedAddons: Array<any>;
         }) => {
           if (item.planName == plan.planName) {
             this.plans.push({
@@ -265,6 +296,7 @@ export default class AumSubscriptionPlan extends Vue {
               clients: plan.clients,
               connector: plan.connector,
               planDetails: plan.planDetails,
+              preIncludedAddons: plan.preIncludedAddons,
             });
           }
         }

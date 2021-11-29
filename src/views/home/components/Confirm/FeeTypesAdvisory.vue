@@ -141,7 +141,7 @@ export default class FeeTypesAdvisory extends Vue {
 
   private getFeeTypesSetup() {
     const request = new firmRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
+    request.firmId = this.firms.firmId;
     this.service.getFeeTypesSetup(request).then((response) => {
       this.request.billingType = response.billingType;
       this.bindValues(response);
@@ -200,6 +200,10 @@ export default class FeeTypesAdvisory extends Vue {
       []
     );
     return data;
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 
 }
