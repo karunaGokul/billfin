@@ -178,7 +178,7 @@ export default class GeneralBoard extends Vue {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-      this.request.firmId = this.store.getters.selectedFirmId;
+      this.request.firmId = this.firms.firmId;
       this.service
         ?.saveGeneral(this.request)
         .then((response: generalBoardResponseModel) => {

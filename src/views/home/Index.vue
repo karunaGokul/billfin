@@ -20,7 +20,12 @@
           exact
           title="Dashboard"
         >
-          <img src="@/assets/sidebar-icon/dashboard.svg" alt="Dashboard" width="25" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/dashboard.svg"
+            alt="Dashboard"
+            width="25"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Dashboard</span>
           <span class="custom-tooltip">Dashboard</span>
         </router-link>
@@ -42,7 +47,12 @@
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
         >
-          <img src="@/assets/sidebar-icon/clients.svg" alt="Clients" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/clients.svg"
+            alt="Clients"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Clients</span>
           <span class="custom-tooltip">Clients</span>
         </router-link>
@@ -53,7 +63,12 @@
           active-class="nav-item__active"
           title="Fee Schedules"
         >
-          <img src="@/assets/sidebar-icon/fee-schedules.svg" alt="Fee Schedules" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/fee-schedules.svg"
+            alt="Fee Schedules"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Fee Schedules</span>
           <span class="custom-tooltip">Fee Schedules</span>
         </router-link>
@@ -64,7 +79,12 @@
           active-class="nav-item__active"
           title="Products"
         >
-          <img src="@/assets/sidebar-icon/products.svg" alt="Products" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/products.svg"
+            alt="Products"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Products</span>
           <span class="custom-tooltip">Products</span>
         </router-link>
@@ -75,7 +95,12 @@
           active-class="nav-item__active"
           title="Subscriptions"
         >
-          <img src="@/assets/sidebar-icon/subscriptions.svg" alt="Subscriptions" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/subscriptions.svg"
+            alt="Subscriptions"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Subscriptions</span>
           <span class="custom-tooltip">Subscriptions</span>
         </router-link>
@@ -86,7 +111,12 @@
           active-class="nav-item__active"
           title="Timesheets"
         >
-          <img src="@/assets/sidebar-icon/timesheets.svg" alt="Timesheets" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/timesheets.svg"
+            alt="Timesheets"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7 fw-bold">Timesheets</span>
           <span class="custom-tooltip">Timesheets</span>
         </router-link>
@@ -109,7 +139,12 @@
           active-class="nav-item__active"
           title="Fees"
         >
-          <img src="@/assets/sidebar-icon/fees.svg" alt="Fees" width="12" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/fees.svg"
+            alt="Fees"
+            width="12"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Fees</span>
           <span class="custom-tooltip">Fees</span>
         </router-link>
@@ -120,7 +155,12 @@
           active-class="nav-item__active"
           title="Invoices"
         >
-          <img src="@/assets/sidebar-icon/invoices.svg" alt="Invoices" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/invoices.svg"
+            alt="Invoices"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Invoices</span>
           <span class="custom-tooltip">Invoices</span>
         </router-link>
@@ -131,7 +171,12 @@
           active-class="nav-item__active"
           title="Payments"
         >
-          <img src="@/assets/sidebar-icon/payments.svg" alt="Payments" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/payments.svg"
+            alt="Payments"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Payments</span>
           <span class="custom-tooltip">Payments</span>
         </router-link>
@@ -142,7 +187,12 @@
           active-class="nav-item__active"
           title="Reports"
         >
-          <img src="@/assets/sidebar-icon/reports.svg" alt="Reports" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/reports.svg"
+            alt="Reports"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Reports</span>
           <span class="custom-tooltip">Reports</span>
         </router-link>
@@ -159,7 +209,12 @@
 
       <ul class="nav flex-column mt-2">
         <div class="dropdown d-flex align-items-center nav-item">
-          <img src="@/assets/sidebar-icon/settings.svg" alt="Settings" width="20" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/settings.svg"
+            alt="Settings"
+            width="20"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Settings</span>
           <i
             class="fas fa-angle-down"
@@ -222,7 +277,12 @@
           active-class="nav-item__active"
           title="Help"
         >
-          <img src="@/assets/sidebar-icon/help.svg" alt="Help" width="12" class="m-4"/>
+          <img
+            src="@/assets/sidebar-icon/help.svg"
+            alt="Help"
+            width="12"
+            class="m-4"
+          />
           <span class="nav-item__name fs-7">Help</span>
           <span class="custom-tooltip">Help</span>
         </router-link>
@@ -347,19 +407,27 @@
       </nav>
 
       <div class="bg-light m-6">
-      <!-- <span class="icon-dashboard"><span class="path1"></span><span class="path2"></span></span> -->
+        <!-- <span class="icon-dashboard"><span class="path1"></span><span class="path2"></span></span> -->
         <div class="row">
           <div class="col-3">
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
-              {{currentPage}}
+              {{ page }}
             </p>
-            <ol class="breadcrumb ps-4 pb-4">
-              <li class="breadcrumb-item">
-                <a href="#" class="text-muted">Home</a>
-              </li>
-              <li class="breadcrumb-item">
-                <a href="#" class="text-dark fw-bold">Dashboard</a>
-              </li>
+            <ol class="breadcrumb ps-4 pt-2 pb-4">
+              <router-link
+                to="/dashboard"
+                tag="li"
+                class="breadcrumb-item text-muted"
+              >
+                Home
+              </router-link>
+              <router-link
+                :to="{ name: currentPage }"
+                tag="li"
+                class="breadcrumb-item text-muted"
+              >
+                {{ currentPage }}
+              </router-link>
             </ol>
           </div>
           <div class="col-5 p-4">
@@ -424,6 +492,8 @@ export default class Home extends Vue {
 
   public showSettingsDropdown: boolean = false;
 
+  public subPage: string = "";
+
   mounted() {
     this.getFirms();
     console.log(this.$route);
@@ -436,6 +506,8 @@ export default class Home extends Vue {
         this.trailExpireDays();
       this.store.dispatch("loadEntitlements", response[0]);
       this.store.dispatch("updateState");
+
+      this.showOnBoard = true;
       if (
         this.firms.length == 1 &&
         this.firms[0].trialOnboardingStatus != "COMPLETED"
@@ -515,9 +587,21 @@ export default class Home extends Vue {
     return this.store.getters.firms.name;
   }
 
-  get currentPage() {
+  get page() {
     return this.$route.name;
   }
-  
+
+  get currentPage() {
+    this.subPage = "";
+    let page: string = "";
+    if (this.$route.name == "Dashboard") {
+      page = this.$route.name;
+      this.subPage = "";
+    } else if (this.$route.name == "Dashboard") {
+      page = "Settings";
+      this.subPage = "Manage Subscription";
+    }
+    return page;
+  }
 }
 </script>

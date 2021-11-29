@@ -244,7 +244,7 @@ export default class FeeTypesBoard extends Vue {
         });
     });
 
-    this.request.firmId = this.store.getters.selectedFirmId;
+    this.request.firmId = this.firms.firmId;
     this.service.saveFeeTypesSetup(this.request).then((response) => {
       if (response.status == "SUCCESS") this.$emit("next");
     });
@@ -345,6 +345,10 @@ export default class FeeTypesBoard extends Vue {
     }
 
     return valid;
+  }
+
+  get firms() {
+    return this.store.getters.firms;
   }
 }
 </script>
