@@ -505,8 +505,6 @@ export default class Home extends Vue {
       if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
         this.trailExpireDays();
       this.store.dispatch("loadEntitlements", response[0]);
-      this.store.dispatch("updateState");
-
       this.showOnBoard = true;
       if (
         this.firms.length == 1 &&

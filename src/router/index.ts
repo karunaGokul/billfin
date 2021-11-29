@@ -66,6 +66,7 @@ router.beforeEach((to, from, next) => {
       const token = store.getters.accessToken;
       if (token)
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        store.dispatch("updateState");
       next();
       return;
     }
