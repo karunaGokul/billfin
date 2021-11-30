@@ -110,7 +110,9 @@
               <div class="fs-4 text-center fw-bolder pt-4">
                 {{ item.connector }}
               </div>
-              <div class="fs-4 text-center text-light-gray pb-4">{{item.planName == 'Launch' ? 'Connector' : 'Connectors'}}</div>
+              <div class="fs-4 text-center text-light-gray pb-4">
+                {{ item.planName == "Launch" ? "Connector" : "Connectors" }}
+              </div>
               <ul class="mt-6">
                 <li
                   v-for="(addOnName, i) in item.planDetails"
@@ -134,11 +136,7 @@ import { Inject, Prop } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
-import {
-  planRequestModel,
-  planResponseModel,
-  CommitmentTerm
-} from "@/model";
+import { planRequestModel, planResponseModel, CommitmentTerm } from "@/model";
 
 export default class AumSubscriptionPlan extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
@@ -183,11 +181,11 @@ export default class AumSubscriptionPlan extends Vue {
       preIncludedAddons: [
         {
           addOnName: "Average Daily Balances",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
         {
           addOnName: "Flow Billing",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
       ],
     },
@@ -206,19 +204,19 @@ export default class AumSubscriptionPlan extends Vue {
       preIncludedAddons: [
         {
           addOnName: "Average Daily Balances",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
         {
           addOnName: "Flow Billing",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
         {
           addOnName: "Multi-Fee Billing",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
         {
           addOnName: "Product Billing",
-          isPreInclueded: true
+          isPreInclueded: true,
         },
       ],
     },
@@ -239,23 +237,23 @@ export default class AumSubscriptionPlan extends Vue {
   ];
 
   created() {
-    this.getPlans();
-  }
-
-  mounted() {
     if (this.product == "AUM") {
-      if (this.store.getters.getAumBilling.commitmentTerm)
-        this.commitmentTerm = this.store.getters.getAumBilling.commitmentTerm;
-      this.selectedPlan = this.store.getters.getAumBilling.plan;
+      if (this.aum.commitmentTerm)
+        this.commitmentTerm = this.aum.commitmentTerm;
+      this.selectedPlan = this.aum.plan;
     } else {
-      if (this.store.getters.getSubscriptionBilling.commitmentTerm)
-        this.commitmentTerm =
-          this.store.getters.getSubscriptionBilling.commitmentTerm;
-      this.selectedPlan = this.store.getters.getSubscriptionBilling.plan;
+      if (this.subscription.commitmentTerm)
+        this.commitmentTerm = this.subscription.commitmentTerm;
+      this.selectedPlan = this.subscription.plan;
     }
   }
 
+  mounted() {
+    this.getPlans();
+  }
+
   private getPlans() {
+    console.log("final", this.commitmentTerm);
     const request: planRequestModel = new planRequestModel();
     request.productCode = this.product;
     request.termPlanType =
@@ -306,13 +304,9 @@ export default class AumSubscriptionPlan extends Vue {
       this.updatePlan(this.plans[0]);
   }
 
-  public updateCommitmentTerm(plan: string) {
-    this.commitmentTerm = plan;
-    this.$emit("update", {
-      product: this.product,
-      plan: this.plans[0],
-      commitmentTerm: this.commitmentTerm,
-    });
+  public updateCommitmentTerm(commitmentTerm: string) {
+    this.commitmentTerm = commitmentTerm;
+    this.selectedPlan = new planResponseModel();
     this.getPlans();
   }
 
@@ -321,8 +315,17 @@ export default class AumSubscriptionPlan extends Vue {
     this.$emit("update", {
       product: this.product,
       plan: plan,
+      addons: [],
       commitmentTerm: this.commitmentTerm,
     });
+  }
+
+  get aum() {
+    return this.store.getters.getAumBilling;
+  }
+
+  get subscription() {
+    return this.store.getters.getSubscriptionBilling;
   }
 }
 </script>

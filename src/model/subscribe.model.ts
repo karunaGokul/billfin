@@ -52,22 +52,23 @@ export class paymentTokenRequestModel {
   firmId: number;
 }
 export class addOnsModel {
-  termPlanAddOnId: number;
+  termAddOnId: number;
   quantity: string;
-  addOnStartDate: string;
+  startDate: string;
 }
 export class termPlanModel {
   termPlanId: number;
-  planStartDate: string; 
+  startDate: string; 
 }
-export class subscriptions {
-  productCode: string;
-  termPlan: termPlanModel;
-  addOns: Array<addOnsModel> = [];
+export class subscriptionsModel {
+  termPlanId: number;
+  startDate: string; 
 }
 export class subscribeRequestModel {
   firmId: number;
-  subscriptions: Array<subscriptions> = [];
+  productCode: string;
+  subscriptions: Array<subscriptionsModel> = [];
+  addOns: Array<addOnsModel> = [];
 }
 export class subscribeResponseModel {
   status: string;

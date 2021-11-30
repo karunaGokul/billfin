@@ -31,6 +31,7 @@ export default class Index extends Vue {
   public updatePlan(options: {
     product: string;
     plan: { termPlanId: number; planName: string };
+    addons: Array<any>,
     commitmentTerm: string;
   }) {
     if (options.plan.planName == "Enterprise") {
@@ -43,7 +44,7 @@ export default class Index extends Vue {
     }
   }
 
-  public next() {
+  public next() { 
     this.$emit("next");
   }
 

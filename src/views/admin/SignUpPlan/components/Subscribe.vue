@@ -70,7 +70,11 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
-import { subscribeRequestModel, termPlanModel, addOnsModel } from "@/model";
+import {
+  subscribeRequestModel,
+  subscriptionsModel,
+  addOnsModel,
+} from "@/model";
 
 import { ISubscripeService } from "@/service";
 
@@ -89,33 +93,29 @@ export default class Subscribe extends Vue {
     const request: subscribeRequestModel = new subscribeRequestModel();
     request.firmId = this.store.getters.firms.firmId;
 
-    const termPlan: termPlanModel = new termPlanModel();
-
     if (this.showAumBilling) {
-      termPlan.termPlanId = this.aumBilling.plan.termPlanId;
-      termPlan.planStartDate = this.startDate;
+      request.productCode = "AUM";
       request.subscriptions.push({
-        productCode: "AUM",
-        termPlan: termPlan,
-        addOns: this.getAddons(this.aumBilling.addons),
+        termPlanId: this.aumBilling.plan.termPlanId,
+        startDate: this.startDate,
       });
+      request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
-      termPlan.termPlanId = this.subscriptionBilling.plan.termPlanId;
-      termPlan.planStartDate = this.startDate;
+      request.productCode = "SUBSCRIPTION";
       request.subscriptions.push({
-        productCode: "SUBSCRIPTION",
-        termPlan: termPlan,
-        addOns: this.getAddons(this.subscriptionBilling.addons),
+        termPlanId: this.aumBilling.plan.termPlanId,
+        startDate: this.startDate,
       });
+      request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
+
     console.log(request);
 
     this.service
       .createSubscription(request)
       .then((response) => {
-        console.log(response);
-        this.$emit("next");
+        if (response.status == "SUCCESS") this.$emit("next");
       })
       .catch((err) => {
         console.log(err);
@@ -127,9 +127,9 @@ export default class Subscribe extends Vue {
 
     value.forEach((item: { termPlanAddOnId: number; quantity: string }) => {
       addons.push({
-        termPlanAddOnId: item.termPlanAddOnId,
+        termAddOnId: item.termPlanAddOnId,
         quantity: item.quantity,
-        addOnStartDate: this.startDate,
+        startDate: this.startDate,
       });
     });
     return addons;

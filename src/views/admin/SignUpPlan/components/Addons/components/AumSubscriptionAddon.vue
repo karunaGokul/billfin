@@ -241,20 +241,25 @@ export default class AumSubscriptionAddon extends Vue {
   mounted() {
     let addons: Array<addonsResponseModel> = [];
     if (this.product == "AUM") {
-      addons = this.aum.plan.preIncludedAddons;
+      if (this.aum.plan.preIncludedAddons.length > 0)
+        addons = this.aum.plan.preIncludedAddons;
       addons = addons.concat(this.aum.addons);
     } else {
-      addons = this.subscription.plan.preIncludedAddons;
+      if (this.subscription.plan.preIncludedAddons.length > 0)
+        addons = this.subscription.plan.preIncludedAddons;
       addons = addons.concat(this.subscription.addons);
     }
 
-    addons = addons.filter(
-      (v, i, a) =>
-        a.findIndex(
-          (t) => t.addOnName === v.addOnName && t.addOnName === v.addOnName
-        ) === i
-    );
-    this.filterAddons(addons);
+    if (addons.length > 0) {
+      addons = addons.filter(
+        (v, i, a) =>
+          a.findIndex(
+            (t) => t.addOnName === v.addOnName && t.addOnName === v.addOnName
+          ) === i
+      );
+      this.filterAddons(addons);
+    }
+
     this.getAddons();
   }
 
@@ -272,12 +277,13 @@ export default class AumSubscriptionAddon extends Vue {
         addons.forEach((selectedAddons: addonsResponseModel) => {
           if (item.addOnName == selectedAddons.addOnName) {
             item.selected = true;
+            if (selectedAddons.quantity)
+              item.quantity = selectedAddons.quantity;
             if (selectedAddons.isPreInclueded) item.isPreInclueded = true;
           }
         });
       }
     );
-    this.getAddons();
   }
 
   private getAddons() {
@@ -307,7 +313,7 @@ export default class AumSubscriptionAddon extends Vue {
           isPreInclueded: boolean;
         }) => {
           if (item.addOnName == addons.addOnName) {
-            this.addons.push({
+            const addOns = {
               termPlanAddOnId: item.termPlanAddOnId,
               addOnName: item.addOnName,
               planAddOnamount: item.planAddOnamount,
@@ -317,17 +323,18 @@ export default class AumSubscriptionAddon extends Vue {
               quantity: addons.quantity,
               extraInfo: addons.extraInfo,
               isPreInclueded: addons.isPreInclueded,
-            });
+            };
+            this.addons.push(this.$vuehelper.clone(addOns));
           }
         }
       );
     });
     this.itemsPerRow = Math.round(this.addons.length / 2);
-    console.log(this.addons);
+    this.updateAddons();
   }
 
-  public updateAddons(response: addonsResponseModel) {
-    response.selected = !response.selected;
+  public updateAddons(response?: addonsResponseModel) {
+    if (response) response.selected = !response.selected;
     let payload: any[] = [];
     payload = this.addons.filter((item) => item.selected);
     this.store.dispatch("updateAddons", {

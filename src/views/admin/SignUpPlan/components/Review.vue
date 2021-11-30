@@ -6,12 +6,12 @@
     <div class="w-75 mx-auto m-4 p-4">
       <template v-if="showAumBilling">
         <div class="mt-8 d-flex justify-content-between">
-          <div class="text-dark-black">
+          <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
             <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5">(Annual Commitment)</span>
           </div>
-          <div class="text-light-gray">
+          <div class="text-light-gray fs-4 fw-bold">
             {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
           </div>
         </div>
@@ -21,25 +21,44 @@
           v-for="(item, index) of aumBilling.addons"
           :key="index"
         >
-          <div class="col-1 fw-bold">Add On:</div>
-          <div class="col-9 fw-bold">
-            {{ item.addOnName }}
-            <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
+          <div class="col-1 fw-bold fs-4">Add On:</div>
+          <div class="col-9 fw-bold fs-4">
+            <template
+              v-if="
+                item.addOnName == 'Admin User License' ||
+                item.addOnName == 'Multi-Connector Integrations'
+              "
+            >
+              {{
+                item.addOnName == "Admin User License"
+                  ? "Additional Admin User"
+                  : item.addOnName
+              }}
+              1<template v-if="parseInt(item.quantity) > 1"
+                >X{{ parseInt(item.quantity) - 1 }}</template
+              >
+            </template>
+            <template v-else>
+              {{ item.addOnName }}
+            </template>
+            <span class="ms-4 fst-italic fw-light fs-6">(On Annual Commitment)</span>
           </div>
-          <div class="col-2 text-end text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnamount) }}
+          <div class="col-2 text-end fs-4 fw-bold text-light-gray">
+            {{ $filters.currencyDisplay(item.planAddOnamount*parseInt(item.quantity)) }}
           </div>
         </div>
       </template>
 
       <template v-if="showSubscription">
         <div class="mt-8 d-flex justify-content-between">
-          <div class="text-dark-black">
+          <div class="text-dark-black fs-4">
             <span class="fw-bolder">Subscription Billing: </span>
-            <span class="fw-bold ms-2">{{ subscriptionBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light">(Annual Commitment)</span>
+            <span class="fw-bold ms-2">{{
+              subscriptionBilling.plan.planName
+            }}</span>
+            <span class="ms-4 fst-italic fw-light fs-5">(Annual Commitment)</span>
           </div>
-          <div class="text-light-gray">
+          <div class="text-light-gray fs-4 fw-bold">
             {{
               $filters.currencyDisplay(subscriptionBilling.plan.termPlanAmount)
             }}
@@ -51,13 +70,30 @@
           v-for="(item, index) of subscriptionBilling.addons"
           :key="index"
         >
-          <div class="col-1 fw-bold">Add On:</div>
-          <div class="col-9 fw-bold">
-            {{ item.addOnName }}
-            <span class="ms-4 fst-italic fw-light">(On Annual Commitment)</span>
+          <div class="col-1 fw-bold fs-4">Add On:</div>
+          <div class="col-9 fw-bold fs-4">
+            <template
+              v-if="
+                item.addOnName == 'Admin User License' ||
+                item.addOnName == 'Multi-Connector Integrations'
+              "
+            >
+              {{
+                item.addOnName == "Admin User License"
+                  ? "Additional Admin User"
+                  : item.addOnName
+              }}
+              1<template v-if="parseInt(item.quantity) > 1"
+                >X{{ parseInt(item.quantity) - 1 }}</template
+              >
+            </template>
+            <template v-else>
+              {{ item.addOnName }}
+            </template>
+            <span class="ms-4 fst-italic fw-light fs-6">(On Annual Commitment)</span>
           </div>
-          <div class="col-2 text-end text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnamount) }}
+          <div class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray">
+            {{ $filters.currencyDisplay(item.planAddOnamount*parseInt(item.quantity)) }}
           </div>
         </div>
       </template>
@@ -91,7 +127,7 @@
         <div class="col-5">
           <h4 class="fw-bold mt-10 pb-4">Payment Method</h4>
           <div
-            class="border border-dashed p-4"
+            class="border border-dashed rounded p-4"
             v-if="paymentType == 'Credit Card'"
           >
             <div class="fw-bold text-dark-gray p-2">{{ creditCard.name }}</div>
@@ -138,7 +174,7 @@
               </div>
             </div>
           </div>
-          <div class="border border-dashed p-4" v-else>
+          <div class="border border-dashed rounded p-4" v-else>
             <div class="text-dark-gray fw-bold p-2">{{ ach.name }}</div>
             <div class="text-dark-gray fw-bold p-2">
               ****{{ ach.number.substr(ach.number.length - 4) }}
@@ -162,6 +198,11 @@ import { useStore } from "vuex";
 
 export default class Review extends Vue {
   public store = useStore();
+
+  mounted() {
+    console.log(this.aumBilling);
+    console.log(this.subscriptionBilling);
+  }
 
   public back() {
     this.$emit("back");
@@ -192,15 +233,16 @@ export default class Review extends Vue {
   }
 
   get totalFees() {
-    let subAmount: number = 0;
-    let aumAmount: number = 0;
+    let subAmount: number = 0,
+      aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnamount);
+        return prev + parseInt(cur.planAddOnamount)*parseInt(cur.quantity) ;
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
-    } 
-    if(this.subscriptionBilling) {
+    }
+
+    if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
           return prev + parseInt(cur.planAddOnamount);

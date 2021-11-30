@@ -11,6 +11,7 @@ const state: any = {
   ach: {},
   customer: {},
   states: [],
+  planSubscripted: false
 };
 const getters: GetterTree<any, any> = {
   getProducts: (state) => {
@@ -43,6 +44,9 @@ const getters: GetterTree<any, any> = {
   getState: (state) => {
     return state.states;
   },
+  getOnUpdatePlanSubscripted:(state) => {
+    return state.planSubscripted;
+  }
 };
 const mutations: MutationTree<any> = {
   onUpdateState(state, response) {
@@ -57,10 +61,12 @@ const mutations: MutationTree<any> = {
   onUpdatePlan(state, response) {
     if (response.product == "AUM") {
       state.aumBilling.plan = response.plan;
+      state.aumBilling.addons = response.addons;
       state.aumBilling.commitmentTerm = response.commitmentTerm;
     } else {
       state.subscriptionBilling.plan = response.plan;
-      state.aumBilling.commitmentTerm = response.commitmentTerm;
+      state.subscriptionBilling.addons = response.addons;
+      state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
     }
   },
   onUpdateAddons(state, response) {
@@ -79,6 +85,9 @@ const mutations: MutationTree<any> = {
   onUpdateACH(state, payload) {
     state.ach = payload;
   },
+  onUpdatePlanSubscripted(state, response) {
+    state.planSubscripted = response;
+  }
 };
 const actions: ActionTree<any, any> = {
   updateState(context) {
@@ -116,6 +125,9 @@ const actions: ActionTree<any, any> = {
   updateACH(context, payload) {
     context.commit("onUpdateACH", payload);
   },
+  updatePlanSubscripted(context, response) {
+    context.commit("onUpdatePlanSubscripted", response);
+  }
 };
 export const SubscriptionModule = {
   state,
