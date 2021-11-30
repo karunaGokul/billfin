@@ -215,7 +215,9 @@ export default class FeeTypesBoard extends Vue {
     const request = new firmRequestModel();
     request.firmId = this.firms.firmId;
     this.service.getFeeTypesSetup(request).then((response) => {
-      this.request.billingType = response.billingType;
+      if(response.billingType)
+        this.request.billingType = response.billingType;
+        
       this.bindValues(response);
     });
   }
