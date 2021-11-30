@@ -31,7 +31,7 @@
     &.hide {
         width: 80px;
 
-        .nav-header__icon {
+        .nav-header__label {
             opacity: 1 !important;
             pointer-events: auto !important;
             display: block;
@@ -52,7 +52,7 @@
                 transition: 0.4s;
             }
 
-            &__icon {
+            &__label {
                 display: none;
                 opacity: 0;
                 pointer-events: none;
@@ -82,7 +82,7 @@
                 color: $gray-600;
             }
 
-            &__icon {
+            &__label {
                 display: none;
                 opacity: 0;
                 pointer-events: none;
@@ -130,7 +130,7 @@
                 color: $primary;
 
                 .nav-item {
-                    &__name, &__icon {
+                    &__name, &__icon:before, &__icon .path1:before, &__icon .path2:before, &__icon .path3:before, &__icon .path4:before {
                         color: $primary !important;
                     }
 

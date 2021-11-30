@@ -20,9 +20,9 @@
                 <div
                   class="fw-bold"
                   :class="{
-                    'dropdown-toggle': firms.length > 1,
+                    'dropdown-toggle': dataEntitlements.length > 1,
                   }"
-                  @click="firms.length > 1 ? (toggleFirms = true) : ''"
+                  @click="dataEntitlements.length > 1 ? (toggleFirms = true) : ''"
                 >
                   {{ selectedFirm }}
                 </div>
@@ -33,7 +33,7 @@
                 >
                   <li
                     class="mt-2 mb-2"
-                    v-for="(item, index) of firms"
+                    v-for="(item, index) of dataEntitlements"
                     :key="index"
                     @click="updateFirm(item)"
                   >
@@ -210,6 +210,10 @@ export default class Home extends Vue {
   }
 
   private getFirms() {
+    console.log(this.store.getters.dataEntitlements);
+  }
+
+  /*private getFirms() {
     this.service.getFirms().then((response) => {
       this.firms = response;
       if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
@@ -226,11 +230,11 @@ export default class Home extends Vue {
           this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
       }
     });
-  }
+  }*/
 
   public updateFirm(firm: firmRequestModel) {
     this.toggleFirms = false;
-    this.store.dispatch("loadEntitlements", firm);
+    //this.store.dispatch("loadEntitlements", firm);
   }
 
   public openAvatarUpload() {
@@ -296,6 +300,10 @@ export default class Home extends Vue {
 
   get selectedFirm() {
     return this.store.getters.firms.name;
+  }
+
+  get dataEntitlements() {
+    return this.store.getters.dataEntitlements;
   }
 
   get page() {

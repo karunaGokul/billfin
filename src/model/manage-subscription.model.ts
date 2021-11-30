@@ -1,7 +1,8 @@
 import { BaseModel, DataRequest } from "./base.model";
 
 export class manageSubscriptionRequestModel extends BaseModel {
-  billingType: string;
+  productCode: string;
+  firmId: number;
 }
 export class availableCardsModel {
   cardType: string;

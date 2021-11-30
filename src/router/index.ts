@@ -117,7 +117,10 @@ router.beforeEach((to, from, next) => {
       if (token)
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       store.dispatch("updateState");
-      next();
+      store.dispatch("loadEntitlements").then(() => {
+        console.log(store.getters.dataEntitlements);
+        next();
+      });
       return;
     }
 
@@ -126,6 +129,7 @@ router.beforeEach((to, from, next) => {
         const token = store.getters.accessToken;
         if (token)
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        
         next("/");
       } else next("/");
     });

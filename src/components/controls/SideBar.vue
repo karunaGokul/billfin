@@ -14,18 +14,15 @@
       <router-link
         to="/dashboard"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         exact
         title="Dashboard"
       >
-        <img
-          src="@/assets/sidebar-icon/dashboard.svg"
-          alt="Dashboard"
-          width="25"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Dashboard</span>
+        <span class="nav-item__icon icon-dashboard"
+          ><span class="path1"></span><span class="path2"></span
+        ></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Dashboard</span>
         <span class="custom-tooltip">Dashboard</span>
       </router-link>
     </ul>
@@ -34,7 +31,7 @@
       <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__name">
         CLIENT INFO
       </p>
-      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__label">
         <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
       </p>
     </div>
@@ -43,80 +40,62 @@
       <router-link
         to="/clients"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
       >
-        <img
-          src="@/assets/sidebar-icon/clients.svg"
-          alt="Clients"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Clients</span>
+        <span class="icon-clients nav-item__icon"
+          ><span class="path1"></span><span class="path2"></span
+        ></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Clients</span>
         <span class="custom-tooltip">Clients</span>
       </router-link>
       <router-link
         to="/fee-schedules"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Fee Schedules"
       >
-        <img
-          src="@/assets/sidebar-icon/fee-schedules.svg"
-          alt="Fee Schedules"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Fee Schedules</span>
+        <span class="nav-item__icon icon-fee-schedules"
+          ><span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span><span class="path4"></span
+        ></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Fee Schedules</span>
         <span class="custom-tooltip">Fee Schedules</span>
       </router-link>
       <router-link
         to="/products"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Products"
       >
-        <img
-          src="@/assets/sidebar-icon/products.svg"
-          alt="Products"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Products</span>
+        <span class="nav-item__icon icon-products"></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Products</span>
         <span class="custom-tooltip">Products</span>
       </router-link>
       <router-link
         to="/subscriptions"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Subscriptions"
       >
-        <img
-          src="@/assets/sidebar-icon/subscriptions.svg"
-          alt="Subscriptions"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Subscriptions</span>
+        <span class="nav-item__icon icon-subscriptions"
+          ><span class="path1"></span><span class="path2"></span
+        ></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Subscriptions</span>
         <span class="custom-tooltip">Subscriptions</span>
       </router-link>
       <router-link
         to="/timesheets"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Timesheets"
       >
-        <img
-          src="@/assets/sidebar-icon/timesheets.svg"
-          alt="Timesheets"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7 fw-bold">Timesheets</span>
+        <span class="nav-item__icon icon-timesheets"></span>
+        <span class="nav-item__name fs-7 fw-bold ms-2">Timesheets</span>
         <span class="custom-tooltip">Timesheets</span>
       </router-link>
     </ul>
@@ -125,7 +104,7 @@
       <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__name">
         BILLING & PAYMENTS
       </p>
-      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__label">
         <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
       </p>
     </div>
@@ -134,65 +113,45 @@
       <router-link
         to="/fees"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Fees"
       >
-        <img
-          src="@/assets/sidebar-icon/fees.svg"
-          alt="Fees"
-          width="12"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Fees</span>
+        <span class="nav-item__icon icon-fees"></span>
+        <span class="nav-item__name fs-7 ms-2">Fees</span>
         <span class="custom-tooltip">Fees</span>
       </router-link>
       <router-link
         to="/invoices"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Invoices"
       >
-        <img
-          src="@/assets/sidebar-icon/invoices.svg"
-          alt="Invoices"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Invoices</span>
+        <span class="nav-item__icon icon-invoices"><span class="path1"></span><span class="path2"></span></span>
+        <span class="nav-item__name fs-7 ms-2">Invoices</span>
         <span class="custom-tooltip">Invoices</span>
       </router-link>
       <router-link
         to="/Payments"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Payments"
       >
-        <img
-          src="@/assets/sidebar-icon/payments.svg"
-          alt="Payments"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Payments</span>
+        <span class="nav-item__icon icon-payments"></span>
+        <span class="nav-item__name fs-7 ms-2">Payments</span>
         <span class="custom-tooltip">Payments</span>
       </router-link>
       <router-link
         to="/Reports"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Reports"
       >
-        <img
-          src="@/assets/sidebar-icon/reports.svg"
-          alt="Reports"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Reports</span>
+        <span class="nav-item__icon icon-reports"></span>
+        <span class="nav-item__name fs-7 ms-2">Reports</span>
         <span class="custom-tooltip">Reports</span>
       </router-link>
     </ul>
@@ -201,20 +160,15 @@
       <p class="mb-0 ps-4 pt-0 pb-0 fw-bold fs-8 nav-header nav-header__name">
         ADMINISTRATION
       </p>
-      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__icon">
+      <p class="mb-0 ps-4 pt-0 pb-0 fs-8 nav-header nav-header__label">
         <img src="@/assets/sidebar-icon/ellipsis.png" alt="Dot" width="25" />
       </p>
     </div>
 
     <ul class="nav flex-column mt-2">
-      <div class="dropdown d-flex align-items-center nav-item">
-        <img
-          src="@/assets/sidebar-icon/settings.svg"
-          alt="Settings"
-          width="20"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Settings</span>
+      <div class="dropdown d-flex align-items-center nav-item p-4">
+        <span class="nav-item__icon icon-settings"></span>
+        <span class="nav-item__name fs-7 ms-2">Settings</span>
         <i
           class="fas fa-angle-down"
           @click="toggleSettings = !toggleSettings"
@@ -272,17 +226,12 @@
       <router-link
         to="/Help"
         tag="li"
-        class="d-flex align-items-center nav-item"
+        class="d-flex align-items-center nav-item p-4"
         active-class="nav-item__active"
         title="Help"
       >
-        <img
-          src="@/assets/sidebar-icon/help.svg"
-          alt="Help"
-          width="12"
-          class="m-4"
-        />
-        <span class="nav-item__name fs-7">Help</span>
+        <span class="nav-item__icon icon-help"></span>
+        <span class="nav-item__name fs-7 ms-2">Help</span>
         <span class="custom-tooltip">Help</span>
       </router-link>
     </ul>

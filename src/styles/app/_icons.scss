@@ -1,10 +1,124 @@
+.icon-clients .path1:before {
+  content: "\e900";
+  color: rgb(161, 165, 183);
+  opacity: 0.3;
+  font-size: 1.3rem;
+}
+
+.icon-clients .path2:before {
+  content: "\e901";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  font-size: 1.3rem;
+}
+
 .icon-dashboard .path1:before {
-      content: "\e900";
-      color: #a1a5b7;
-    }
-    .icon-dashboard .path2:before {
-      content: "\e901";
-      color: #a1a5b7;
-      opacity: 0.3;
-      margin-left: -1em;
-    }
+  content: "\e911";
+  color: rgb(161, 165, 183);
+  font-size: 2rem;
+}
+
+.icon-dashboard .path2:before {
+  content: "\e912";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  opacity: 0.3;
+  font-size: 2rem;
+}
+
+.icon-fee-schedules .path1:before {
+  content: "\e903";
+  color: rgb(161, 165, 183);
+  opacity: 0.3;
+  font-size: 1.3rem;
+}
+
+.icon-fee-schedules .path2:before {
+  content: "\e904";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  font-size: 1.3em;
+}
+
+.icon-fee-schedules .path3:before {
+  content: "\e905";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  font-size: 1.3rem;
+}
+
+.icon-fee-schedules .path4:before {
+  content: "\e906";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  font-size: 1.3rem;
+}
+
+.icon-products:before {
+  content: "\e90b";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+.icon-subscriptions .path1:before {
+  content: "\e90e";
+  color: rgb(161, 165, 183);
+  font-size: 1.3rem;
+}
+
+.icon-subscriptions .path2:before {
+  content: "\e90f";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  opacity: 0.3;
+  font-size: 1.3rem;
+}
+.icon-timesheets:before {
+  content: "\e910";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+
+.icon-fees:before {
+  content: "\e902";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+
+.icon-help:before {
+  content: "\e907";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+
+.icon-invoices .path1:before {
+  content: "\e908";
+  color: rgb(161, 165, 183);
+  opacity: 0.3;
+  font-size: 1.3rem;
+}
+
+.icon-invoices .path2:before {
+  content: "\e909";
+  margin-left: -1em;
+  color: rgb(161, 165, 183);
+  font-size: 1.3rem;
+}
+
+.icon-payments:before {
+  content: "\e90a";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+
+.icon-reports:before {
+  content: "\e90c";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+
+.icon-settings:before {
+  content: "\e90d";
+  color: #a1a5b7;
+  font-size: 1.3rem;
+}
+

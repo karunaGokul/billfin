@@ -52,6 +52,8 @@ import {
 
 import { IManageSubscription } from "@/service";
 
+import { useStore } from "vuex";
+
 import Plan from "./Plan.vue";
 import Addons from "./Addons.vue";
 
@@ -65,21 +67,40 @@ export default class AumSubscriptionBilling extends Vue {
   @Inject("manageSubscripeService") service: IManageSubscription;
   @Prop() bliingType: string;
 
+  public store = useStore();
+
   public plans: Array<manageSubscriptionPlanResponseModel> = [];
   public addons: Array<manageSubscriptionAddonsResponseModel> = [];
 
   mounted() {
     this.getPlans();
     this.getAddons();
+    this.getRes();
+  }
+
+  private getRes() {
+    const request = new manageSubscriptionRequestModel();
+    request.productCode = "AUM";
+    request.firmId = this.store.getters.firms.firmId;
+    console.log(request);
+    this.service
+      .getRes(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   private getPlans() {
     const request = new manageSubscriptionRequestModel();
-    request.billingType = this.bliingType;
+    request.productCode = this.bliingType;
+    request.firmId = this.store.getters.firms.firmId;
     this.service
       .getPlans(request)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         this.plans = response;
       })
       .catch((err) => {
@@ -89,11 +110,12 @@ export default class AumSubscriptionBilling extends Vue {
 
   private getAddons() {
     const request = new manageSubscriptionRequestModel();
-    request.billingType = this.bliingType;
+    request.productCode = this.bliingType;
+    request.firmId = this.store.getters.firms.firmId;
     this.service
       .getAddons(request)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         this.addons = response;
       })
       .catch((err) => {

@@ -7,6 +7,9 @@ import {
 
 export interface IManageSubscription
   extends IBaseService<any, manageSubscriptionPlanResponseModel> {
+  getRes(
+    request: manageSubscriptionRequestModel
+  ): Promise<Array<manageSubscriptionPlanResponseModel>>;
   getPlans(
     request: manageSubscriptionRequestModel
   ): Promise<Array<manageSubscriptionPlanResponseModel>>;
@@ -21,6 +24,17 @@ export class ManageSubscription extends BaseService<
 > {
   constructor() {
     super("private", "https://bv2qa01.billfin.com/subscription-service");
+  }
+
+  public getRes(
+    request: manageSubscriptionRequestModel
+  ): Promise<Array<manageSubscriptionPlanResponseModel>> {
+    return this.httpGet(
+      "private/api/v1/subscriptionDetails",
+      request
+    ).then((response) => {
+      return response.data;
+    });
   }
 
   public getPlans(
@@ -52,19 +66,19 @@ export class ManageSubscription extends BaseService<
           {
             accountType: "Credit Card",
             cardType: "mast",
-            cardNumber: "6789"
-          }, 
+            cardNumber: "6789",
+          },
           {
             accountType: "ACH",
             cardType: "",
-            cardNumber: "7869"
+            cardNumber: "7869",
           },
           {
             accountType: "Credit Card",
             cardType: "visa",
-            cardNumber: "9010"
-          }
-        ]
+            cardNumber: "9010",
+          },
+        ],
       });
       return resolve(response);
     });
@@ -92,19 +106,19 @@ export class ManageSubscription extends BaseService<
           {
             accountType: "Credit Card",
             cardType: "mast",
-            cardNumber: "6789"
-          }, 
+            cardNumber: "6789",
+          },
           {
             accountType: "ACH",
             cardType: "",
-            cardNumber: "7869"
+            cardNumber: "7869",
           },
           {
             accountType: "Credit Card",
             cardType: "visa",
-            cardNumber: "9010"
-          }
-        ]
+            cardNumber: "9010",
+          },
+        ],
       });
       response.push({
         addOnName: "Admin User License",
@@ -123,19 +137,19 @@ export class ManageSubscription extends BaseService<
           {
             accountType: "Credit Card",
             cardType: "mast",
-            cardNumber: "6789"
-          }, 
+            cardNumber: "6789",
+          },
           {
             accountType: "ACH",
             cardType: "",
-            cardNumber: "7869"
+            cardNumber: "7869",
           },
           {
             accountType: "Credit Card",
             cardType: "visa",
-            cardNumber: "9010"
-          }
-        ]
+            cardNumber: "9010",
+          },
+        ],
       });
       return resolve(response);
     });
