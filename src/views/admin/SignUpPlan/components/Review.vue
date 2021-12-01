@@ -35,7 +35,7 @@
                   : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
-                >X{{ parseInt(item.quantity) - 1 }}</template
+                >X{{ item.quantity }}</template
               >
             </template>
             <template v-else>
@@ -84,7 +84,7 @@
                   : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
-                >X{{ parseInt(item.quantity) - 1 }}</template
+                >X{{ item.quantity }}</template
               >
             </template>
             <template v-else>
@@ -199,11 +199,6 @@ import { useStore } from "vuex";
 export default class Review extends Vue {
   public store = useStore();
 
-  mounted() {
-    console.log(this.aumBilling);
-    console.log(this.subscriptionBilling);
-  }
-
   public back() {
     this.$emit("back");
   }
@@ -213,7 +208,7 @@ export default class Review extends Vue {
   }
 
   get products() {
-    return this.store.getters.getProducts;
+    return this.store.getters.products;
   }
 
   get showAumBilling() {
@@ -225,11 +220,11 @@ export default class Review extends Vue {
   }
 
   get aumBilling() {
-    return this.store.getters.getAumBilling;
+    return this.store.getters.aumBilling;
   }
 
   get subscriptionBilling() {
-    return this.store.getters.getSubscriptionBilling;
+    return this.store.getters.subscriptionBilling;
   }
 
   get totalFees() {
@@ -255,18 +250,18 @@ export default class Review extends Vue {
   }
 
   get paymentType() {
-    return this.store.getters.getPaymentType;
+    return this.store.getters.paymentType;
   }
 
   get creditCard() {
-    return this.store.getters.getCreditCard;
+    return this.store.getters.creditCard;
   }
 
   get ach() {
-    return this.store.getters.getAch;
+    return this.store.getters.ach;
   }
   get address() {
-    return this.store.getters.getCustomer;
+    return this.store.getters.address;
   }
 
   get cardType() {

@@ -90,8 +90,8 @@ export default class Subscribe extends Vue {
   }
 
   public subscribe() {
-    const request: subscribeRequestModel = new subscribeRequestModel();
-    request.firmId = this.store.getters.firms.firmId;
+    let request: subscribeRequestModel = new subscribeRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
 
     if (this.showAumBilling) {
       request.productCode = "AUM";
@@ -104,7 +104,7 @@ export default class Subscribe extends Vue {
     if (this.showSubscription) {
       request.productCode = "SUBSCRIPTION";
       request.subscriptions.push({
-        termPlanId: this.aumBilling.plan.termPlanId,
+        termPlanId: this.subscriptionBilling.plan.termPlanId,
         startDate: this.startDate,
       });
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
@@ -123,7 +123,7 @@ export default class Subscribe extends Vue {
   }
 
   getAddons(value: any) {
-    const addons: Array<addOnsModel> = [];
+    let addons: Array<addOnsModel> = [];
 
     value.forEach((item: { termPlanAddOnId: number; quantity: string }) => {
       addons.push({
@@ -136,7 +136,7 @@ export default class Subscribe extends Vue {
   }
 
   get products() {
-    return this.store.getters.getProducts;
+    return this.store.getters.products;
   }
 
   get showAumBilling() {
@@ -148,11 +148,11 @@ export default class Subscribe extends Vue {
   }
 
   get aumBilling() {
-    return this.store.getters.getAumBilling;
+    return this.store.getters.aumBilling;
   }
 
   get subscriptionBilling() {
-    return this.store.getters.getSubscriptionBilling;
+    return this.store.getters.subscriptionBilling;
   }
 
   get startDate() {

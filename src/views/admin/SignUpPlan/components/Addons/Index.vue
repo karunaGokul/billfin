@@ -35,16 +35,16 @@ export default class Index extends Vue {
 
   get plans() {
     const plans: Array<any> = [];
-    this.store.getters.getProducts.forEach((item: string) => {
+    this.store.getters.products.forEach((item: string) => {
       if (item == "AUM")
         plans.push({
           product: item,
-          termPlanId: this.store.getters.getAumBilling.plan.termPlanId,
+          termPlanId: this.store.getters.aumBilling.plan.termPlanId,
         });
       else
         plans.push({
           product: item,
-          termPlanId: this.store.getters.getSubscriptionBilling.plan.termPlanId,
+          termPlanId: this.store.getters.subscriptionBilling.plan.termPlanId,
         });
     });
     return plans;

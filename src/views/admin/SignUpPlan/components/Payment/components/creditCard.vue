@@ -310,7 +310,7 @@ export default class CreditCard extends Vue {
     this.card = "";
     this.request.cardNumber = this.request.cardNumber.replaceAll(" ", "");
     this.request.cardNumber = this.request.cardNumber.replaceAll("-", "");
-    const visaRegex = new RegExp("^4[0-9]{0,15}$"),
+    let visaRegex = new RegExp("^4[0-9]{0,15}$"),
       mastercardRegex = new RegExp("^5$|^5[1-5][0-9]{0,14}$"),
       amexRegex = new RegExp("^3$|^3[47][0-9]{0,13}$"),
       dicoverRegex = new RegExp(
@@ -326,7 +326,7 @@ export default class CreditCard extends Vue {
       this.card = "disc";
     }
 
-    const value = this.request.cardNumber
+    let value = this.request.cardNumber
       ? this.request.cardNumber.match(/.{1,4}/g).join("-")
       : "";
     this.request.cardNumber = value;
@@ -337,7 +337,7 @@ export default class CreditCard extends Vue {
     this.showInformationError = false;
 
     if (!this.v$.$invalid) {
-      const request = {
+      let request = {
         number: this.request.cardNumber,
         expdate_month: this.request.expirationMonth,
         expdate_year: this.request.expirationYear,
@@ -365,7 +365,7 @@ export default class CreditCard extends Vue {
     }
   }
   private updateCardDetails() {
-    const payload = {
+    let address = {
       company: this.firms.name,
       bill_addr1: this.request.billingAddress,
       bill_city: this.request.billingCity,
@@ -373,7 +373,7 @@ export default class CreditCard extends Vue {
       bill_postcode: this.request.postalCode,
       bill_country: this.request.country,
     };
-    const cardDetails = {
+    let cardDetails = {
       number: this.request.cardNumber,
       expdate_month: this.request.expirationMonth,
       expdate_year: this.request.expirationYear,
@@ -382,7 +382,7 @@ export default class CreditCard extends Vue {
       cardType: this.card,
     };
     this.store.dispatch("updateCreditCard", cardDetails);
-    this.store.dispatch("updateCustomer", payload);
+    this.store.dispatch("updateAddress", address);
     this.$emit("pay");
   }
 
@@ -396,7 +396,7 @@ export default class CreditCard extends Vue {
 
   private cardNumberValidation() {
     this.card = "";
-    const request = {
+    let request = {
       number: this.request.cardNumber,
     };
     ChargeOver.CreditCard.type(
@@ -408,7 +408,7 @@ export default class CreditCard extends Vue {
   }
 
   get state() {
-    return this.store.getters.getState;
+    return this.store.getters.states;
   }
 
   get firms() {
@@ -416,7 +416,7 @@ export default class CreditCard extends Vue {
   }
 
   get expirationYear() {
-    const currentYear = new Date().getFullYear(),
+    let currentYear = new Date().getFullYear(),
       data: any[] = [];
     for (let i = 0; i < 20; i++) {
       data.push(currentYear + i);

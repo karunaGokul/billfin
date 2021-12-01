@@ -73,7 +73,7 @@ export default class Index extends Vue {
   }
 
   private createCustomer() {
-    const request: createCustomerRequestModel = {
+    let request: createCustomerRequestModel = {
       company: this.adddress.company,
       bill_addr1: this.adddress.bill_addr1,
       bill_city: this.adddress.bill_city,
@@ -119,7 +119,7 @@ export default class Index extends Vue {
 
   private tokenizingAch() {
     let request: any = {};
-    request = this.store.getters.getAch;
+    request = this.store.getters.ach;
     request.customer_external_key = this.firmId;
     ChargeOver.ACH.tokenize(
       request,
@@ -137,7 +137,7 @@ export default class Index extends Vue {
   }
 
   private updateToken(token: string) {
-    const request = new paymentTokenRequestModel();
+    let request = new paymentTokenRequestModel();
     request.token = token;
     request.firmId = this.firmId;
     request.paymentMethod = PaymentMethod[this.paymenyType as keyof typeof PaymentMethod];
@@ -153,7 +153,7 @@ export default class Index extends Vue {
   }
 
   get adddress() {
-    return this.store.getters.getCustomer;
+    return this.store.getters.address;
   }
 
   get userInfo() {
@@ -175,11 +175,11 @@ export default class Index extends Vue {
   }
 
   get paymentType() {
-    return this.store.getters.getPaymentType;
+    return this.store.getters.paymentType;
   }
 
   get firmId() {
-    return this.store.getters.firms.firmId;
+    return this.store.getters.selectedFirmId;
   }
 }
 </script>

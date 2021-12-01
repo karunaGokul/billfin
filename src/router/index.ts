@@ -118,7 +118,6 @@ router.beforeEach((to, from, next) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       store.dispatch("updateState");
       store.dispatch("loadEntitlements").then(() => {
-        console.log(store.getters.dataEntitlements);
         next();
       });
       return;

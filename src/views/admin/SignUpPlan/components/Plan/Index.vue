@@ -54,7 +54,7 @@ export default class Index extends Vue {
 
   get products() {
     let products: Array<string> = [];
-    products = this.store.getters.getProducts;
+    products = this.store.getters.products;
     return products;
   }
 }

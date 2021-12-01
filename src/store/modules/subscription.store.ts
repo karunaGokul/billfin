@@ -9,42 +9,42 @@ const state: any = {
   paymentType: "",
   creditCard: {},
   ach: {},
-  customer: {},
+  address: {},
   states: [],
   planSubscripted: false
 };
 const getters: GetterTree<any, any> = {
-  getProducts: (state) => {
+  products: (state) => {
     return state.products;
   },
-  getCommitmentTerm: (state) => {
+  commitmentTerm: (state) => {
     return state.commitmentTerm;
   },
-  getAumBilling: (state) => {
+  aumBilling: (state) => {
     return state.aumBilling;
   },
-  getSubscriptionBilling: (state) => {
+  subscriptionBilling: (state) => {
     return state.subscriptionBilling;
   },
-  getAddons: (state) => {
+  addons: (state) => {
     return state.addons;
   },
-  getCustomer: (state) => {
-    return state.customer;
+  address: (state) => {
+    return state.address;
   },
-  getPaymentType: (state) => {
+  paymentType: (state) => {
     return state.paymentType;
   },
-  getCreditCard: (state) => {
+  creditCard: (state) => {
     return state.creditCard;
   },
-  getAch: (state) => {
+  ach: (state) => {
     return state.ach;
   },
-  getState: (state) => {
+  states: (state) => {
     return state.states;
   },
-  getOnUpdatePlanSubscripted:(state) => {
+  planSubscripted:(state) => {
     return state.planSubscripted;
   }
 };
@@ -76,8 +76,8 @@ const mutations: MutationTree<any> = {
   onUpdatePaymentType(state, paymentType) {
     state.paymentType = paymentType;
   },
-  onUpdateCustomer(state, payload) {
-    state.customer = payload;
+  onUpdateAddress(state, payload) {
+    state.address = payload;
   },
   onUpdateCreditCard(state, payload) {
     state.creditCard = payload;
@@ -116,8 +116,8 @@ const actions: ActionTree<any, any> = {
   updatePaymentType(context, paymentType) {
     context.commit("onUpdatePaymentType", paymentType);
   },
-  updateCustomer(context, payload) {
-    context.commit("onUpdateCustomer", payload);
+  updateAddress(context, payload) {
+    context.commit("onUpdateAddress", payload);
   },
   updateCreditCard(context, payload) {
     context.commit("onUpdateCreditCard", payload);

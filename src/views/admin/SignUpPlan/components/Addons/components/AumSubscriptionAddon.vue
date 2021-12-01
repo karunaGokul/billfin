@@ -241,13 +241,13 @@ export default class AumSubscriptionAddon extends Vue {
   mounted() {
     let addons: Array<addonsResponseModel> = [];
     if (this.product == "AUM") {
-      if (this.aum.plan.preIncludedAddons.length > 0)
-        addons = this.aum.plan.preIncludedAddons;
-      addons = addons.concat(this.aum.addons);
+      if (this.aumBilling.plan.preIncludedAddons.length > 0)
+        addons = this.aumBilling.plan.preIncludedAddons;
+      addons = addons.concat(this.aumBilling.addons);
     } else {
-      if (this.subscription.plan.preIncludedAddons.length > 0)
-        addons = this.subscription.plan.preIncludedAddons;
-      addons = addons.concat(this.subscription.addons);
+      if (this.subscriptionBilling.plan.preIncludedAddons.length > 0)
+        addons = this.subscriptionBilling.plan.preIncludedAddons;
+      addons = addons.concat(this.subscriptionBilling.addons);
     }
 
     if (addons.length > 0) {
@@ -343,12 +343,12 @@ export default class AumSubscriptionAddon extends Vue {
     });
   }
 
-  get aum() {
-    return this.store.getters.getAumBilling;
+  get aumBilling() {
+    return this.store.getters.aumBilling;
   }
 
-  get subscription() {
-    return this.store.getters.getSubscriptionBilling;
+  get subscriptionBilling() {
+    return this.store.getters.subscriptionBilling;
   }
 
   get getPlanList() {
@@ -359,8 +359,8 @@ export default class AumSubscriptionAddon extends Vue {
 
   get commitmentTerm() {
     return this.product == "AUM"
-      ? this.aum.commitmentTerm
-      : this.subscription.commitmentTerm;
+      ? this.aumBilling.commitmentTerm
+      : this.subscriptionBilling.commitmentTerm;
   }
 }
 </script>

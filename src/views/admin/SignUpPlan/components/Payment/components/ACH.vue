@@ -160,7 +160,7 @@ export default class ACH extends Vue {
     this.v$.$touch();
     this.showInformationError = false;
     if (!this.v$.$invalid) {
-      const request = {
+      let request = {
         number: this.request.accountNo,
         routing: this.request.routingNo,
       };
@@ -180,7 +180,7 @@ export default class ACH extends Vue {
   }
 
   public updateAch() {
-    const payload = {
+    let address = {
       company: this.firms.name,
       bill_addr1: this.request.billingAddress,
       bill_city: this.request.billingCity,
@@ -188,18 +188,18 @@ export default class ACH extends Vue {
       bill_postcode: this.request.postalCode,
       bill_country: this.request.country,
     };
-    const ach = {
+    let ach = {
       number: this.request.accountNo,
       routing: this.request.routingNo,
       name: this.request.accountHolder,
     };
-    this.store.dispatch("updateCustomer", payload);
+    this.store.dispatch("updateAddress", address);
     this.store.dispatch("updateACH", ach);
     this.$emit("pay");
   }
 
   get state() {
-    return this.store.getters.getState;
+    return this.store.getters.states;
   }
 
   get firms() {

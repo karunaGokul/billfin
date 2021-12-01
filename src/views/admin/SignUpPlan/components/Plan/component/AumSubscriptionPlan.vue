@@ -195,11 +195,11 @@ export default class AumSubscriptionPlan extends Vue {
       aumLevel: "$500M",
       adminUsers: "5",
       clients: "500",
-      connector: "2",
+      connector: "3",
       planDetails: [
         "Everything from Professional Plan",
         "Multi-Fee Billing Add-on included",
-        "Product Billing Add-on included",
+        "Product Attribution Add-on included",
       ],
       preIncludedAddons: [
         {
@@ -238,13 +238,13 @@ export default class AumSubscriptionPlan extends Vue {
 
   created() {
     if (this.product == "AUM") {
-      if (this.aum.commitmentTerm)
-        this.commitmentTerm = this.aum.commitmentTerm;
-      this.selectedPlan = this.aum.plan;
+      if (this.aumBilling.commitmentTerm)
+        this.commitmentTerm = this.aumBilling.commitmentTerm;
+      this.selectedPlan = this.aumBilling.plan;
     } else {
-      if (this.subscription.commitmentTerm)
-        this.commitmentTerm = this.subscription.commitmentTerm;
-      this.selectedPlan = this.subscription.plan;
+      if (this.subscriptionBilling.commitmentTerm)
+        this.commitmentTerm = this.subscriptionBilling.commitmentTerm;
+      this.selectedPlan = this.subscriptionBilling.plan;
     }
   }
 
@@ -253,7 +253,6 @@ export default class AumSubscriptionPlan extends Vue {
   }
 
   private getPlans() {
-    console.log("final", this.commitmentTerm);
     const request: planRequestModel = new planRequestModel();
     request.productCode = this.product;
     request.termPlanType =
@@ -320,12 +319,12 @@ export default class AumSubscriptionPlan extends Vue {
     });
   }
 
-  get aum() {
-    return this.store.getters.getAumBilling;
+  get aumBilling() {
+    return this.store.getters.aumBilling;
   }
 
-  get subscription() {
-    return this.store.getters.getSubscriptionBilling;
+  get subscriptionBilling() {
+    return this.store.getters.subscriptionBilling;
   }
 }
 </script>

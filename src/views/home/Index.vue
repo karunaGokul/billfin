@@ -196,7 +196,7 @@ export default class Home extends Vue {
   public toggleFirms: boolean = false;
   public toggleUser: boolean = false;
 
-  public firms = new Array<firmsResponseModel>();
+  public firms = new firmsResponseModel();
   public lastOnboardingStep: number = 1;
   public showTrailExpireDays: number = 0;
 
@@ -206,45 +206,37 @@ export default class Home extends Vue {
 
   mounted() {
     this.getFirms();
-    console.log(this.$route);
+    //console.log(this.$route);
   }
 
   private getFirms() {
-    console.log(this.store.getters.dataEntitlements);
-  }
-
-  /*private getFirms() {
-    this.service.getFirms().then((response) => {
-      this.firms = response;
-      if (this.firms[0].trialStartsOn && this.firms[0].trialEndsOn)
+    if (this.dataEntitlements[0].trialStartsOn && this.dataEntitlements[0].trialEndsOn)
         this.trailExpireDays();
-      this.store.dispatch("loadEntitlements", response[0]);
       if (
-        this.firms.length == 1 &&
-        this.firms[0].trialOnboardingStatus != "COMPLETED"
+        this.dataEntitlements.length == 1 &&
+        this.dataEntitlements[0].trialOnboardingStatus != "COMPLETED"
       ) {
         this.showOnBoard = true;
-        if (this.firms[0].trialOnboardingStatus == "NOT_STARTED")
+        if (this.dataEntitlements[0].trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else
-          this.lastOnboardingStep = this.firms[0].lastOnboardingStepCompleted;
+          this.lastOnboardingStep = this.dataEntitlements[0].lastOnboardingStepCompleted;
       }
-    });
-  }*/
+  }
 
   public updateFirm(firm: firmRequestModel) {
     this.toggleFirms = false;
-    //this.store.dispatch("loadEntitlements", firm);
+    this.store.dispatch("firmIdChanged", firm.firmId);
   }
 
   public openAvatarUpload() {
-    const file: any = this.$refs.avatarUpload;
+    let file: any = this.$refs.avatarUpload;
 
     file.click();
   }
 
   public uploadAvatar(event: any) {
-    const file: File = event.target.files[0];
+    let file: File = event.target.files[0];
     if (!file) return;
 
     console.log(file);
@@ -269,23 +261,23 @@ export default class Home extends Vue {
   }
 
   public trailExpireDays() {
-    const startDate = new Date(
-        this.firms[0].trialStartsOn.split("-")[1] +
+    let startDate = new Date(
+        this.dataEntitlements[0].trialStartsOn.split("-")[1] +
           "/" +
-          this.firms[0].trialStartsOn.split("-")[2] +
+          this.dataEntitlements[0].trialStartsOn.split("-")[2] +
           "/" +
-          this.firms[0].trialStartsOn.split("-")[0]
+          this.dataEntitlements[0].trialStartsOn.split("-")[0]
       ),
       endDate = new Date(
-        this.firms[0].trialEndsOn.split("-")[1] +
+        this.dataEntitlements[0].trialEndsOn.split("-")[1] +
           "/" +
-          this.firms[0].trialEndsOn.split("-")[2] +
+          this.dataEntitlements[0].trialEndsOn.split("-")[2] +
           "/" +
-          this.firms[0].trialEndsOn.split("-")[0]
+          this.dataEntitlements[0].trialEndsOn.split("-")[0]
       );
 
-    const time = endDate.getTime() - startDate.getTime();
-    const days = time / (1000 * 3600 * 24);
+    let time = endDate.getTime() - startDate.getTime();
+    let days = time / (1000 * 3600 * 24);
 
     this.showTrailExpireDays = days;
   }

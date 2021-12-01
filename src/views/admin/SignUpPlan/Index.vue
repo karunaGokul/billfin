@@ -173,7 +173,7 @@ export default class SignUpPlan extends Vue {
   }
 
   get products() {
-    return this.store.getters.getProducts;
+    return this.store.getters.products;
   }
 
   get showAumBilling() {
@@ -185,11 +185,11 @@ export default class SignUpPlan extends Vue {
   }
 
   get aumBilling() {
-    return this.store.getters.getAumBilling;
+    return this.store.getters.aumBilling;
   }
 
   get subscriptionBilling() {
-    return this.store.getters.getSubscriptionBilling;
+    return this.store.getters.subscriptionBilling;
   }
 
   get totalFees() {
@@ -213,9 +213,9 @@ export default class SignUpPlan extends Vue {
   }
 
   get nextPaymentDate() {
-    const currentDate = new Date();
-    const date = new Date(currentDate);
-    if (this.store.getters.getCommitmentTerm == "Monthly") {
+    let currentDate = new Date();
+    let date = new Date(currentDate);
+    if (this.store.getters.commitmentTerm == "Monthly") {
       date.setMonth(currentDate.getMonth() + 1);
       date.setDate(currentDate.getDate() + 1);
     } else {

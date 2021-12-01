@@ -72,21 +72,32 @@ export default class AumSubscriptionBilling extends Vue {
   public plans: Array<manageSubscriptionPlanResponseModel> = [];
   public addons: Array<manageSubscriptionAddonsResponseModel> = [];
 
-  mounted() {
-    this.getPlans();
-    this.getAddons();
+    public subscription: any = null;
+
+  created() {
     this.getRes();
   }
 
+  mounted() {
+    this.subscription = this.store.subscribe((mutations) => {
+      if(mutations.type == 'onFirmIdChanged') this.getRes();
+    })
+    this.getAddons();
+    this.getPlans();
+  }
+
+  unmounted() {
+    if (this.subscription) this.subscription();
+  }
+
   private getRes() {
-    const request = new manageSubscriptionRequestModel();
+    let request = new manageSubscriptionRequestModel();
     request.productCode = "AUM";
-    request.firmId = this.store.getters.firms.firmId;
-    console.log(request);
+    request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getRes(request)
       .then((response) => {
-        console.log(response);
+       // console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -94,9 +105,9 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   private getPlans() {
-    const request = new manageSubscriptionRequestModel();
+    let request = new manageSubscriptionRequestModel();
     request.productCode = this.bliingType;
-    request.firmId = this.store.getters.firms.firmId;
+    request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getPlans(request)
       .then((response) => {
@@ -109,9 +120,9 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   private getAddons() {
-    const request = new manageSubscriptionRequestModel();
+    let request = new manageSubscriptionRequestModel();
     request.productCode = this.bliingType;
-    request.firmId = this.store.getters.firms.firmId;
+    request.firmId = this.store.getters.firms.selectedFirmId;
     this.service
       .getAddons(request)
       .then((response) => {

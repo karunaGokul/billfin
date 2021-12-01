@@ -96,7 +96,7 @@ export default class Products extends Vue {
   public store = useStore();
 
   mounted() {
-    this.products = this.store.getters.getProducts;
+    this.products = this.store.getters.products;
   }
 
   public next() {
