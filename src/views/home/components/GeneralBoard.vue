@@ -197,7 +197,7 @@ export default class GeneralBoard extends Vue {
   }
 
   get states() {
-    return this.store.getters.getState;
+    return this.store.getters.states;
   }
 }
 </script>
