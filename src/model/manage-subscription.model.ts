@@ -1,4 +1,5 @@
 import { BaseModel, DataRequest } from "./base.model";
+import { subscriptionsModel, addOnsModel } from "./subscribe.model";
 
 export class manageSubscriptionRequestModel extends BaseModel {
   productCode: string;
@@ -9,33 +10,32 @@ export class availableCardsModel {
   cardNumber: string;
   accountType: string;
 }
-export class manageSubscriptionPlanResponseModel {
-  termPlanId: number;
+export class subscriptionResponseModel extends subscriptionsModel {
+  subscriptionPlanId: number;
   planName: string;
-  termPlanAmount: string;
-  description: string;
-  planType: string;
-  planStatus: string;
-  startDate: string;
+  paymentToken: string;
+  term: string;
+  amount: number;
   endDate: string;
   status: string;
-  cardType: string;
   cardNumber: string;
-  availableCards: Array<availableCardsModel>;
-  commitmentTerm: string;
+  active: boolean;
+  description: string;
 }
-export class manageSubscriptionAddonsResponseModel {
+export class addonsResponseModel extends addOnsModel {
+  subscriptionPlanId: number;
   addOnName: string;
-  planAddOnamount: string;
-  termPlanAddOnId: number;
-  description: string;
-  planType: string;
-  planStatus: string;
-  startDate: string;
+  paymentToken: string;
+  amount: number;
   endDate: string;
   status: string;
-  cardType: string;
   cardNumber: string;
-  availableCards: Array<availableCardsModel>
-  commitmentTerm: string;
+  active: boolean;
+  description: string;
+}
+export class manageSubscriptionResponseModel {
+  productCode: string;
+  firmId: number;
+  subscriptions: Array<subscriptionResponseModel>;
+  addOns: Array<addonsResponseModel>;
 }

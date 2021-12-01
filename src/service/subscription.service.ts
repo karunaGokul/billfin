@@ -2,18 +2,18 @@ import { IBaseService, BaseService } from "./base.service";
 import {
   createCustomerRequestModel,
   createCustomerResponseModel,
-  planRequestModel,
-  planResponseModel,
-  addonsRequestModel,
-  addonsResponseModel,
+  subscribePlanRequestModel,
+  subscribePlanResponseModel,
+  subscribeAddonsRequestModel,
+  subscribeAddonsResponseModel,
   paymentTokenRequestModel,
   subscribeRequestModel,
   subscribeResponseModel
 } from "@/model";
 
 export interface ISubscripeService extends IBaseService<any, any> {
-  getPlans(request: planRequestModel): Promise<Array<planResponseModel>>;
-  getAddons(request: addonsRequestModel): Promise<Array<addonsResponseModel>>;
+  getPlans(request: subscribePlanRequestModel): Promise<Array<subscribePlanResponseModel>>;
+  getAddons(request: subscribeAddonsRequestModel): Promise<Array<subscribeAddonsResponseModel>>;
   createCustomer(
     request: createCustomerRequestModel
   ): Promise<createCustomerResponseModel>;
@@ -27,8 +27,8 @@ export class SubscripeService extends BaseService<any, any>
   }
 
   public getPlans(
-    request: planRequestModel
-  ): Promise<Array<planResponseModel>> {
+    request: subscribePlanRequestModel
+  ): Promise<Array<subscribePlanResponseModel>> {
     return this.httpGet(
       "private/api/v1/subscription/getPlanDetails",
       request
@@ -38,8 +38,8 @@ export class SubscripeService extends BaseService<any, any>
   }
 
   public getAddons(
-    request: addonsRequestModel
-  ): Promise<Array<addonsResponseModel>> {
+    request: subscribeAddonsRequestModel
+  ): Promise<Array<subscribeAddonsResponseModel>> {
     return this.httpGet(
       "private/api/v1/subscription/getAddOnDetails",
       request

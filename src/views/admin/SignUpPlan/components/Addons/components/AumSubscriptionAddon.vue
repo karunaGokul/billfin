@@ -180,7 +180,10 @@ import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
-import { addonsRequestModel, addonsResponseModel } from "@/model";
+import {
+  subscribeAddonsRequestModel,
+  subscribeAddonsResponseModel,
+} from "@/model";
 export default class AumSubscriptionAddon extends Vue {
   @Prop() product: string;
   @Prop() termPlanId: number;
@@ -189,7 +192,7 @@ export default class AumSubscriptionAddon extends Vue {
 
   public itemsPerRow: number = 0;
   public store = useStore();
-  public addons: Array<addonsResponseModel> = [];
+  public addons: Array<subscribeAddonsResponseModel> = [];
 
   public toggleAccordion: boolean = true;
 
@@ -239,7 +242,7 @@ export default class AumSubscriptionAddon extends Vue {
   ];
 
   mounted() {
-    let addons: Array<addonsResponseModel> = [];
+    let addons: Array<subscribeAddonsResponseModel> = [];
     if (this.product == "AUM") {
       if (this.aumBilling.plan.preIncludedAddons.length > 0)
         addons = this.aumBilling.plan.preIncludedAddons;
@@ -263,7 +266,7 @@ export default class AumSubscriptionAddon extends Vue {
     this.getAddons();
   }
 
-  private filterAddons(addons: Array<addonsResponseModel>) {
+  private filterAddons(addons: Array<subscribeAddonsResponseModel>) {
     this.addonsList.forEach(
       (item: {
         addOnName: string;
@@ -274,7 +277,7 @@ export default class AumSubscriptionAddon extends Vue {
         quantity: string;
         isPreInclueded: boolean;
       }) => {
-        addons.forEach((selectedAddons: addonsResponseModel) => {
+        addons.forEach((selectedAddons: subscribeAddonsResponseModel) => {
           if (item.addOnName == selectedAddons.addOnName) {
             item.selected = true;
             if (selectedAddons.quantity)
@@ -287,7 +290,7 @@ export default class AumSubscriptionAddon extends Vue {
   }
 
   private getAddons() {
-    const request = new addonsRequestModel();
+    const request = new subscribeAddonsRequestModel();
     request.termPlanId = this.termPlanId;
     this.service
       .getAddons(request)
@@ -299,7 +302,7 @@ export default class AumSubscriptionAddon extends Vue {
       });
   }
 
-  private bindAddons(response: Array<addonsResponseModel>) {
+  private bindAddons(response: Array<subscribeAddonsResponseModel>) {
     this.addons = [];
     response.forEach((item) => {
       this.addonsList.forEach(
@@ -333,7 +336,7 @@ export default class AumSubscriptionAddon extends Vue {
     this.updateAddons();
   }
 
-  public updateAddons(response?: addonsResponseModel) {
+  public updateAddons(response?: subscribeAddonsResponseModel) {
     if (response) response.selected = !response.selected;
     let payload: any[] = [];
     payload = this.addons.filter((item) => item.selected);

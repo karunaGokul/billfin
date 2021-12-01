@@ -142,7 +142,7 @@ import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import ChangePaymentInfo from "./ChangePaymentInfo.vue";
 import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
-import { manageSubscriptionAddonsResponseModel } from "@/model";
+import { manageSubscriptionResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -152,7 +152,7 @@ import { manageSubscriptionAddonsResponseModel } from "@/model";
   },
 })
 export default class Addons extends Vue {
-  @Prop() addons: manageSubscriptionAddonsResponseModel;
+  @Prop() addons: manageSubscriptionResponseModel;
 
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;

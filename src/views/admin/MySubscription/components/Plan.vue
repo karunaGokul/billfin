@@ -141,7 +141,7 @@ import RenewPlanAddOn from "./RenewPlanAddOn.vue";
 import ChangePaymentInfo from "./ChangePaymentInfo.vue";
 import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
-import { manageSubscriptionPlanResponseModel } from "@/model";
+import { subscriptionResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -152,7 +152,7 @@ import { manageSubscriptionPlanResponseModel } from "@/model";
   },
 })
 export default class Plan extends Vue {
-  @Prop() plan: manageSubscriptionPlanResponseModel;
+  @Prop() plan: subscriptionResponseModel;
 
   public togglePlan: boolean = false;
   public toggleCancelModel: boolean = false;

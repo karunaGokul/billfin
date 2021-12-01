@@ -15,11 +15,11 @@ export class createCustomerRequestModel {
 export class createCustomerResponseModel extends BaseModel {
   id: number;
 }
-export class planRequestModel {
+export class subscribePlanRequestModel {
   termPlanType: string;
   productCode: string;
 }
-export class planResponseModel {
+export class subscribePlanResponseModel {
   termPlanId: number;
   planName: string;
   termPlanAmount: string;
@@ -30,12 +30,12 @@ export class planResponseModel {
   description: string;
   planType: string;
   planDetails: Array<string>;
-  preIncludedAddons: Array<addonsResponseModel>;
+  preIncludedAddons: Array<subscribeAddonsResponseModel>;
 }
-export class addonsRequestModel {
+export class subscribeAddonsRequestModel {
   termPlanId: number;
 }
-export class addonsResponseModel {
+export class subscribeAddonsResponseModel {
   addOnName: string;
   planAddOnamount: number;
   termPlanAddOnId: number;

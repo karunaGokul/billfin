@@ -46,8 +46,7 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import {
   manageSubscriptionRequestModel,
-  manageSubscriptionPlanResponseModel,
-  manageSubscriptionAddonsResponseModel,
+  manageSubscriptionResponseModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -69,8 +68,8 @@ export default class AumSubscriptionBilling extends Vue {
 
   public store = useStore();
 
-  public plans: Array<manageSubscriptionPlanResponseModel> = [];
-  public addons: Array<manageSubscriptionAddonsResponseModel> = [];
+  public plans: Array<manageSubscriptionResponseModel> = [];
+  public addons: Array<manageSubscriptionResponseModel> = [];
 
     public subscription: any = null;
 
@@ -82,8 +81,6 @@ export default class AumSubscriptionBilling extends Vue {
     this.subscription = this.store.subscribe((mutations) => {
       if(mutations.type == 'onFirmIdChanged') this.getRes();
     })
-    this.getAddons();
-    this.getPlans();
   }
 
   unmounted() {
@@ -104,34 +101,5 @@ export default class AumSubscriptionBilling extends Vue {
       });
   }
 
-  private getPlans() {
-    let request = new manageSubscriptionRequestModel();
-    request.productCode = this.bliingType;
-    request.firmId = this.store.getters.selectedFirmId;
-    this.service
-      .getPlans(request)
-      .then((response) => {
-        //console.log(response);
-        this.plans = response;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  private getAddons() {
-    let request = new manageSubscriptionRequestModel();
-    request.productCode = this.bliingType;
-    request.firmId = this.store.getters.firms.selectedFirmId;
-    this.service
-      .getAddons(request)
-      .then((response) => {
-        //console.log(response);
-        this.addons = response;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 }
 </script>

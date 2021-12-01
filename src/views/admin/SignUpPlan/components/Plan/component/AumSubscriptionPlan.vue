@@ -136,7 +136,11 @@ import { Inject, Prop } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
-import { planRequestModel, planResponseModel, CommitmentTerm } from "@/model";
+import {
+  subscribePlanRequestModel,
+  subscribePlanResponseModel,
+  CommitmentTerm,
+} from "@/model";
 
 export default class AumSubscriptionPlan extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
@@ -148,8 +152,8 @@ export default class AumSubscriptionPlan extends Vue {
 
   public store = useStore();
 
-  public selectedPlan: planResponseModel = new planResponseModel();
-  public plans: Array<planResponseModel> = [];
+  public selectedPlan: subscribePlanResponseModel = new subscribePlanResponseModel();
+  public plans: Array<subscribePlanResponseModel> = [];
 
   private planInfo = [
     {
@@ -253,7 +257,7 @@ export default class AumSubscriptionPlan extends Vue {
   }
 
   private getPlans() {
-    const request: planRequestModel = new planRequestModel();
+    const request: subscribePlanRequestModel = new subscribePlanRequestModel();
     request.productCode = this.product;
     request.termPlanType =
       CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
@@ -267,7 +271,7 @@ export default class AumSubscriptionPlan extends Vue {
       });
   }
 
-  private bindPlans(response: Array<planResponseModel>) {
+  private bindPlans(response: Array<subscribePlanResponseModel>) {
     this.plans = [];
     response.forEach((item) => {
       this.planInfo.forEach(
@@ -305,7 +309,7 @@ export default class AumSubscriptionPlan extends Vue {
 
   public updateCommitmentTerm(commitmentTerm: string) {
     this.commitmentTerm = commitmentTerm;
-    this.selectedPlan = new planResponseModel();
+    this.selectedPlan = new subscribePlanResponseModel();
     this.getPlans();
   }
 

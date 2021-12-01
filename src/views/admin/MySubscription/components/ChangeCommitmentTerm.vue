@@ -118,12 +118,12 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { manageSubscriptionPlanResponseModel } from "@/model";
+import { manageSubscriptionResponseModel } from "@/model";
 
 export default class ChangeCommitmentTerm extends Vue {
   @Prop() currentCommitmentTerm: string;
   @Prop() newCommitmentTerm: string;
-  @Prop() plan: manageSubscriptionPlanResponseModel;
+  @Prop() plan: manageSubscriptionResponseModel;
 
   public close(option: string) {
     this.$emit(option);
