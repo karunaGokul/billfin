@@ -12,6 +12,8 @@ export class availableCardsModel {
 }
 export class subscriptionResponseModel extends subscriptionsModel {
   subscriptionPlanId: number;
+  cardType: string;
+  customerId: string;
   planName: string;
   paymentToken: string;
   term: string;
@@ -25,7 +27,9 @@ export class subscriptionResponseModel extends subscriptionsModel {
 export class addonsResponseModel extends addOnsModel {
   subscriptionPlanId: number;
   addOnName: string;
+  cardType: string;
   paymentToken: string;
+  term: string;
   amount: number;
   endDate: string;
   status: string;

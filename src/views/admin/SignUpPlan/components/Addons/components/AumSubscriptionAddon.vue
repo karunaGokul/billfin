@@ -160,6 +160,7 @@
                         'text-white': item.selected,
                         'text-gray': !item.selected,
                       }"
+                      v-if="item.extraInfo"
                     >
                       ({{ item.extraInfo }})
                     </div>
@@ -324,7 +325,7 @@ export default class AumSubscriptionAddon extends Vue {
               planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
               selected: addons.selected,
               quantity: addons.quantity,
-              extraInfo: addons.extraInfo,
+              extraInfo: this.commitmentTerm == "Annual" ? addons.extraInfo : "",
               isPreInclueded: addons.isPreInclueded,
             };
             this.addons.push(this.$vuehelper.clone(addOns));

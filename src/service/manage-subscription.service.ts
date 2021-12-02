@@ -6,9 +6,9 @@ import {
 
 export interface IManageSubscription
   extends IBaseService<any, manageSubscriptionResponseModel> {
-  getRes(
+    getSubscription(
     request: manageSubscriptionRequestModel
-  ): Promise<Array<manageSubscriptionResponseModel>>;
+  ): Promise<manageSubscriptionResponseModel>;
   
 }
 
@@ -20,9 +20,9 @@ export class ManageSubscription extends BaseService<
     super("private", "https://bv2qa01.billfin.com/subscription-service");
   }
 
-  public getRes(
+  public getSubscription(
     request: manageSubscriptionRequestModel
-  ): Promise<Array<manageSubscriptionResponseModel>> {
+  ): Promise<manageSubscriptionResponseModel> {
     return this.httpGet(
       "private/api/v1/subscriptionDetails",
       request

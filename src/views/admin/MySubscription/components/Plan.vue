@@ -5,7 +5,7 @@
         {{ plan.planName }}
         <span class="badge text-success ms-2 bg-success-alpha">Active</span>
       </div>
-      <div class="fs-6 text-muted">{{ plan.description }}</div>
+      <div class="fs-6 text-muted">{{ description }}</div>
     </div>
     <div
       class="col-3 dropdown dropdown-primary"
@@ -15,28 +15,32 @@
         class="dropdown-toggle fw-bolder mb-2 fs-5"
         @click="toggleChangePayment = true"
       >
-        <img
-          src="@/assets/mastercard.png"
-          alt="Card Type"
-          v-if="plan.cardType == 'mast'"
-        />
-        <img
-          src="@/assets/visa.png"
-          alt="Card Type"
-          v-if="plan.cardType == 'visa'"
-        />
-        <img
-          src="@/assets/amex.png"
-          alt="Card Type"
-          v-if="plan.cardType == 'amex'"
-        />
-        <img
-          src="@/assets/discover.png"
-          alt="Card Type"
-          v-if="plan.cardType == 'disc'"
-        />
-        {{ $filters.creditCardType(plan.cardType) }}
-        ****{{ plan.cardNumber.substr(plan.cardNumber.length - 4) }}
+        <template v-if="plan.cardType != 'ACH/eCheck'">
+          <img
+            src="@/assets/mastercard.png"
+            alt="Card Type"
+            v-if="plan.cardType == 'mast'"
+          />
+          <img
+            src="@/assets/visa.png"
+            alt="Card Type"
+            v-if="plan.cardType == 'visa'"
+          />
+          <img
+            src="@/assets/amex.png"
+            alt="Card Type"
+            v-if="plan.cardType == 'amex'"
+          />
+          <img
+            src="@/assets/discover.png"
+            alt="Card Type"
+            v-if="plan.cardType == 'disc'"
+          />
+          {{ $filters.creditCardType(plan.cardType) }}
+          ****{{ plan.cardNumber }}
+        </template>
+        <template v-else>Checking {{ plan.cardNumber }} </template>
+
         <ChangePaymentInfo
           :selectedCardNumber="plan.cardNumber"
           :availableCards="plan.availableCards"
@@ -47,13 +51,11 @@
         class="border border-dashed p-2 rounded fw-bolder"
         style="width: fit-content"
         :class="{
-          'border-warning bg-warning-alpha text-warning':
-            plan.planStatus == 'Renewed',
-          'border-danger bg-dander-alpha text-danger':
-            plan.planStatus == 'Canceled',
+          'border-warning bg-warning-alpha text-warning': !planExpired,
+          'border-danger bg-dander-alpha text-danger': planExpired,
         }"
       >
-        Auto-renews on 31 Dec, 2021
+        {{ planExpired ? "Expries" : "Auto-renews" }} on {{ planEndDate }}
       </div>
     </div>
     <div
@@ -64,13 +66,13 @@
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
         @click="toggleCommitmentTerm = true"
       >
-        {{ plan.commitmentTerm }} Subscription
+        {{ plan.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
           <li class="dropdown-item p-4" @click="showCommitmentTermModel = true">
             Switch to
-            {{ plan.commitmentTerm == "Annual" ? "Monthly" : "Annual" }}
+            {{ plan.term == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
@@ -80,8 +82,10 @@
     <div class="col-2 d-flex align-items-center justify-content-end">
       <div class="fw-bolder fa-2x">
         <span class="fs-7">$</span>
-        {{ $filters.currencyDisplayWithoutSymbol(plan.termPlanAmount) }}
-        <span class="fs-8 fw-light">/{{ plan.planType }}</span>
+        {{ $filters.currencyDisplayWithoutSymbol(plan.amount) }}
+        <span class="fs-8 fw-light"
+          >/{{ plan.term == "ANNUAL" ? "Yr" : "Mo" }}</span
+        >
       </div>
       <div
         class="dropdown dropdown-primary ms-4"
@@ -126,8 +130,8 @@
   />
   <ChangeCommitmentTerm
     :plan="plan"
-    :currentCommitmentTerm="plan.commitmentTerm"
-    :newCommitmentTerm="plan.commitmentTerm == 'Annual' ? 'Monthly' : 'Annual'"
+    :currentCommitmentTerm="plan.term"
+    :newCommitmentTerm="plan.term == 'Annual' ? 'Monthly' : 'Annual'"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -135,6 +139,8 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
+
+import moment from "moment";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";
@@ -153,6 +159,7 @@ import { subscriptionResponseModel } from "@/model";
 })
 export default class Plan extends Vue {
   @Prop() plan: subscriptionResponseModel;
+  @Prop() planExpired: boolean;
 
   public togglePlan: boolean = false;
   public toggleCancelModel: boolean = false;
@@ -162,6 +169,25 @@ export default class Plan extends Vue {
   public toggleCommitmentTerm: boolean = false;
 
   public showCommitmentTermModel: boolean = false;
+
+  private planInfo = [
+    {
+      planName: "Launch",
+      description: "Essentials for the starting to small RIA",
+    },
+    {
+      planName: "Professional",
+      description: "For small to medium-sized RIAs",
+    },
+    {
+      planName: "Elite",
+      description: "For medium to large-sized RIAs",
+    },
+    {
+      planName: "Enterprise",
+      description: "For large RIAs requiring custom license",
+    },
+  ];
 
   public clickOutSidePlan() {
     if (this.togglePlan) this.togglePlan = false;
@@ -181,6 +207,24 @@ export default class Plan extends Vue {
 
   public onRenewModel() {
     this.toggleRenewModel = false;
+  }
+
+  get description() {
+    return this.planInfo.find((e: any) => e.planName == this.plan.planName)
+      .description;
+  }
+
+  get planEndDate() {
+    let endDate: string = '';
+    let date = new Date(
+      parseInt(this.plan.endDate.split("/")[2]),
+      parseInt(this.plan.endDate.split("/")[1]) - 1,
+      parseInt(this.plan.endDate.split("/")[0])
+    );
+    let month = date.toLocaleString("default", { month: "long" });
+
+    endDate = `${this.plan.endDate.split("/")[0]} ${month.substring(0,3)}, ${this.plan.endDate.split("/")[2]}`
+    return endDate;
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="text-muted">
     {{
-      bliingType == "AUM Billing"
+      bliingType == "AUM"
         ? "Your AUM Billing subscription lets you easily and intuitely automate your AUM advisory billing operations."
         : "Your Subscription Billing subscription lets you setup and bill for your services on a subscription model."
     }}
@@ -10,7 +10,7 @@
     <div class="card-header align-items-center border-bottom">
       <div class="card-title fw-bolder fs-4">
         {{
-          bliingType == "AUM Billing"
+          bliingType == "AUM"
             ? "AUM Billing Subscription"
             : "Subscription Billing Subscription"
         }}
@@ -18,7 +18,7 @@
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in plans" :key="index">
-        <plan :plan="item" />
+        <plan :plan="item" :planExpired="plans.length == 2 && index == 0" />
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@
     <div class="card-header align-items-center border-bottom">
       <div class="card-title fw-bolder fs-4">
         {{
-          bliingType == "AUM Billing"
+          bliingType == "AUM"
             ? "AUM Billing Add-Ons"
             : "Subscription Billing Add-Ons"
         }}
@@ -46,6 +46,8 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import {
   manageSubscriptionRequestModel,
+  subscriptionResponseModel,
+  addonsResponseModel,
   manageSubscriptionResponseModel,
 } from "@/model";
 
@@ -68,33 +70,34 @@ export default class AumSubscriptionBilling extends Vue {
 
   public store = useStore();
 
-  public plans: Array<manageSubscriptionResponseModel> = [];
-  public addons: Array<manageSubscriptionResponseModel> = [];
+  public plans: Array<subscriptionResponseModel> = [];
+  public addons: Array<addonsResponseModel> = [];
 
-    public subscription: any = null;
+  public subscription: any = null;
 
   created() {
-    this.getRes();
+    this.getSubscription();
   }
 
   mounted() {
     this.subscription = this.store.subscribe((mutations) => {
-      if(mutations.type == 'onFirmIdChanged') this.getRes();
-    })
+      if (mutations.type == "onFirmIdChanged") this.getSubscription();
+    });
   }
 
   unmounted() {
     if (this.subscription) this.subscription();
   }
 
-  private getRes() {
+  private getSubscription() {
     let request = new manageSubscriptionRequestModel();
-    request.productCode = "AUM";
+    request.productCode = this.bliingType;
     request.firmId = this.store.getters.selectedFirmId;
     this.service
-      .getRes(request)
+      .getSubscription(request)
       .then((response) => {
-       // console.log(response);
+        this.plans = response.subscriptions;
+        this.addons = response.addOns;
       })
       .catch((err) => {
         console.log(err);

@@ -193,14 +193,16 @@ export default class SignUpPlan extends Vue {
   }
 
   get totalFees() {
-    let subAmount: number = 0;
-    let aumAmount: number = 0;
+    let subAmount: number = 0,
+      aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnamount);
+        return prev + parseInt(cur.planAddOnamount)*parseInt(cur.quantity) ;
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
-    } else {
+    }
+
+    if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
           return prev + parseInt(cur.planAddOnamount);
@@ -215,7 +217,7 @@ export default class SignUpPlan extends Vue {
   get nextPaymentDate() {
     let currentDate = new Date();
     let date = new Date(currentDate);
-    if (this.store.getters.commitmentTerm == "Monthly") {
+    if (this.aumBilling.commitmentTerm == "Monthly") {
       date.setMonth(currentDate.getMonth() + 1);
       date.setDate(currentDate.getDate() + 1);
     } else {

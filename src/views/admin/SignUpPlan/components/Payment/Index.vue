@@ -89,6 +89,7 @@ export default class Index extends Vue {
     this.service
       .createCustomer(request)
       .then((response) => {
+        this.$emit("next");
         if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
         else this.tokenizingAch();
       })
@@ -99,15 +100,15 @@ export default class Index extends Vue {
 
   private tokenizingCreditCard() {
     let request: any = {};
-    request = this.store.getters.getCreditCard;
+    request = this.store.getters.creditCard;
     request.customer_external_key = this.firmId;
+    console.log(request);
     ChargeOver.CreditCard.tokenize(
       request,
       (code: any, message: any, response: any) => {
         console.log(message, response);
         if (code == 200) {
           this.updateToken(response.creditcard.token);
-          this.$emit("next");
         } else if (code == 400) {
           console.log(message);
         } else {
@@ -121,12 +122,12 @@ export default class Index extends Vue {
     let request: any = {};
     request = this.store.getters.ach;
     request.customer_external_key = this.firmId;
+    console.log(request);
     ChargeOver.ACH.tokenize(
       request,
       (code: any, message: any, response: any) => {
         if (code == 200) {
           this.updateToken(response.ach.token);
-          this.$emit("next");
         } else if (code == 400) {
           console.log(message);
         } else {

@@ -5,7 +5,7 @@
         {{ addons.addOnName }}
         <span class="badge text-success ms-2 bg-success-alpha">Active</span>
       </div>
-      <div class="fs-6 text-muted">{{ addons.description }}</div>
+      <div class="fs-6 text-muted">{{ description }}</div>
     </div>
     <div
       class="col-3 dropdown dropdown-primary"
@@ -15,6 +15,7 @@
         class="dropdown-toggle fw-bolder mb-2 fs-5"
         @click="toggleChangePayment = true"
       >
+      <template v-if="addons.cardType != 'ACH/eCheck'">
         <img
           src="@/assets/mastercard.png"
           alt="Card Type"
@@ -36,7 +37,9 @@
           v-if="addons.cardType == 'disc'"
         />
         {{ $filters.creditCardType(addons.cardType) }}
-        ****{{ addons.cardNumber.substr(addons.cardNumber.length - 4) }}
+        ****{{ addons.cardNumber }}
+        </template>
+        <template v-else>Checking {{ addons.cardNumber }} </template>
         <ChangePaymentInfo
           :selectedCardNumber="addons.cardNumber"
           :availableCards="addons.availableCards"
@@ -56,7 +59,7 @@
         {{
           addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus
         }}
-        on 31 Dec, 2021
+        on {{ addOnEndDate }}
       </div>
     </div>
     <div
@@ -67,13 +70,13 @@
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
         @click="toggleCommitmentTerm = true"
       >
-        {{ addons.commitmentTerm }} Subscription
+        {{ addons.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
           <li class="dropdown-item p-4" @click="showCommitmentTermModel = true">
             Switch to
-            {{ addons.commitmentTerm == "Annual" ? "Monthly" : "Annual" }}
+            {{ addons.term == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
@@ -85,8 +88,8 @@
     <div class="col-2 d-flex align-items-center justify-content-end">
       <div class="fw-bolder fa-2x">
         <span class="fs-7">$</span>
-        {{ $filters.currencyDisplayWithoutSymbol(addons.planAddOnamount) }}
-        <span class="fs-8 fw-light">/{{ addons.planType }}</span>
+        {{ $filters.currencyDisplayWithoutSymbol(addons.amount) }}
+        <span class="fs-8 fw-light">/{{ addons.term == "ANNUAL" ? "Yr" : "Mo" }}</span>
       </div>
       <div
         class="dropdown dropdown-primary ms-4"
@@ -126,9 +129,9 @@
   />
   <ChangeCommitmentTerm
     :plan="addons"
-    :currentCommitmentTerm="addons.commitmentTerm"
+    :currentCommitmentTerm="addons.term"
     :newCommitmentTerm="
-      addons.commitmentTerm == 'Annual' ? 'Monthly' : 'Annual'
+      addons.term == 'ANNUAL' ? 'Monthly' : 'Annual'
     "
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
@@ -142,7 +145,7 @@ import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import ChangePaymentInfo from "./ChangePaymentInfo.vue";
 import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
-import { manageSubscriptionResponseModel } from "@/model";
+import { addonsResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -152,7 +155,7 @@ import { manageSubscriptionResponseModel } from "@/model";
   },
 })
 export default class Addons extends Vue {
-  @Prop() addons: manageSubscriptionResponseModel;
+  @Prop() addons: addonsResponseModel;
 
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;
@@ -160,6 +163,33 @@ export default class Addons extends Vue {
   public toggleCommitmentTerm: boolean = false;
 
   public showCommitmentTermModel: boolean = false;
+
+  public addonsList: any = [
+    {
+      addOnName: "Average Daily Balances",
+      description: "Support ADB calculations and reporting"
+    },
+    {
+      addOnName: "Flow Billing",
+      description: "Adjust billing for intra-period flows"
+    },
+    {
+      addOnName: "Admin User License",
+      description: "Additional admin user access license"
+    },
+    {
+      addOnName: "Multi-Fee Billing",
+      description: "Multiple fee calculations per account"
+    },
+    {
+      addOnName: "Revenue Sharing",
+      description: "Flexible revenue sharing and fee splitting"
+    },
+    {
+      addOnName: "Multi-Connector Integrations",
+      description: "Integrate with multiple custody sources"
+    },
+  ];
 
   public onCancel() {
     this.showCancelModel = false;
@@ -175,6 +205,23 @@ export default class Addons extends Vue {
 
   public clickOutSideChangePayment() {
     this.toggleChangePayment = false;
+  }
+
+  get description() {
+    return this.addonsList.find((e: any) => e.addOnName == this.addons.addOnName).description;
+  }
+
+  get addOnEndDate() {
+    let endDate: string = '';
+    let date = new Date(
+      parseInt(this.addons.endDate.split("/")[2]),
+      parseInt(this.addons.endDate.split("/")[1]) - 1,
+      parseInt(this.addons.endDate.split("/")[0])
+    );
+    let month = date.toLocaleString("default", { month: "long" });
+
+    endDate = `${this.addons.endDate.split("/")[0]} ${month.substring(0,3)}, ${this.addons.endDate.split("/")[2]}`
+    return endDate;
   }
 }
 </script>

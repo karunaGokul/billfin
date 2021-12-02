@@ -5,15 +5,15 @@
         <ul class="tab-label-group border-bottom fs-5 position-relative">
           <li
             class="tab-label pb-4 m-0"
-            :class="{ 'tab-active': activeBilling == 'AUM Billing' }"
-            @click="activeBilling = 'AUM Billing'"
+            :class="{ 'tab-active': selectedBillingType == 'AUM' }"
+            @click="selectedBillingType = 'AUM'"
           >
             AUM Billing
           </li>
           <li
             class="tab-label pb-4"
-            :class="{ 'tab-active': activeBilling == 'Subscription Billing' }"
-            @click="activeBilling = 'Subscription Billing'"
+            :class="{ 'tab-active': selectedBillingType == 'Subscription' }"
+            @click="selectedBillingType = 'Subscription'"
           >
             Subscription Billing
           </li>
@@ -33,9 +33,12 @@
         </ul>
       </div>
       <div class="tab-content-group">
-        <aum-subscription-billing
-          :bliingType="activeBilling"
-        />
+        <template v-for="(item, index) in bliingTypes" :key="index">
+          <aum-subscription-billing
+            :bliingType="item"
+            v-if="selectedBillingType == item"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -51,6 +54,7 @@ import AumSubscriptionBilling from "./components/AumSubscriptionBilling.vue";
   },
 })
 export default class Index extends Vue {
-  public activeBilling: string = "AUM Billing";
+  public bliingTypes: Array<string> = ["AUM", "Subscription"];
+  public selectedBillingType: string = "AUM";
 }
 </script>

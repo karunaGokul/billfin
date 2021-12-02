@@ -9,7 +9,7 @@
           <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
             <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">(Annual Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span>
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
@@ -41,7 +41,7 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On Annual Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6">(On {{aumBilling.commitmentTerm}} Commitment)</span>
           </div>
           <div class="col-2 text-end fs-4 fw-bold text-light-gray">
             {{ $filters.currencyDisplay(item.planAddOnamount*parseInt(item.quantity)) }}
@@ -56,7 +56,7 @@
             <span class="fw-bold ms-2">{{
               subscriptionBilling.plan.planName
             }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">(Annual Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span>
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{
@@ -90,7 +90,7 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On Annual Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6">(On {{subscriptionBilling.commitmentTerm}} Commitment)</span>
           </div>
           <div class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray">
             {{ $filters.currencyDisplay(item.planAddOnamount*parseInt(item.quantity)) }}

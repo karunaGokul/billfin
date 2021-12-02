@@ -85,6 +85,10 @@ export default class Subscribe extends Vue {
 
   public isAgreed: boolean = false;
 
+  mounted() {
+    console.log(this.products);
+  }
+
   public back() {
     this.$emit("back");
   }
@@ -109,8 +113,6 @@ export default class Subscribe extends Vue {
       });
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
-
-    console.log(request);
 
     this.service
       .createSubscription(request)
