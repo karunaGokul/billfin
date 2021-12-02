@@ -197,7 +197,7 @@ export default class SignUpPlan extends Vue {
       aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnamount)*parseInt(cur.quantity) ;
+        return prev + parseInt(cur.planAddOnamount)*parseInt(cur.quantity);
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
     }
@@ -205,7 +205,7 @@ export default class SignUpPlan extends Vue {
     if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
-          return prev + parseInt(cur.planAddOnamount);
+          return prev + parseInt(cur.planAddOnamount)*parseInt(cur.quantity);
         },
         0
       );
