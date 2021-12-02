@@ -58,13 +58,13 @@ export class SubscripeService extends BaseService<any, any>
 
   public updatePaymentToken(request: paymentTokenRequestModel): Promise<any> {
     return this.post(request, "api/v1/paymentFirmToken").then((response) => {
-      return response.data;
+      return response;
     });
   }
 
   public createSubscription(request: subscribeRequestModel): Promise<subscribeResponseModel> {
     return this.post(request, "api/v1/subscription/subscriptionPayment").then((response) => {
-      return response.data;
+      return response;
     });
   }
 

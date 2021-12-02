@@ -117,6 +117,7 @@ export default class Subscribe extends Vue {
     this.service
       .createSubscription(request)
       .then((response) => {
+        console.log(response);
         if (response.status == "SUCCESS") this.$emit("next");
       })
       .catch((err) => {

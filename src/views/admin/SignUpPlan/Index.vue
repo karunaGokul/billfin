@@ -169,6 +169,7 @@ export default class SignUpPlan extends Vue {
   public dueAmount: number = 0;
 
   public onSubscripe() {
+    console.log('show');
     this.isSubscriped = true;
   }
 
