@@ -37,6 +37,12 @@
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in addons" :key="index">
         <addons :addons="item" />
       </div>
+      <div class="p-8 text-center" v-if="!loading && !addons.length">
+        <div class="fw-bolder fs-4 p-4">You currently are not subscribed to add-ons.</div>
+        <button type="button" class="btn btn-primary">
+          Subscribe to Add-ons
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -75,6 +81,8 @@ export default class AumSubscriptionBilling extends Vue {
 
   public subscription: any = null;
 
+  public loading:boolean = false;
+
   created() {
     this.getSubscription();
   }
@@ -90,19 +98,21 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   private getSubscription() {
+    this.loading = true;
     let request = new manageSubscriptionRequestModel();
     request.productCode = this.bliingType;
     request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getSubscription(request)
       .then((response) => {
+        this.loading = false;
         this.plans = response.subscriptions;
         this.addons = response.addOns;
       })
       .catch((err) => {
+        this.loading = false;
         console.log(err);
       });
   }
-
 }
 </script>

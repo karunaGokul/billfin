@@ -1,5 +1,5 @@
 <template>
-  <AumSubscriptionAddon
+  <pick-addons
     v-for="(item, index) in plans"
     :key="index"
     :product="item.product"
@@ -15,14 +15,14 @@
 import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
-import AumSubscriptionAddon from "./components/AumSubscriptionAddon.vue";
+import PickAddons from "@/components/controls/PickAddons.vue";
 
 @Options({
   components: {
-    AumSubscriptionAddon,
+    PickAddons,
   },
 })
-export default class Index extends Vue {
+export default class Addons extends Vue {
   public store = useStore();
 
   public next() {

@@ -57,7 +57,7 @@ declare let ChargeOver: any;
     CreditCard,
   },
 })
-export default class Index extends Vue {
+export default class Payment extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
 
   public paymenyType: string = "Credit Card";

@@ -70,11 +70,7 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
-import {
-  subscribeRequestModel,
-  productsModel,
-  addOnsModel,
-} from "@/model";
+import { subscribeRequestModel, productsModel, addOnsModel } from "@/model";
 
 import { ISubscripeService } from "@/service";
 
@@ -119,7 +115,7 @@ export default class Subscribe extends Vue {
       .createSubscription(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
-          this.store.dispatch("updateFirmStatus");
+          this.$emit("next");
         }
       })
       .catch((err) => {

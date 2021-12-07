@@ -10,7 +10,7 @@ const state: any = {
   creditCard: {},
   ach: {},
   address: {},
-  states: []
+  states: [],
 };
 const getters: GetterTree<any, any> = {
   products: (state) => {
@@ -80,19 +80,27 @@ const mutations: MutationTree<any> = {
   },
   onUpdateACH(state, payload) {
     state.ach = payload;
-  }
+  },
 };
 const actions: ActionTree<any, any> = {
   updateState(context) {
-    const service = new AddressService();
-    const data: Array<string> = [];
-    service.getState().then((response) => {
-      response.forEach((item) => {
-        data.push(item.name);
+    if (!context.state.states || !context.state.states.length) {
+      const service = new AddressService();
+      const data: Array<string> = [];
+      service.getState().then((response) => {
+        response.forEach((item) => {
+          data.push(item.name);
+        });
+        data.sort();
       });
-      data.sort();
-    });
-    context.commit("onUpdateState", data);
+      context.commit("onUpdateState", data);
+    } else {
+      return new Promise((resolve, reject) => {
+        context.commit("onUpdateState", context.state.states);
+
+        resolve(context.state.states);
+      });
+    }
   },
   updateProducts(context, payload) {
     context.commit("onUpdateProducts", payload);
@@ -117,7 +125,7 @@ const actions: ActionTree<any, any> = {
   },
   updateACH(context, payload) {
     context.commit("onUpdateACH", payload);
-  }
+  },
 };
 export const SubscriptionModule = {
   state,

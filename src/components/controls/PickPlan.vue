@@ -142,7 +142,7 @@ import {
   CommitmentTerm,
 } from "@/model";
 
-export default class AumSubscriptionPlan extends Vue {
+export default class PickPlan extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
 
   @Prop() product: string;

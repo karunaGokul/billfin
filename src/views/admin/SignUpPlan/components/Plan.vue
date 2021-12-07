@@ -1,5 +1,5 @@
 <template>
-  <AumSubscriptionPlan
+  <pick-plan
     v-for="(item, index) in products"
     :key="index"
     :product="item"
@@ -16,14 +16,14 @@
 import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
-import AumSubscriptionPlan from "./component/AumSubscriptionPlan.vue";
+import PickPlan from "@/components/controls/PickPlan.vue";
 
 @Options({
   components: {
-    AumSubscriptionPlan,
+    PickPlan,
   },
 })
-export default class Index extends Vue {
+export default class Plan extends Vue {
   public store = useStore();
   public invalidAumPlan: boolean = false;
   public invalidSubscriptionPlan: boolean = false;

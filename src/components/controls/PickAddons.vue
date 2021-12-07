@@ -185,7 +185,7 @@ import {
   subscribeAddonsRequestModel,
   subscribeAddonsResponseModel,
 } from "@/model";
-export default class AumSubscriptionAddon extends Vue {
+export default class PickAddons extends Vue {
   @Prop() product: string;
   @Prop() termPlanId: number;
 

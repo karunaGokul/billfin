@@ -94,7 +94,11 @@
           <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
           <payment @back="step = 3" @next="step = 5" v-if="step == 4" />
           <review @back="step = 4" @next="step = 6" v-if="step == 5" />
-          <subscribe @back="step = 5" v-if="step == 6" />
+          <subscribe
+            @back="step = 5"
+            @next="updateFirmStatus"
+            v-if="step == 6"
+          />
         </div>
       </div>
     </div>
@@ -105,9 +109,9 @@ import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
 import Products from "./components/Products.vue";
-import Plan from "./components/Plan/Index.vue";
-import Addons from "./components/Addons/Index.vue";
-import Payment from "./components/Payment/Index.vue";
+import Plan from "./components/Plan.vue";
+import Addons from "./components/Addons.vue";
+import Payment from "./components/Payment.vue";
 import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
@@ -127,8 +131,31 @@ export default class SignUpPlan extends Vue {
   public step: number = 1;
   public store = useStore();
 
-  get firmStatus() {
-    return this.store.getters.firmStatus;
+  public firmStatus: string = "";
+
+  public subscription: any = null;
+
+  created() {
+    this.firmStatus = this.store.getters.firms.firmStatus;
+  }
+
+  mounted() {
+    this.subscription = this.store.subscribe((mutations) => {
+      if (mutations.type == "onFirmIdChanged") {
+        this.firmStatus = this.store.getters.firms.firmStatus;
+        this.step = 1;
+      }
+    });
+  }
+
+  unmounted() {
+    if (this.subscription) this.subscription();
+  }
+
+  public updateFirmStatus() {
+    this.store.dispatch("updateFirmStatus");
+    this.firmStatus = "SUBSCRIBED";
+    console.log(this.firmStatus);
   }
 }
 </script>

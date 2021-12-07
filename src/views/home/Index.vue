@@ -147,7 +147,7 @@
                 border-0
               "
               role="alert"
-              v-if="firms"
+              v-if="firmStatus != 'SUBSCRIBED'"
             >
               <i class="fas fa-info-circle text-danger"></i> You only have
               {{ showTrailExpireDays }} more day(s) in your trial. Ready to
@@ -299,6 +299,10 @@ export default class Home extends Vue {
 
   get page() {
     return this.$route.name;
+  }
+
+  get firmStatus() {
+    return this.store.getters.firms.firmStatus;
   }
 
   get currentPage() {

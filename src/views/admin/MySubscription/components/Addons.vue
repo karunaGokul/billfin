@@ -3,7 +3,7 @@
     <div class="col-4">
       <div class="fw-bolder fs-4 mb-2">
         {{ addons.addOnName }}
-        <span class="badge text-success ms-2 bg-success-alpha">Active</span>
+        <span class="badge text-success ms-2 bg-success-alpha">{{addons.status == 'NEW' ? 'Current': addons.status}}</span>
       </div>
       <div class="fs-6 text-muted">{{ description }}</div>
     </div>

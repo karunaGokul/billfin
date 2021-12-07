@@ -3,7 +3,7 @@
     <div class="col-4">
       <div class="fw-bolder fs-4 mb-2">
         {{ plan.planName }}
-        <span class="badge text-success ms-2 bg-success-alpha">Active</span>
+        <span class="badge text-success ms-2 bg-success-alpha">{{plan.status == 'NEW' ? 'Current': plan.status}}</span>
       </div>
       <div class="fs-6 text-muted">{{ description }}</div>
     </div>

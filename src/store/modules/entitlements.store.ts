@@ -22,18 +22,21 @@ const getters: GetterTree<any, any> = {
   },
   dataEntitlements: (state) => {
     return state.dataEntitlements;
-  }
+  },
 };
 const mutations: MutationTree<any> = {
   onLoadEntitlements(state, firms) {
     state.dataEntitlements = firms;
+    if (!state.firmId) {
+      state.firmId = state.dataEntitlements[0].firmId;
+    }
   },
   onFirmIdChanged: (state, firmId) => {
     localStorage.setItem(FIRM_KEY, firmId);
 
     state.firmId = firmId;
   },
-  OnUpdateFirmStatus: (state) => {
+  onUpdateFirmStatus: (state) => {
     state.firms.firmStatus = "SUBSCRIBED";
   },
 };
@@ -46,7 +49,6 @@ const actions: ActionTree<any, any> = {
       let service = new FirmService();
       return service.getFirms().then((response) => {
         context.commit("onLoadEntitlements", response);
-        context.commit("onFirmIdChanged", response[0].firmId);
       });
     } else {
       return new Promise((resolve, reject) => {
@@ -60,7 +62,7 @@ const actions: ActionTree<any, any> = {
     context.commit("onFirmIdChanged", firmId);
   },
   updateFirmStatus(context) {
-    context.commit("OnUpdateFirmStatus");
+    context.commit("onUpdateFirmStatus");
   },
 };
 
