@@ -12,6 +12,7 @@
         v-model="controls.$model"
         :readonly="readonly"
         @blur="updateInput"
+        @input="updateEvent"
       />
     </div>
     <error-message
@@ -21,7 +22,10 @@
     />
   </div>
 
-  <div class="mb-5 row position-relative mb-8" v-if="formFieldType == 'inputInline'">
+  <div
+    class="mb-5 row position-relative mb-8"
+    v-if="formFieldType == 'inputInline'"
+  >
     <label :for="label" class="col-sm-4 col-form-label fw-bolder">
       {{ label }}
     </label>
@@ -61,6 +65,9 @@ export default class TextInput extends Vue {
 
   updateInput() {
     this.$emit("updateInput");
+  }
+  updateEvent() {
+    this.$emit("updateEvent");
   }
 }
 </script>

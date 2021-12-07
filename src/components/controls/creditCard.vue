@@ -128,6 +128,7 @@
               'cvvMinLength',
               'cvvMaxLength',
             ]"
+            @updateEvent="v$.request.cvv.$model = v$.request.cvv.$model.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
           />
         </div>
       </div>
@@ -188,6 +189,7 @@
             inputType="text"
             formFieldType="inputBlock"
             :validation="['required', 'numeric']"
+            @updateEvent="v$.request.postalCode.$model = v$.request.postalCode.$model.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
           />
         </div>
       </div>
@@ -392,19 +394,6 @@ export default class CreditCard extends Vue {
 
   public closeModel() {
     this.showInformationError = false;
-  }
-
-  private cardNumberValidation() {
-    this.card = "";
-    let request = {
-      number: this.request.cardNumber,
-    };
-    ChargeOver.CreditCard.type(
-      request,
-      (code: any, message: any, response: any) => {
-        if (code == 200) this.card = response;
-      }
-    );
   }
 
   get state() {

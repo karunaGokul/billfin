@@ -7,45 +7,43 @@
       </div>
       <div class="fs-6 text-muted">{{ description }}</div>
     </div>
-    <div
-      class="col-3 dropdown dropdown-primary"
-      v-click-outside="clickOutSideChangePayment"
-    >
-      <div
-        class="dropdown-toggle fw-bolder mb-2 fs-5"
-        @click="toggleChangePayment = true"
-      >
-        <template v-if="plan.cardType != 'ACH/eCheck'">
+    <div class="col-3">
+      <div class="fw-bolder mb-2 fs-5">
+        <template v-if="plan.cardType == 'Credit Card'">
           <img
             src="@/assets/mastercard.png"
             alt="Card Type"
-            v-if="plan.cardType == 'mast'"
+            v-if="plan.cardNumber.split(' ')[0] == 'MasterCard'"
           />
           <img
             src="@/assets/visa.png"
             alt="Card Type"
-            v-if="plan.cardType == 'visa'"
+            v-if="plan.cardNumber.split(' ')[0] == 'Visa'"
           />
           <img
             src="@/assets/amex.png"
             alt="Card Type"
-            v-if="plan.cardType == 'amex'"
+            v-if="plan.cardNumber.split(' ')[0] == 'American'"
           />
           <img
             src="@/assets/discover.png"
             alt="Card Type"
-            v-if="plan.cardType == 'disc'"
+            v-if="plan.cardNumber.split(' ')[0] == 'Discover'"
           />
-          {{ $filters.creditCardType(plan.cardType) }}
-          ****{{ plan.cardNumber }}
+          {{
+            plan.cardNumber.split(" ")[0] == "American"
+              ? "American Express"
+              : plan.cardNumber.split(" ")[0]
+          }}
+          ****{{
+            plan.cardNumber.split(" ")[0] == "American"
+              ? plan.cardNumber.split(" ")[2]
+              : plan.cardNumber.split(" ")[1]
+          }}
         </template>
-        <template v-else>Checking {{ plan.cardNumber }} </template>
-
-        <ChangePaymentInfo
-          :selectedCardNumber="plan.cardNumber"
-          :availableCards="plan.availableCards"
-          v-if="toggleChangePayment"
-        />
+        <template v-else
+          >Checking {{ plan.cardNumber.split(" ")[1] }}
+        </template>
       </div>
       <div
         class="border border-dashed p-2 rounded fw-bolder"
@@ -55,7 +53,8 @@
           'border-danger bg-dander-alpha text-danger': planExpired,
         }"
       >
-        {{ planExpired ? "Expries" : "Auto-renews" }} on {{ planEndDate }}
+        {{ planExpired ? "Expries" : "Auto-renews" }} on
+        <!-- {{ planExpired ? "Expries" : "Auto-renews" }} on {{ planEndDate }} -->
       </div>
     </div>
     <div
@@ -144,7 +143,6 @@ import moment from "moment";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";
-import ChangePaymentInfo from "./ChangePaymentInfo.vue";
 import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
 import { subscriptionResponseModel } from "@/model";
@@ -153,7 +151,6 @@ import { subscriptionResponseModel } from "@/model";
   components: {
     CancelPlanAddOn,
     RenewPlanAddOn,
-    ChangePaymentInfo,
     ChangeCommitmentTerm,
   },
 })
@@ -165,7 +162,6 @@ export default class Plan extends Vue {
   public toggleCancelModel: boolean = false;
   public toggleRenewModel: boolean = false;
 
-  public toggleChangePayment: boolean = false;
   public toggleCommitmentTerm: boolean = false;
 
   public showCommitmentTermModel: boolean = false;
@@ -193,10 +189,6 @@ export default class Plan extends Vue {
     if (this.togglePlan) this.togglePlan = false;
   }
 
-  public clickOutSideChangePayment() {
-    this.toggleChangePayment = false;
-  }
-
   public clickOutSideTerm() {
     this.toggleCommitmentTerm = false;
   }
@@ -215,7 +207,7 @@ export default class Plan extends Vue {
   }
 
   get planEndDate() {
-    let endDate: string = '';
+    let endDate: string = "";
     let date = new Date(
       parseInt(this.plan.endDate.split("/")[2]),
       parseInt(this.plan.endDate.split("/")[1]) - 1,
@@ -223,7 +215,9 @@ export default class Plan extends Vue {
     );
     let month = date.toLocaleString("default", { month: "long" });
 
-    endDate = `${this.plan.endDate.split("/")[0]} ${month.substring(0,3)}, ${this.plan.endDate.split("/")[2]}`
+    endDate = `${this.plan.endDate.split("/")[0]} ${month.substring(0, 3)}, ${
+      this.plan.endDate.split("/")[2]
+    }`;
     return endDate;
   }
 }

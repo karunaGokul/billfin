@@ -7,44 +7,41 @@
       </div>
       <div class="fs-6 text-muted">{{ description }}</div>
     </div>
-    <div
-      class="col-3 dropdown dropdown-primary"
-      v-click-outside="clickOutSideChangePayment"
-    >
-      <div
-        class="dropdown-toggle fw-bolder mb-2 fs-5"
-        @click="toggleChangePayment = true"
-      >
-      <template v-if="addons.cardType != 'ACH/eCheck'">
-        <img
-          src="@/assets/mastercard.png"
-          alt="Card Type"
-          v-if="addons.cardType == 'mast'"
-        />
-        <img
-          src="@/assets/visa.png"
-          alt="Card Type"
-          v-if="addons.cardType == 'visa'"
-        />
-        <img
-          src="@/assets/amex.png"
-          alt="Card Type"
-          v-if="addons.cardType == 'amex'"
-        />
-        <img
-          src="@/assets/discover.png"
-          alt="Card Type"
-          v-if="addons.cardType == 'disc'"
-        />
-        {{ $filters.creditCardType(addons.cardType) }}
-        ****{{ addons.cardNumber }}
+    <div class="col-3">
+      <div class="fw-bolder mb-2 fs-5">
+        <template v-if="addons.cardType == 'Credit Card'">
+          <img
+            src="@/assets/mastercard.png"
+            alt="Card Type"
+            v-if="addons.cardNumber.split(' ')[0] == 'MasterCard'"
+          />
+          <img
+            src="@/assets/visa.png"
+            alt="Card Type"
+            v-if="addons.cardNumber.split(' ')[0] == 'Visa'"
+          />
+          <img
+            src="@/assets/amex.png"
+            alt="Card Type"
+            v-if="addons.cardNumber.split(' ')[0] == 'American'"
+          />
+          <img
+            src="@/assets/discover.png"
+            alt="Card Type"
+            v-if="addons.cardNumber.split(' ')[0] == 'Discover'"
+          />
+          {{
+            addons.cardNumber.split(" ")[0] == "American"
+              ? "American Express"
+              : addons.cardNumber.split(" ")[0]
+          }}
+          ****{{
+            addons.cardNumber.split(" ")[0] == "American"
+              ? addons.cardNumber.split(" ")[2]
+              : addons.cardNumber.split(" ")[1]
+          }}
         </template>
         <template v-else>Checking {{ addons.cardNumber }} </template>
-        <ChangePaymentInfo
-          :selectedCardNumber="addons.cardNumber"
-          :availableCards="addons.availableCards"
-          v-if="toggleChangePayment"
-        />
       </div>
       <div
         class="border border-dashed p-2 rounded fw-bolder"
@@ -56,10 +53,13 @@
             addons.planStatus == 'Canceled',
         }"
       >
-        {{
+        {{ addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus }}
+        on
+
+        <!-- {{
           addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus
         }}
-        on {{ addOnEndDate }}
+        on {{ addOnEndDate }} -->
       </div>
     </div>
     <div
@@ -89,7 +89,9 @@
       <div class="fw-bolder fa-2x">
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(addons.amount) }}
-        <span class="fs-8 fw-light">/{{ addons.term == "ANNUAL" ? "Yr" : "Mo" }}</span>
+        <span class="fs-8 fw-light"
+          >/{{ addons.term == "ANNUAL" ? "Yr" : "Mo" }}</span
+        >
       </div>
       <div
         class="dropdown dropdown-primary ms-4"
@@ -130,9 +132,7 @@
   <ChangeCommitmentTerm
     :plan="addons"
     :currentCommitmentTerm="addons.term"
-    :newCommitmentTerm="
-      addons.term == 'ANNUAL' ? 'Monthly' : 'Annual'
-    "
+    :newCommitmentTerm="addons.term == 'ANNUAL' ? 'Monthly' : 'Annual'"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -142,7 +142,6 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
-import ChangePaymentInfo from "./ChangePaymentInfo.vue";
 import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
 
 import { addonsResponseModel } from "@/model";
@@ -150,7 +149,6 @@ import { addonsResponseModel } from "@/model";
 @Options({
   components: {
     CancelPlanAddOn,
-    ChangePaymentInfo,
     ChangeCommitmentTerm,
   },
 })
@@ -159,7 +157,6 @@ export default class Addons extends Vue {
 
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;
-  public toggleChangePayment: boolean = false;
   public toggleCommitmentTerm: boolean = false;
 
   public showCommitmentTermModel: boolean = false;
@@ -167,27 +164,27 @@ export default class Addons extends Vue {
   public addonsList: any = [
     {
       addOnName: "Average Daily Balances",
-      description: "Support ADB calculations and reporting"
+      description: "Support ADB calculations and reporting",
     },
     {
       addOnName: "Flow Billing",
-      description: "Adjust billing for intra-period flows"
+      description: "Adjust billing for intra-period flows",
     },
     {
       addOnName: "Admin User License",
-      description: "Additional admin user access license"
+      description: "Additional admin user access license",
     },
     {
       addOnName: "Multi-Fee Billing",
-      description: "Multiple fee calculations per account"
+      description: "Multiple fee calculations per account",
     },
     {
       addOnName: "Revenue Sharing",
-      description: "Flexible revenue sharing and fee splitting"
+      description: "Flexible revenue sharing and fee splitting",
     },
     {
       addOnName: "Multi-Connector Integrations",
-      description: "Integrate with multiple custody sources"
+      description: "Integrate with multiple custody sources",
     },
   ];
 
@@ -203,16 +200,14 @@ export default class Addons extends Vue {
     this.toggleCommitmentTerm = false;
   }
 
-  public clickOutSideChangePayment() {
-    this.toggleChangePayment = false;
-  }
-
   get description() {
-    return this.addonsList.find((e: any) => e.addOnName == this.addons.addOnName).description;
+    return this.addonsList.find(
+      (e: any) => e.addOnName == this.addons.addOnName
+    ).description;
   }
 
   get addOnEndDate() {
-    let endDate: string = '';
+    let endDate: string = "";
     let date = new Date(
       parseInt(this.addons.endDate.split("/")[2]),
       parseInt(this.addons.endDate.split("/")[1]) - 1,
@@ -220,7 +215,9 @@ export default class Addons extends Vue {
     );
     let month = date.toLocaleString("default", { month: "long" });
 
-    endDate = `${this.addons.endDate.split("/")[0]} ${month.substring(0,3)}, ${this.addons.endDate.split("/")[2]}`
+    endDate = `${this.addons.endDate.split("/")[0]} ${month.substring(0, 3)}, ${
+      this.addons.endDate.split("/")[2]
+    }`;
     return endDate;
   }
 }

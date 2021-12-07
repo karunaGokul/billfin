@@ -127,7 +127,8 @@
         <adjustments-advisory :response="item" v-if="item && item.aumFlag" />
       </div>
 
-      <div class="d-flex justify-content-end m-0">
+      <div class="d-flex justify-content-between m-0">
+        <button class="btn btn-secondary" @click="back">Back</button>
         <button class="btn btn-primary" @click="confirm">Finish</button>
       </div>
     </div>

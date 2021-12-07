@@ -72,7 +72,7 @@ import { Inject } from "vue-property-decorator";
 
 import {
   subscribeRequestModel,
-  subscriptionsModel,
+  productsModel,
   addOnsModel,
 } from "@/model";
 
@@ -82,12 +82,7 @@ export default class Subscribe extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
 
   public store = useStore();
-
   public isAgreed: boolean = false;
-
-  mounted() {
-    console.log(this.products);
-  }
 
   public back() {
     this.$emit("back");
@@ -97,28 +92,35 @@ export default class Subscribe extends Vue {
     let request: subscribeRequestModel = new subscribeRequestModel();
     request.firmId = this.store.getters.selectedFirmId;
 
+    let products = new productsModel();
     if (this.showAumBilling) {
-      request.productCode = "AUM";
-      request.subscriptions.push({
+      products.productCode = "AUM";
+      products.subscriptions.push({
         termPlanId: this.aumBilling.plan.termPlanId,
         startDate: this.startDate,
       });
-      request.addOns = this.getAddons(this.aumBilling.addons);
+      products.addOns = this.getAddons(this.aumBilling.addons);
+      request.products.push(products);
     }
     if (this.showSubscription) {
-      request.productCode = "SUBSCRIPTION";
-      request.subscriptions.push({
+      products = new productsModel();
+      products.productCode = "SUBSCRIPTION";
+      products.subscriptions.push({
         termPlanId: this.subscriptionBilling.plan.termPlanId,
         startDate: this.startDate,
       });
-      request.addOns = this.getAddons(this.subscriptionBilling.addons);
+      products.addOns = this.getAddons(this.subscriptionBilling.addons);
+      request.products.push(products);
     }
+
+    console.log(request);
 
     this.service
       .createSubscription(request)
       .then((response) => {
-        console.log(response);
-        if (response.status == "SUCCESS") this.$emit("next");
+        if (response.status == "SUCCESS") {
+          this.store.dispatch("updateFirmStatus");
+        }
       })
       .catch((err) => {
         console.log(err);

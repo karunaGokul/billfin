@@ -12,13 +12,14 @@
           </li>
           <li
             class="tab-label pb-4"
-            :class="{ 'tab-active': selectedBillingType == 'Subscription' }"
-            @click="selectedBillingType = 'Subscription'"
+            :class="{ 'tab-active': selectedBillingType == 'SUBSCRIPTION' }"
+            @click="selectedBillingType = 'SUBSCRIPTION'"
           >
             Subscription Billing
           </li>
-          <button
-            type="button"
+          <router-link
+            to="/bills-payments"
+            tag="button"
             class="
               btn btn-outline-primary
               border border-primary
@@ -29,7 +30,7 @@
             "
           >
             Bills & Payments
-          </button>
+          </router-link>
         </ul>
       </div>
       <div class="tab-content-group">
@@ -54,7 +55,7 @@ import AumSubscriptionBilling from "./components/AumSubscriptionBilling.vue";
   },
 })
 export default class Index extends Vue {
-  public bliingTypes: Array<string> = ["AUM", "Subscription"];
+  public bliingTypes: Array<string> = ["AUM", "SUBSCRIPTION"];
   public selectedBillingType: string = "AUM";
 }
 </script>

@@ -13,10 +13,9 @@
           <div>
             <div class="fw-bolder fs-4 p-4">
               {{ item.cardHolderName }}
-              <span
-                class="badge text-success ms-2 fs-6 bg-success-alpha"
-                >{{ item.status }}</span
-              >
+              <span class="badge text-success ms-2 fs-6 bg-success-alpha">{{
+                item.status
+              }}</span>
             </div>
             <div class="d-flex">
               <div>
@@ -33,13 +32,13 @@
                   v-if="item.cardType == 'visa'"
                 />
                 <img
-                  src="@/assets/amex-hd.png"
+                  src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
                   v-if="item.cardType == 'amex'"
                 />
                 <img
-                  src="@/assets/discover-hd.png"
+                  src="@/assets/discover.svg"
                   alt="Card Type"
                   width="100"
                   v-if="item.cardType == 'disc'"
@@ -81,7 +80,13 @@
           </p>
         </div>
         <div class="d-flex align-items-center justify-content-center w-50">
-          <button class="btn btn-primary">Add Payment Method</button>
+          <router-link
+            to="/payment-method"
+            tag="button"
+            class="btn btn-primary"
+          >
+            Add Payment Method
+          </router-link>
         </div>
       </div>
     </div>

@@ -10,8 +10,7 @@ const state: any = {
   creditCard: {},
   ach: {},
   address: {},
-  states: [],
-  planSubscripted: false
+  states: []
 };
 const getters: GetterTree<any, any> = {
   products: (state) => {
@@ -44,9 +43,6 @@ const getters: GetterTree<any, any> = {
   states: (state) => {
     return state.states;
   },
-  planSubscripted:(state) => {
-    return state.planSubscripted;
-  }
 };
 const mutations: MutationTree<any> = {
   onUpdateState(state, response) {
@@ -84,9 +80,6 @@ const mutations: MutationTree<any> = {
   },
   onUpdateACH(state, payload) {
     state.ach = payload;
-  },
-  onUpdatePlanSubscripted(state, response) {
-    state.planSubscripted = response;
   }
 };
 const actions: ActionTree<any, any> = {
@@ -124,9 +117,6 @@ const actions: ActionTree<any, any> = {
   },
   updateACH(context, payload) {
     context.commit("onUpdateACH", payload);
-  },
-  updatePlanSubscripted(context, response) {
-    context.commit("onUpdatePlanSubscripted", response);
   }
 };
 export const SubscriptionModule = {

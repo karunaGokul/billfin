@@ -43,8 +43,8 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import ACH from "./components/ACH.vue";
-import CreditCard from "./components/creditCard.vue";
+import ACH from "@/components/controls/ACH.vue";
+import CreditCard from "@/components/controls/creditCard.vue";
 
 import { createCustomerRequestModel, paymentTokenRequestModel, PaymentMethod } from "@/model";
 import { ISubscripeService } from "@/service";

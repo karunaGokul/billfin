@@ -39,7 +39,6 @@ export class addonsResponseModel extends addOnsModel {
 }
 export class manageSubscriptionResponseModel {
   productCode: string;
-  firmId: number;
-  subscriptions: Array<subscriptionResponseModel>;
-  addOns: Array<addonsResponseModel>;
+  subscriptions: Array<subscriptionResponseModel> = [];
+  addOns: Array<addonsResponseModel> = [];
 }

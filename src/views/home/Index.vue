@@ -1,7 +1,7 @@
 <template>
-  <div class="home-page d-flex">
+  <div class="home-page d-flex" v-if="firms">
     <side-bar :sideBar="sideBar" />
-    <div class="w-100 bg-light overflow-hidden" v-if="firms">
+    <div class="w-100 bg-light overflow-hidden">
       <nav class="navbar bg-white">
         <div class="row w-100 align-items-center">
           <div class="col-lg-1 pe-0">
@@ -120,7 +120,6 @@
       </nav>
 
       <div class="bg-light m-6">
-        <!-- <span class="icon-dashboard"><span class="path1"></span><span class="path2"></span></span> -->
         <div class="row">
           <div class="col-3">
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">

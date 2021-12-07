@@ -64,11 +64,14 @@ export class subscriptionsModel {
   termPlanId: number;
   startDate: string; 
 }
-export class subscribeRequestModel {
-  firmId: number;
+export class productsModel {
   productCode: string;
   subscriptions: Array<subscriptionsModel> = [];
   addOns: Array<addOnsModel> = [];
+}
+export class subscribeRequestModel {
+  firmId: number;
+  products: Array<productsModel> = [];
 }
 export class subscribeResponseModel {
   status: string;

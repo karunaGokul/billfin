@@ -22,7 +22,7 @@ const getters: GetterTree<any, any> = {
   },
   dataEntitlements: (state) => {
     return state.dataEntitlements;
-  },
+  }
 };
 const mutations: MutationTree<any> = {
   onLoadEntitlements(state, firms) {
@@ -32,6 +32,9 @@ const mutations: MutationTree<any> = {
     localStorage.setItem(FIRM_KEY, firmId);
 
     state.firmId = firmId;
+  },
+  OnUpdateFirmStatus: (state) => {
+    state.firms.firmStatus = "SUBSCRIBED";
   },
 };
 const actions: ActionTree<any, any> = {
@@ -55,6 +58,9 @@ const actions: ActionTree<any, any> = {
   },
   firmIdChanged(context, firmId) {
     context.commit("onFirmIdChanged", firmId);
+  },
+  updateFirmStatus(context) {
+    context.commit("OnUpdateFirmStatus");
   },
 };
 

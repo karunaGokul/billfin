@@ -128,7 +128,9 @@
         active-class="nav-item__active"
         title="Invoices"
       >
-        <span class="nav-item__icon icon-invoices"><span class="path1"></span><span class="path2"></span></span>
+        <span class="nav-item__icon icon-invoices"
+          ><span class="path1"></span><span class="path2"></span
+        ></span>
         <span class="nav-item__name fs-7 ms-2">Invoices</span>
         <span class="custom-tooltip">Invoices</span>
       </router-link>
@@ -194,6 +196,7 @@
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
           title="Sign Up"
+          v-if="firmStatus != 'SUBSCRIBED'"
         >
           <i class="fas fa-circle fs-10"></i>
           <span class="nav-item__name fs-7">Sign Up</span>
@@ -205,6 +208,7 @@
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
           title="My Subscription"
+          v-if="firmStatus == 'SUBSCRIBED'"
         >
           <i class="fas fa-circle fs-10"></i>
           <span class="nav-item__name fs-7">My Subscription</span>
@@ -216,6 +220,7 @@
           class="d-flex align-items-center nav-item"
           active-class="nav-item__active"
           title="Bills & Payments"
+          v-if="firmStatus == 'SUBSCRIBED'"
         >
           <i class="fas fa-circle fs-10"></i>
           <span class="nav-item__name fs-7">Bills & Payments</span>
@@ -240,11 +245,17 @@
 <script lang="ts">
 import { Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
+import { useStore } from "vuex";
 
 export default class SideBar extends Vue {
   @Prop() sideBar: boolean;
 
   public toggleSettings: boolean = false;
+  public store = useStore();
+  
+  get firmStatus() {
+    return this.store.getters.firms.firmStatus;
+  }
 
   @Watch("sideBar")
   update() {

@@ -10,6 +10,7 @@ export class firmsResponseModel {
     trialStartsOn: string;
     trialEndsOn: string;
     billingTypes: Array<string>;
+    firmStatus: string;
 }
 export class firmRequestModel {
     firmDomain: string | any;

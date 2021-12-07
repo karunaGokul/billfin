@@ -78,6 +78,7 @@
             inputType="text"
             formFieldType="inputBlock"
             :validation="['required', 'numeric']"
+            @updateEvent="v$.request.postalCode.$model = v$.request.postalCode.$model.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
           />
         </div>
       </div>
