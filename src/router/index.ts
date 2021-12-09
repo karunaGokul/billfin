@@ -18,8 +18,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboard/Index.vue"),
       },
       {
-        path: "/sign-up-plan",
-        name: "Sign Up Plan",
+        path: "/signup",
+        name: "Sign Up",
         component: () => import("@/views/admin/SignUpPlan/Index.vue"),
       },
       {
@@ -96,7 +96,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/sign-up",
-    name: "Sign Up",
+    name: "Sign-Up",
     component: () => import("@/views/auth/SignUp.vue"),
     meta: { anonymous: true },
   },

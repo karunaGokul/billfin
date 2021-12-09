@@ -1,7 +1,10 @@
 <template>
   <div class="home-page d-flex" v-if="firms">
     <side-bar :sideBar="sideBar" />
-    <div class="w-100 bg-light overflow-hidden">
+    <div
+      class="wrapper"
+      :class="{ 'wrapper-default': !sideBar, 'wrapper-minimize': sideBar }"
+    >
       <nav class="navbar bg-white">
         <div class="row w-100 align-items-center">
           <div class="col-lg-1 pe-0">
@@ -22,7 +25,9 @@
                   :class="{
                     'dropdown-toggle': dataEntitlements.length > 1,
                   }"
-                  @click="dataEntitlements.length > 1 ? (toggleFirms = true) : ''"
+                  @click="
+                    dataEntitlements.length > 1 ? (toggleFirms = true) : ''
+                  "
                 >
                   {{ selectedFirm }}
                 </div>
@@ -119,24 +124,26 @@
         </div>
       </nav>
 
-      <div class="bg-light m-6">
+      <div class="h-100 bg-light rounded-top-20 p-4">
         <div class="row">
           <div class="col-3">
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
               {{ page }}
             </p>
-            <ol class="breadcrumb ps-4 pt-2 pb-4">
-              <router-link
-                to="/dashboard"
-                tag="li"
-                class="breadcrumb-item text-muted"
-              >
-                Home
-              </router-link>
-              <span v-html="currentPage"></span>
-            </ol>
+            <div class="d-flex align-items-center ps-4 pt-2 pb-4">
+              <ol class="breadcrumb">
+                <router-link
+                  to="/dashboard"
+                  tag="li"
+                  class="breadcrumb-item text-muted"
+                >
+                  Home
+                </router-link>
+              </ol>
+              <ol class="breadcrumb" v-html="currentPage"></ol>
+            </div>
           </div>
-          <div class="col-5 p-4">
+          <div class="col-6 p-4">
             <div
               class="
                 alert alert-danger
@@ -152,7 +159,7 @@
               <i class="fas fa-info-circle text-danger"></i> You only have
               {{ showTrailExpireDays }} more day(s) in your trial. Ready to
               sign-up? Click
-              <router-link to="/sign-up-plan" tag="a">here </router-link>
+              <router-link to="/signup" tag="a">here </router-link>
               to get started
             </div>
           </div>
@@ -209,18 +216,22 @@ export default class Home extends Vue {
   }
 
   private getFirms() {
-    if (this.dataEntitlements[0].trialStartsOn && this.dataEntitlements[0].trialEndsOn)
-        this.trailExpireDays();
-      if (
-        this.dataEntitlements.length == 1 &&
-        this.dataEntitlements[0].trialOnboardingStatus != "COMPLETED"
-      ) {
-        this.showOnBoard = true;
-        if (this.dataEntitlements[0].trialOnboardingStatus == "NOT_STARTED")
-          this.lastOnboardingStep = 1;
-        else
-          this.lastOnboardingStep = this.dataEntitlements[0].lastOnboardingStepCompleted;
-      }
+    if (
+      this.dataEntitlements[0].trialStartsOn &&
+      this.dataEntitlements[0].trialEndsOn
+    )
+      this.trailExpireDays();
+    if (
+      this.dataEntitlements.length == 1 &&
+      this.dataEntitlements[0].trialOnboardingStatus != "COMPLETED"
+    ) {
+      this.showOnBoard = true;
+      if (this.dataEntitlements[0].trialOnboardingStatus == "NOT_STARTED")
+        this.lastOnboardingStep = 1;
+      else
+        this.lastOnboardingStep =
+          this.dataEntitlements[0].lastOnboardingStepCompleted;
+    }
   }
 
   public updateFirm(firm: firmRequestModel) {
@@ -306,25 +317,20 @@ export default class Home extends Vue {
   }
 
   get currentPage() {
-    let page: string = "";
-    if (this.$route.name == "Dashboard") {
-      page = `<router-link
-                to="${this.$route.path}"
-                tag="li"
-                class="breadcrumb-item text-muted"
-              >
-                Dashboard
-              </router-link>`;
-    } else if (this.$route.name == "Manage Subscription" || this.$route.name == "Sign Up Plan") {
-      page = `<router-link
-                @click="navigate('my-subscription')"
-                tag="li"
-                class="breadcrumb-item text-muted"
-              >
-                Settings
-              </router-link>`;
+    let value: string = "";
+    if (this.page == "Dashboard") {
+      value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
+    } else if (
+      this.page == "Manage Subscription" ||
+      this.page == "Sign Up" ||
+      this.page == "Setup" ||
+      this.page == "Bills & Payments"
+    ) {
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
+        this.page == "Manage Subscription" ? "My Subscription" : this.page
+      }</li>`;
     }
-    return page;
+    return value;
   }
 }
 </script>

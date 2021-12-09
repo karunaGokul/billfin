@@ -1,91 +1,120 @@
+.wrapper {
+    flex: 1 auto;
+    min-width: 0;
+}
+.rounded-top-20 {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
 .sidebar {
-    height: 100%;
-    padding: 6px 14px;
-    z-index: 99;
-    transition: all 0.8s ease;
+    transition: padding-left .3s ease;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 98;
+    overflow: hidden;
+    padding: 0 40px;
+    background-color: #fff;
 
-    &.show {
-        width: 200px;
+    &.sidebar-default {
 
-        .nav-header__name {
+        .menu-name {
             opacity: 1 !important;
             pointer-events: auto !important;
             display: block;
         }
 
-        .nav {
-            &-item {
-                &__name {
-                    opacity: 1 !important;
-                    pointer-events: auto !important;
-                    display: block;            
-                }
+        .menu {
+            &-name {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                display: block;
+            }
 
-                .custom-tooltip {
+            &-link {
+                justify-content: flex-start;
+            }
+        }
+    }
+
+    &.sidebar-minimize {
+        width: 120px;
+
+        .menu-label {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            display: block;
+        }
+
+        .menu {
+            &-link {
+                &-title {
                     display: none;
+                    white-space: nowrap;
+                    opacity: 0;
                 }
             }
         }
     }
 
-    &.hide {
-        width: 80px;
+    .menu {
 
-        .nav-header__label {
-            opacity: 1 !important;
-            pointer-events: auto !important;
-            display: block;
+        &-container {
+            height: calc(100vh - 14vh);
+            overflow-y: hidden;
+
+            &:hover {
+                overflow-y: scroll;
+                border-right: 0;
+            }
         }
-    }
 
-    .nav {
-        height: 100%;
+        &-accordion-button {
 
-        &-header {
+            .menu-link-title,
+            .menu-link-icon:before {
+                color: $primary !important;
+            }
+        }
+
+
+        &-name {
+            display: none;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
             color: $gray-400;
-
-            &__name {
-                display: none;
-                white-space: nowrap;
-                opacity: 0;
-                pointer-events: none;
-                transition: 0.4s;
-            }
-
-            &__label {
-                display: none;
-                opacity: 0;
-                pointer-events: none;
-                transition: 0.4s;
-            }
         }
 
-        &-item {
+        &-label {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+            color: $gray-400;
+        }
+
+        &-link {
             position: relative;
             margin: 0;
             list-style: none;
             display: flex;
-            height: 100%;
-            width: 100%;
             border-radius: 4px;
             align-items: center;
             text-decoration: none;
             transition: all 0.4s ease;
             color: $gray-600;
 
-            &__name {
-                display: none;
-                white-space: nowrap;
-                opacity: 0;
+            &-title {
                 pointer-events: none;
                 transition: 0.4s;
                 color: $gray-600;
             }
 
-            &__label {
-                display: none;
-                opacity: 0;
-                pointer-events: none;
+            &-icon {
                 transition: 0.4s;
             }
 
@@ -98,39 +127,20 @@
                 text-align: center;
             }
 
-            .custom-tooltip {
-                position: absolute;
-                top: -20px;
-                left: calc(100% + 15px);
-                z-index: 3;
-                background-color: white;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-                padding: 6px 12px;
-                border-radius: 4px;
-                font-size: 15px;
-                font-weight: 400;
-                opacity: 0;
-                white-space: nowrap;
-                pointer-events: none;
-                transition: 0s;
-            }
 
-            &:hover {
-                .custom-tooltip {
-                    opacity: 1;
-                    pointer-events: auto;
-                    transition: all 0.4s ease;
-                    top: 50%;
-                    transform: translateY(-50%);
-                }
-            }
-
-            &__active {
+            &-active {
                 background-color: #F5F8FA;
-                color: $primary;
+                color: $primary !important;
+                border-radius: 5px;
 
-                .nav-item {
-                    &__name, &__icon:before, &__icon .path1:before, &__icon .path2:before, &__icon .path3:before, &__icon .path4:before {
+                .menu-link {
+
+                    &-title,
+                    &-icon:before,
+                    &-icon .path1:before,
+                    &-icon .path2:before,
+                    &-icon .path3:before,
+                    &-icon .path4:before {
                         color: $primary !important;
                     }
 
@@ -138,4 +148,73 @@
             }
         }
     }
+}
+
+@media (min-width: 992px) {
+    .wrapper {
+        padding-right: 10px !important;
+    }
+    .wrapper-minimize {
+        padding-left: 120px;
+    }
+
+    .wrapper-default {
+        padding-left: 250px;
+    }
+
+    .sidebar-default {
+        padding: 0 40px;
+        width: 250px;
+        transition: width .3s ease;
+
+        .menu {
+            &-accordion {
+                .accordion-button::after {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .sidebar-minimize {
+        width: 120px;
+
+        .menu {
+            &-accordion {
+                .accordion-button::after {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .sidebar:hover {
+        width: 250px;
+
+        .menu {
+            &-link {
+                &-title {
+                    display: block;
+                    opacity: 1;
+                }
+            }
+
+            &-name {
+                display: block;
+                opacity: 1;
+            }
+
+            &-label {
+                display: none;
+                opacity: 0;
+            }
+
+            &-accordion {
+                .accordion-button::after {
+                    display: block;
+                }
+            }
+        }
+    }
+ 
 }
