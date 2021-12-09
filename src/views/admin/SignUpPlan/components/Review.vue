@@ -32,7 +32,7 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -81,7 +81,7 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
