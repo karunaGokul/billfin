@@ -219,7 +219,7 @@ export default class PickPlan extends Vue {
           isPreInclueded: true,
         },
         {
-          addOnName: "Product Billing",
+          addOnName: "Product Attribution",
           isPreInclueded: true,
         },
       ],

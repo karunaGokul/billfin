@@ -3,7 +3,9 @@
     <div class="col-4">
       <div class="fw-bolder fs-4 mb-2">
         {{ plan.planName }}
-        <span class="badge text-success ms-2 bg-success-alpha">{{plan.status == 'NEW' ? 'Current': plan.status}}</span>
+        <span class="badge text-success ms-2 bg-success-alpha">{{
+          plan.status == "NEW" ? "Current" : plan.status
+        }}</span>
       </div>
       <div class="fs-6 text-muted">{{ description }}</div>
     </div>
@@ -49,12 +51,15 @@
         class="border border-dashed p-2 rounded fw-bolder"
         style="width: fit-content"
         :class="{
-          'border-warning bg-warning-alpha text-warning': !planExpired,
-          'border-danger bg-dander-alpha text-danger': planExpired,
+          'border-warning bg-warning-alpha text-warning':
+            (plan.status == 'NEW' && plan.endDate == null) ||
+            (plan.status == 'UPCOMING' && plan.endDate == null),
+          'border-danger bg-dander-alpha text-danger':
+            plan.status == 'CANCELLED' ||
+            (plan.status == 'NEW' && plan.endDate != null),
         }"
       >
-        {{ planExpired ? "Expries" : "Auto-renews" }} on
-        <!-- {{ planExpired ? "Expries" : "Auto-renews" }} on {{ planEndDate }} -->
+        {{ planStatus }}
       </div>
     </div>
     <div
@@ -76,7 +81,18 @@
           </li>
         </ul>
       </div>
-      <div class="text-muted">{{ plan.startDate }} - {{ plan.endDate }}</div>
+      <div class="text-muted">
+        {{ plan.startDate }} -
+        {{
+          plan.status == "CANCELLED" ||
+          (plan.status == "NEW" && plan.endDate != null)
+            ? plan.endDate
+            : (plan.status == "UPCOMING" && plan.endDate == null) ||
+              (plan.status == "NEW" && this.plan.endDate == null)
+            ? plan.renewDate
+            : ""
+        }}
+      </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
       <div class="fw-bolder fa-2x">
@@ -206,19 +222,33 @@ export default class Plan extends Vue {
       .description;
   }
 
-  get planEndDate() {
-    let endDate: string = "";
+  get planStatus() {
+    let status: string = "";
+    if (this.plan.status == "CANCELLED")
+      status = `Cancelled on ${this.planEndDate(this.plan.endDate)}`;
+    else if (this.plan.status == "UPCOMING" && this.plan.endDate == null)
+      status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
+    else if (this.plan.status == "NEW" && this.plan.endDate == null)
+      status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
+    else if (this.plan.status == "NEW" && this.plan.endDate != null)
+      status = `Expires on ${this.planEndDate(this.plan.endDate)}`;
+    return status;
+  }
+
+  planEndDate(endDate: string) {
+    console.log(endDate);
+    let value: string = "";
     let date = new Date(
-      parseInt(this.plan.endDate.split("/")[2]),
-      parseInt(this.plan.endDate.split("/")[1]) - 1,
-      parseInt(this.plan.endDate.split("/")[0])
+      parseInt(endDate.split("/")[2]),
+      parseInt(endDate.split("/")[1]) - 1,
+      parseInt(endDate.split("/")[0])
     );
     let month = date.toLocaleString("default", { month: "long" });
 
-    endDate = `${this.plan.endDate.split("/")[0]} ${month.substring(0, 3)}, ${
-      this.plan.endDate.split("/")[2]
+    value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${
+      endDate.split("/")[2]  
     }`;
-    return endDate;
+    return value;
   }
 }
 </script>

@@ -41,25 +41,21 @@
               : addons.cardNumber.split(" ")[1]
           }}
         </template>
-        <template v-else>Checking {{ addons.cardNumber }} </template>
+        <template v-else>Checking {{ addons.cardNumber.split(" ")[1] }} </template>
       </div>
       <div
         class="border border-dashed p-2 rounded fw-bolder"
         style="width: fit-content"
         :class="{
           'border-warning bg-warning-alpha text-warning':
-            addons.planStatus == 'Renewed',
+            (addons.status == 'NEW' && addons.endDate == null) ||
+            (addons.status == 'UPCOMING' && addons.endDate == null),
           'border-danger bg-dander-alpha text-danger':
-            addons.planStatus == 'Canceled',
+            addons.status == 'CANCELLED' ||
+            (addons.status == 'NEW' && addons.endDate != null),
         }"
       >
-        {{ addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus }}
-        on
-
-        <!-- {{
-          addons.planStatus == "Renewed" ? "Auto-renews" : addons.planStatus
-        }}
-        on {{ addOnEndDate }} -->
+        {{ addOnStatus }}
       </div>
     </div>
     <div
@@ -82,7 +78,15 @@
         </ul>
       </div>
       <div class="text-muted">
-        {{ addons.startDate }} - {{ addons.endDate }}
+        {{ addons.startDate }} - {{
+          addons.status == "CANCELLED" ||
+          (addons.status == "NEW" && addons.endDate != null)
+            ? addons.endDate
+            : (addons.status == "UPCOMING" && addons.endDate == null) ||
+              (addons.status == "NEW" && this.addons.endDate == null)
+            ? addons.renewDate
+            : ""
+        }}
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
@@ -206,19 +210,32 @@ export default class Addons extends Vue {
     ).description;
   }
 
-  get addOnEndDate() {
-    let endDate: string = "";
+  get addOnStatus() {
+    let status: string = "";
+    if (this.addons.status == "CANCELLED")
+      status = `Cancelled on ${this.addOnEndDate(this.addons.endDate)}`;
+    else if (this.addons.status == "UPCOMING" && this.addons.endDate == null)
+      status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
+    else if (this.addons.status == "NEW" && this.addons.endDate == null)
+      status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
+    else if (this.addons.status == "NEW" && this.addons.endDate != null)
+      status = `Expires on ${this.addOnEndDate(this.addons.endDate)}`;
+    return status;
+  }
+
+  addOnEndDate(endDate: string) {
+    let value: string = "";
     let date = new Date(
-      parseInt(this.addons.endDate.split("/")[2]),
-      parseInt(this.addons.endDate.split("/")[1]) - 1,
-      parseInt(this.addons.endDate.split("/")[0])
+      parseInt(endDate.split("/")[2]),
+      parseInt(endDate.split("/")[1]) - 1,
+      parseInt(endDate.split("/")[0])
     );
     let month = date.toLocaleString("default", { month: "long" });
 
-    endDate = `${this.addons.endDate.split("/")[0]} ${month.substring(0, 3)}, ${
-      this.addons.endDate.split("/")[2]
+    value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${
+      endDate.split("/")[2]
     }`;
-    return endDate;
+    return value;
   }
 }
 </script>

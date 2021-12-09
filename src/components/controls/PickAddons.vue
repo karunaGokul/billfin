@@ -240,6 +240,13 @@ export default class PickAddons extends Vue {
       quantity: "1",
       selected: false,
     },
+    {
+      addOnName: "Product Attribution",
+      description: "Integrate with multiple custody sources",
+      extraInfo: "$150/month",
+      quantity: "1",
+      selected: false,
+    },
   ];
 
   mounted() {

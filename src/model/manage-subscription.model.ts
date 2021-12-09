@@ -19,6 +19,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
   term: string;
   amount: number;
   endDate: string;
+  renewDate: string;
   status: string;
   cardNumber: string;
   active: boolean;
@@ -32,6 +33,7 @@ export class addonsResponseModel extends addOnsModel {
   term: string;
   amount: number;
   endDate: string;
+  renewDate: string;
   status: string;
   cardNumber: string;
   active: boolean;
