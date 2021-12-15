@@ -13,7 +13,7 @@ const state: any = {
 const getters: GetterTree<any, any> = {
   firms: (state) => {
     let firm = state.dataEntitlements.find(
-      (e: any) => e.firmId == state.firmId
+      (e: firmsResponseModel) => e.firmId == state.firmId
     );
     return firm;
   },
@@ -29,6 +29,7 @@ const mutations: MutationTree<any> = {
     state.dataEntitlements = firms;
     if (!state.firmId) {
       state.firmId = state.dataEntitlements[0].firmId;
+      localStorage.setItem(FIRM_KEY, state.firmId);
     }
   },
   onFirmIdChanged: (state, firmId) => {
@@ -36,8 +37,8 @@ const mutations: MutationTree<any> = {
 
     state.firmId = firmId;
   },
-  onUpdateFirmStatus: (state) => {
-    state.firms.firmStatus = "SUBSCRIBED";
+  onUpdateFirmStatus: (state, {getters}) => {
+    getters.firms.firmStatus = "SUBSCRIBED";
   },
 };
 const actions: ActionTree<any, any> = {
@@ -61,9 +62,13 @@ const actions: ActionTree<any, any> = {
   firmIdChanged(context, firmId) {
     context.commit("onFirmIdChanged", firmId);
   },
-  updateFirmStatus(context) {
-    context.commit("onUpdateFirmStatus");
+  updateFirmStatus({commit, getters}) {
+    commit("onUpdateFirmStatus", {getters});
   },
+  clearFirm() {
+    localStorage.removeItem(FIRM_KEY);
+    state.firmId = "";
+  }
 };
 
 export const DataEntitlementModule = {

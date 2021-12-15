@@ -3,8 +3,10 @@
     v-for="(item, index) in plans"
     :key="index"
     :product="item.product"
-    :termPlanId="item.termPlanId"
+    :planId="item.planId"
+    :termPlanType="item.termPlanType"
     @update="updatePlan($event, options)"
+    addOnType="createAddon"
   />
   <div class="text-center mt-10">
     <button class="btn btn-light me-5" @click="back">Back</button>
@@ -34,17 +36,20 @@ export default class Addons extends Vue {
   }
 
   get plans() {
+    console.log(this.store.getters.aumBilling);
     const plans: Array<any> = [];
     this.store.getters.products.forEach((item: string) => {
       if (item == "AUM")
         plans.push({
           product: item,
-          termPlanId: this.store.getters.aumBilling.plan.termPlanId,
+          planId: this.store.getters.aumBilling.plan.planId,
+          termPlanType: this.store.getters.aumBilling.commitmentTerm,
         });
       else
         plans.push({
           product: item,
-          termPlanId: this.store.getters.subscriptionBilling.plan.termPlanId,
+          planId: this.store.getters.subscriptionBilling.plan.commitmentTerm,
+          termPlanType: this.store.getters.subscriptionBilling.plan.commitmentTerm,
         });
     });
     return plans;

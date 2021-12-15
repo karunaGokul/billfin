@@ -1,13 +1,27 @@
 <template>
-  <div class="row g-0">
+  <div class="row g-0 border-bottom border-light-gray pb-4">
     <div class="col-4">
-      <div class="fw-bolder fs-4 mb-2">
+      <div
+        class="fw-bolder fs-4 mb-2"
+        :class="{ 'text-gray-secondary': plan.endDate }"
+      >
         {{ plan.planName }}
-        <span class="badge text-success ms-2 bg-success-alpha">{{
-          plan.status == "NEW" ? "Current" : plan.status
+        <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
+          plan.status == "NEW"
+            ? "Current"
+            : plan.status == "UPCOMING"
+            ? "Upcoming"
+            : plan.status == "CANCELLED"
+            ? "Canceled"
+            : ""
         }}</span>
       </div>
-      <div class="fs-6 text-muted">{{ description }}</div>
+      <div
+        class="fs-6 text-muted"
+        :class="{ 'text-gray-secondary': plan.endDate }"
+      >
+        {{ description }}
+      </div>
     </div>
     <div class="col-3">
       <div class="fw-bolder mb-2 fs-5">
@@ -37,18 +51,23 @@
               ? "American Express"
               : plan.cardNumber.split(" ")[0]
           }}
-          ****{{
-            plan.cardNumber.split(" ")[0] == "American"
-              ? plan.cardNumber.split(" ")[2]
-              : plan.cardNumber.split(" ")[1]
-          }}
+
+          <span :class="{ 'text-gray-secondary': plan.endDate }">
+            ****{{
+              plan.cardNumber.split(" ")[0] == "American"
+                ? plan.cardNumber.split(" ")[2]
+                : plan.cardNumber.split(" ")[1]
+            }}
+          </span>
         </template>
-        <template v-else
-          >Checking {{ plan.cardNumber.split(" ")[1] }}
+        <template v-else>
+          <span :class="{ 'text-gray-secondary': plan.endDate }">
+            Checking {{ plan.cardNumber.split(" ")[1] }}
+          </span>
         </template>
       </div>
       <div
-        class="border border-dashed p-2 rounded fw-bolder"
+        class="border border-dashed p-2 rounded fw-bolder fs-7"
         style="width: fit-content"
         :class="{
           'border-warning bg-warning-alpha text-warning':
@@ -68,20 +87,24 @@
     >
       <div
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
-        @click="toggleCommitmentTerm = true"
+        :class="{ 'text-gray-secondary': plan.endDate }"
+        @click="!plan.endDate ? toggleCommitmentTerm = true : ''"
       >
         {{ plan.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
-          <li class="dropdown-item p-4" @click="showCommitmentTermModel = true">
+          <li
+            class="dropdown-item p-4 fw-bold"
+            @click="showCommitmentTermModel = true"
+          >
             Switch to
             {{ plan.term == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
       </div>
-      <div class="text-muted">
+      <div class="text-muted" :class="{ 'text-gray-secondary': plan.endDate }">
         {{ plan.startDate }} -
         {{
           plan.status == "CANCELLED" ||
@@ -95,7 +118,10 @@
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
-      <div class="fw-bolder fa-2x">
+      <div
+        class="fw-bolder fa-2x"
+        :class="{ 'text-gray-secondary': plan.endDate }"
+      >
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(plan.amount) }}
         <span class="fs-8 fw-light"
@@ -109,7 +135,7 @@
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="togglePlan = true"
+          @click="!plan.endDate ? togglePlan = true : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"
@@ -127,7 +153,7 @@
       </div>
     </div>
   </div>
-  <CancelPlanAddOn
+  <cancel-plan-addOn
     title="Cancel Subscription"
     :name="plan.planName"
     type="plan"
@@ -135,7 +161,7 @@
     @cancel="onCancelModel"
     v-if="toggleCancelModel"
   />
-  <RenewPlanAddOn
+  <renew-plan-addOn
     title="Plan"
     :name="plan.planName"
     type="plan"
@@ -143,10 +169,16 @@
     @cancel="onRenewModel"
     v-if="toggleRenewModel"
   />
-  <ChangeCommitmentTerm
-    :plan="plan"
-    :currentCommitmentTerm="plan.term"
-    :newCommitmentTerm="plan.term == 'Annual' ? 'Monthly' : 'Annual'"
+  <change-commitment-term
+    :planName="plan.planName"
+    :currentTerm="plan.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
+    :startDate="plan.startDate"
+    :endDate="!plan.endDate ? plan.renewDate : plan.endDate"
+    :currentPlanAmount="plan.amount"
+    :planId="plan.planId"
+    :termPlanId="plan.termPlanId"
+    :subscriptionPlanId="plan.subscriptionPlanId"
+    :subscriptionAddOnId="plan.subscriptionAddOnId"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -172,7 +204,6 @@ import { subscriptionResponseModel } from "@/model";
 })
 export default class Plan extends Vue {
   @Prop() plan: subscriptionResponseModel;
-  @Prop() planExpired: boolean;
 
   public togglePlan: boolean = false;
   public toggleCancelModel: boolean = false;
@@ -236,7 +267,6 @@ export default class Plan extends Vue {
   }
 
   planEndDate(endDate: string) {
-    console.log(endDate);
     let value: string = "";
     let date = new Date(
       parseInt(endDate.split("/")[2]),
@@ -246,7 +276,7 @@ export default class Plan extends Vue {
     let month = date.toLocaleString("default", { month: "long" });
 
     value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${
-      endDate.split("/")[2]  
+      endDate.split("/")[2]
     }`;
     return value;
   }

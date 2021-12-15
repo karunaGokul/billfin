@@ -74,6 +74,7 @@
         .form-check-input {
             &:checked {
                 background-color: $success;
+                border-color: $success !important;
             }
         }
     }
@@ -83,6 +84,7 @@
         .form-check-input {
             &:checked {
                 background-color: $danger;
+                border-color: $danger !important;
             }
         }
     }
@@ -92,6 +94,16 @@
         .form-check-input {
             &:checked {
                 background-color: $warning;
+                border-color: $warning !important;
+            }
+        }
+    }
+
+    &.form-check-gray {
+        .form-check-input {
+            &:checked {
+                background-color: $gray-500;
+                border-color: $gray-500 !important;
             }
         }
     }

@@ -116,6 +116,8 @@ import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
 
+import { Settings } from '@/config';
+
 @Options({
   components: {
     Products,
@@ -133,29 +135,13 @@ export default class SignUpPlan extends Vue {
 
   public firmStatus: string = "";
 
-  public subscription: any = null;
-
   created() {
-    this.firmStatus = this.store.getters.firms.firmStatus;
-  }
-
-  mounted() {
-    this.subscription = this.store.subscribe((mutations) => {
-      if (mutations.type == "onFirmIdChanged") {
-        this.firmStatus = this.store.getters.firms.firmStatus;
-        this.step = 1;
-      }
-    });
-  }
-
-  unmounted() {
-    if (this.subscription) this.subscription();
+    console.log(Settings.ApiJson);
   }
 
   public updateFirmStatus() {
     this.store.dispatch("updateFirmStatus");
     this.firmStatus = "SUBSCRIBED";
-    console.log(this.firmStatus);
   }
 }
 </script>

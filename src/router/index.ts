@@ -92,6 +92,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Reports",
         component: () => import("@/views/bills-payments/Reports.vue"),
       },
+      {
+        path: "/add-more-addons",
+        name: "Sign Up For Add-Ons",
+        component: () => import("@/views/admin/SignUpForAddons/Index.vue")
+      }
     ],
   },
   {
@@ -129,6 +134,7 @@ router.beforeEach((to, from, next) => {
     }
 
     store.dispatch("login").then(() => {
+      store.dispatch("clearFirm");
       if (store.getters.isLoggedIn) {
         const token = store.getters.accessToken;
         if (token)

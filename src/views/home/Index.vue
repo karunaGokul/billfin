@@ -1,5 +1,5 @@
 <template>
-  <div class="home-page d-flex" v-if="firms">
+  <div class="home-page d-flex">
     <side-bar :sideBar="sideBar" />
     <div
       class="wrapper"
@@ -29,7 +29,7 @@
                     dataEntitlements.length > 1 ? (toggleFirms = true) : ''
                   "
                 >
-                  {{ selectedFirm }}
+                  {{ firms.name }}
                 </div>
                 <ul
                   class="dropdown-menu overflow-auto"
@@ -154,11 +154,13 @@
                 border-0
               "
               role="alert"
-              v-if="firmStatus != 'SUBSCRIBED'"
+              v-if="
+                dataEntitlements.length == 1 && firms.firmStatus != 'SUBSCRIBED'
+              "
             >
               <i class="fas fa-info-circle text-danger"></i> You only have
-              {{ showTrailExpireDays }} more day(s) in your trial. Ready to
-              sign-up? Click
+              {{ trailExpireDays }} more day(s) in your trial. Ready to sign-up?
+              Click
               <router-link to="/signup" tag="a">here </router-link>
               to get started
             </div>
@@ -180,12 +182,14 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import moment from "moment";
+
 import SideBar from "@/components/controls/SideBar.vue";
 
 import Welcome from "./components/OnBoard.vue";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel, firmsResponseModel } from "@/model";
+import { firmRequestModel } from "@/model";
 
 @Options({
   components: {
@@ -202,25 +206,14 @@ export default class Home extends Vue {
   public toggleFirms: boolean = false;
   public toggleUser: boolean = false;
 
-  public firms = new firmsResponseModel();
   public lastOnboardingStep: number = 1;
   public showTrailExpireDays: number = 0;
 
-  public showSettingsDropdown: boolean = false;
-
-  public subPage: string = "";
-
-  mounted() {
+  created() {
     this.getFirms();
-    //console.log(this.$route);
   }
 
   private getFirms() {
-    if (
-      this.dataEntitlements[0].trialStartsOn &&
-      this.dataEntitlements[0].trialEndsOn
-    )
-      this.trailExpireDays();
     if (
       this.dataEntitlements.length == 1 &&
       this.dataEntitlements[0].trialOnboardingStatus != "COMPLETED"
@@ -237,6 +230,7 @@ export default class Home extends Vue {
   public updateFirm(firm: firmRequestModel) {
     this.toggleFirms = false;
     this.store.dispatch("firmIdChanged", firm.firmId);
+    this.$router.push({name: 'Dashboard'});
   }
 
   public openAvatarUpload() {
@@ -270,26 +264,21 @@ export default class Home extends Vue {
     this.store.dispatch("logout");
   }
 
-  public trailExpireDays() {
-    let startDate = new Date(
-        this.dataEntitlements[0].trialStartsOn.split("-")[1] +
-          "/" +
-          this.dataEntitlements[0].trialStartsOn.split("-")[2] +
-          "/" +
-          this.dataEntitlements[0].trialStartsOn.split("-")[0]
-      ),
+  get trailExpireDays() {
+    if (!this.firms.trialEndsOn) return 0;
+
+    let startDate = new Date(),
       endDate = new Date(
-        this.dataEntitlements[0].trialEndsOn.split("-")[1] +
+        this.firms.trialEndsOn.split("-")[1] +
           "/" +
-          this.dataEntitlements[0].trialEndsOn.split("-")[2] +
+          this.firms.trialEndsOn.split("-")[2] +
           "/" +
-          this.dataEntitlements[0].trialEndsOn.split("-")[0]
+          this.firms.trialEndsOn.split("-")[0]
       );
 
-    let time = endDate.getTime() - startDate.getTime();
-    let days = time / (1000 * 3600 * 24);
+    let days = moment(endDate).diff(moment(startDate), "days");
 
-    this.showTrailExpireDays = days;
+    return days;
   }
 
   public navigate(page: string) {
@@ -300,8 +289,8 @@ export default class Home extends Vue {
     return this.store.getters.userInfo;
   }
 
-  get selectedFirm() {
-    return this.store.getters.firms.name;
+  get firms() {
+    return this.store.getters.firms;
   }
 
   get dataEntitlements() {
@@ -310,10 +299,6 @@ export default class Home extends Vue {
 
   get page() {
     return this.$route.name;
-  }
-
-  get firmStatus() {
-    return this.store.getters.firms.firmStatus;
   }
 
   get currentPage() {
@@ -329,7 +314,10 @@ export default class Home extends Vue {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
         this.page == "Manage Subscription" ? "My Subscription" : this.page
       }</li>`;
+    } else if (this.page == "Sign Up For Add-Ons") {
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
     }
+
     return value;
   }
 }

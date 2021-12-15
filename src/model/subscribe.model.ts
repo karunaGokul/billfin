@@ -20,6 +20,7 @@ export class subscribePlanRequestModel {
   productCode: string;
 }
 export class subscribePlanResponseModel {
+  planId: number;
   termPlanId: number;
   planName: string;
   termPlanAmount: string;
@@ -33,7 +34,8 @@ export class subscribePlanResponseModel {
   preIncludedAddons: Array<subscribeAddonsResponseModel>;
 }
 export class subscribeAddonsRequestModel {
-  termPlanId: number;
+  termPlanType: string;
+  planId: number;
 }
 export class subscribeAddonsResponseModel {
   addOnName: string;

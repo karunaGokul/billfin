@@ -85,6 +85,7 @@ const mutations: MutationTree<AuthenticationState> = {
   onLogout(state) {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem("firm_id");
 
     state.accessToken = "";
     state.refreshToken = "";

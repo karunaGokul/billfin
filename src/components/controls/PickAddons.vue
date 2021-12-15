@@ -38,15 +38,18 @@
                   mx-auto
                   mb-4
                   mt-4
-                  ps-4
-                  pe-4
+                  ps-2
+                  pe-2
                   pt-6
                   pb-6
                   border
                   rounded
                 "
                 :class="{
-                  'bg-primary text-white': item.selected,
+                  'bg-primary text-white':
+                    item.selected && !item.isPreInclueded,
+                  'bg-gray-secondary border-gray-secondary':
+                    item.isPreInclueded,
                   'border-dashed': !item.selected,
                 }"
               >
@@ -59,7 +62,14 @@
                       justify-content-center
                     "
                   >
-                    <div class="form-check form-check-success">
+                    <div
+                      class="form-check"
+                      :class="{
+                        'form-check-success':
+                          item.selected && !item.isPreInclueded,
+                        'form-check-gray': item.isPreInclueded,
+                      }"
+                    >
                       <input
                         class="form-check-input"
                         type="checkbox"
@@ -72,11 +82,17 @@
                   <div class="col-7 d-flex justify-content-center flex-column">
                     <div class="fs-3 fw-bolder">
                       {{ item.addOnName }}
+                      <span
+                        class="badge text-success fs-8 bg-success-alpha"
+                        v-if="item.isPreInclueded"
+                        >Included</span
+                      >
                     </div>
                     <div
                       :class="{
-                        'text-white': item.selected,
+                        'text-white': item.selected && !item.isPreInclueded,
                         'text-gray': !item.selected,
+                        'text-gray-secondary': item.isPreInclueded,
                       }"
                       v-if="item.addOnName != 'Admin User License'"
                     >
@@ -148,8 +164,9 @@
                       <span
                         class="fs-8 fw-light"
                         :class="{
-                          'text-white': item.selected,
-                          'text-gray-secondary': !item.selected,
+                          'text-white': item.selected && !item.isPreInclueded,
+                          'text-gray': !item.selected,
+                          'text-gray-secondary': item.isPreInclueded,
                         }"
                         >/ {{ item.planType }}</span
                       >
@@ -157,8 +174,9 @@
                     <div
                       class="fs-7 text-center ms-5 fw-light"
                       :class="{
-                        'text-white': item.selected,
+                        'text-white': item.selected && !item.isPreInclueded,
                         'text-gray': !item.selected,
+                        'text-gray-secondary': item.isPreInclueded,
                       }"
                       v-if="item.extraInfo"
                     >
@@ -184,10 +202,13 @@ import { ISubscripeService } from "@/service";
 import {
   subscribeAddonsRequestModel,
   subscribeAddonsResponseModel,
+  CommitmentTerm,
 } from "@/model";
 export default class PickAddons extends Vue {
+  @Prop() addOnType: string;
   @Prop() product: string;
-  @Prop() termPlanId: number;
+  @Prop() termPlanType: string;
+  @Prop() planId: number;
 
   @Inject("subscripeService") service: ISubscripeService;
 
@@ -298,8 +319,12 @@ export default class PickAddons extends Vue {
   }
 
   private getAddons() {
+    console.log(this.planId, this.termPlanType);
     const request = new subscribeAddonsRequestModel();
-    request.termPlanId = this.termPlanId;
+    request.planId = this.planId;
+    request.termPlanType =
+      CommitmentTerm[this.termPlanType as keyof typeof CommitmentTerm];
+    console.log(request);
     this.service
       .getAddons(request)
       .then((response) => {
@@ -332,7 +357,8 @@ export default class PickAddons extends Vue {
               planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
               selected: addons.selected,
               quantity: addons.quantity,
-              extraInfo: this.commitmentTerm == "Annual" ? addons.extraInfo : "",
+              extraInfo:
+                this.commitmentTerm == "Annual" ? addons.extraInfo : "",
               isPreInclueded: addons.isPreInclueded,
             };
             this.addons.push(this.$vuehelper.clone(addOns));

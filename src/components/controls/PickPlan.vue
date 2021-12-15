@@ -288,6 +288,7 @@ export default class PickPlan extends Vue {
           if (item.planName == plan.planName) {
             this.plans.push({
               termPlanId: item.termPlanId,
+              planId: item.planId,
               planName: item.planName,
               termPlanAmount: item.termPlanAmount,
               description: plan.description,

@@ -1,11 +1,27 @@
 <template>
-  <div class="row g-0">
+  <div class="row g-0 pb-4 border-bottom border-light-gray">
     <div class="col-4">
-      <div class="fw-bolder fs-4 mb-2">
+      <div
+        class="fw-bolder fs-4 mb-2"
+        :class="{ 'text-gray-secondary': addons.endDate }"
+      >
         {{ addons.addOnName }}
-        <span class="badge text-success ms-2 bg-success-alpha">{{addons.status == 'NEW' ? 'Current': addons.status}}</span>
+        <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
+          addons.status == "NEW"
+            ? "Current"
+            : addons.status == "UPCOMING"
+            ? "Upcoming"
+            : addons.status == "CANCELLED"
+            ? "Canceled"
+            : ""
+        }}</span>
       </div>
-      <div class="fs-6 text-muted">{{ description }}</div>
+      <div
+        class="fs-6 text-muted"
+        :class="{ 'text-gray-secondary': addons.endDate }"
+      >
+        {{ description }}
+      </div>
     </div>
     <div class="col-3">
       <div class="fw-bolder mb-2 fs-5">
@@ -30,21 +46,22 @@
             alt="Card Type"
             v-if="addons.cardNumber.split(' ')[0] == 'Discover'"
           />
-          {{
-            addons.cardNumber.split(" ")[0] == "American"
-              ? "American Express"
-              : addons.cardNumber.split(" ")[0]
-          }}
-          ****{{
-            addons.cardNumber.split(" ")[0] == "American"
-              ? addons.cardNumber.split(" ")[2]
-              : addons.cardNumber.split(" ")[1]
-          }}
+          <span :class="{ 'text-gray-secondary': addons.endDate }">
+            ****{{
+              addons.cardNumber.split(" ")[0] == "American"
+                ? addons.cardNumber.split(" ")[2]
+                : addons.cardNumber.split(" ")[1]
+            }}
+          </span>
         </template>
-        <template v-else>Checking {{ addons.cardNumber.split(" ")[1] }} </template>
+        <template v-else>
+          <span :class="{ 'text-gray-secondary': addons.endDate }">
+            Checking {{ addons.cardNumber.split(" ")[1] }}
+          </span>
+        </template>
       </div>
       <div
-        class="border border-dashed p-2 rounded fw-bolder"
+        class="border border-dashed p-2 rounded fw-bolder fs-7"
         style="width: fit-content"
         :class="{
           'border-warning bg-warning-alpha text-warning':
@@ -64,21 +81,26 @@
     >
       <div
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
-        @click="toggleCommitmentTerm = true"
+        @click="!addons.endDate && allowChangeAddonTerm ? toggleCommitmentTerm = true : ''"
       >
         {{ addons.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
-          <li class="dropdown-item p-4" @click="showCommitmentTermModel = true">
+          <li
+            class="dropdown-item p-4 fw-bold"
+            :class="{ 'text-gray-secondary': addons.endDate }"
+            @click="showCommitmentTermModel = true"
+          >
             Switch to
             {{ addons.term == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
       </div>
-      <div class="text-muted">
-        {{ addons.startDate }} - {{
+      <div class="text-muted" :class="{ 'text-gray-secondary': addons.endDate }">
+        {{ addons.startDate }} -
+        {{
           addons.status == "CANCELLED" ||
           (addons.status == "NEW" && addons.endDate != null)
             ? addons.endDate
@@ -104,7 +126,7 @@
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="togglePlan = true"
+          @click="!addons.endDate ? togglePlan = true : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"
@@ -125,7 +147,7 @@
       </div>
     </div>
   </div>
-  <CancelPlanAddOn
+  <cancel-plan-addOn
     title="Cancel Add-On"
     :name="addons.addOnName"
     type="addons"
@@ -133,10 +155,13 @@
     @cancel="onCancel"
     v-if="showCancelModel"
   />
-  <ChangeCommitmentTerm
-    :plan="addons"
-    :currentCommitmentTerm="addons.term"
-    :newCommitmentTerm="addons.term == 'ANNUAL' ? 'Monthly' : 'Annual'"
+  <change-commitment-term
+    :planName="addons.planName"
+    :currentTerm="addons.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
+    :startDate="addons.startDate"
+    :endDate="!addons.endDate ? addons.renewDate : addons.endDate"
+    :currentPlanAmount="addons.amount"
+    :planId="addons.addOnId"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -158,6 +183,7 @@ import { addonsResponseModel } from "@/model";
 })
 export default class Addons extends Vue {
   @Prop() addons: addonsResponseModel;
+  @Prop() allowChangeAddonTerm: string;
 
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;
@@ -188,6 +214,10 @@ export default class Addons extends Vue {
     },
     {
       addOnName: "Multi-Connector Integrations",
+      description: "Integrate with multiple custody sources",
+    },
+    {
+      addOnName: "Product Attribution",
       description: "Integrate with multiple custody sources",
     },
   ];

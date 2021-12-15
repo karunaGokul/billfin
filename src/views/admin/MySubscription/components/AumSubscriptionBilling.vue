@@ -18,11 +18,22 @@
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in plans" :key="index">
-        <plan :plan="item" :planExpired="plans.length == 2 && index == 0" />
+        <plan :plan="item" />
+      </div>
+      <div class="p-8 text-center" v-if="!loading && !plans.length">
+        <div class="fw-bolder fs-4 p-4">
+          You currently do not have an
+          {{
+            bliingType == "AUM"
+              ? "AUM Billing subscription."
+              : "Subscription Billing."
+          }}
+        </div>
+        <button type="button" class="btn btn-primary">Sign Up</button>
       </div>
     </div>
   </div>
-  <div class="card mt-6 mb-6">
+  <div class="card mt-6 mb-6" v-if="plans.length">
     <div class="card-header align-items-center border-bottom">
       <div class="card-title fw-bolder fs-4">
         {{
@@ -31,14 +42,18 @@
             : "Subscription Billing Add-Ons"
         }}
       </div>
-      <button type="button" class="btn btn-primary">Add More</button>
+      <button type="button" class="btn btn-primary" @click="addMoreAddons">
+        Add More
+      </button>
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in addons" :key="index">
-        <addons :addons="item" />
+        <addons :addons="item" :allowChangeAddonTerm="allowChangeAddonTerm" />
       </div>
       <div class="p-8 text-center" v-if="!loading && !addons.length">
-        <div class="fw-bolder fs-4 p-4">You currently are not subscribed to add-ons.</div>
+        <div class="fw-bolder fs-4 p-4">
+          You currently are not subscribed to add-ons.
+        </div>
         <button type="button" class="btn btn-primary">
           Subscribe to Add-ons
         </button>
@@ -54,7 +69,6 @@ import {
   manageSubscriptionRequestModel,
   subscriptionResponseModel,
   addonsResponseModel,
-  manageSubscriptionResponseModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -80,8 +94,7 @@ export default class AumSubscriptionBilling extends Vue {
   public addons: Array<addonsResponseModel> = [];
 
   public subscription: any = null;
-
-  public loading:boolean = false;
+  public loading: boolean = false;
 
   created() {
     this.getSubscription();
@@ -108,11 +121,36 @@ export default class AumSubscriptionBilling extends Vue {
         this.loading = false;
         this.plans = response.subscriptions;
         this.addons = response.addOns;
+        console.log("allow", this.allowChangeAddonTerm);
       })
       .catch((err) => {
         this.loading = false;
         console.log(err);
       });
+  }
+
+  public addMoreAddons() {
+    this.$router.push("/add-more-addons");
+  }
+
+  get allowChangeAddonTerm() {
+    let allow: boolean = true;
+
+    for (let i in this.plans) {
+      if (this.plans[i].status == "UPCOMING") {
+        if (this.plans[i].term == "MONTHLY") {
+          allow = false;
+          break;
+        }
+      } else if (this.plans[i].status == "NEW") {
+        if (this.plans[i].term == "MONTHLY") {
+          allow = false;
+          break;
+        }
+      }
+    }
+
+    return allow;
   }
 }
 </script>

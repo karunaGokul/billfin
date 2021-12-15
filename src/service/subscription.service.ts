@@ -30,7 +30,7 @@ export class SubscripeService extends BaseService<any, any>
     request: subscribePlanRequestModel
   ): Promise<Array<subscribePlanResponseModel>> {
     return this.httpGet(
-      "private/api/v1/subscription/getPlanDetails",
+      "private/api/v1/subscription/planDetails",
       request
     ).then((response) => {
       return response.data;
@@ -41,7 +41,7 @@ export class SubscripeService extends BaseService<any, any>
     request: subscribeAddonsRequestModel
   ): Promise<Array<subscribeAddonsResponseModel>> {
     return this.httpGet(
-      "private/api/v1/subscription/getAddOnDetails",
+      "private/api/v1/subscription/addOnDetails",
       request
     ).then((response) => {
       return response.data;

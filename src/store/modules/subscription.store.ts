@@ -81,6 +81,16 @@ const mutations: MutationTree<any> = {
   onUpdateACH(state, payload) {
     state.ach = payload;
   },
+  onClearSubscription(state) {
+    state.products = [];
+    state.commitmentTerm = "";
+    state.aumBilling = { plan: {}, addons: [], commitmentTerm: "" };
+    state.subscriptionBilling = { plan: {}, addons: [], commitmentTerm: "" };
+    state.paymentType = "";
+    state.creditCard = {};
+    state.ach = {};
+    state.address = {};
+  },
 };
 const actions: ActionTree<any, any> = {
   updateState(context) {
@@ -125,6 +135,9 @@ const actions: ActionTree<any, any> = {
   },
   updateACH(context, payload) {
     context.commit("onUpdateACH", payload);
+  },
+  clearSubscription(context) {
+    context.commit("onClearSubscription");
   },
 };
 export const SubscriptionModule = {

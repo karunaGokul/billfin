@@ -4,7 +4,7 @@
       <div class="modal-content rounded-3">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
-            Switch to {{ newCommitmentTerm }} Commitment
+            Switch to {{ newTerm }} Commitment
           </h5>
           <button type="button" class="btn-close" @click="close('close')">
             <i class="fas fa-times"></i>
@@ -12,7 +12,7 @@
         </div>
         <div class="modal-body p-6">
           <p class="fs-4 fw-bolder">
-            {{ plan.planName }}
+            {{ planName }}
           </p>
           <div class="row g-0">
             <div class="col-6">
@@ -23,28 +23,32 @@
                       Current Term Type
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ currentCommitmentTerm }} Subscription
+                      {{ currentTerm }} Subscription
                     </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
                       Current Term Start On
                     </td>
-                    <td class="pt-3 pb-3 fw-bolder text-end">{{ plan.startDate }}</td>
+                    <td class="pt-3 pb-3 fw-bolder text-end">
+                      {{ startDate }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
                       Current Term End On
                     </td>
-                    <td class="pt-3 pb-3 fw-bolder text-end">{{ plan.endDate }}</td>
+                    <td class="pt-3 pb-3 fw-bolder text-end">
+                      {{ endDate }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
                       Current Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(plan.termPlanAmount) }}
-                      <span>/{{ currentCommitmentTerm == 'Annual' ? 'Yr' : 'Mon' }}</span>
+                      {{ $filters.currencyDisplay(currentPlanAmount) }}
+                      <span>/{{ currentTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -61,14 +65,16 @@
                       New Term Type
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ newCommitmentTerm }} Subscription
+                      {{ newTerm }} Subscription
                     </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
                       New Term Start On
                     </td>
-                    <td class="pt-3 pb-3 fw-bolder text-end">{{ plan.startDate }}</td>
+                    <td class="pt-3 pb-3 fw-bolder text-end">
+                      {{ newTermStartDate }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
@@ -81,8 +87,8 @@
                       New Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(250)}}
-                      <span>/{{ newCommitmentTerm == 'Annual' ? 'Yr' : 'Mon' }}</span>
+                      {{ $filters.currencyDisplay(response.termPlanAmount) }}
+                      <span>/{{ newTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -105,7 +111,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="close('cancel')"
+            @click="changePlan"
           >
             Switch Plan
           </button>
@@ -115,19 +121,93 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Vue } from "vue-class-component";
+import { Prop, Inject } from "vue-property-decorator";
 
-import { manageSubscriptionResponseModel } from "@/model";
+import moment from "moment";
+
+import {
+  termPlanAmountReqeustModel,
+  termPlanAmountResponseModel,
+  CommitmentTerm,
+  changePlanTermRequestModel
+} from "@/model";
+
+import { IManageSubscription } from "@/service";
 
 export default class ChangeCommitmentTerm extends Vue {
-  @Prop() currentCommitmentTerm: string;
-  @Prop() newCommitmentTerm: string;
-  @Prop() plan: manageSubscriptionResponseModel;
+  @Inject("manageSubscripeService") service: IManageSubscription;
+
+  @Prop() planName: string;
+  @Prop() currentTerm: string;
+  @Prop() startDate: string;
+  @Prop() endDate: string;
+  @Prop() currentPlanAmount: number;
+  @Prop() planId: number;
+  @Prop() termPlanId: number;
+  @Prop() subscriptionPlanId: number;
+  @Prop() subscriptionAddOnId: number;
+
+  public response: termPlanAmountResponseModel =
+    new termPlanAmountResponseModel();
+
+  created() {
+    this.getTermPlanAmount();
+  }
+
+  private getTermPlanAmount() {
+    let request: termPlanAmountReqeustModel = new termPlanAmountReqeustModel();
+    request.termPlanType =
+      CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
+    request.planId = this.planId;
+    this.service
+      .getTermPlanAmount(request)
+      .then((response) => {
+        this.response = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private changePlan() {
+    let request: changePlanTermRequestModel = new changePlanTermRequestModel();
+    request.eventType = "TERM_CHANGE";
+    request.subscriptionPlanId = this.subscriptionPlanId;
+    request.subscriptionAddOnId = this.subscriptionAddOnId;
+    request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
+    request.termPlanId = this.termPlanId;
+
+    this.service
+      .changePlan(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   public close(option: string) {
     this.$emit(option);
   }
-  
+
+  get newTerm() {
+    return this.currentTerm == "Annual" ? "Monthly" : "Annual";
+  }
+
+  get newTermStartDate() {
+    let currentDate = new Date(this.endDate);
+    let date = new Date(currentDate);
+    if (this.newTerm == "Monthly") {
+      date.setMonth(currentDate.getMonth() + 1);
+      date.setDate(currentDate.getDate() + 1);
+    } else {
+      date.setFullYear(currentDate.getFullYear() + 1);
+      date.setDate(currentDate.getDate() + 1);
+    }
+
+    return moment(String(date)).format("MM/DD/YYYY");
+  }
 }
 </script>

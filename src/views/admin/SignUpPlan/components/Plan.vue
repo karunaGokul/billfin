@@ -30,7 +30,7 @@ export default class Plan extends Vue {
 
   public updatePlan(options: {
     product: string;
-    plan: { termPlanId: number; planName: string };
+    plan: { termPlanId: number; planName: string; planId: number };
     addons: Array<any>,
     commitmentTerm: string;
   }) {

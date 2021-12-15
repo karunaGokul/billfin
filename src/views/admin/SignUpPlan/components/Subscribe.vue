@@ -109,13 +109,12 @@ export default class Subscribe extends Vue {
       request.products.push(products);
     }
 
-    console.log(request);
-
     this.service
       .createSubscription(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
           this.$emit("next");
+          //this.store.dispatch("clearSubscription");
         }
       })
       .catch((err) => {

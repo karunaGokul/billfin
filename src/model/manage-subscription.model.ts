@@ -15,6 +15,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
   cardType: string;
   customerId: string;
   planName: string;
+  planId: number;
   paymentToken: string;
   term: string;
   amount: number;
@@ -28,6 +29,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
 export class addonsResponseModel extends addOnsModel {
   subscriptionPlanId: number;
   addOnName: string;
+  addOnId: number;
   cardType: string;
   paymentToken: string;
   term: string;
@@ -43,4 +45,27 @@ export class manageSubscriptionResponseModel {
   productCode: string;
   subscriptions: Array<subscriptionResponseModel> = [];
   addOns: Array<addonsResponseModel> = [];
+}
+export class termPlanAmountReqeustModel {
+  termPlanType: string;
+  planId: number;
+}
+export class termPlanAmountResponseModel {
+  planName: string;
+  planCode: string;
+  termPlanCode: string;
+  termPlanName: string;
+  termPlanAmount: number;
+  planId: number;
+  termPlanId: number;
+}
+export class changePlanTermRequestModel {
+  eventType: string;
+  subscriptionPlanId: number;
+  subscriptionAddOnId: number;
+  term: string;
+  termPlanId: number;
+}
+export class changePlanTermResponseModel {
+  status: string;
 }
