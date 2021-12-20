@@ -4,6 +4,7 @@
     :key="index"
     :product="item.product"
     :planId="item.planId"
+    :termPlanId="item.termPlanId"
     :termPlanType="item.termPlanType"
     @update="updatePlan($event, options)"
     addOnType="createAddon"
@@ -42,12 +43,14 @@ export default class Addons extends Vue {
         plans.push({
           product: item,
           planId: this.store.getters.aumBilling.plan.planId,
+          termPlanId: this.store.getters.aumBilling.plan.termPlanId,
           termPlanType: this.store.getters.aumBilling.commitmentTerm,
         });
       else
         plans.push({
           product: item,
           planId: this.store.getters.subscriptionBilling.plan.planId,
+          termPlanId: this.store.getters.subscriptionBilling.plan.termPlanId,
           termPlanType: this.store.getters.subscriptionBilling.commitmentTerm,
         });
     });

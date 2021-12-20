@@ -208,6 +208,7 @@ export default class PickAddons extends Vue {
   @Prop() addOnType: string;
   @Prop() product: string;
   @Prop() termPlanType: string;
+  @Prop() termPlanId: number;
   @Prop() planId: number;
 
   @Inject("subscripeService") service: ISubscripeService;
@@ -322,6 +323,7 @@ export default class PickAddons extends Vue {
     console.log(this.planId, this.termPlanType);
     const request = new subscribeAddonsRequestModel();
     request.planId = this.planId;
+    request.termPlanId = this.termPlanId;
     request.termPlanType =
       CommitmentTerm[this.termPlanType as keyof typeof CommitmentTerm];
     console.log(request);

@@ -35,6 +35,7 @@ export class subscribePlanResponseModel {
 }
 export class subscribeAddonsRequestModel {
   termPlanType: string;
+  termPlanId: number;
   planId: number;
 }
 export class subscribeAddonsResponseModel {
