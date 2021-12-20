@@ -36,7 +36,6 @@ export default class Addons extends Vue {
   }
 
   get plans() {
-    console.log(this.store.getters.aumBilling);
     const plans: Array<any> = [];
     this.store.getters.products.forEach((item: string) => {
       if (item == "AUM")
@@ -48,8 +47,8 @@ export default class Addons extends Vue {
       else
         plans.push({
           product: item,
-          planId: this.store.getters.subscriptionBilling.plan.commitmentTerm,
-          termPlanType: this.store.getters.subscriptionBilling.plan.commitmentTerm,
+          planId: this.store.getters.subscriptionBilling.plan.planId,
+          termPlanType: this.store.getters.subscriptionBilling.commitmentTerm,
         });
     });
     return plans;
