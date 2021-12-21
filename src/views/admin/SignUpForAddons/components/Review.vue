@@ -8,12 +8,12 @@
         <div class="mt-8 d-flex justify-content-between">
           <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
-            <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span>
+            <!--<span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
+            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span> -->
           </div>
-          <div class="text-light-gray fs-4 fw-bold">
+          <!--<div class="text-light-gray fs-4 fw-bold">
             {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
-          </div>
+          </div> -->
         </div>
 
         <div
@@ -52,17 +52,17 @@
       <template v-if="showSubscription">
         <div class="mt-8 d-flex justify-content-between">
           <div class="text-dark-black fs-4">
-            <span class="fw-bolder">Subscription Billing: </span>
+           <!-- <span class="fw-bolder">Subscription Billing: </span>
             <span class="fw-bold ms-2">{{
               subscriptionBilling.plan.planName
             }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span> -->
           </div>
-          <div class="text-light-gray fs-4 fw-bold">
+         <!-- <div class="text-light-gray fs-4 fw-bold">
             {{
               $filters.currencyDisplay(subscriptionBilling.plan.termPlanAmount)
             }}
-          </div>
+          </div> -->
         </div>
 
         <div
@@ -114,7 +114,7 @@
         <div>{{ $filters.currencyDisplay(totalFees) }}</div>
       </div>
 
-      <div class="row g-0">
+      <!--<div class="row g-0">
         <div class="col-4">
           <h4 class="fw-bold mt-10 pb-4">Billing Address</h4>
 
@@ -182,7 +182,7 @@
             <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="text-center mt-10">
         <button class="btn btn-light me-5" @click="back">Back</button>
@@ -234,7 +234,6 @@ export default class Review extends Vue {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
         return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
       }, 0);
-      aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
     }
 
     if (this.showSubscription) {
@@ -244,7 +243,6 @@ export default class Review extends Vue {
         },
         0
       );
-      subAmount = subAmount + this.subscriptionBilling.plan.termPlanAmount;
     }
     return aumAmount + subAmount;
   }

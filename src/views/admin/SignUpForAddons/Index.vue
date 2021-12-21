@@ -63,7 +63,10 @@
     <div class="m-6">
       <div class="tab-group">
         <div class="tab-content-group">
-          <addons @back="step = 2" @next="step = 4" v-if="step == 1" />
+          <addons @next="step = 2" v-if="step == 1" />
+          <payment @back="step = 1" @next="step = 3" v-if="step == 2"/>
+          <review @back="step = 2" @next="step = 4" v-if="step == 3"/>
+          <subscribe @back="step = 3" v-if="step == 4"/>
         </div>
       </div>
     </div>
@@ -72,9 +75,17 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Addons from "./components/Addons.vue";
+import Payment from "./components/Payment.vue";
+import Review from "./components/Review.vue";
+import Subscribe from "./components/Subscribe.vue";
 
 @Options({
-  Addons,
+  components: {
+    Addons,
+    Payment,
+    Review,
+    Subscribe
+  },
 })
 export default class SignUpForAddons extends Vue {
   public step: number = 1;

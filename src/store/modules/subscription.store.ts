@@ -3,7 +3,6 @@ import { AddressService } from "@/service";
 
 const state: any = {
   products: [],
-  commitmentTerm: "",
   aumBilling: { plan: {}, addons: [], commitmentTerm: "" },
   subscriptionBilling: { plan: {}, addons: [], commitmentTerm: "" },
   paymentType: "",
@@ -15,9 +14,6 @@ const state: any = {
 const getters: GetterTree<any, any> = {
   products: (state) => {
     return state.products;
-  },
-  commitmentTerm: (state) => {
-    return state.commitmentTerm;
   },
   aumBilling: (state) => {
     return state.aumBilling;
@@ -52,7 +48,11 @@ const mutations: MutationTree<any> = {
     state.products = response;
   },
   onUpdateTerm(state, response) {
-    state.commitmentTerm = response;
+    if (response.product == "AUM") {
+      state.aumBilling.commitmentTerm = response.commitmentTerm;
+    } else {
+      state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
+    }
   },
   onUpdatePlan(state, response) {
     if (response.product == "AUM") {

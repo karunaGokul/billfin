@@ -35,12 +35,11 @@ export class subscribePlanResponseModel {
 }
 export class subscribeAddonsRequestModel {
   termPlanType: string;
-  termPlanId: number;
   planId: number;
 }
 export class subscribeAddonsResponseModel {
   addOnName: string;
-  planAddOnamount: number;
+  planAddOnAmount: number;
   termPlanAddOnId: number;
   selected: boolean;
   description: string;
@@ -48,6 +47,7 @@ export class subscribeAddonsResponseModel {
   quantity: string;
   extraInfo: string;
   isPreInclueded: boolean;
+  current: boolean;
 }
 export class paymentTokenRequestModel {
   token: string;

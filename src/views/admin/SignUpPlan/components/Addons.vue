@@ -4,8 +4,8 @@
     :key="index"
     :product="item.product"
     :planId="item.planId"
-    :termPlanId="item.termPlanId"
     :termPlanType="item.termPlanType"
+    :preAddons="item.preAddons"
     @update="updatePlan($event, options)"
     addOnType="createAddon"
   />
@@ -18,6 +18,8 @@
 import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
+import { subscribeAddonsResponseModel } from "@/model";
+
 import PickAddons from "@/components/controls/PickAddons.vue";
 
 @Options({
@@ -28,6 +30,8 @@ import PickAddons from "@/components/controls/PickAddons.vue";
 export default class Addons extends Vue {
   public store = useStore();
 
+  public plans: Array<any> = [];
+
   public next() {
     this.$emit("next");
   }
@@ -36,25 +40,62 @@ export default class Addons extends Vue {
     this.$emit("back");
   }
 
-  get plans() {
-    const plans: Array<any> = [];
-    this.store.getters.products.forEach((item: string) => {
+  created() {
+    this.products.forEach((item: string) => {
       if (item == "AUM")
-        plans.push({
+        this.plans.push({
           product: item,
-          planId: this.store.getters.aumBilling.plan.planId,
-          termPlanId: this.store.getters.aumBilling.plan.termPlanId,
-          termPlanType: this.store.getters.aumBilling.commitmentTerm,
+          planId: this.aumBilling.plan.planId,
+          preAddons: this.addons(
+            this.aumBilling.plan.preIncludedAddons,
+            this.aumBilling.addons
+          ),
+          termPlanType: this.aumBilling.commitmentTerm,
         });
       else
-        plans.push({
+        this.plans.push({
           product: item,
-          planId: this.store.getters.subscriptionBilling.plan.planId,
-          termPlanId: this.store.getters.subscriptionBilling.plan.termPlanId,
-          termPlanType: this.store.getters.subscriptionBilling.commitmentTerm,
+          planId: this.subscriptionBilling.plan.planId,
+          preAddons: this.addons(
+            this.subscriptionBilling.plan.preIncludedAddons,
+            this.subscriptionBilling.addons
+          ),
+          termPlanType: this.subscriptionBilling.commitmentTerm,
         });
     });
-    return plans;
+  }
+
+  private addons(
+    preIncludedAddons: Array<subscribeAddonsResponseModel>,
+    selectedAddons: Array<subscribeAddonsResponseModel>
+  ) {
+    let addons: Array<subscribeAddonsResponseModel> = [];
+
+    if (selectedAddons && preIncludedAddons) {
+      selectedAddons.forEach((item) => {
+        item.current = true;
+      });
+
+      let addOnName = new Set(preIncludedAddons.map((item) => item.addOnName));
+      addons = [
+        ...preIncludedAddons,
+        ...selectedAddons.filter((item) => !addOnName.has(item.addOnName)),
+      ];
+    }
+
+    return addons;
+  }
+
+  get aumBilling() {
+    return this.store.getters.aumBilling;
+  }
+
+  get subscriptionBilling() {
+    return this.store.getters.subscriptionBilling;
+  }
+
+  get products() {
+    return this.store.getters.products;
   }
 }
 </script>

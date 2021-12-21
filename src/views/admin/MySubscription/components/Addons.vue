@@ -155,7 +155,7 @@
     @cancel="onCancel"
     v-if="showCancelModel"
   />
-  <change-commitment-term
+  <ChangePlanCommitmentTerm
     :planName="addons.planName"
     :currentTerm="addons.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
     :startDate="addons.startDate"
@@ -171,14 +171,14 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
-import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
+import ChangePlanCommitmentTerm from "./ChangePlanCommitmentTerm.vue";
 
 import { addonsResponseModel } from "@/model";
 
 @Options({
   components: {
     CancelPlanAddOn,
-    ChangeCommitmentTerm,
+    ChangePlanCommitmentTerm,
   },
 })
 export default class Addons extends Vue {

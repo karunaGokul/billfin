@@ -125,8 +125,8 @@
       </nav>
 
       <div class="h-100 bg-light rounded-top-20 p-4">
-        <div class="row">
-          <div class="col-3">
+        <div class="d-flex align-items-center position-relative">
+          <div>
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
               {{ page }}
             </p>
@@ -143,27 +143,29 @@
               <ol class="breadcrumb" v-html="currentPage"></ol>
             </div>
           </div>
-          <div class="col-6 p-4">
-            <div
-              class="
-                alert alert-danger
-                fs-8
-                text-center
-                fw-bolder
-                text-dark
-                border-0
-              "
-              role="alert"
-              v-if="
-                dataEntitlements.length == 1 && firms.firmStatus != 'SUBSCRIBED'
-              "
-            >
-              <i class="fas fa-info-circle text-danger"></i> You only have
-              {{ trailExpireDays }} more day(s) in your trial. Ready to sign-up?
-              Click
-              <router-link to="/signup" tag="a">here </router-link>
-              to get started
-            </div>
+          <div
+            class="
+              alert alert-danger
+              fs-8
+              text-center
+              fw-bolder
+              text-dark
+              border-0
+              position-absolute
+              top-50
+              start-50
+              translate-middle
+            "
+            role="alert"
+            v-if="
+              dataEntitlements.length == 1 && firms.firmStatus != 'SUBSCRIBED'
+            "
+          >
+            <i class="fas fa-info-circle text-danger"></i> You only have
+            {{ trailExpireDays }} more day(s) in your trial. Ready to sign-up?
+            Click
+            <router-link to="/signup" tag="a">here </router-link>
+            to get started
           </div>
         </div>
         <router-view></router-view>
@@ -191,6 +193,9 @@ import Welcome from "./components/OnBoard.vue";
 import { IFirmService } from "@/service";
 import { firmRequestModel } from "@/model";
 
+import { Settings } from "@/config";
+import axios from "axios";
+
 @Options({
   components: {
     SideBar,
@@ -213,6 +218,21 @@ export default class Home extends Vue {
     this.getFirms();
   }
 
+  mounted() {
+    let url = window.location.origin;
+    let path = Settings.ApiJson;
+    //fetch(url + "/" + path).then(response => response.json()).then(data => (console.log(data)));
+
+    /*axios
+      .get(url + "/" + path)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });*/
+  }
+
   private getFirms() {
     if (
       this.dataEntitlements.length == 1 &&
@@ -230,7 +250,7 @@ export default class Home extends Vue {
   public updateFirm(firm: firmRequestModel) {
     this.toggleFirms = false;
     this.store.dispatch("firmIdChanged", firm.firmId);
-    this.$router.push({name: 'Dashboard'});
+    this.$router.push({ name: "Dashboard" });
   }
 
   public openAvatarUpload() {

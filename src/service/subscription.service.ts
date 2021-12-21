@@ -8,7 +8,8 @@ import {
   subscribeAddonsResponseModel,
   paymentTokenRequestModel,
   subscribeRequestModel,
-  subscribeResponseModel
+  subscribeResponseModel,
+  subscribedAddonsReqeustModel,
 } from "@/model";
 
 export interface ISubscripeService extends IBaseService<any, any> {
@@ -19,6 +20,9 @@ export interface ISubscripeService extends IBaseService<any, any> {
   ): Promise<createCustomerResponseModel>;
   updatePaymentToken(request: paymentTokenRequestModel): Promise<any>;
   createSubscription(request: subscribeRequestModel): Promise<subscribeResponseModel>;
+  getSubscriptedAddons(
+    request: subscribedAddonsReqeustModel
+  ): Promise<Array<subscribeAddonsResponseModel>>;
 }
 export class SubscripeService extends BaseService<any, any>
   implements ISubscripeService {
@@ -66,6 +70,16 @@ export class SubscripeService extends BaseService<any, any>
     return this.post(request, "api/v1/subscription/subscriptionPayment").then((response) => {
       return response;
     });
+  }
+
+  public getSubscriptedAddons(
+    request: subscribedAddonsReqeustModel
+  ): Promise<Array<subscribeAddonsResponseModel>> {
+    return this.httpGet("private/api/v1/planAddOns", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
 }

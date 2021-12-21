@@ -1,4 +1,163 @@
 <template>
+  <div v-if="addOnType == 'AddMoreAddOns'">
+    <div class="accordion accordion-flush mb-10">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button fw-bolder fs-4 text-dark-gray"
+            type="button"
+            :class="{
+              collapsed: !toggleSubscribedAddons,
+            }"
+            @click="toggleSubscribedAddons = !toggleSubscribedAddons"
+          >
+            You are currently subscribed to these add-ons in your
+            {{ product == "AUM" ? "AUM Billing" : "Subscription Billing" }}
+            product
+          </button>
+        </h2>
+        <div
+          class="accordion-collapse collapse"
+          :class="{ show: toggleSubscribedAddons }"
+        >
+          <div class="card accordion-body">
+            <table class="w-100 fs-5">
+              <thead>
+                <tr>
+                  <th
+                    class="
+                      p-4
+                      border-bottom
+                      fw-bold
+                      text-gray-secondary
+                      border-light-gray
+                    "
+                  >
+                    ADD-ONS & DESCRIPTIONS
+                  </th>
+                  <th
+                    class="
+                      p-4
+                      border-bottom
+                      fw-bold
+                      text-gray-secondary
+                      border-light-gray
+                    "
+                  >
+                    TERM PERIOD
+                  </th>
+                  <th
+                    class="
+                      p-4
+                      border-bottom
+                      fw-bold
+                      text-gray-secondary
+                      border-light-gray
+                    "
+                  >
+                    SUBSCRIPTION
+                  </th>
+                  <th
+                    class="
+                      p-4
+                      border-bottom
+                      fw-bold
+                      text-gray-secondary
+                      border-light-gray
+                    "
+                  >
+                    AMOUNT
+                  </th>
+                  <th
+                    class="
+                      p-4
+                      border-bottom
+                      fw-bold
+                      text-gray-secondary
+                      border-light-gray
+                    "
+                  >
+                    RENEW ON
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) of subscribedAddOns" :key="index">
+                  <td class="p-4 border-bottom border-dashed">
+                    <div class="fw-bolder text-dark-gray">
+                      {{ item.addOnName }}
+                    </div>
+                    <div
+                      class="text-gray-secondary mt-2"
+                      v-if="
+                        item.addOnName != 'Multi-Connector Integrations' &&
+                        item.addOnName != 'Admin User License'
+                      "
+                    >
+                      {{ item.description }}
+                    </div>
+                    <div v-else class="text-gray-secondary mt-2">
+                      Number of
+                      {{
+                        item.addOnName == "Admin User License"
+                          ? "users"
+                          : "conntects"
+                      }}
+                      - {{ item.quantity }}
+                    </div>
+                  </td>
+                  <td
+                    class="
+                      p-4
+                      fw-bolder
+                      text-dark-gray
+                      border-bottom border-dashed
+                    "
+                  >
+                    {{ item.startDate }} - {{ item.endDate }}
+                  </td>
+                  <td
+                    class="
+                      p-4
+                      fw-bolder
+                      text-dark-gray
+                      border-bottom border-dashed
+                    "
+                  >
+                    {{ item.term == "ANNUAL" ? "Annual" : "Monthly" }}
+                    Subscription
+                  </td>
+                  <td
+                    class="
+                      p-4
+                      fw-bolder
+                      text-dark-gray
+                      border-bottom border-dashed
+                    "
+                  >
+                    {{ $filters.currencyDisplay(item.amount) }}
+                  </td>
+                  <td
+                    class="
+                      p-4
+                      fw-bolder
+                      text-dark-gray
+                      border-bottom border-dashed
+                    "
+                  >
+                    <span
+                      class="text-success ps-6 pe-6 pt-2 pb-2 bg-success-alpha"
+                      >{{ item.startDate }}</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="accordion accordion-flush mb-10">
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -20,9 +179,50 @@
         <div class="card accordion-body">
           <div class="text-center fs-4 fw-bolder mt-2">Choose your Add-ons</div>
 
+          <template v-if="addOnType == 'AddMoreAddOns'">
+            <div class="row">
+              <div class="col-6 mt-4">
+                <div class="fw-bolder me-4 text-end fs-5">Commitment term</div>
+              </div>
+              <div class="col-6">
+                <div class="btn-group border rounded p-1">
+                  <button
+                    type="button"
+                    class="btn rounded"
+                    :class="{
+                      'btn-success': commitmentTerm == 'Annual',
+                      'text-gray': commitmentTerm != 'Annual',
+                    }"
+                    @click="updateCommitmentTerm('Annual')"
+                  >
+                    Annual
+                  </button>
+                  <button
+                    type="button"
+                    class="btn rounded"
+                    :class="{
+                      'btn-success': commitmentTerm == 'Monthly',
+                      'text-gray': commitmentTerm != 'Monthly',
+                    }"
+                    @click="updateCommitmentTerm('Monthly')"
+                  >
+                    Monthly
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="text-center text-success p-2 fw-bold">
+              {{
+                commitmentTerm == "Annual"
+                  ? "Hooray, you are saving 20% with a 1 year commitment!"
+                  : "Commit for a year and save up to 20%"
+              }}
+            </div>
+          </template>
+
           <div class="row mt-2" v-if="addons.length > 0">
             <div
-              v-for="(plan, i) in getPlanList"
+              v-for="(plan, i) in planRow"
               :key="i"
               class="col-xl-6 col-lg-12"
             >
@@ -86,6 +286,11 @@
                         class="badge text-success fs-8 bg-success-alpha"
                         v-if="item.isPreInclueded"
                         >Included</span
+                      >
+                      <span
+                        class="badge text-primary fs-8 bg-white"
+                        v-if="!item.isPreInclueded && item.current"
+                        >Current</span
                       >
                     </div>
                     <div
@@ -157,7 +362,7 @@
                       <span class="fa-3x fw-bolder">
                         {{
                           $filters.currencyDisplayWithoutSymbol(
-                            item.planAddOnamount
+                            item.planAddOnAmount
                           )
                         }}</span
                       >
@@ -202,22 +407,29 @@ import { ISubscripeService } from "@/service";
 import {
   subscribeAddonsRequestModel,
   subscribeAddonsResponseModel,
+  subscribedAddonsReqeustModel,
   CommitmentTerm,
 } from "@/model";
 export default class PickAddons extends Vue {
   @Prop() addOnType: string;
   @Prop() product: string;
   @Prop() termPlanType: string;
-  @Prop() termPlanId: number;
   @Prop() planId: number;
+  @Prop() preAddons: Array<subscribeAddonsResponseModel>;
+  @Prop() planSubscriptionId: number;
+
+  public commitmentTerm: string = "Annual";
 
   @Inject("subscripeService") service: ISubscripeService;
 
   public itemsPerRow: number = 0;
+  public planRow: any;
   public store = useStore();
   public addons: Array<subscribeAddonsResponseModel> = [];
+  public subscribedAddOns: Array<subscribeAddonsResponseModel> = [];
 
   public toggleAccordion: boolean = true;
+  public toggleSubscribedAddons: boolean = true;
 
   public addonsList: any = [
     {
@@ -271,62 +483,87 @@ export default class PickAddons extends Vue {
     },
   ];
 
-  mounted() {
-    let addons: Array<subscribeAddonsResponseModel> = [];
-    if (this.product == "AUM") {
-      if (this.aumBilling.plan.preIncludedAddons.length > 0)
-        addons = this.aumBilling.plan.preIncludedAddons;
-      addons = addons.concat(this.aumBilling.addons);
-    } else {
-      if (this.subscriptionBilling.plan.preIncludedAddons.length > 0)
-        addons = this.subscriptionBilling.plan.preIncludedAddons;
-      addons = addons.concat(this.subscriptionBilling.addons);
-    }
+  created() {
+    this.commitmentTerm = this.termPlanType;
+    this.filterAddons();
+  }
 
-    if (addons.length > 0) {
-      addons = addons.filter(
-        (v, i, a) =>
-          a.findIndex(
-            (t) => t.addOnName === v.addOnName && t.addOnName === v.addOnName
-          ) === i
-      );
-      this.filterAddons(addons);
-    }
-
+  public updateCommitmentTerm(commitmentTerm: string) {
+    this.commitmentTerm = commitmentTerm;
     this.getAddons();
   }
 
-  private filterAddons(addons: Array<subscribeAddonsResponseModel>) {
+  private getSubscribedAddons() {
+    let request = new subscribedAddonsReqeustModel();
+    request.planSubscriptionId = this.planSubscriptionId;
+    this.service
+      .getSubscriptedAddons(request)
+      .then((response) => {
+        this.subscribedAddOns = response;
+        this.removeAddons();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private removeAddons() {
+    let itemsToRemove = this.subscribedAddOns.map((item) => {
+      if (
+        item.addOnName != "Multi-Connector Integrations" &&
+        item.addOnName != "Admin User License"
+      )
+        return item.addOnName;
+    });
+
+    this.subscribedAddOns.forEach((item) => {
+      this.addonsList.forEach(
+        (data: { addOnName: string; description: string }) => {
+          if (item.addOnName == data.addOnName)
+            item.description = data.description;
+        }
+      );
+    });
+
+    this.addons = this.addons.filter(
+      (item: any) => !itemsToRemove.includes(item.addOnName)
+    );
+
+    this.itemsPerRow = Math.round(this.addons.length / 2);
+    this.planRow = Array.from(
+      Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
+    );
+    this.updateAddons();
+  }
+
+  private filterAddons() {
     this.addonsList.forEach(
       (item: {
         addOnName: string;
-        description: string;
-        planType: string;
-        extraInfo: string;
         selected: boolean;
         quantity: string;
         isPreInclueded: boolean;
+        current: boolean;
       }) => {
-        addons.forEach((selectedAddons: subscribeAddonsResponseModel) => {
-          if (item.addOnName == selectedAddons.addOnName) {
+        this.preAddons.forEach((addons: subscribeAddonsResponseModel) => {
+          if (item.addOnName == addons.addOnName) {
             item.selected = true;
-            if (selectedAddons.quantity)
-              item.quantity = selectedAddons.quantity;
-            if (selectedAddons.isPreInclueded) item.isPreInclueded = true;
+            if (addons.current) item.current = true;
+            if (addons.quantity) item.quantity = addons.quantity;
+            if (addons.isPreInclueded) item.isPreInclueded = true;
           }
         });
       }
     );
+
+    this.getAddons();
   }
 
   private getAddons() {
-    console.log(this.planId, this.termPlanType);
     const request = new subscribeAddonsRequestModel();
     request.planId = this.planId;
-    request.termPlanId = this.termPlanId;
     request.termPlanType =
-      CommitmentTerm[this.termPlanType as keyof typeof CommitmentTerm];
-    console.log(request);
+      CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
     this.service
       .getAddons(request)
       .then((response) => {
@@ -349,12 +586,13 @@ export default class PickAddons extends Vue {
           selected: boolean;
           quantity: string;
           isPreInclueded: boolean;
+          current: boolean;
         }) => {
           if (item.addOnName == addons.addOnName) {
             const addOns = {
               termPlanAddOnId: item.termPlanAddOnId,
               addOnName: item.addOnName,
-              planAddOnamount: item.planAddOnamount,
+              planAddOnAmount: item.planAddOnAmount,
               description: addons.description,
               planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
               selected: addons.selected,
@@ -362,18 +600,37 @@ export default class PickAddons extends Vue {
               extraInfo:
                 this.commitmentTerm == "Annual" ? addons.extraInfo : "",
               isPreInclueded: addons.isPreInclueded,
+              current: addons.current,
             };
             this.addons.push(this.$vuehelper.clone(addOns));
           }
         }
       );
     });
-    this.itemsPerRow = Math.round(this.addons.length / 2);
-    this.updateAddons();
+
+    if (
+      this.addOnType == "AddMoreAddOns" &&
+      this.termPlanType == this.commitmentTerm
+    )
+      this.getSubscribedAddons();
+    else {
+      this.updateAddons();
+      this.itemsPerRow = Math.round(this.addons.length / 2);
+      this.planRow = Array.from(
+        Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
+      );
+    }
   }
 
   public updateAddons(response?: subscribeAddonsResponseModel) {
     if (response) response.selected = !response.selected;
+    
+    if (this.addOnType == "AddMoreAddOns")
+      this.store.dispatch("updateTerm", {
+        product: this.product,
+        commitmentTerm: this.commitmentTerm,
+      });
+
     let payload: any[] = [];
     payload = this.addons.filter((item) => item.selected);
     this.store.dispatch("updateAddons", {
@@ -391,15 +648,10 @@ export default class PickAddons extends Vue {
   }
 
   get getPlanList() {
+    console.log("list");
     return Array.from(
       Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
     );
-  }
-
-  get commitmentTerm() {
-    return this.product == "AUM"
-      ? this.aumBilling.commitmentTerm
-      : this.subscriptionBilling.commitmentTerm;
   }
 }
 </script>

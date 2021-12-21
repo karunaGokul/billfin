@@ -26,7 +26,7 @@ const getters: GetterTree<any, any> = {
 };
 const mutations: MutationTree<any> = {
   onLoadEntitlements(state, firms) {
-    state.dataEntitlements = firms;
+    state.dataEntitlements = firms.sort((item:any, value:any) => item.name.localeCompare(value.name));
     if (!state.firmId) {
       state.firmId = state.dataEntitlements[0].firmId;
       localStorage.setItem(FIRM_KEY, state.firmId);

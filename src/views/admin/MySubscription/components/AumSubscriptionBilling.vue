@@ -121,7 +121,6 @@ export default class AumSubscriptionBilling extends Vue {
         this.loading = false;
         this.plans = response.subscriptions;
         this.addons = response.addOns;
-        console.log("allow", this.allowChangeAddonTerm);
       })
       .catch((err) => {
         this.loading = false;
@@ -130,27 +129,42 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   public addMoreAddons() {
+    let plans = new subscriptionResponseModel();
+
+    if (this.upcomingStatus) plans = this.upcomingStatus;
+    else if (this.newStatus) plans = this.newStatus;
+
+    let payload = [];
+    payload.push(this.bliingType);
+    this.store.dispatch("updateProducts", payload);
+
+    let options = {
+      product: this.bliingType,
+      plan: plans,
+      commitmentTerm: plans.term == "ANNUAL" ? "Annual" : "Monthly",
+    };
+    this.store.dispatch("updatePlan", options);
     this.$router.push("/add-more-addons");
   }
 
   get allowChangeAddonTerm() {
     let allow: boolean = true;
 
-    for (let i in this.plans) {
-      if (this.plans[i].status == "UPCOMING") {
-        if (this.plans[i].term == "MONTHLY") {
-          allow = false;
-          break;
-        }
-      } else if (this.plans[i].status == "NEW") {
-        if (this.plans[i].term == "MONTHLY") {
-          allow = false;
-          break;
-        }
-      }
+    if (this.upcomingStatus) {
+      if (this.upcomingStatus.term == "MONTHLY") allow = false;
+    } else if (this.newStatus) {
+      if (this.newStatus.term == "MONTHLY" && this.newStatus.endDate == null)
+        allow = false;
     }
-
     return allow;
+  }
+
+  get upcomingStatus() {
+    return this.plans.find((item) => item.status == "UPCOMING");
+  }
+
+  get newStatus() {
+    return this.plans.find((item) => item.status == "NEW");
   }
 }
 </script>

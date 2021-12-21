@@ -4,7 +4,7 @@
       <div class="modal-content rounded-3">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
-            Switch to {{ newTerm }} Commitment
+            Switch Plan Subscription to {{ newTerm }} Commitment
           </h5>
           <button type="button" class="btn-close" @click="close('close')">
             <i class="fas fa-times"></i>
@@ -12,7 +12,7 @@
         </div>
         <div class="modal-body p-6">
           <p class="fs-4 fw-bolder">
-            {{ planName }}
+            {{ plan.planName }} Plan
           </p>
           <div class="row g-0">
             <div class="col-6">
@@ -31,7 +31,7 @@
                       Current Term Start On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ startDate }}
+                      {{ plan.startDate }}
                     </td>
                   </tr>
                   <tr>
@@ -39,7 +39,7 @@
                       Current Term End On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ endDate }}
+                      {{ plan.renewDate }}
                     </td>
                   </tr>
                   <tr>
@@ -47,7 +47,7 @@
                       Current Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(currentPlanAmount) }}
+                      {{ $filters.currencyDisplay(plan.amount) }}
                       <span>/{{ currentTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
@@ -96,8 +96,10 @@
             </div>
           </div>
           <p class="fs-5 pt-4">
-            All else will remain the same, except monthly pricing and payment
-            terms apply once your switch becomes effective.
+            Note that all your add-ons will automatically convert to monthly
+            subscriptions along with your plan subscription. All else will
+            remain the same, except monthly pricing and payment terms apply once
+            your switch becomes effective, which will be {{ newTermStartDate }}.
           </p>
         </div>
         <div class="modal-footer p-4">
@@ -108,11 +110,7 @@
           >
             Exit
           </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="changePlan"
-          >
+          <button type="button" class="btn btn-primary" @click="changeTerm">
             Switch Plan
           </button>
         </div>
@@ -127,26 +125,20 @@ import { Prop, Inject } from "vue-property-decorator";
 import moment from "moment";
 
 import {
+  subscriptionResponseModel,
   termPlanAmountReqeustModel,
   termPlanAmountResponseModel,
   CommitmentTerm,
-  changePlanTermRequestModel
+  changePlanTermRequestModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
 
-export default class ChangeCommitmentTerm extends Vue {
+export default class ChangePlanCommitmentTerm extends Vue {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
-  @Prop() planName: string;
+  @Prop() plan: subscriptionResponseModel;
   @Prop() currentTerm: string;
-  @Prop() startDate: string;
-  @Prop() endDate: string;
-  @Prop() currentPlanAmount: number;
-  @Prop() planId: number;
-  @Prop() termPlanId: number;
-  @Prop() subscriptionPlanId: number;
-  @Prop() subscriptionAddOnId: number;
 
   public response: termPlanAmountResponseModel =
     new termPlanAmountResponseModel();
@@ -159,7 +151,7 @@ export default class ChangeCommitmentTerm extends Vue {
     let request: termPlanAmountReqeustModel = new termPlanAmountReqeustModel();
     request.termPlanType =
       CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.planId = this.planId;
+    request.planId = this.plan.planId;
     this.service
       .getTermPlanAmount(request)
       .then((response) => {
@@ -170,13 +162,12 @@ export default class ChangeCommitmentTerm extends Vue {
       });
   }
 
-  private changePlan() {
+  private changeTerm() {
     let request: changePlanTermRequestModel = new changePlanTermRequestModel();
     request.eventType = "TERM_CHANGE";
-    request.subscriptionPlanId = this.subscriptionPlanId;
-    request.subscriptionAddOnId = this.subscriptionAddOnId;
+    request.subscriptionPlanId = this.plan.subscriptionPlanId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termPlanId = this.termPlanId;
+    request.termPlanId = this.plan.termPlanId;
 
     this.service
       .changePlan(request)
@@ -197,7 +188,7 @@ export default class ChangeCommitmentTerm extends Vue {
   }
 
   get newTermStartDate() {
-    let currentDate = new Date(this.endDate);
+    let currentDate = new Date(this.plan.renewDate);
     let date = new Date(currentDate);
     if (this.newTerm == "Monthly") {
       date.setMonth(currentDate.getMonth() + 1);

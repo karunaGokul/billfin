@@ -27,7 +27,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
   description: string;
 }
 export class addonsResponseModel extends addOnsModel {
-  subscriptionPlanId: number;
+  subscriptionAddOnId: number;
   addOnName: string;
   addOnId: number;
   cardType: string;
@@ -68,4 +68,7 @@ export class changePlanTermRequestModel {
 }
 export class changePlanTermResponseModel {
   status: string;
+}
+export class subscribedAddonsReqeustModel {
+  planSubscriptionId: number;
 }

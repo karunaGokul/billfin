@@ -169,16 +169,9 @@
     @cancel="onRenewModel"
     v-if="toggleRenewModel"
   />
-  <change-commitment-term
-    :planName="plan.planName"
+  <ChangePlanCommitmentTerm
+    :plan="plan"
     :currentTerm="plan.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
-    :startDate="plan.startDate"
-    :endDate="!plan.endDate ? plan.renewDate : plan.endDate"
-    :currentPlanAmount="plan.amount"
-    :planId="plan.planId"
-    :termPlanId="plan.termPlanId"
-    :subscriptionPlanId="plan.subscriptionPlanId"
-    :subscriptionAddOnId="plan.subscriptionAddOnId"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -191,7 +184,7 @@ import moment from "moment";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";
-import ChangeCommitmentTerm from "./ChangeCommitmentTerm.vue";
+import ChangePlanCommitmentTerm from "./ChangePlanCommitmentTerm.vue";
 
 import { subscriptionResponseModel } from "@/model";
 
@@ -199,7 +192,7 @@ import { subscriptionResponseModel } from "@/model";
   components: {
     CancelPlanAddOn,
     RenewPlanAddOn,
-    ChangeCommitmentTerm,
+    ChangePlanCommitmentTerm,
   },
 })
 export default class Plan extends Vue {
