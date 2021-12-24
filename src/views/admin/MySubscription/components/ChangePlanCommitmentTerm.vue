@@ -170,9 +170,9 @@ export default class ChangePlanCommitmentTerm extends Vue {
     request.termPlanId = this.plan.termPlanId;
 
     this.service
-      .changePlan(request)
+      .changePlanTerm(request)
       .then((response) => {
-        console.log(response);
+        this.$emit("done");
       })
       .catch((err) => {
         console.log(err);
@@ -188,7 +188,12 @@ export default class ChangePlanCommitmentTerm extends Vue {
   }
 
   get newTermStartDate() {
-    let currentDate = new Date(this.plan.renewDate);
+    let endDate = this.plan.renewDate.split("/");
+    let currentDate = new Date(
+      parseInt(endDate[2]),
+      parseInt(endDate[1]) - 1,
+      parseInt(endDate[0])
+    );
     let date = new Date(currentDate);
     if (this.newTerm == "Monthly") {
       date.setMonth(currentDate.getMonth() + 1);
@@ -198,7 +203,7 @@ export default class ChangePlanCommitmentTerm extends Vue {
       date.setDate(currentDate.getDate() + 1);
     }
 
-    return moment(String(date)).format("MM/DD/YYYY");
+    return moment(String(date)).format("DD/MM/YYYY");
   }
 }
 </script>

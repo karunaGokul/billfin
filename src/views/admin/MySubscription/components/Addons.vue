@@ -155,13 +155,10 @@
     @cancel="onCancel"
     v-if="showCancelModel"
   />
-  <ChangePlanCommitmentTerm
-    :planName="addons.planName"
+  <ChangeAddOnCommitmentTerm
+    :addons="addons"
     :currentTerm="addons.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
-    :startDate="addons.startDate"
-    :endDate="!addons.endDate ? addons.renewDate : addons.endDate"
-    :currentPlanAmount="addons.amount"
-    :planId="addons.addOnId"
+    @done="onUpdateTermChanged"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -171,14 +168,14 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
-import ChangePlanCommitmentTerm from "./ChangePlanCommitmentTerm.vue";
+import ChangeAddOnCommitmentTerm from "./ChangeAddOnCommitmentTerm.vue";
 
 import { addonsResponseModel } from "@/model";
 
 @Options({
   components: {
     CancelPlanAddOn,
-    ChangePlanCommitmentTerm,
+    ChangeAddOnCommitmentTerm,
   },
 })
 export default class Addons extends Vue {
@@ -232,6 +229,10 @@ export default class Addons extends Vue {
 
   public clickOutSideTerm() {
     this.toggleCommitmentTerm = false;
+  }
+
+  public onUpdateTermChanged() {
+    this.$router.push("/my-subscription");
   }
 
   get description() {

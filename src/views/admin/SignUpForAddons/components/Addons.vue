@@ -38,30 +38,28 @@ export default class Addons extends Vue {
   public plans: Array<any> = [];
 
   created() {
-    this.products.forEach((item: string) => {
-      if (item == "AUM")
-        this.plans.push({
-          product: item,
-          planId: this.aumBilling.plan.planId,
-          planSubscriptionId: this.aumBilling.plan.subscriptionPlanId,
-          preAddons: this.addons(
-            this.aumBilling.plan.preIncludedAddons,
-            this.aumBilling.addons
-          ),
-          termPlanType: this.aumBilling.commitmentTerm,
-        });
-      else
-        this.plans.push({
-          product: item,
-          planId: this.subscriptionBilling.plan.planId,
-          planSubscriptionId: this.subscriptionBilling.plan.subscriptionPlanId,
-          preAddons: this.addons(
-            this.subscriptionBilling.plan.preIncludedAddons,
-            this.subscriptionBilling.addons
-          ),
-          termPlanType: this.subscriptionBilling.commitmentTerm,
-        });
-    });
+    if (this.products == "AUM")
+      this.plans.push({
+        product: this.products,
+        planId: this.aumBilling.plan.planId,
+        planSubscriptionId: this.aumBilling.plan.subscriptionPlanId,
+        preAddons: this.addons(
+          this.aumBilling.plan.preIncludedAddons,
+          this.aumBilling.addons
+        ),
+        termPlanType: this.aumBilling.commitmentTerm,
+      });
+    else if (this.products == "SUBSCRIPTION")
+      this.plans.push({
+        product: this.products,
+        planId: this.subscriptionBilling.plan.planId,
+        planSubscriptionId: this.subscriptionBilling.plan.subscriptionPlanId,
+        preAddons: this.addons(
+          this.subscriptionBilling.plan.preIncludedAddons,
+          this.subscriptionBilling.addons
+        ),
+        termPlanType: this.subscriptionBilling.commitmentTerm,
+      });
   }
 
   mounted() {
@@ -69,8 +67,11 @@ export default class Addons extends Vue {
   }
 
   public next() {
-    console.log(this.subscriptionBilling.addons);
-    this.$emit("next");
+    if (this.products == "AUM") {
+      if (this.aumBilling.addons.length) this.$emit("next");
+    } else if (this.products == "SUBSCRIPTION") {
+      if (this.subscriptionBilling.addons.length) this.$emit("next");
+    }
   }
 
   public back() {
@@ -84,16 +85,13 @@ export default class Addons extends Vue {
     let addons: Array<subscribeAddonsResponseModel> = [];
 
     if (selectedAddons && preIncludedAddons) {
-      selectedAddons.forEach((item) => {
-        item.current = true;
-      });
-
       let addOnName = new Set(preIncludedAddons.map((item) => item.addOnName));
       addons = [
         ...preIncludedAddons,
         ...selectedAddons.filter((item) => !addOnName.has(item.addOnName)),
       ];
-    }
+    } else if (selectedAddons) addons = selectedAddons;
+    else if (preIncludedAddons) addons = preIncludedAddons;
 
     return addons;
   }
@@ -107,7 +105,7 @@ export default class Addons extends Vue {
   }
 
   get products() {
-    return this.store.getters.products;
+    return this.store.getters.products.toString();
   }
 }
 </script>

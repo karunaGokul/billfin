@@ -4,8 +4,17 @@ import {
   manageSubscriptionResponseModel,
   termPlanAmountReqeustModel,
   termPlanAmountResponseModel,
+  termAddOnAmountRequestModel,
+  termAddOnAmountResponseModel,
   changePlanTermRequestModel,
   changePlanTermResponseModel,
+  changeAddOnTermRequestModel,
+  cardDetailsRequestModel,
+  cardDetailsResponsetModel,
+  billingAddressRequestModel,
+  billingAddressResponseModel,
+  addMoreSubscriptionRequestModel,
+  addMoreSubscriptionResponseModel,
 } from "@/model";
 
 export interface IManageSubscription
@@ -16,9 +25,24 @@ export interface IManageSubscription
   getTermPlanAmount(
     request: termPlanAmountReqeustModel
   ): Promise<termPlanAmountResponseModel>;
-  changePlan(
+  changePlanTerm(
     request: changePlanTermRequestModel
   ): Promise<changePlanTermResponseModel>;
+  getCardDetails(
+    request: cardDetailsRequestModel
+  ): Promise<Array<cardDetailsResponsetModel>>;
+  getTermAddOnAmount(
+    request: termAddOnAmountRequestModel
+  ): Promise<termAddOnAmountResponseModel>;
+  changeAddOnTerm(
+    request: changeAddOnTermRequestModel
+  ): Promise<changePlanTermResponseModel>;
+  getBillingAddress(
+    request: billingAddressRequestModel
+  ): Promise<billingAddressResponseModel>;
+  subscribeAddOns(
+    request: addMoreSubscriptionRequestModel
+  ): Promise<addMoreSubscriptionResponseModel>;
 }
 
 export class ManageSubscription extends BaseService<
@@ -50,14 +74,64 @@ export class ManageSubscription extends BaseService<
     });
   }
 
-  public changePlan(
-    request: changePlanTermRequestModel
-  ): Promise<changePlanTermResponseModel> {
-    return this.httpPost(
-      "private/api/v1/changePlanTerm",
+  public getTermAddOnAmount(
+    request: termAddOnAmountRequestModel
+  ): Promise<termAddOnAmountResponseModel> {
+    return this.httpGet(
+      "private/api/v1/subscription/termAddOnDetail",
       request
     ).then((response) => {
       return response.data;
     });
+  }
+
+  public changePlanTerm(
+    request: changePlanTermRequestModel
+  ): Promise<changePlanTermResponseModel> {
+    return this.httpPost("private/api/v1/changePlanTerm", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public changeAddOnTerm(
+    request: changeAddOnTermRequestModel
+  ): Promise<changePlanTermResponseModel> {
+    return this.httpPost("private/api/v1/changeAddOnTerm", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public getCardDetails(
+    request: cardDetailsRequestModel
+  ): Promise<Array<cardDetailsResponsetModel>> {
+    return this.httpGet("private/api/v1/cardDetails", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public getBillingAddress(
+    request: billingAddressRequestModel
+  ): Promise<billingAddressResponseModel> {
+    return this.httpGet("private/api/v1/billingAddress", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public subscribeAddOns(
+    request: addMoreSubscriptionRequestModel
+  ): Promise<addMoreSubscriptionResponseModel> {
+    return this.httpPost("private/api/v1/addOn", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 }

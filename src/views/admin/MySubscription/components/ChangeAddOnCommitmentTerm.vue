@@ -12,7 +12,7 @@
         </div>
         <div class="modal-body p-6">
           <p class="fs-4 fw-bolder">
-            {{ addons.addOnName }} Plan
+            {{ addons.addOnName }}
           </p>
           <div class="row g-0">
             <div class="col-6">
@@ -87,7 +87,7 @@
                       New Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(response.termPlanAmount) }}
+                      {{ $filters.currencyDisplay(response.planAddOnAmount) }}
                       <span>/{{ newTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
@@ -96,10 +96,9 @@
             </div>
           </div>
           <p class="fs-5 pt-4">
-            Note that all your add-ons will automatically convert to monthly
-            subscriptions along with your plan subscription. All else will
-            remain the same, except monthly pricing and payment terms apply once
-            your switch becomes effective, which will be {{ newTermStartDate }}.
+            All else will remain unchanged, except annual pricing and payment
+            terms apply once your switch becomes effective, which will be
+            {{ newTermStartDate }}.
           </p>
         </div>
         <div class="modal-footer p-4">
@@ -110,7 +109,7 @@
           >
             Exit
           </button>
-          <button type="button" class="btn btn-primary" @click="changeTerm">
+          <button type="button" class="btn btn-primary" @click="changeAddOnTerm">
             Switch Plan
           </button>
         </div>
@@ -124,12 +123,14 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import moment from "moment";
 
+import { useStore } from "vuex";
+
 import {
   addonsResponseModel,
-  termPlanAmountReqeustModel,
-  termPlanAmountResponseModel,
+  termAddOnAmountRequestModel,
+  termAddOnAmountResponseModel,
   CommitmentTerm,
-  changePlanTermRequestModel,
+  changeAddOnTermRequestModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -140,20 +141,25 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
   @Prop() addons: addonsResponseModel;
   @Prop() currentTerm: string;
 
-  public response: termPlanAmountResponseModel =
-    new termPlanAmountResponseModel();
+  public response: termAddOnAmountResponseModel =
+    new termAddOnAmountResponseModel();
+
+  public store = useStore();
 
   created() {
-    this.getTermPlanAmount();
+    this.getTermAddOnAmount();
   }
 
-  private getTermPlanAmount() {
-    let request: termPlanAmountReqeustModel = new termPlanAmountReqeustModel();
+  private getTermAddOnAmount() {
+    let request: termAddOnAmountRequestModel =
+      new termAddOnAmountRequestModel();
     request.termPlanType =
       CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.planId = this.addons.addOnId;
+    request.planId = this.addons.planId;
+    request.addOnName = this.addons.addOnName;
+
     this.service
-      .getTermPlanAmount(request)
+      .getTermAddOnAmount(request)
       .then((response) => {
         this.response = response;
       })
@@ -162,17 +168,19 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
       });
   }
 
-  private changeTerm() {
-    let request: changePlanTermRequestModel = new changePlanTermRequestModel();
+  private changeAddOnTerm() {
+    let request: changeAddOnTermRequestModel =
+      new changeAddOnTermRequestModel();
     request.eventType = "TERM_CHANGE";
-    request.subscriptionPlanId = this.addons.subscriptionAddOnId;
+    request.subscriptionAddOnId = this.addons.subscriptionAddOnId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termPlanId = this.addons.termAddOnId;
+    request.termPlanId = this.addons.termPlanId;
+    request.firmId = this.store.getters.selectedFirmId;
 
     this.service
-      .changePlan(request)
+      .changeAddOnTerm(request)
       .then((response) => {
-        console.log(response);
+        this.$emit("done");
       })
       .catch((err) => {
         console.log(err);
@@ -188,7 +196,12 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
   }
 
   get newTermStartDate() {
-    let currentDate = new Date(this.addons.renewDate);
+    let endDate = this.addons.renewDate.split("/");
+    let currentDate = new Date(
+      parseInt(endDate[2]),
+      parseInt(endDate[1]) - 1,
+      parseInt(endDate[0])
+    );
     let date = new Date(currentDate);
     if (this.newTerm == "Monthly") {
       date.setMonth(currentDate.getMonth() + 1);
@@ -198,7 +211,7 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
       date.setDate(currentDate.getDate() + 1);
     }
 
-    return moment(String(date)).format("MM/DD/YYYY");
+    return moment(String(date)).format("DD/MM/YYYY");
   }
 }
 </script>

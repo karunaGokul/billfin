@@ -54,6 +54,7 @@
         <button
           class="btn btn-primary ms-5"
           :disabled="!isAgreed"
+          @click="subscribe"
         >
           Subscribe
         </button>
@@ -69,12 +70,16 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
-import { subscribeRequestModel, productsModel, addOnsModel } from "@/model";
+import {
+  addOnsModel,
+  CommitmentTerm,
+  addMoreSubscriptionRequestModel,
+} from "@/model";
 
-import { ISubscripeService } from "@/service";
+import { IManageSubscription } from "@/service";
 
 export default class Subscribe extends Vue {
-  @Inject("subscripeService") service: ISubscripeService;
+  @Inject("manageSubscripeService") service: IManageSubscription;
 
   public store = useStore();
   public isAgreed: boolean = false;
@@ -83,37 +88,30 @@ export default class Subscribe extends Vue {
     this.$emit("back");
   }
 
-  /*public subscribe() {
-    let request: subscribeRequestModel = new subscribeRequestModel();
+  public subscribe() {
+    let request: addMoreSubscriptionRequestModel =
+      new addMoreSubscriptionRequestModel();
+
+    request.eventType = "SUBSCRIBE";
     request.firmId = this.store.getters.selectedFirmId;
 
-    let products = new productsModel();
     if (this.showAumBilling) {
-      products.productCode = "AUM";
-      products.subscriptions.push({
-        termPlanId: this.aumBilling.plan.termPlanId,
-        startDate: this.startDate,
-      });
-      products.addOns = this.getAddons(this.aumBilling.addons);
-      request.products.push(products);
+      request.term = CommitmentTerm[this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm];
+      request.termPlanId = this.aumBilling.plan.termPlanId;
+      request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
-      products = new productsModel();
-      products.productCode = "SUBSCRIPTION";
-      products.subscriptions.push({
-        termPlanId: this.subscriptionBilling.plan.termPlanId,
-        startDate: this.startDate,
-      });
-      products.addOns = this.getAddons(this.subscriptionBilling.addons);
-      request.products.push(products);
+      request.term = CommitmentTerm[this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm];
+      request.termPlanId = this.subscriptionBilling.plan.termPlanId;
+      request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
     this.service
-      .createSubscription(request)
+      .subscribeAddOns(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
           this.$emit("next");
-          //this.store.dispatch("clearSubscription");
+          this.store.dispatch("clearSubscription");
         }
       })
       .catch((err) => {
@@ -132,7 +130,7 @@ export default class Subscribe extends Vue {
       });
     });
     return addons;
-  }*/
+  }
 
   get products() {
     return this.store.getters.products;

@@ -1,7 +1,8 @@
 import { GetterTree, MutationTree, ActionTree } from "vuex";
+import { SubscribeModel } from "@/model";
 import { AddressService } from "@/service";
 
-const state: any = {
+const state: SubscribeModel = {
   products: [],
   aumBilling: { plan: {}, addons: [], commitmentTerm: "" },
   subscriptionBilling: { plan: {}, addons: [], commitmentTerm: "" },

@@ -18,3 +18,18 @@ export class firmRequestModel {
     firmId: number | any;
     billingType: string | any;
 }
+export class planModel {
+    plan: any;
+    addons: Array<any>;
+    commitmentTerm: string;
+}
+export class SubscribeModel {
+    products: Array<string>;
+    aumBilling: planModel;
+    subscriptionBilling: planModel;
+    paymentType: string;
+    creditCard: any;
+    ach: any;
+    address: any;
+    states: Array<string>;
+}

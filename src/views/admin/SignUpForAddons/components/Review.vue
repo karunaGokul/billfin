@@ -8,12 +8,11 @@
         <div class="mt-8 d-flex justify-content-between">
           <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
-            <!--<span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span> -->
+            <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
-          <!--<div class="text-light-gray fs-4 fw-bold">
-            {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
-          </div> -->
         </div>
 
         <div
@@ -32,7 +31,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -41,10 +42,16 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{aumBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="col-2 text-end fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -52,17 +59,14 @@
       <template v-if="showSubscription">
         <div class="mt-8 d-flex justify-content-between">
           <div class="text-dark-black fs-4">
-           <!-- <span class="fw-bolder">Subscription Billing: </span>
+            <span class="fw-bolder">Subscription Billing: </span>
             <span class="fw-bold ms-2">{{
               subscriptionBilling.plan.planName
             }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span> -->
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
-         <!-- <div class="text-light-gray fs-4 fw-bold">
-            {{
-              $filters.currencyDisplay(subscriptionBilling.plan.termPlanAmount)
-            }}
-          </div> -->
         </div>
 
         <div
@@ -81,7 +85,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -90,10 +96,18 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
-          <div class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+          <div
+            class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray"
+          >
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -114,7 +128,7 @@
         <div>{{ $filters.currencyDisplay(totalFees) }}</div>
       </div>
 
-      <!--<div class="row g-0">
+      <div class="row g-0">
         <div class="col-4">
           <h4 class="fw-bold mt-10 pb-4">Billing Address</h4>
 
@@ -137,30 +151,30 @@
                   src="@/assets/mastercard.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'mast'"
+                  v-if="creditCard.cardType == 'MasterCard'"
                 />
                 <img
                   src="@/assets/visa.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'visa'"
+                  v-if="creditCard.cardType == 'Visa'"
                 />
                 <img
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'amex'"
+                  v-if="creditCard.cardType == 'American'"
                 />
                 <img
                   src="@/assets/discover.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'disc'"
+                  v-if="creditCard.cardType == 'Discover'"
                 />
               </div>
               <div class="p-4">
                 <div class="text-dark-gray fw-bolder p-2">
-                  {{ cardType }} ****{{
+                  {{ creditCard.cardType }} ****{{
                     creditCard.number.substr(creditCard.number.length - 4)
                   }}
                 </div>
@@ -182,7 +196,7 @@
             <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <div class="text-center mt-10">
         <button class="btn btn-light me-5" @click="back">Back</button>
@@ -193,11 +207,40 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import {
+  billingAddressRequestModel,
+  billingAddressResponseModel,
+} from "@/model";
+
+import { IManageSubscription } from "@/service";
+
 export default class Review extends Vue {
+  @Inject("manageSubscripeService") service: IManageSubscription;
+
   public store = useStore();
+  public address: billingAddressResponseModel =
+    new billingAddressResponseModel();
+
+  created() {
+    this.getBillingAddress();
+  }
+
+  private getBillingAddress() {
+    let request = new billingAddressRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getBillingAddress(request)
+      .then((response) => {
+        this.address = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   public back() {
     this.$emit("back");
@@ -232,14 +275,14 @@ export default class Review extends Vue {
       aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+        return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
       }, 0);
     }
 
     if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
-          return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+          return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
         },
         0
       );
@@ -257,18 +300,6 @@ export default class Review extends Vue {
 
   get ach() {
     return this.store.getters.ach;
-  }
-  get address() {
-    return this.store.getters.address;
-  }
-
-  get cardType() {
-    let cardType: string = "";
-    if (this.creditCard.cardType == "mast") cardType = "Master card";
-    else if (this.creditCard.cardType == "visa") cardType = "Visa";
-    else if (this.creditCard.cardType == "amex") cardType = "American Express";
-    else cardType = "Discover";
-    return cardType;
   }
 }
 </script>

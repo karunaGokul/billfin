@@ -40,6 +40,8 @@ export class addonsResponseModel extends addOnsModel {
   cardNumber: string;
   active: boolean;
   description: string;
+  planId: number;
+  termPlanId: number;
 }
 export class manageSubscriptionResponseModel {
   productCode: string;
@@ -50,6 +52,9 @@ export class termPlanAmountReqeustModel {
   termPlanType: string;
   planId: number;
 }
+export class termAddOnAmountRequestModel extends termPlanAmountReqeustModel {
+  addOnName: string;
+}
 export class termPlanAmountResponseModel {
   planName: string;
   planCode: string;
@@ -58,6 +63,14 @@ export class termPlanAmountResponseModel {
   termPlanAmount: number;
   planId: number;
   termPlanId: number;
+}
+export class termAddOnAmountResponseModel {
+  addOnName: string;
+  planAddOnAmount: number;
+  planId: number;
+  termPlanAddOnId: number;
+  termPlanId: number;
+  termPlanType: string;
 }
 export class changePlanTermRequestModel {
   eventType: string;
@@ -69,6 +82,50 @@ export class changePlanTermRequestModel {
 export class changePlanTermResponseModel {
   status: string;
 }
+export class changeAddOnTermRequestModel {
+  eventType: string;
+  subscriptionAddOnId: number;
+  term: string;
+  termPlanId: number;
+  firmId: number;
+}
 export class subscribedAddonsReqeustModel {
   planSubscriptionId: number;
+}
+export class cardDetailsRequestModel {
+  paymentMethod: string;
+  firmId: number;
+}
+export class cardDetailsResponsetModel {
+  cardNumber: string;
+  cardType: string;
+  creditCardId: string;
+  expDate: string;
+  maskBinNumber: string;
+  maskNumber: string;
+  token: string;
+  typeName: string;
+  status: string;
+}
+export class billingAddressRequestModel {
+  firmId: number;
+}
+export class billingAddressResponseModel {
+  bill_addr1: string;
+  bill_addr2: string;
+  bill_addr3: string;
+  bill_city: string;
+  bill_country: string;
+  bill_postcode: string;
+  bill_state: string;
+}
+export class addMoreSubscriptionRequestModel {
+  term: string;
+  termPlanId: number;
+  eventType: string;
+  firmId: number;
+  addOns: Array<addOnsModel>
+}
+export class addMoreSubscriptionResponseModel {
+  status: string;
 }

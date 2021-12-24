@@ -418,12 +418,11 @@ export default class PickAddons extends Vue {
   @Prop() preAddons: Array<subscribeAddonsResponseModel>;
   @Prop() planSubscriptionId: number;
 
-  public commitmentTerm: string = "Annual";
-
   @Inject("subscripeService") service: ISubscripeService;
 
+  public commitmentTerm: string = "Annual";
   public itemsPerRow: number = 0;
-  public planRow: any;
+  public planRow: any = [];
   public store = useStore();
   public addons: Array<subscribeAddonsResponseModel> = [];
   public subscribedAddOns: Array<subscribeAddonsResponseModel> = [];
@@ -624,7 +623,7 @@ export default class PickAddons extends Vue {
 
   public updateAddons(response?: subscribeAddonsResponseModel) {
     if (response) response.selected = !response.selected;
-    
+
     if (this.addOnType == "AddMoreAddOns")
       this.store.dispatch("updateTerm", {
         product: this.product,

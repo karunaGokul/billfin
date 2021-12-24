@@ -72,16 +72,13 @@ export default class Addons extends Vue {
     let addons: Array<subscribeAddonsResponseModel> = [];
 
     if (selectedAddons && preIncludedAddons) {
-      selectedAddons.forEach((item) => {
-        item.current = true;
-      });
-
       let addOnName = new Set(preIncludedAddons.map((item) => item.addOnName));
       addons = [
         ...preIncludedAddons,
         ...selectedAddons.filter((item) => !addOnName.has(item.addOnName)),
       ];
-    }
+    } else if (selectedAddons) addons = selectedAddons;
+    else if (preIncludedAddons) addons = preIncludedAddons;
 
     return addons;
   }

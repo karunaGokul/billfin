@@ -129,19 +129,34 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   public addMoreAddons() {
-    let plans = new subscriptionResponseModel();
+    let plans = new subscriptionResponseModel(),
+      addons = new addonsResponseModel();
 
-    if (this.upcomingStatus) plans = this.upcomingStatus;
-    else if (this.newStatus) plans = this.newStatus;
+    if (this.upcomingPlanStatus) plans = this.upcomingPlanStatus;
+    else if (this.newPlanStatus) plans = this.newPlanStatus;
+
+    if (this.upcomingAddOnStatus) addons = this.upcomingAddOnStatus;
+    else if (this.newAddOnStatus) addons = this.newAddOnStatus;
 
     let payload = [];
     payload.push(this.bliingType);
     this.store.dispatch("updateProducts", payload);
 
+    this.store.dispatch(
+      "updatePaymentType",
+      addons.cardType == "Credit Card" ? addons.cardType : "ACH"
+    );
+
+    let cardNumber = { number: addons.cardNumber };
+
+    if (addons.cardType == "Credit Card")
+      this.store.dispatch("updateCreditCard", cardNumber);
+    else this.store.dispatch("updateACH", cardNumber);
+
     let options = {
       product: this.bliingType,
       plan: plans,
-      commitmentTerm: plans.term == "ANNUAL" ? "Annual" : "Monthly",
+      commitmentTerm: addons.term == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);
     this.$router.push("/add-more-addons");
@@ -150,21 +165,32 @@ export default class AumSubscriptionBilling extends Vue {
   get allowChangeAddonTerm() {
     let allow: boolean = true;
 
-    if (this.upcomingStatus) {
-      if (this.upcomingStatus.term == "MONTHLY") allow = false;
-    } else if (this.newStatus) {
-      if (this.newStatus.term == "MONTHLY" && this.newStatus.endDate == null)
+    if (this.upcomingPlanStatus) {
+      if (this.upcomingPlanStatus.term == "MONTHLY") allow = false;
+    } else if (this.newPlanStatus) {
+      if (
+        this.newPlanStatus.term == "MONTHLY" &&
+        this.newPlanStatus.endDate == null
+      )
         allow = false;
     }
     return allow;
   }
 
-  get upcomingStatus() {
+  get upcomingPlanStatus() {
     return this.plans.find((item) => item.status == "UPCOMING");
   }
 
-  get newStatus() {
+  get newPlanStatus() {
     return this.plans.find((item) => item.status == "NEW");
+  }
+
+  get upcomingAddOnStatus() {
+    return this.addons.find((item) => item.status == "UPCOMING");
+  }
+
+  get newAddOnStatus() {
+    return this.addons.find((item) => item.status == "NEW");
   }
 }
 </script>

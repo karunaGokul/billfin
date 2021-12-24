@@ -172,6 +172,7 @@
   <ChangePlanCommitmentTerm
     :plan="plan"
     :currentTerm="plan.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
+    @done="onUpdateTermChanged"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
   />
@@ -239,6 +240,10 @@ export default class Plan extends Vue {
 
   public onRenewModel() {
     this.toggleRenewModel = false;
+  }
+
+  public onUpdateTermChanged() {
+    this.$router.push("/my-subscription");
   }
 
   get description() {
