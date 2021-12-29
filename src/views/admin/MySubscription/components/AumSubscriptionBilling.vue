@@ -18,7 +18,7 @@
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in plans" :key="index">
-        <plan :plan="item" />
+        <plan :plan="item" :product="bliingType" />
       </div>
       <div class="p-8 text-center" v-if="!loading && !plans.length">
         <div class="fw-bolder fs-4 p-4">
@@ -153,10 +153,12 @@ export default class AumSubscriptionBilling extends Vue {
       this.store.dispatch("updateCreditCard", cardNumber);
     else this.store.dispatch("updateACH", cardNumber);
 
+    console.log(plans);
+
     let options = {
       product: this.bliingType,
       plan: plans,
-      commitmentTerm: addons.term == "ANNUAL" ? "Annual" : "Monthly",
+      commitmentTerm: plans.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);
     this.$router.push("/add-more-addons");
@@ -166,10 +168,10 @@ export default class AumSubscriptionBilling extends Vue {
     let allow: boolean = true;
 
     if (this.upcomingPlanStatus) {
-      if (this.upcomingPlanStatus.term == "MONTHLY") allow = false;
+      if (this.upcomingPlanStatus.commitmentTerm == "MONTHLY") allow = false;
     } else if (this.newPlanStatus) {
       if (
-        this.newPlanStatus.term == "MONTHLY" &&
+        this.newPlanStatus.commitmentTerm == "MONTHLY" &&
         this.newPlanStatus.endDate == null
       )
         allow = false;
@@ -182,7 +184,7 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   get newPlanStatus() {
-    return this.plans.find((item) => item.status == "NEW");
+    return this.plans.find((item) => item.status == "CURRENT");
   }
 
   get upcomingAddOnStatus() {
@@ -190,7 +192,7 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   get newAddOnStatus() {
-    return this.addons.find((item) => item.status == "NEW");
+    return this.addons.find((item) => item.status == "CURRENT");
   }
 }
 </script>

@@ -17,8 +17,8 @@ export class subscriptionResponseModel extends subscriptionsModel {
   planName: string;
   planId: number;
   paymentToken: string;
-  term: string;
-  amount: number;
+  commitmentTerm: string;
+  paymentAmount: number;
   endDate: string;
   renewDate: string;
   status: string;
@@ -32,8 +32,8 @@ export class addonsResponseModel extends addOnsModel {
   addOnId: number;
   cardType: string;
   paymentToken: string;
-  term: string;
-  amount: number;
+  commitmentTerm: string;
+  paymentAmount: number;
   endDate: string;
   renewDate: string;
   status: string;
@@ -86,7 +86,7 @@ export class changeAddOnTermRequestModel {
   eventType: string;
   subscriptionAddOnId: number;
   term: string;
-  termPlanId: number;
+  termAddOnId: number;
   firmId: number;
 }
 export class subscribedAddonsReqeustModel {
@@ -124,7 +124,8 @@ export class addMoreSubscriptionRequestModel {
   termPlanId: number;
   eventType: string;
   firmId: number;
-  addOns: Array<addOnsModel>
+  subscriptionPlanId: number;
+  addOns: Array<addOnsModel>;
 }
 export class addMoreSubscriptionResponseModel {
   status: string;

@@ -47,7 +47,7 @@
                       Current Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(plan.amount) }}
+                      {{ $filters.currencyDisplay(plan.paymentAmount) }}
                       <span>/{{ currentTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>

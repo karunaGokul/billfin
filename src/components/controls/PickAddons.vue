@@ -114,7 +114,7 @@
                       border-bottom border-dashed
                     "
                   >
-                    {{ item.startDate }} - {{ item.endDate }}
+                    {{ item.startDate }} - {{ item.renewDate }}
                   </td>
                   <td
                     class="
@@ -135,7 +135,7 @@
                       border-bottom border-dashed
                     "
                   >
-                    {{ $filters.currencyDisplay(item.amount) }}
+                    {{ $filters.currencyDisplay(item.paymentAmount) }}
                   </td>
                   <td
                     class="
@@ -147,7 +147,7 @@
                   >
                     <span
                       class="text-success ps-6 pe-6 pt-2 pb-2 bg-success-alpha"
-                      >{{ item.startDate }}</span
+                      >{{ item.renewDate }}</span
                     >
                   </td>
                 </tr>
@@ -193,6 +193,7 @@
                       'btn-success': commitmentTerm == 'Annual',
                       'text-gray': commitmentTerm != 'Annual',
                     }"
+                    :disabled="commitmentTerm == 'Monthly'"
                     @click="updateCommitmentTerm('Annual')"
                   >
                     Annual

@@ -54,7 +54,6 @@
         <button
           class="btn btn-primary ms-5"
           :disabled="!isAgreed"
-          @click="subscribe"
         >
           Subscribe
         </button>

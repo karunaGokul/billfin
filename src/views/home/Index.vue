@@ -218,21 +218,6 @@ export default class Home extends Vue {
     this.getFirms();
   }
 
-  mounted() {
-    let url = window.location.origin;
-    let path = Settings.ApiJson;
-    //fetch(url + "/" + path).then(response => response.json()).then(data => (console.log(data)));
-
-    /*axios
-      .get(url + "/" + path)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });*/
-  }
-
   private getFirms() {
     if (
       this.dataEntitlements.length == 1 &&
@@ -335,6 +320,8 @@ export default class Home extends Vue {
         this.page == "Manage Subscription" ? "My Subscription" : this.page
       }</li>`;
     } else if (this.page == "Sign Up For Add-Ons") {
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
+    } else if (this.page == "Change Plan") {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
     }
 

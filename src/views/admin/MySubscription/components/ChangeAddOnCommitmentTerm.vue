@@ -47,7 +47,7 @@
                       Current Term Price
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ $filters.currencyDisplay(addons.amount) }}
+                      {{ $filters.currencyDisplay(addons.paymentAmount) }}
                       <span>/{{ currentTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
@@ -110,7 +110,7 @@
             Exit
           </button>
           <button type="button" class="btn btn-primary" @click="changeAddOnTerm">
-            Switch Plan
+            Switch Add-on
           </button>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
     request.eventType = "TERM_CHANGE";
     request.subscriptionAddOnId = this.addons.subscriptionAddOnId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termPlanId = this.addons.termPlanId;
+    request.termAddOnId = this.addons.termAddOnId;
     request.firmId = this.store.getters.selectedFirmId;
 
     this.service

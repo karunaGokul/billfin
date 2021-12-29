@@ -96,6 +96,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/add-more-addons",
         name: "Sign Up For Add-Ons",
         component: () => import("@/views/admin/SignUpForAddons/Index.vue")
+      },
+      {
+        path: "/change-plan",
+        name: "Change Plan",
+        component: () => import("@/views/admin/ChangePlan/Index.vue")
       }
     ],
   },

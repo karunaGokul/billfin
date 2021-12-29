@@ -154,6 +154,7 @@ export default class PickPlan extends Vue {
 
   public selectedPlan: subscribePlanResponseModel = new subscribePlanResponseModel();
   public plans: Array<subscribePlanResponseModel> = [];
+  public currentPlan: subscribePlanResponseModel = new subscribePlanResponseModel();
 
   private planInfo = [
     {
@@ -245,11 +246,15 @@ export default class PickPlan extends Vue {
       if (this.aumBilling.commitmentTerm)
         this.commitmentTerm = this.aumBilling.commitmentTerm;
       this.selectedPlan = this.aumBilling.plan;
+      this.currentPlan = this.aumBilling.currentPlan;
     } else {
       if (this.subscriptionBilling.commitmentTerm)
         this.commitmentTerm = this.subscriptionBilling.commitmentTerm;
       this.selectedPlan = this.subscriptionBilling.plan;
+      this.currentPlan = this.subscriptionBilling.currentPlan;
     }
+
+    console.log(this.currentPlan);
   }
 
   mounted() {
@@ -320,6 +325,7 @@ export default class PickPlan extends Vue {
       product: this.product,
       plan: plan,
       addons: [],
+      currentPlan: this.currentPlan,
       commitmentTerm: this.commitmentTerm,
     });
   }

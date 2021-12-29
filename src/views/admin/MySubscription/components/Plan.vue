@@ -7,7 +7,7 @@
       >
         {{ plan.planName }}
         <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
-          plan.status == "NEW"
+          plan.status == "CURRENT"
             ? "Current"
             : plan.status == "UPCOMING"
             ? "Upcoming"
@@ -71,11 +71,11 @@
         style="width: fit-content"
         :class="{
           'border-warning bg-warning-alpha text-warning':
-            (plan.status == 'NEW' && plan.endDate == null) ||
+            (plan.status == 'CURRENT' && plan.endDate == null) ||
             (plan.status == 'UPCOMING' && plan.endDate == null),
           'border-danger bg-dander-alpha text-danger':
             plan.status == 'CANCELLED' ||
-            (plan.status == 'NEW' && plan.endDate != null),
+            (plan.status == 'CURRENT' && plan.endDate != null),
         }"
       >
         {{ planStatus }}
@@ -90,7 +90,7 @@
         :class="{ 'text-gray-secondary': plan.endDate }"
         @click="!plan.endDate ? toggleCommitmentTerm = true : ''"
       >
-        {{ plan.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
+        {{ plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
@@ -99,7 +99,7 @@
             @click="showCommitmentTermModel = true"
           >
             Switch to
-            {{ plan.term == "ANNUAL" ? "Monthly" : "Annual" }}
+            {{ plan.commitmentTerm == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
@@ -108,10 +108,10 @@
         {{ plan.startDate }} -
         {{
           plan.status == "CANCELLED" ||
-          (plan.status == "NEW" && plan.endDate != null)
+          (plan.status == "CURRENT" && plan.endDate != null)
             ? plan.endDate
             : (plan.status == "UPCOMING" && plan.endDate == null) ||
-              (plan.status == "NEW" && this.plan.endDate == null)
+              (plan.status == "CURRENT" && this.plan.endDate == null)
             ? plan.renewDate
             : ""
         }}
@@ -123,7 +123,7 @@
         :class="{ 'text-gray-secondary': plan.endDate }"
       >
         <span class="fs-7">$</span>
-        {{ $filters.currencyDisplayWithoutSymbol(plan.amount) }}
+        {{ $filters.currencyDisplayWithoutSymbol(plan.paymentAmount) }}
         <span class="fs-8 fw-light"
           >/{{ plan.term == "ANNUAL" ? "Yr" : "Mo" }}</span
         >
@@ -142,7 +142,7 @@
           :class="{ show: togglePlan }"
           style="right: 0"
         >
-          <li class="dropdown-item pt-2 pb-2" @click="toggleRenewModel = true">
+          <li class="dropdown-item pt-2 pb-2" @click="changePlan">
             Change Plan
           </li>
           <li class="dropdown-item pt-2 pb-2">View Invoice</li>
@@ -169,9 +169,9 @@
     @cancel="onRenewModel"
     v-if="toggleRenewModel"
   />
-  <ChangePlanCommitmentTerm
+  <change-plan-commitment-term
     :plan="plan"
-    :currentTerm="plan.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
+    :currentTerm="plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly'"
     @done="onUpdateTermChanged"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
@@ -181,7 +181,7 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import moment from "moment";
+import { useStore } from "vuex";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";
@@ -198,6 +198,9 @@ import { subscriptionResponseModel } from "@/model";
 })
 export default class Plan extends Vue {
   @Prop() plan: subscriptionResponseModel;
+  @Prop() product: string;
+
+  public store = useStore();
 
   public togglePlan: boolean = false;
   public toggleCancelModel: boolean = false;
@@ -225,6 +228,34 @@ export default class Plan extends Vue {
       description: "For large RIAs requiring custom license",
     },
   ];
+
+  public changePlan() {
+    
+    this.store.dispatch(
+      "updatePaymentType",
+      this.plan.cardType == "Credit Card" ? this.plan.cardType : "ACH"
+    );
+
+    let cardNumber = { number: this.plan.cardNumber };
+
+    if (this.plan.cardType == "Credit Card")
+      this.store.dispatch("updateCreditCard", cardNumber);
+    else this.store.dispatch("updateACH", cardNumber);
+    
+    let payload = [];
+    payload.push(this.product);
+    this.store.dispatch("updateProducts", payload);
+
+    let options = {
+      product: this.product,
+      plan: {},
+      currentPlan: this.plan,
+      commitmentTerm: this.plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
+    };
+    this.store.dispatch("updatePlan", options);
+
+    this.$router.push('./change-plan');
+  }
 
   public clickOutSidePlan() {
     if (this.togglePlan) this.togglePlan = false;
@@ -257,9 +288,9 @@ export default class Plan extends Vue {
       status = `Cancelled on ${this.planEndDate(this.plan.endDate)}`;
     else if (this.plan.status == "UPCOMING" && this.plan.endDate == null)
       status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
-    else if (this.plan.status == "NEW" && this.plan.endDate == null)
+    else if (this.plan.status == "CURRENT" && this.plan.endDate == null)
       status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
-    else if (this.plan.status == "NEW" && this.plan.endDate != null)
+    else if (this.plan.status == "CURRENT" && this.plan.endDate != null)
       status = `Expires on ${this.planEndDate(this.plan.endDate)}`;
     return status;
   }

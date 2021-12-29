@@ -4,8 +4,13 @@ import { AddressService } from "@/service";
 
 const state: SubscribeModel = {
   products: [],
-  aumBilling: { plan: {}, addons: [], commitmentTerm: "" },
-  subscriptionBilling: { plan: {}, addons: [], commitmentTerm: "" },
+  aumBilling: { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} },
+  subscriptionBilling: {
+    plan: {},
+    addons: [],
+    commitmentTerm: "",
+    currentPlan: {},
+  },
   paymentType: "",
   creditCard: {},
   ach: {},
@@ -49,21 +54,21 @@ const mutations: MutationTree<any> = {
     state.products = response;
   },
   onUpdateTerm(state, response) {
-    if (response.product == "AUM") {
+    if (response.product == "AUM")
       state.aumBilling.commitmentTerm = response.commitmentTerm;
-    } else {
-      state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
-    }
+    else state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
   },
   onUpdatePlan(state, response) {
     if (response.product == "AUM") {
       state.aumBilling.plan = response.plan;
       state.aumBilling.addons = response.addons;
       state.aumBilling.commitmentTerm = response.commitmentTerm;
+      state.aumBilling.currentPlan = response.currentPlan;
     } else {
       state.subscriptionBilling.plan = response.plan;
       state.subscriptionBilling.addons = response.addons;
       state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
+      state.subscriptionBilling.currentPlan = response.currentPlan;
     }
   },
   onUpdateAddons(state, response) {

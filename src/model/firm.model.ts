@@ -22,6 +22,7 @@ export class planModel {
     plan: any;
     addons: Array<any>;
     commitmentTerm: string;
+    currentPlan: any;
 }
 export class SubscribeModel {
     products: Array<string>;

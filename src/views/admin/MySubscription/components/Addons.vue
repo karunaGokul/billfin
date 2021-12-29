@@ -7,7 +7,7 @@
       >
         {{ addons.addOnName }}
         <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
-          addons.status == "NEW"
+          addons.status == "CURRENT"
             ? "Current"
             : addons.status == "UPCOMING"
             ? "Upcoming"
@@ -65,11 +65,11 @@
         style="width: fit-content"
         :class="{
           'border-warning bg-warning-alpha text-warning':
-            (addons.status == 'NEW' && addons.endDate == null) ||
+            (addons.status == 'CURRENT' && addons.endDate == null) ||
             (addons.status == 'UPCOMING' && addons.endDate == null),
           'border-danger bg-dander-alpha text-danger':
             addons.status == 'CANCELLED' ||
-            (addons.status == 'NEW' && addons.endDate != null),
+            (addons.status == 'CURRENT' && addons.endDate != null),
         }"
       >
         {{ addOnStatus }}
@@ -83,7 +83,7 @@
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
         @click="!addons.endDate && allowChangeAddonTerm ? toggleCommitmentTerm = true : ''"
       >
-        {{ addons.term == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
+        {{ addons.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
@@ -93,7 +93,7 @@
             @click="showCommitmentTermModel = true"
           >
             Switch to
-            {{ addons.term == "ANNUAL" ? "Monthly" : "Annual" }}
+            {{ addons.commitmentTerm == "ANNUAL" ? "Monthly" : "Annual" }}
             Commitment
           </li>
         </ul>
@@ -102,10 +102,10 @@
         {{ addons.startDate }} -
         {{
           addons.status == "CANCELLED" ||
-          (addons.status == "NEW" && addons.endDate != null)
+          (addons.status == "CURRENT" && addons.endDate != null)
             ? addons.endDate
             : (addons.status == "UPCOMING" && addons.endDate == null) ||
-              (addons.status == "NEW" && this.addons.endDate == null)
+              (addons.status == "CURRENT" && this.addons.endDate == null)
             ? addons.renewDate
             : ""
         }}
@@ -114,7 +114,7 @@
     <div class="col-2 d-flex align-items-center justify-content-end">
       <div class="fw-bolder fa-2x">
         <span class="fs-7">$</span>
-        {{ $filters.currencyDisplayWithoutSymbol(addons.amount) }}
+        {{ $filters.currencyDisplayWithoutSymbol(addons.paymentAmount) }}
         <span class="fs-8 fw-light"
           >/{{ addons.term == "ANNUAL" ? "Yr" : "Mo" }}</span
         >
@@ -155,9 +155,9 @@
     @cancel="onCancel"
     v-if="showCancelModel"
   />
-  <ChangeAddOnCommitmentTerm
+  <change-add-on-commitment-term
     :addons="addons"
-    :currentTerm="addons.term == 'ANNUAL' ? 'Annual' : 'Monthly'"
+    :currentTerm="addons.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly'"
     @done="onUpdateTermChanged"
     @close="showCommitmentTermModel = false"
     v-if="showCommitmentTermModel"
@@ -247,9 +247,9 @@ export default class Addons extends Vue {
       status = `Cancelled on ${this.addOnEndDate(this.addons.endDate)}`;
     else if (this.addons.status == "UPCOMING" && this.addons.endDate == null)
       status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
-    else if (this.addons.status == "NEW" && this.addons.endDate == null)
+    else if (this.addons.status == "CURRENT" && this.addons.endDate == null)
       status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
-    else if (this.addons.status == "NEW" && this.addons.endDate != null)
+    else if (this.addons.status == "CURRENT" && this.addons.endDate != null)
       status = `Expires on ${this.addOnEndDate(this.addons.endDate)}`;
     return status;
   }
