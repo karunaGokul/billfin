@@ -8,7 +8,7 @@
     :termPlanType="item.termPlanType"
     :preAddons="item.preAddons"
     @update="updatePlan($event, options)"
-    addOnType="AddMoreAddOns"
+    addOnType="ChangePlan"
   />
   <div class="text-center mt-10">
     <button class="btn btn-light me-5" @click="back">Back</button>
@@ -42,7 +42,7 @@ export default class Addons extends Vue {
       this.plans.push({
         product: this.products,
         planId: this.aumBilling.plan.planId,
-        planSubscriptionId: this.aumBilling.plan.subscriptionPlanId,
+        planSubscriptionId: this.aumBilling.currentPlan.subscriptionPlanId,
         preAddons: this.addons(
           this.aumBilling.plan.preIncludedAddons,
           this.aumBilling.addons
@@ -53,7 +53,7 @@ export default class Addons extends Vue {
       this.plans.push({
         product: this.products,
         planId: this.subscriptionBilling.plan.planId,
-        planSubscriptionId: this.subscriptionBilling.plan.subscriptionPlanId,
+        planSubscriptionId: this.subscriptionBilling.currentPlan.subscriptionPlanId,
         preAddons: this.addons(
           this.subscriptionBilling.plan.preIncludedAddons,
           this.subscriptionBilling.addons

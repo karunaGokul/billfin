@@ -21,7 +21,6 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import { IManageSubscription } from "@/service";
-
 import { subscribeAddonsResponseModel } from "@/model";
 
 import PickAddons from "@/components/controls/PickAddons.vue";

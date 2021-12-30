@@ -58,9 +58,9 @@
             }}
           </div>
 
-          <div class="d-flex justify-content-evenly m-6">
+          <div class="d-flex justify-content-evenly mt-4 mb-4 m-2">
             <div
-              class="ms-4 me-4 p-4 pt-12 pb-12 rounded"
+              class="ms-4 me-4 p-4 pt-12 pb-12 rounded position-relative"
               :class="{
                 'border border-primary bg-primary-alpha':
                   item.planName == selectedPlan.planName &&
@@ -68,12 +68,45 @@
                 'bg-light':
                   item.planName == 'Enterprise' ||
                   item.planName != selectedPlan.planName,
+                'border border-danger bg-danger-light-alpha':
+                  item.planName == currentPlan.planName &&
+                  item.termPlanId == currentPlan.termPlanId,
               }"
               style="width: 260px"
               @click="updatePlan(item)"
               v-for="(item, index) in plans"
               :key="index"
             >
+              <span
+                class="
+                  badge
+                  bg-danger
+                  position-absolute
+                  start-50
+                  translate-middle
+                  p-3
+                "
+                v-if="
+                  item.planName == currentPlan.planName &&
+                  item.termPlanId == currentPlan.termPlanId
+                "
+                >Current Plan</span
+              >
+              <span
+                class="
+                  badge
+                  bg-primary
+                  position-absolute
+                  start-50
+                  translate-middle
+                  p-3
+                "
+                v-if="
+                  item.planName == selectedPlan.planName &&
+                  item.planName != 'Enterprise'
+                "
+                >Selected Plan</span
+              >
               <div class="fw-bolder p-3 fs-3 text-center mt-4">
                 {{ item.planName }}
               </div>
@@ -152,9 +185,11 @@ export default class PickPlan extends Vue {
 
   public store = useStore();
 
-  public selectedPlan: subscribePlanResponseModel = new subscribePlanResponseModel();
+  public selectedPlan: subscribePlanResponseModel =
+    new subscribePlanResponseModel();
   public plans: Array<subscribePlanResponseModel> = [];
-  public currentPlan: subscribePlanResponseModel = new subscribePlanResponseModel();
+  public currentPlan: subscribePlanResponseModel =
+    new subscribePlanResponseModel();
 
   private planInfo = [
     {
@@ -253,8 +288,6 @@ export default class PickPlan extends Vue {
       this.selectedPlan = this.subscriptionBilling.plan;
       this.currentPlan = this.subscriptionBilling.currentPlan;
     }
-
-    console.log(this.currentPlan);
   }
 
   mounted() {
@@ -309,8 +342,35 @@ export default class PickPlan extends Vue {
         }
       );
     });
-    if (Object.keys(this.selectedPlan).length == 0)
+    if (
+      Object.keys(this.selectedPlan).length == 0 &&
+      Object.keys(this.currentPlan).length == 0
+    )
       this.updatePlan(this.plans[0]);
+    else this.sortPlan();
+  }
+
+  private sortPlan() {
+    let plans: Array<subscribePlanResponseModel> = [];
+
+    this.plans.forEach((plan: subscribePlanResponseModel) => {
+      if (
+        plan.planName == this.currentPlan.planName &&
+        plan.termPlanId == this.currentPlan.termPlanId
+      ) {
+        plans[0] = plan;
+      }
+    });
+
+    if (plans.length > 0) {
+      this.plans.forEach((plan: subscribePlanResponseModel) => {
+        if (plan.planName != this.currentPlan.planName) {
+          plans.push(plan);
+        }
+      });
+
+      this.plans = plans;
+    }
   }
 
   public updateCommitmentTerm(commitmentTerm: string) {
@@ -320,14 +380,16 @@ export default class PickPlan extends Vue {
   }
 
   public updatePlan(plan: any) {
-    this.selectedPlan = plan;
-    this.$emit("update", {
-      product: this.product,
-      plan: plan,
-      addons: [],
-      currentPlan: this.currentPlan,
-      commitmentTerm: this.commitmentTerm,
-    });
+    if (plan.termPlanId != this.currentPlan.termPlanId) {
+      this.selectedPlan = plan;
+      this.$emit("update", {
+        product: this.product,
+        plan: plan,
+        addons: [],
+        currentPlan: this.currentPlan,
+        commitmentTerm: this.commitmentTerm,
+      });
+    }
   }
 
   get aumBilling() {

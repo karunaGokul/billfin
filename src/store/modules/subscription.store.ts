@@ -90,8 +90,8 @@ const mutations: MutationTree<any> = {
   onClearSubscription(state) {
     state.products = [];
     state.commitmentTerm = "";
-    state.aumBilling = { plan: {}, addons: [], commitmentTerm: "" };
-    state.subscriptionBilling = { plan: {}, addons: [], commitmentTerm: "" };
+    state.aumBilling = { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} };
+    state.subscriptionBilling = { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} };
     state.paymentType = "";
     state.creditCard = {};
     state.ach = {};

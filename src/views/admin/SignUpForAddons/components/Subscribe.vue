@@ -98,11 +98,13 @@ export default class Subscribe extends Vue {
     if (this.showAumBilling) {
       request.term = CommitmentTerm[this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm];
       request.termPlanId = this.aumBilling.plan.termPlanId;
+      request.subscriptionPlanId = this.aumBilling.plan.subscriptionPlanId;
       request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
       request.term = CommitmentTerm[this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm];
       request.termPlanId = this.subscriptionBilling.plan.termPlanId;
+      request.subscriptionPlanId = this.subscriptionBilling.plan.subscriptionPlanId;
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 

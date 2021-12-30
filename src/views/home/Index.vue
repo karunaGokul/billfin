@@ -235,6 +235,7 @@ export default class Home extends Vue {
   public updateFirm(firm: firmRequestModel) {
     this.toggleFirms = false;
     this.store.dispatch("firmIdChanged", firm.firmId);
+    this.store.dispatch("clearSubscription");
     this.$router.push({ name: "Dashboard" });
   }
 

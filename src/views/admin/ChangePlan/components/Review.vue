@@ -194,10 +194,40 @@
 <script lang="ts">
 import { Vue } from "vue-class-component";
 
+import { Inject } from "vue-property-decorator";
+
 import { useStore } from "vuex";
 
+import {
+  billingAddressRequestModel,
+  billingAddressResponseModel,
+} from "@/model";
+
+import { IManageSubscription } from "@/service";
+
 export default class Review extends Vue {
+  @Inject("manageSubscripeService") service: IManageSubscription;
   public store = useStore();
+
+  public address: billingAddressResponseModel =
+    new billingAddressResponseModel();
+
+  created() {
+    this.getBillingAddress();
+  }
+
+  private getBillingAddress() {
+    let request = new billingAddressRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getBillingAddress(request)
+      .then((response) => {
+        this.address = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   public back() {
     this.$emit("back");
@@ -259,9 +289,6 @@ export default class Review extends Vue {
 
   get ach() {
     return this.store.getters.ach;
-  }
-  get address() {
-    return this.store.getters.address;
   }
 
   get cardType() {

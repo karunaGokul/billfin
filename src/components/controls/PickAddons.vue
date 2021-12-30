@@ -1,5 +1,5 @@
 <template>
-  <div v-if="addOnType == 'AddMoreAddOns'">
+  <div v-if="addOnType == 'AddMoreAddOns' || addOnType == 'ChangePlan'">
     <div class="accordion accordion-flush mb-10">
       <div class="accordion-item">
         <h2 class="accordion-header">
@@ -11,9 +11,13 @@
             }"
             @click="toggleSubscribedAddons = !toggleSubscribedAddons"
           >
-            You are currently subscribed to these add-ons in your
-            {{ product == "AUM" ? "AUM Billing" : "Subscription Billing" }}
-            product
+            {{
+              addOnType == "AddMoreAddOns"
+                ? `You are currently subscribed to these add-ons in your ${
+                    product == "AUM" ? "AUM Billing" : "Subscription Billing"
+                  } product`
+                : "Current Subscription"
+            }}
           </button>
         </h2>
         <div
@@ -124,7 +128,7 @@
                       border-bottom border-dashed
                     "
                   >
-                    {{ item.term == "ANNUAL" ? "Annual" : "Monthly" }}
+                    {{ item.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }}
                     Subscription
                   </td>
                   <td
@@ -179,7 +183,9 @@
         <div class="card accordion-body">
           <div class="text-center fs-4 fw-bolder mt-2">Choose your Add-ons</div>
 
-          <template v-if="addOnType == 'AddMoreAddOns'">
+          <template
+            v-if="addOnType == 'AddMoreAddOns' || addOnType == 'ChangePlan'"
+          >
             <div class="row">
               <div class="col-6 mt-4">
                 <div class="fw-bolder me-4 text-end fs-5">Commitment term</div>
@@ -508,14 +514,7 @@ export default class PickAddons extends Vue {
   }
 
   private removeAddons() {
-    let itemsToRemove = this.subscribedAddOns.map((item) => {
-      if (
-        item.addOnName != "Multi-Connector Integrations" &&
-        item.addOnName != "Admin User License"
-      )
-        return item.addOnName;
-    });
-
+    
     this.subscribedAddOns.forEach((item) => {
       this.addonsList.forEach(
         (data: { addOnName: string; description: string }) => {
@@ -525,9 +524,18 @@ export default class PickAddons extends Vue {
       );
     });
 
-    this.addons = this.addons.filter(
-      (item: any) => !itemsToRemove.includes(item.addOnName)
-    );
+    if (this.addOnType == "AddMoreAddOns") {
+      let itemsToRemove = this.subscribedAddOns.map((item) => {
+        if (
+          item.addOnName != "Multi-Connector Integrations" &&
+          item.addOnName != "Admin User License"
+        )
+          return item.addOnName;
+      });
+      this.addons = this.addons.filter(
+        (item: any) => !itemsToRemove.includes(item.addOnName)
+      );
+    }
 
     this.itemsPerRow = Math.round(this.addons.length / 2);
     this.planRow = Array.from(
@@ -609,7 +617,7 @@ export default class PickAddons extends Vue {
     });
 
     if (
-      this.addOnType == "AddMoreAddOns" &&
+      (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan") &&
       this.termPlanType == this.commitmentTerm
     )
       this.getSubscribedAddons();
@@ -625,7 +633,7 @@ export default class PickAddons extends Vue {
   public updateAddons(response?: subscribeAddonsResponseModel) {
     if (response) response.selected = !response.selected;
 
-    if (this.addOnType == "AddMoreAddOns")
+    if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
       this.store.dispatch("updateTerm", {
         product: this.product,
         commitmentTerm: this.commitmentTerm,

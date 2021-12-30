@@ -75,7 +75,6 @@ export default class Confirm extends Vue {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
         return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
       }, 0);
-      aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
     }
 
     if (this.showSubscription) {
@@ -85,7 +84,6 @@ export default class Confirm extends Vue {
         },
         0
       );
-      subAmount = subAmount + this.subscriptionBilling.plan.termPlanAmount;
     }
     return aumAmount + subAmount;
   }
