@@ -199,7 +199,7 @@
                       'btn-success': commitmentTerm == 'Annual',
                       'text-gray': commitmentTerm != 'Annual',
                     }"
-                    :disabled="commitmentTerm == 'Monthly'"
+                    :disabled="termPlanType == 'Monthly'"
                     @click="updateCommitmentTerm('Annual')"
                   >
                     Annual
@@ -514,7 +514,6 @@ export default class PickAddons extends Vue {
   }
 
   private removeAddons() {
-    
     this.subscribedAddOns.forEach((item) => {
       this.addonsList.forEach(
         (data: { addOnName: string; description: string }) => {
@@ -525,13 +524,8 @@ export default class PickAddons extends Vue {
     });
 
     if (this.addOnType == "AddMoreAddOns") {
-      let itemsToRemove = this.subscribedAddOns.map((item) => {
-        if (
-          item.addOnName != "Multi-Connector Integrations" &&
-          item.addOnName != "Admin User License"
-        )
-          return item.addOnName;
-      });
+      let itemsToRemove = this.subscribedAddOns.map((item) => item.addOnName);
+      console.log(itemsToRemove);
       this.addons = this.addons.filter(
         (item: any) => !itemsToRemove.includes(item.addOnName)
       );
@@ -616,10 +610,7 @@ export default class PickAddons extends Vue {
       );
     });
 
-    if (
-      (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan") &&
-      this.termPlanType == this.commitmentTerm
-    )
+    if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
       this.getSubscribedAddons();
     else {
       this.updateAddons();

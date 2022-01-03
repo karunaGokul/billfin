@@ -9,7 +9,9 @@
           <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
             <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
@@ -32,7 +34,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -41,10 +45,16 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{aumBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="col-2 text-end fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -56,7 +66,9 @@
             <span class="fw-bold ms-2">{{
               subscriptionBilling.plan.planName
             }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{
@@ -81,7 +93,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -90,10 +104,18 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
-          <div class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+          <div
+            class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray"
+          >
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -201,6 +223,7 @@ import { useStore } from "vuex";
 import {
   billingAddressRequestModel,
   billingAddressResponseModel,
+  subscribedAddonsReqeustModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -214,6 +237,7 @@ export default class Review extends Vue {
 
   created() {
     this.getBillingAddress();
+    this.getRefundDetails();
   }
 
   private getBillingAddress() {
@@ -223,6 +247,24 @@ export default class Review extends Vue {
       .getBillingAddress(request)
       .then((response) => {
         this.address = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private getRefundDetails() {
+    let request = new subscribedAddonsReqeustModel();
+    if (this.showAumBilling)
+      request.planSubscriptionId =
+        this.aumBilling.currentPlan.subscriptionPlanId;
+    else
+      request.planSubscriptionId =
+        this.subscriptionBilling.currentPlan.subscriptionPlanId;
+    this.service
+      .getRefundDetails(request)
+      .then((response) => {
+        console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -262,7 +304,7 @@ export default class Review extends Vue {
       aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+        return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
     }
@@ -270,7 +312,7 @@ export default class Review extends Vue {
     if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
-          return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+          return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
         },
         0
       );

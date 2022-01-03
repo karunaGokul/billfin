@@ -9,10 +9,10 @@
           type="button"
           class="btn rounded"
           :class="{
-            'btn-success': paymenyType == 'ACH',
-            'text-muted': paymenyType != 'ACH',
+            'btn-success': paymentType == 'ACH',
+            'text-muted': paymentType != 'ACH',
           }"
-          @click="paymenyType = 'ACH'"
+          @click="paymentType = 'ACH'"
         >
           ACH
         </button>
@@ -20,20 +20,20 @@
           type="button"
           class="btn rounded"
           :class="{
-            'btn-success': paymenyType == 'Credit Card',
-            'text-muted': paymenyType != 'Credit Card',
+            'btn-success': paymentType == 'Credit Card',
+            'text-muted': paymentType != 'Credit Card',
           }"
-          @click="paymenyType = 'Credit Card'"
+          @click="paymentType = 'Credit Card'"
         >
           Credit Card
         </button>
       </div>
     </div>
-    <ACH @back="onExit" @pay="onPayNow" v-if="paymenyType == 'ACH'" />
+    <ACH @back="onExit" @pay="onPayNow" v-if="paymentType == 'ACH'" />
     <credit-card
       @back="onExit"
       @pay="onPayNow"
-      v-if="paymenyType == 'Credit Card'"
+      v-if="paymentType == 'Credit Card'"
     />
   </div>
 </template>
@@ -42,6 +42,11 @@ import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
+
+declare let ChargeOver: any;
+
+import { paymentTokenRequestModel, PaymentMethod } from "@/model";
+import { ISubscripeService } from "@/service";
 
 import ACH from "@/components/controls/ACH.vue";
 import CreditCard from "@/components/controls/creditCard.vue";
@@ -52,12 +57,83 @@ import CreditCard from "@/components/controls/creditCard.vue";
     CreditCard,
   },
 })
-export default class PaymentMethod extends Vue {
-  public paymenyType: string = "Credit Card";
+export default class Payment extends Vue {
+  @Inject("subscripeService") service: ISubscripeService;
+
+  public paymentType: string = "Credit Card";
   public store = useStore();
 
+  created() {
+    console.log(this.$route.params);
+  }
+
   onExit() {
-    this.$router.push("/bills-payments");
+    this.$router.push(`/${this.$route.params.pageType}`);
+  }
+
+  onPayNow() {
+    this.store.dispatch("updatePaymentType", this.paymentType);
+    if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
+    else this.tokenizingAch();
+  }
+
+  private tokenizingCreditCard() {
+    let request: any = {};
+    request = this.store.getters.creditCard;
+    request.customer_external_key = this.firmId;
+    ChargeOver.CreditCard.tokenize(
+      request,
+      (code: any, message: any, response: any) => {
+        console.log(message, response);
+        if (code == 200) {
+          this.updateToken(response.creditcard.token);
+        } else if (code == 400) {
+          console.log(message);
+        } else {
+          console.log(`Something went wrong, Please try again`);
+        }
+      }
+    );
+  }
+
+  private tokenizingAch() {
+    let request: any = {};
+    request = this.store.getters.ach;
+    request.customer_external_key = this.firmId;
+    console.log(request);
+    ChargeOver.ACH.tokenize(
+      request,
+      (code: any, message: any, response: any) => {
+        if (code == 200) {
+          this.updateToken(response.ach.token);
+        } else if (code == 400) {
+          console.log(message);
+        } else {
+          console.log(`Something went wrong, Please try again`);
+        }
+      }
+    );
+  }
+
+  private updateToken(token: string) {
+    let request = new paymentTokenRequestModel();
+    request.token = token;
+    request.firmId = this.firmId;
+    request.paymentMethod =
+      PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
+    this.paymentType.toUpperCase();
+    this.service
+      .updatePaymentToken(request)
+      .then((response) => {
+        this.$router.push(`/${this.$route.params.pageType}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  get firmId() {
+    return this.store.getters.selectedFirmId;
   }
 }
 </script>

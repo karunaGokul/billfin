@@ -81,7 +81,7 @@
         </div>
         <div class="d-flex align-items-center justify-content-center w-50">
           <router-link
-            to="/payment-method"
+            to="/payment"
             tag="button"
             class="btn btn-primary"
           >

@@ -8,7 +8,7 @@
     <button class="btn btn-light me-5" @click="back">Back</button>
     <button
       class="btn btn-primary ms-5"
-      :disabled="invalidAumPlan || invalidSubscriptionPlan"
+      :disabled="invalidPlan"
       @click="next"
     >
       Continue
@@ -29,26 +29,26 @@ import PickPlan from "@/components/controls/PickPlan.vue";
 export default class Plan extends Vue {
   public store = useStore();
   public plans: Array<any> = [];
-  public invalidAumPlan: boolean = false;
-  public invalidSubscriptionPlan: boolean = false;
+  public invalidPlan: boolean = true;
 
-  /*mounted() {
-    if (this.plans.length == 0) this.$router.push("/my-subscription");
-  }*/
+  mounted() {
+    if (this.products == "") this.$router.push("/my-subscription");
+  }
 
   public updatePlan(options: {
     product: string;
     plan: { termPlanId: number; planName: string; planId: number };
     addons: Array<any>;
+    currentPlan: any
     commitmentTerm: string;
   }) {
     if (options.plan.planName == "Enterprise") {
-      if (options.product == "AUM") this.invalidAumPlan = true;
-      else this.invalidSubscriptionPlan = true;
+      this.invalidPlan = true;
     } else {
-      if (options.product == "AUM") this.invalidAumPlan = false;
-      else this.invalidSubscriptionPlan = false;
-      this.store.dispatch("updatePlan", options);
+      if (Object.keys(options.plan).length > 0) {
+        this.invalidPlan = false;
+        this.store.dispatch("updatePlan", options);
+      }
     }
   }
 

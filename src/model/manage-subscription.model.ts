@@ -130,3 +130,11 @@ export class addMoreSubscriptionRequestModel {
 export class addMoreSubscriptionResponseModel {
   status: string;
 }
+export class changPlanRequestModel {
+  eventType: string;
+  action: string;
+  planActivate: string;
+  termPlanId: number;
+  subscriptionPlanId: number;
+  addOns: Array<addOnsModel>;
+}

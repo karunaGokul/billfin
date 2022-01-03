@@ -43,9 +43,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/admin/BillsPayments/Index.vue"),
       },
       {
-        path: "/payment-method",
+        path: "/payment",
         name: "Payment Method",
-        component: () => import("@/views/admin/PaymentMethod/Index.vue")
+        component: () => import("@/views/admin/PaymentMethod/Index.vue"),
+        props: true
       },
       {
         path: "/clients",

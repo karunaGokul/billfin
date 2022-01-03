@@ -195,7 +195,7 @@ export default class Payment extends Vue {
   }
 
   public addCard() {
-    this.$router.push("/payment-method");
+    this.$router.push({name: "Payment Method", params: {pageType: 'add-more-addons'}});
   }
 
   public next() {
