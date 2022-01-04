@@ -54,7 +54,7 @@
         <div class="fw-bolder fs-4 p-4">
           You currently are not subscribed to add-ons.
         </div>
-        <button type="button" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" @click="addMoreAddons">
           Subscribe to Add-ons
         </button>
       </div>

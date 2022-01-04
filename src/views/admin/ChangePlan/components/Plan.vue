@@ -5,7 +5,7 @@
     planType="Change Plan"
   />
   <div class="text-center m-4">
-    <button class="btn btn-light me-5" @click="back">Back</button>
+    <button class="btn btn-light me-5" @click="back">Cancel</button>
     <button
       class="btn btn-primary ms-5"
       :disabled="invalidPlan"

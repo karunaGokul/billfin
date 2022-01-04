@@ -1,5 +1,10 @@
 <template>
-  <div v-if="addOnType == 'AddMoreAddOns' || addOnType == 'ChangePlan'">
+  <div
+    v-if="
+      (addOnType == 'AddMoreAddOns' || addOnType == 'ChangePlan') &&
+      subscribedAddOns.length > 0
+    "
+  >
     <div class="accordion accordion-flush mb-10">
       <div class="accordion-item">
         <h2 class="accordion-header">
