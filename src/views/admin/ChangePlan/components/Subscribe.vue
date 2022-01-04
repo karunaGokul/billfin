@@ -53,6 +53,7 @@
         <button class="btn btn-light me-5" @click="back">Back</button>
         <button
           class="btn btn-primary ms-5"
+          @click="subscribe"
           :disabled="!isAgreed"
         >
           Subscribe
@@ -71,8 +72,9 @@ import { Inject } from "vue-property-decorator";
 
 import {
   addOnsModel,
-  CommitmentTerm,
-  addMoreSubscriptionRequestModel,
+  PlanActivate,
+  changePlanRequestModel,
+  changePlanResponseModel
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -88,25 +90,29 @@ export default class Subscribe extends Vue {
   }
 
   public subscribe() {
-    let request: addMoreSubscriptionRequestModel =
-      new addMoreSubscriptionRequestModel();
+    let request: changePlanRequestModel =
+      new changePlanRequestModel();
 
-    request.eventType = "SUBSCRIBE";
-    request.firmId = this.store.getters.selectedFirmId;
+    request.eventType = "CHANGE_PLAN";
+    request.action = this.planAction;
+    request.planActivate = PlanActivate[this.activatePlan as keyof typeof PlanActivate];
+    //request.firmId = this.store.getters.selectedFirmId;
 
     if (this.showAumBilling) {
-      request.term = CommitmentTerm[this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm];
+      //request.term = CommitmentTerm[this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm];
       request.termPlanId = this.aumBilling.plan.termPlanId;
+      request.subscriptionPlanId = this.aumBilling.currentPlan.subscriptionPlanId;
       request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
-      request.term = CommitmentTerm[this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm];
+     // request.term = CommitmentTerm[this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm];
       request.termPlanId = this.subscriptionBilling.plan.termPlanId;
+      request.subscriptionPlanId = this.subscriptionBilling.currentPlan.subscriptionPlanId;
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
     this.service
-      .subscribeAddOns(request)
+      .changePlan(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
           this.$emit("next");
@@ -153,6 +159,14 @@ export default class Subscribe extends Vue {
 
   get startDate() {
     return moment(String(new Date())).format("DD/MM/YYYY");
+  }
+
+  get planAction() {
+    return this.store.getters.planAction;
+  }
+
+  get activatePlan() {
+    return this.store.getters.activatePlan;
   }
 }
 </script>

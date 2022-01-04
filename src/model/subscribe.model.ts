@@ -23,7 +23,8 @@ export class subscribePlanResponseModel {
   planId: number;
   termPlanId: number;
   planName: string;
-  termPlanAmount: string;
+  termPlanAmount: number;
+  paymentAmount?: number;
   aumLevel: string;
   adminUsers: string;
   clients: string;

@@ -130,11 +130,65 @@ export class addMoreSubscriptionRequestModel {
 export class addMoreSubscriptionResponseModel {
   status: string;
 }
-export class changPlanRequestModel {
+export class changePlanRequestModel {
   eventType: string;
   action: string;
   planActivate: string;
   termPlanId: number;
   subscriptionPlanId: number;
   addOns: Array<addOnsModel>;
+}
+export class changePlanResponseModel {
+  status: string;
+}
+export class refundResponseModel {
+  subscriptions: refundPlanResponseModel;
+  addOns: Array<refundAddOnResponseModel>;
+}
+export class refundPlanResponseModel {
+  activeFlag: boolean;
+  cardNumber: string;
+  cardType: string;
+  commitmentTerm: string;
+  customerId: string;
+  endDate: string;
+  firmId: number;
+  paymentAmount: number;
+  paymentFirmTokenId: number;
+  paymentFrequency: string;
+  planId: number;
+  planName: string;
+  refundAmount: number;
+  refundEndDate: string;
+  refundStartDate: string;
+  renewDate: null;
+  startDate: string;
+  status: string;
+  subscriptionPlanId: number;
+  termPlanId: number;
+}
+export class refundAddOnResponseModel {
+  activeFlag: boolean;
+  addOnId: number;
+  addOnName: string;
+  cardNumber: string;
+  cardType: string;
+  commitmentTerm: string;
+  customerId: string;
+  endDate: string;
+  firmId: number;
+  paymentAmount: number;
+  paymentToken: string;
+  planId: number;
+  planSubscriptionId: number;
+  quantity: number;
+  refundAmount: number;
+  refundEndDate: string;
+  refundStartDate: string;
+  renewDate: string;
+  startDate: string;
+  status: string;
+  subscriptionAddOnId: number;
+  termAddOnId: number;
+  termPlanId: number;
 }

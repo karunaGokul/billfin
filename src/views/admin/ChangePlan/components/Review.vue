@@ -122,6 +122,169 @@
 
       <div
         class="
+          fw-bolder
+          fs-4
+          mt-6
+          mb-4
+          border-top border-dashed border-start-0 border-end-0 border-bottom-0
+          pt-4
+        "
+      >
+        Refund Amount
+      </div>
+
+      <template v-if="planAction == 'UPGRADE'">
+        <div>
+          <div class="mt-8 d-flex justify-content-between">
+            <div class="text-dark-black fs-4" @click="togglePlan = !togglePlan">
+              <i
+                class="fa"
+                :class="{
+                  'fa-angle-down': togglePlan,
+                  'fa-angle-right': !togglePlan,
+                }"
+              ></i>
+              {{ plan.planName }} Plan ({{
+                plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly"
+              }}
+              Commitment)
+            </div>
+            <div class="text-light-gray fs-4 fw-bold">
+              - {{ $filters.currencyDisplay(plan.refundAmount) }}
+            </div>
+          </div>
+          <div
+            class="border border-dashed bg-light mt-4 mb-4"
+            v-if="togglePlan"
+          >
+            <table class="w-100 fs-5">
+              <thead>
+                <tr>
+                  <th class="p-4 fw-normal">Prepaid Term</th>
+                  <th class="p-4 fw-normal">Prepaid Amount</th>
+                  <th class="p-4 fw-normal">Refund Term</th>
+                  <th class="p-4 fw-normal">Refund Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{
+                      $datehelper.format(
+                        $datehelper.convertDate(plan.startDate)
+                      )
+                    }}
+                    -
+                    {{
+                      $datehelper.format($datehelper.convertDate(plan.endDate))
+                    }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $filters.currencyDisplay(plan.paymentAmount) }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $datehelper.format(plan.refundStartDate) }} -
+                    {{ $datehelper.format(plan.refundEndDate) }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $filters.currencyDisplay(plan.refundAmount) }}
+                    <span
+                      :data-tooltip="
+                        getInfo(
+                          plan.paymentAmount,
+                          plan.refundAmount,
+                          plan.commitmentTerm,
+                          plan.refundStartDate,
+                          plan.refundEndDate
+                        )
+                      "
+                    >
+                      <i class="fa fa-exclamation-circle text-gray"></i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div v-for="(item, index) in addOns" :key="'main-' + index">
+          <div class="mt-8 d-flex justify-content-between">
+            <div class="text-dark-black fs-4" @click="expandRow(index)">
+              <i
+                class="fa"
+                :class="{
+                  'fa-angle-down': toggle[index],
+                  'fa-angle-right': !toggle[index],
+                }"
+              ></i>
+              {{ item.addOnName }} Add-On ({{
+                item.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly"
+              }}
+              Commitment)
+            </div>
+            <div class="text-light-gray fs-4 fw-bold">
+              - {{ $filters.currencyDisplay(item.refundAmount) }}
+            </div>
+          </div>
+          <div
+            class="border border-dashed bg-light mt-4 mb-4"
+            v-if="toggle[index]"
+          >
+            <table class="w-100 fs-5">
+              <thead>
+                <tr>
+                  <th class="p-4 fw-normal">Prepaid Term</th>
+                  <th class="p-4 fw-normal">Prepaid Amount</th>
+                  <th class="p-4 fw-normal">Refund Term</th>
+                  <th class="p-4 fw-normal">Refund Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{
+                      $datehelper.format(
+                        $datehelper.convertDate(item.startDate)
+                      )
+                    }}
+                    -
+                    {{
+                      $datehelper.format($datehelper.convertDate(item.endDate))
+                    }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $filters.currencyDisplay(item.paymentAmount) }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $datehelper.format(item.refundStartDate) }} -
+                    {{ $datehelper.format(item.refundEndDate) }}
+                  </td>
+                  <td class="pt-0 p-4 fw-bold">
+                    {{ $filters.currencyDisplay(item.refundAmount) }}
+                    <span
+                      :data-tooltip="
+                        getInfo(
+                          item.paymentAmount,
+                          item.refundAmount,
+                          item.commitmentTerm,
+                          item.refundStartDate,
+                          item.refundEndDate
+                        )
+                      "
+                    >
+                      <i class="fa fa-exclamation-circle text-gray"></i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </template>
+
+      <div
+        class="
           mt-8
           fs-4
           fw-bolder
@@ -133,7 +296,9 @@
         "
       >
         <div>Total Due Today</div>
-        <div>{{ $filters.currencyDisplay(totalFees) }}</div>
+        <div>
+          {{ totalFees }}
+        </div>
       </div>
 
       <div class="row g-0">
@@ -215,8 +380,9 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-
 import { Inject } from "vue-property-decorator";
+
+import moment from "moment";
 
 import { useStore } from "vuex";
 
@@ -224,6 +390,8 @@ import {
   billingAddressRequestModel,
   billingAddressResponseModel,
   subscribedAddonsReqeustModel,
+  refundPlanResponseModel,
+  refundAddOnResponseModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -235,9 +403,22 @@ export default class Review extends Vue {
   public address: billingAddressResponseModel =
     new billingAddressResponseModel();
 
+  public toggle: Array<boolean> = [];
+  public togglePlan: boolean = false;
+  public plan: refundPlanResponseModel = new refundPlanResponseModel();
+  public addOns: Array<refundAddOnResponseModel> = [];
+
   created() {
     this.getBillingAddress();
     this.getRefundDetails();
+  }
+
+  expandRow(index: number) {
+    this.toggle[index] = !this.toggle[index];
+
+    for (let i = 0; i < this.toggle.length; i++) {
+      if (i != index) this.toggle[i] = false;
+    }
   }
 
   private getBillingAddress() {
@@ -264,7 +445,9 @@ export default class Review extends Vue {
     this.service
       .getRefundDetails(request)
       .then((response) => {
-        console.log(response);
+        this.plan = response.subscriptions;
+        this.addOns = response.addOns;
+        this.toggle = [];
       })
       .catch((err) => {
         console.log(err);
@@ -277,6 +460,19 @@ export default class Review extends Vue {
 
   public next() {
     this.$emit("next");
+  }
+
+  getInfo(
+    prepaidAmount: number,
+    refundAmount: number,
+    commitmentTerm: string,
+    startDate: string,
+    endDate: string
+  ) {
+    let days = moment(endDate).diff(moment(startDate), "days");
+    return `${this.$currencyDisplay(prepaidAmount)}*${days}/${
+      commitmentTerm == "ANNUAL" ? "365" : "31"
+    } days in prepaid amount = ${this.$currencyDisplay(refundAmount)}`;
   }
 
   get products() {
@@ -301,7 +497,8 @@ export default class Review extends Vue {
 
   get totalFees() {
     let subAmount: number = 0,
-      aumAmount: number = 0;
+      aumAmount: number = 0,
+      amount: any = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
         return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
@@ -318,7 +515,25 @@ export default class Review extends Vue {
       );
       subAmount = subAmount + this.subscriptionBilling.plan.termPlanAmount;
     }
-    return aumAmount + subAmount;
+    amount = aumAmount + subAmount;
+
+    if (this.planAction == "UPGRADE") {
+      amount = amount - this.refundAmount;
+    }
+
+    return amount.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  get refundAmount() {
+    let amount = 0;
+    amount = this.addOns.reduce((prev: number, cur: any) => {
+      return prev + cur.refundAmount;
+    }, 0);
+    amount = amount + this.plan.refundAmount;
+    return amount;
   }
 
   get paymentType() {
@@ -331,6 +546,10 @@ export default class Review extends Vue {
 
   get ach() {
     return this.store.getters.ach;
+  }
+
+  get planAction() {
+    return this.store.getters.planAction;
   }
 
   get cardType() {

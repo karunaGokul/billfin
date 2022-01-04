@@ -25,7 +25,6 @@ export default {
         })})`;
     },
     app.config.globalProperties.$currencyToNumber = (value: any) => {
-      console.log(value);
       if (!value) return 0;
 
     if (isNaN(value)) value = value.replaceAll(",", "");

@@ -16,6 +16,8 @@ const state: SubscribeModel = {
   ach: {},
   address: {},
   states: [],
+  planAction: "",
+  activatePlan: ""
 };
 const getters: GetterTree<any, any> = {
   products: (state) => {
@@ -45,6 +47,12 @@ const getters: GetterTree<any, any> = {
   states: (state) => {
     return state.states;
   },
+  planAction: (state) => {
+    return state.planAction;
+  },
+  activatePlan: (state) => {
+    return state.activatePlan;
+  }
 };
 const mutations: MutationTree<any> = {
   onUpdateState(state, response) {
@@ -97,6 +105,12 @@ const mutations: MutationTree<any> = {
     state.ach = {};
     state.address = {};
   },
+  onUpdatePlanAction(state, planAction) {
+    state.planAction = planAction;
+  },
+  onUpdateActivatePlan(state, activatePlan) {
+    state.activatePlan = activatePlan;
+  }
 };
 const actions: ActionTree<any, any> = {
   updateState(context) {
@@ -145,6 +159,12 @@ const actions: ActionTree<any, any> = {
   clearSubscription(context) {
     context.commit("onClearSubscription");
   },
+  updatePlanAction(context, action) {
+    context.commit('onUpdatePlanAction', action);
+  },
+  updateActivatePlan(context, activatePlan) {
+    context.commit('onUpdateActivatePlan', activatePlan);
+  }
 };
 export const SubscriptionModule = {
   state,

@@ -33,4 +33,6 @@ export class SubscribeModel {
     ach: any;
     address: any;
     states: Array<string>;
+    planAction: string;
+    activatePlan: string;
 }

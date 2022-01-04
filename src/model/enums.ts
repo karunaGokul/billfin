@@ -68,3 +68,7 @@ export enum PaymentMethod {
   "Credit Card" = "CREDIT_CARD",
   ACH = "ACH",
 }
+export enum PlanActivate {
+  "Effective Immediately" = "EFFECTIVE_NOW",
+  "Next Billing Term" = "NEXT_TERM",
+}

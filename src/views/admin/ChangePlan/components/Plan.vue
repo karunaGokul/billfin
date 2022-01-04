@@ -2,7 +2,7 @@
   <pick-plan
     :product="products"
     @update="updatePlan($event, options)"
-    playType="changePlan"
+    planType="Change Plan"
   />
   <div class="text-center m-4">
     <button class="btn btn-light me-5" @click="back">Back</button>

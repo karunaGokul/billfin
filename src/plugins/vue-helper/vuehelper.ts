@@ -34,7 +34,12 @@ export class VueHelperProvider {
     }
 }
 
-class DateHelper {
+export class DateHelper {
+    convertDate(date: string) {
+        if(!date) date = ''; //MM/DD/YYYY;
+        return `${date.split('/')[1]+'/'+date.split('/')[0]+'/'+date.split('/')[2]}`;
+    }
+
     format(date: Date, format?: string) {
         if (!format) format = "MM/DD/YYYY";
 
