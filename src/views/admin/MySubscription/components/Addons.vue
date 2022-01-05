@@ -20,7 +20,22 @@
         class="fs-6 text-muted"
         :class="{ 'text-gray-secondary': addons.endDate }"
       >
-        {{ description }}
+        <div
+          v-if="
+            addons.addOnName != 'Admin User License' ||
+            addons.addOnName != 'Multi-Connector Integrations'
+          "
+        >
+          {{ description }}
+        </div>
+        <div v-else>
+          <div v-if="addons.addOnName == 'Admin User License'">
+            Number of users: {{ addons.quantity }}
+          </div>
+          <div v-if="addons.addOnName == 'Multi-Connector Integrations'">
+            Number of connectors: {{ addons.quantity }}
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-3">
@@ -81,9 +96,14 @@
     >
       <div
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
-        @click="!addons.endDate && allowChangeAddonTerm ? toggleCommitmentTerm = true : ''"
+        @click="
+          !addons.endDate && allowChangeAddonTerm
+            ? (toggleCommitmentTerm = true)
+            : ''
+        "
       >
-        {{ addons.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
+        {{ addons.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }}
+        Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
@@ -98,7 +118,10 @@
           </li>
         </ul>
       </div>
-      <div class="text-muted" :class="{ 'text-gray-secondary': addons.endDate }">
+      <div
+        class="text-muted"
+        :class="{ 'text-gray-secondary': addons.endDate }"
+      >
         {{ addons.startDate }} -
         {{
           addons.status == "CANCELLED" ||
@@ -126,7 +149,7 @@
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="!addons.endDate ? togglePlan = true : ''"
+          @click="!addons.endDate ? (togglePlan = true) : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"
@@ -150,9 +173,12 @@
   <cancel-plan-addOn
     title="Cancel Add-On"
     :name="addons.addOnName"
+    :endDate="addons.renewDate"
+    :quantity="addons.quantity"
+    :subscriptionAddOnId="addons.subscriptionAddOnId"
     type="addons"
     @close="showCancelModel = false"
-    @cancel="onCancel"
+    @cancelled="onCancelled"
     v-if="showCancelModel"
   />
   <change-add-on-commitment-term
@@ -219,8 +245,9 @@ export default class Addons extends Vue {
     },
   ];
 
-  public onCancel() {
+  public onCancelled() {
     this.showCancelModel = false;
+    this.$emit("addOnCancelled");
   }
 
   public clickOutSidePlan() {

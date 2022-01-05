@@ -192,3 +192,10 @@ export class refundAddOnResponseModel {
   termAddOnId: number;
   termPlanId: number;
 }
+export class cancelAddOnRequestModel {
+  eventType: string;
+  subscriptionAddOnId: number;
+}
+export class cancelAddOnResponseModel {
+  status: string;
+}

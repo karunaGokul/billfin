@@ -18,7 +18,9 @@ import {
   subscribedAddonsReqeustModel,
   refundResponseModel,
   changePlanRequestModel,
-  changePlanResponseModel
+  changePlanResponseModel,
+  cancelAddOnRequestModel,
+  cancelAddOnResponseModel
 } from "@/model";
 
 export interface IManageSubscription
@@ -50,7 +52,10 @@ export interface IManageSubscription
   getRefundDetails(request: subscribedAddonsReqeustModel): Promise<refundResponseModel>;
   changePlan(
     request: changePlanRequestModel
-  ): Promise<changePlanResponseModel>
+  ): Promise<changePlanResponseModel>;
+  cancelAddOn(
+    request: cancelAddOnRequestModel
+  ): Promise<cancelAddOnResponseModel>;
 }
 
 export class ManageSubscription extends BaseService<
@@ -153,6 +158,14 @@ export class ManageSubscription extends BaseService<
     request: changePlanRequestModel
   ): Promise<changePlanResponseModel> {
     return this.httpPost("private/api/v1/changePlan", request).then((response) => {
+      return response.data;
+    });
+  }
+
+  public cancelAddOn(
+    request: cancelAddOnRequestModel
+  ): Promise<cancelAddOnResponseModel> {
+    return this.httpPost("private/api/v1/cancelAddOn", request).then((response) => {
       return response.data;
     });
   }

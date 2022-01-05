@@ -29,7 +29,9 @@
               : "Subscription Billing."
           }}
         </div>
-        <button type="button" class="btn btn-primary">Sign Up</button>
+        <button type="button" class="btn btn-primary" @click="signUpPlan">
+          Sign Up
+        </button>
       </div>
     </div>
   </div>
@@ -48,7 +50,11 @@
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in addons" :key="index">
-        <addons :addons="item" :allowChangeAddonTerm="allowChangeAddonTerm" />
+        <addons
+          :addons="item"
+          :allowChangeAddonTerm="allowChangeAddonTerm"
+          @addOnCancelled="onAddOnCancelled"
+        />
       </div>
       <div class="p-8 text-center" v-if="!loading && !addons.length">
         <div class="fw-bolder fs-4 p-4">
@@ -110,6 +116,10 @@ export default class AumSubscriptionBilling extends Vue {
     if (this.subscription) this.subscription();
   }
 
+  public onAddOnCancelled() {
+    this.getSubscription();
+  }
+
   private getSubscription() {
     this.loading = true;
     let request = new manageSubscriptionRequestModel();
@@ -126,6 +136,10 @@ export default class AumSubscriptionBilling extends Vue {
         this.loading = false;
         console.log(err);
       });
+  }
+
+  public signUpPlan() {
+    this.$router.push("/signup");
   }
 
   public addMoreAddons() {

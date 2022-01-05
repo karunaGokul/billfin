@@ -13,8 +13,7 @@
             Are you sure you want to cancel {{ subscription }}?
           </p>
           <div class="text-gray-secondary fs-4 fw-bold">
-            {{ message }} will be canceled at the end of your current billing
-            period, which ends on January 2, 2022.
+            {{ message }}
           </div>
         </div>
         <div class="modal-footer p-4">
@@ -28,7 +27,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="close('cancel')"
+            @click="type == 'plan' ? cancelPlan() : cancelAddOn()"
           >
             {{ title }}
           </button>
@@ -39,15 +38,53 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Inject } from "vue-property-decorator";
+
+import { IManageSubscription } from "@/service";
+
+import { cancelAddOnRequestModel, cancelAddOnResponseModel } from "@/model";
 
 export default class CancelPlanAddOn extends Vue {
+  @Inject("manageSubscripeService") service: IManageSubscription;
+
   @Prop() title: string;
   @Prop() name: string;
   @Prop() type: string;
+  @Prop() endDate: string;
+  @Prop() quantity?: string;
+  @Prop() subscriptionAddOnId?: number;
 
   public close(option: string) {
     this.$emit(option);
+  }
+
+  public cancelAddOn() {
+    let request = new cancelAddOnRequestModel();
+    request.eventType = "CANCEL_ADDON";
+    request.subscriptionAddOnId = this.subscriptionAddOnId;
+
+    this.service
+      .cancelAddOn(request)
+      .then((response) => {
+        if(response.status == "SUCCESS")
+          this.$emit("cancelled");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private planEndDate(endDate: string) {
+    let value: string = "";
+    let date = new Date(
+      parseInt(endDate.split("/")[2]),
+      parseInt(endDate.split("/")[1]) - 1,
+      parseInt(endDate.split("/")[0])
+    );
+    let month = date.toLocaleString("default", { month: "long" });
+
+    value = `${endDate.split("/")[0]} ${month}, ${endDate.split("/")[2]}`;
+    return value;
   }
 
   get subscription() {
@@ -55,9 +92,37 @@ export default class CancelPlanAddOn extends Vue {
   }
 
   get message() {
+    let value: string[] = [
+      "zero",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+    ];
     return this.type == "plan"
-      ? `Your ${this.name} and its associated add-ons`
-      : this.name;
+      ? `Your ${this.name} and all associated add-ons will be 
+canceled at the end of the plan’s current billing period, which ends 
+on ${this.planEndDate(this.endDate)}`
+      : this.name == "Admin User License" ||
+        this.name == "Multi-Connector Integrations"
+      ? `All ${value[+this.quantity]} of your ${
+          this.name == "Admin User License"
+            ? "admin user licenses"
+            : "multi-connector integrations"
+        } will be canceled at the end of your current billing period, which ends on ${this.planEndDate(
+          this.endDate
+        )}`
+      : `${
+          this.name
+        } will be canceled at the end of your current billing period, which ends on ${this.planEndDate(
+          this.endDate
+        )}`;
   }
 }
 </script>

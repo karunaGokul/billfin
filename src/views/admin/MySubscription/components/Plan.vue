@@ -156,6 +156,7 @@
   <cancel-plan-addOn
     title="Cancel Subscription"
     :name="plan.planName"
+    :endDate="plan.renewDate"
     type="plan"
     @close="toggleCancelModel = false"
     @cancel="onCancelModel"

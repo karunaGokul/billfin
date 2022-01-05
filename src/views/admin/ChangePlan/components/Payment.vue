@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="p-4 ps-10 pe-10" v-if="cards">
+    <div class="p-4 ps-10 pe-10" v-if="cards.length > 0">
       <div class="d-flex flex-wrap">
         <div
           class="d-flex border p-4 rounded m-4"
@@ -82,6 +82,12 @@
                   width="100"
                   v-if="item.cardType == 'Discover'"
                 />
+                <img
+                  src="@/assets/bank.png"
+                  alt="Card Type"
+                  width="80"
+                  v-if="item.cardType == 'chec'"
+                />
               </div>
               <div class="pt-2 ps-3" v-if="paymentType == 'Credit Card'">
                 <div class="fw-bolder">
@@ -94,7 +100,11 @@
                   {{ item.expDate.split("-")[0] }}
                 </div>
               </div>
-              <div v-else>Checking {{ item.maskNumber.split("x")[1] }}</div>
+              <div class="pt-2 ps-3" v-else>
+                <div class="fw-bolder">
+                  Checking {{ item.maskNumber.split("x")[1] }}
+                </div>
+              </div>
             </div>
           </div>
           <div class="d-flex align-items-center p-4">
@@ -104,29 +114,10 @@
         </div>
       </div>
 
-      <div
-        class="
-          d-flex
-          border border-dashed border-dark-gray
-          bg-dark-gray
-          rounded
-          m-4
-          p-4
-        "
-        style="width: 490px"
-      >
-        <div style="width: 340px">
-          <div class="fs-4 fw-bolder">Important Note!</div>
-          <p class="fw-bold text-gray">
-            Please carefully read <a href="">BillFin Terms</a> adding your new
-            payment method.
-          </p>
-        </div>
-        <div class="d-flex align-items-center justify-content-end w-50">
-          <button class="btn btn-primary" type="button" @click="addCard">
-            {{ paymentType == "Credit Card" ? "Add Card" : "Add Account" }}
-          </button>
-        </div>
+      <div class="m-4">
+        <button class="btn btn-primary" type="button" @click="addCard">
+          Add Payment Method
+        </button>
       </div>
     </div>
 
@@ -195,7 +186,10 @@ export default class Payment extends Vue {
   }
 
   public addCard() {
-    this.$router.push({name: "Payment Method", params: {pageType: 'change-plan'}});
+    this.$router.push({
+      name: "Payment Method",
+      params: { pageType: "change-plan" },
+    });
   }
 
   public next() {
