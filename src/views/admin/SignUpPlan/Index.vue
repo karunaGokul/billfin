@@ -116,8 +116,6 @@ import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
 
-import { Settings } from '@/config';
-
 @Options({
   components: {
     Products,
@@ -134,10 +132,6 @@ export default class SignUpPlan extends Vue {
   public store = useStore();
 
   public firmStatus: string = "";
-
-  created() {
-    console.log(Settings.ApiJson);
-  }
 
   public updateFirmStatus() {
     this.store.dispatch("updateFirmStatus");

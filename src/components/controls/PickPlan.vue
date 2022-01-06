@@ -170,6 +170,7 @@ import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
 import {
+  plansListResponseModel,
   subscribePlanRequestModel,
   subscribePlanResponseModel,
   CommitmentTerm,
@@ -192,92 +193,10 @@ export default class PickPlan extends Vue {
   public currentPlan: subscribePlanResponseModel =
     new subscribePlanResponseModel();
 
-  private planInfo = [
-    {
-      planName: "Launch",
-      description: "Essentials for the starting to small RIA",
-      aumLevel: "$500M",
-      adminUsers: "2",
-      clients: "150",
-      connector: "1",
-      planDetails: [
-        "Unlimited fee schedules",
-        "Unlimited invoices",
-        "Unlimited email/phone support",
-      ],
-      preIncludedAddons: [],
-    },
-    {
-      planName: "Professional",
-      description: "For small to medium-sized RIAs",
-      aumLevel: "$500M",
-      adminUsers: "3",
-      clients: "350",
-      connector: "2",
-      planDetails: [
-        "Everything from Launch Plan",
-        "ADB Add-on included",
-        "Flow Billing Add-on included",
-      ],
-      preIncludedAddons: [
-        {
-          addOnName: "Average Daily Balances",
-          isPreInclueded: true,
-        },
-        {
-          addOnName: "Flow Billing",
-          isPreInclueded: true,
-        },
-      ],
-    },
-    {
-      planName: "Elite",
-      description: "For medium to large-sized RIAs",
-      aumLevel: "$500M",
-      adminUsers: "5",
-      clients: "500",
-      connector: "3",
-      planDetails: [
-        "Everything from Professional Plan",
-        "Multi-Fee Billing Add-on included",
-        "Product Attribution Add-on included",
-      ],
-      preIncludedAddons: [
-        {
-          addOnName: "Average Daily Balances",
-          isPreInclueded: true,
-        },
-        {
-          addOnName: "Flow Billing",
-          isPreInclueded: true,
-        },
-        {
-          addOnName: "Multi-Fee Billing",
-          isPreInclueded: true,
-        },
-        {
-          addOnName: "Product Attribution",
-          isPreInclueded: true,
-        },
-      ],
-    },
-    {
-      planName: "Enterprise",
-      description: "For large RIAs requiring custom license",
-      aumLevel: "Unlimited",
-      adminUsers: "Unlimited",
-      clients: "Unlimited",
-      connector: "Unlimited",
-      planDetails: [
-        "Everything from Elite Plan",
-        "Advisor Portal",
-        "Custom SLAs",
-      ],
-      preIncludedAddons: [],
-    },
-  ];
+  private planInfo: Array<plansListResponseModel> = [];
 
   created() {
+    this.planInfo = this.store.getters.planList;
     if (this.product == "AUM") {
       if (this.aumBilling.commitmentTerm)
         this.commitmentTerm = this.aumBilling.commitmentTerm;

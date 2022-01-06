@@ -299,11 +299,6 @@
                         v-if="item.isPreInclueded"
                         >Included</span
                       >
-                      <span
-                        class="badge text-primary fs-8 bg-white"
-                        v-if="!item.isPreInclueded && item.current"
-                        >Current</span
-                      >
                     </div>
                     <div
                       :class="{
@@ -417,6 +412,7 @@ import { useStore } from "vuex";
 
 import { ISubscripeService } from "@/service";
 import {
+  addOnsListResponseModel,
   subscribeAddonsRequestModel,
   subscribeAddonsResponseModel,
   subscribedAddonsReqeustModel,
@@ -432,76 +428,35 @@ export default class PickAddons extends Vue {
 
   @Inject("subscripeService") service: ISubscripeService;
 
+  public store = useStore();
+
   public commitmentTerm: string = "Annual";
+
   public itemsPerRow: number = 0;
   public planRow: any = [];
-  public store = useStore();
+
+  public addonsList: Array<addOnsListResponseModel> = [];
   public addons: Array<subscribeAddonsResponseModel> = [];
   public subscribedAddOns: Array<subscribeAddonsResponseModel> = [];
 
   public toggleAccordion: boolean = true;
   public toggleSubscribedAddons: boolean = true;
 
-  public addonsList: any = [
-    {
-      addOnName: "Average Daily Balances",
-      description: "Support ADB calculations and reporting",
-      extraInfo: "$125/month",
-      selected: false,
-      quantity: "1",
-    },
-    {
-      addOnName: "Flow Billing",
-      description: "Adjust billing for intra-period flows",
-      extraInfo: "$250/month",
-      selected: false,
-      quantity: "1",
-    },
-    {
-      addOnName: "Admin User License",
-      description: "Additional admin user access license",
-      extraInfo: "Per User",
-      selected: false,
-      quantity: "1",
-    },
-    {
-      addOnName: "Multi-Fee Billing",
-      description: "Multiple fee calculations per account",
-      extraInfo: "$150/month",
-      selected: false,
-      quantity: "1",
-    },
-    {
-      addOnName: "Revenue Sharing",
-      description: "Flexible revenue sharing and fee splitting",
-      extraInfo: "$500/month",
-      quantity: "1",
-      selected: false,
-    },
-    {
-      addOnName: "Multi-Connector Integrations",
-      description: "Integrate with multiple custody sources",
-      extraInfo: "Per Connector",
-      quantity: "1",
-      selected: false,
-    },
-    {
-      addOnName: "Product Attribution",
-      description: "Integrate with multiple custody sources",
-      extraInfo: "$150/month",
-      quantity: "1",
-      selected: false,
-    },
-  ];
-
   created() {
+    this.addonsList = this.$vuehelper.clone(this.store.getters.addOnsList);
     this.commitmentTerm = this.termPlanType;
-    this.filterAddons();
+
+    if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
+      this.getSubscribedAddons();
+    else this.filterAddons();
   }
 
   public updateCommitmentTerm(commitmentTerm: string) {
     this.commitmentTerm = commitmentTerm;
-    this.getAddons();
+
+    if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
+      this.getSubscribedAddons();
+    else this.getAddons();
   }
 
   private getSubscribedAddons() {
@@ -530,17 +485,11 @@ export default class PickAddons extends Vue {
 
     if (this.addOnType == "AddMoreAddOns") {
       let itemsToRemove = this.subscribedAddOns.map((item) => item.addOnName);
-      console.log(itemsToRemove);
-      this.addons = this.addons.filter(
+      this.addonsList = this.addonsList.filter(
         (item: any) => !itemsToRemove.includes(item.addOnName)
       );
     }
-
-    this.itemsPerRow = Math.round(this.addons.length / 2);
-    this.planRow = Array.from(
-      Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
-    );
-    this.updateAddons();
+    this.filterAddons();
   }
 
   private filterAddons() {
@@ -550,12 +499,10 @@ export default class PickAddons extends Vue {
         selected: boolean;
         quantity: string;
         isPreInclueded: boolean;
-        current: boolean;
       }) => {
         this.preAddons.forEach((addons: subscribeAddonsResponseModel) => {
           if (item.addOnName == addons.addOnName) {
             item.selected = true;
-            if (addons.current) item.current = true;
             if (addons.quantity) item.quantity = addons.quantity;
             if (addons.isPreInclueded) item.isPreInclueded = true;
           }
@@ -567,7 +514,7 @@ export default class PickAddons extends Vue {
   }
 
   private getAddons() {
-    const request = new subscribeAddonsRequestModel();
+    let request = new subscribeAddonsRequestModel();
     request.planId = this.planId;
     request.termPlanType =
       CommitmentTerm[this.commitmentTerm as keyof typeof CommitmentTerm];
@@ -588,12 +535,10 @@ export default class PickAddons extends Vue {
         (addons: {
           addOnName: string;
           description: string;
-          planType: string;
           extraInfo: string;
           selected: boolean;
           quantity: string;
           isPreInclueded: boolean;
-          current: boolean;
         }) => {
           if (item.addOnName == addons.addOnName) {
             const addOns = {
@@ -607,7 +552,6 @@ export default class PickAddons extends Vue {
               extraInfo:
                 this.commitmentTerm == "Annual" ? addons.extraInfo : "",
               isPreInclueded: addons.isPreInclueded,
-              current: addons.current,
             };
             this.addons.push(this.$vuehelper.clone(addOns));
           }
@@ -615,15 +559,11 @@ export default class PickAddons extends Vue {
       );
     });
 
-    if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
-      this.getSubscribedAddons();
-    else {
-      this.updateAddons();
-      this.itemsPerRow = Math.round(this.addons.length / 2);
-      this.planRow = Array.from(
-        Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
-      );
-    }
+    this.updateAddons();
+    this.itemsPerRow = Math.round(this.addons.length / 2);
+    this.planRow = Array.from(
+      Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
+    );
   }
 
   public updateAddons(response?: subscribeAddonsResponseModel) {
@@ -649,13 +589,6 @@ export default class PickAddons extends Vue {
 
   get subscriptionBilling() {
     return this.store.getters.subscriptionBilling;
-  }
-
-  get getPlanList() {
-    console.log("list");
-    return Array.from(
-      Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
-    );
   }
 }
 </script>

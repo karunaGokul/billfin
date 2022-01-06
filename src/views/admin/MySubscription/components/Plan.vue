@@ -125,7 +125,7 @@
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(plan.paymentAmount) }}
         <span class="fs-8 fw-light"
-          >/{{ plan.term == "ANNUAL" ? "Yr" : "Mo" }}</span
+          >/{{ plan.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
         >
       </div>
       <div

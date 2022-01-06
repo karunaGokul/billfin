@@ -139,7 +139,7 @@
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(addons.paymentAmount) }}
         <span class="fs-8 fw-light"
-          >/{{ addons.term == "ANNUAL" ? "Yr" : "Mo" }}</span
+          >/{{ addons.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
         >
       </div>
       <div
@@ -193,6 +193,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
+import { useStore } from "vuex";
+
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import ChangeAddOnCommitmentTerm from "./ChangeAddOnCommitmentTerm.vue";
 
@@ -208,42 +210,13 @@ export default class Addons extends Vue {
   @Prop() addons: addonsResponseModel;
   @Prop() allowChangeAddonTerm: string;
 
+  public store = useStore();
+
   public togglePlan: boolean = false;
   public showCancelModel: boolean = false;
   public toggleCommitmentTerm: boolean = false;
 
   public showCommitmentTermModel: boolean = false;
-
-  public addonsList: any = [
-    {
-      addOnName: "Average Daily Balances",
-      description: "Support ADB calculations and reporting",
-    },
-    {
-      addOnName: "Flow Billing",
-      description: "Adjust billing for intra-period flows",
-    },
-    {
-      addOnName: "Admin User License",
-      description: "Additional admin user access license",
-    },
-    {
-      addOnName: "Multi-Fee Billing",
-      description: "Multiple fee calculations per account",
-    },
-    {
-      addOnName: "Revenue Sharing",
-      description: "Flexible revenue sharing and fee splitting",
-    },
-    {
-      addOnName: "Multi-Connector Integrations",
-      description: "Integrate with multiple custody sources",
-    },
-    {
-      addOnName: "Product Attribution",
-      description: "Integrate with multiple custody sources",
-    },
-  ];
 
   public onCancelled() {
     this.showCancelModel = false;
@@ -263,7 +236,7 @@ export default class Addons extends Vue {
   }
 
   get description() {
-    return this.addonsList.find(
+    return this.addOnsList.find(
       (e: any) => e.addOnName == this.addons.addOnName
     ).description;
   }
@@ -281,7 +254,11 @@ export default class Addons extends Vue {
     return status;
   }
 
-  addOnEndDate(endDate: string) {
+  get addOnsList() {
+    return this.store.getters.addOnsList;
+  }
+
+  private addOnEndDate(endDate: string) {
     let value: string = "";
     let date = new Date(
       parseInt(endDate.split("/")[2]),

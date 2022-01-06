@@ -41,6 +41,8 @@ export default class Addons extends Vue {
   }
 
   created() {
+    console.log(this.aumBilling.addons);
+    console.log(this.aumBilling.plan.preIncludedAddons);
     this.products.forEach((item: string) => {
       if (item == "AUM")
         this.plans.push({

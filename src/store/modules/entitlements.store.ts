@@ -1,14 +1,20 @@
+import axios from "axios";
 import { GetterTree, MutationTree, ActionTree } from "vuex";
 
 import { FirmService } from "@/service";
-import { firmRequestModel, firmsResponseModel } from "@/model";
+import {
+  firmRequestModel,
+  firmsResponseModel,
+  EntitlemenetResponseModel,
+} from "@/model";
 
 const FIRM_KEY = "firm_id";
 
-const state: any = {
-  firms: new firmsResponseModel(),
+const state: EntitlemenetResponseModel = {
+  firms: null,
   dataEntitlements: [],
   firmId: localStorage.getItem(FIRM_KEY),
+  settings: null,
 };
 const getters: GetterTree<any, any> = {
   firms: (state) => {
@@ -23,10 +29,18 @@ const getters: GetterTree<any, any> = {
   dataEntitlements: (state) => {
     return state.dataEntitlements;
   },
+  planList: (state) => {
+    return state.settings.plans;
+  },
+  addOnsList: (state) => {
+    return state.settings.addOns;
+  },
 };
 const mutations: MutationTree<any> = {
   onLoadEntitlements(state, firms) {
-    state.dataEntitlements = firms.sort((item:any, value:any) => item.name.localeCompare(value.name));
+    state.dataEntitlements = firms.sort((item: any, value: any) =>
+      item.name.localeCompare(value.name)
+    );
     if (!state.firmId) {
       state.firmId = state.dataEntitlements[0].firmId;
       localStorage.setItem(FIRM_KEY, state.firmId);
@@ -37,8 +51,11 @@ const mutations: MutationTree<any> = {
 
     state.firmId = firmId;
   },
-  onUpdateFirmStatus: (state, {getters}) => {
+  onUpdateFirmStatus: (state, { getters }) => {
     getters.firms.firmStatus = "SUBSCRIBED";
+  },
+  onLoadSettings: (state, response) => {
+    state.settings = response;
   },
 };
 const actions: ActionTree<any, any> = {
@@ -62,13 +79,20 @@ const actions: ActionTree<any, any> = {
   firmIdChanged(context, firmId) {
     context.commit("onFirmIdChanged", firmId);
   },
-  updateFirmStatus({commit, getters}) {
-    commit("onUpdateFirmStatus", {getters});
+  updateFirmStatus({ commit, getters }) {
+    commit("onUpdateFirmStatus", { getters });
+  },
+  loadSettings(context) {
+    if (context.state.settings == null) {
+      return axios.get("/theme.json").then((json) => {
+        context.commit("onLoadSettings", json.data);
+      });
+    }
   },
   clearFirm() {
     localStorage.removeItem(FIRM_KEY);
     state.firmId = "";
-  }
+  },
 };
 
 export const DataEntitlementModule = {

@@ -48,7 +48,6 @@ export class subscribeAddonsResponseModel {
   quantity: string;
   extraInfo: string;
   isPreInclueded: boolean;
-  current: boolean;
 }
 export class paymentTokenRequestModel {
   token: string;
