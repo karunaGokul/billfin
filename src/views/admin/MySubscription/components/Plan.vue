@@ -3,22 +3,33 @@
     <div class="col-4">
       <div
         class="fw-bolder fs-4 mb-2"
-        :class="{ 'text-gray-secondary': plan.endDate }"
+        :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
       >
         {{ plan.planName }}
-        <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
-          plan.status == "CURRENT"
-            ? "Current"
-            : plan.status == "UPCOMING"
-            ? "Upcoming"
-            : plan.status == "CANCELLED"
-            ? "Canceled"
-            : ""
-        }}</span>
+
+        <span
+          class="badge fs-7 ms-2"
+          :class="{
+            'bg-success-alpha text-success':
+              plan.status != 'CANCELLED' ||
+              (plan.status == 'CANCELLED' && plan.activeFlag),
+            'bg-dander-alpha text-danger':
+              plan.status == 'CANCELLED' && !plan.activeFlag,
+          }"
+          >{{
+            plan.status == "CURRENT"
+              ? "Current"
+              : plan.status == "UPCOMING"
+              ? "Upcoming"
+              : plan.status == "CANCELLED" && !plan.activeFlag
+              ? "Canceled"
+              : "Current"
+          }}</span
+        >
       </div>
       <div
         class="fs-6 text-muted"
-        :class="{ 'text-gray-secondary': plan.endDate }"
+        :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
       >
         {{ description }}
       </div>
@@ -74,8 +85,11 @@
             (plan.status == 'CURRENT' && plan.endDate == null) ||
             (plan.status == 'UPCOMING' && plan.endDate == null),
           'border-danger bg-dander-alpha text-danger':
-            plan.status == 'CANCELLED' ||
-            (plan.status == 'CURRENT' && plan.endDate != null),
+            plan.status == 'CURRENT' && plan.endDate != null,
+          'text-danger border-danger':
+            plan.status == 'CANCELLED' && plan.activeFlag,
+          'border-gray bg-gray-alpha text-gray-secondary':
+            plan.status == 'CANCELLED' && !plan.activeFlag,
         }"
       >
         {{ planStatus }}
@@ -87,10 +101,13 @@
     >
       <div
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
-        :class="{ 'text-gray-secondary': plan.endDate }"
-        @click="!plan.endDate ? toggleCommitmentTerm = true : ''"
+        :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
+        @click="!plan.endDate ? (toggleCommitmentTerm = true) : ''"
       >
-        {{ plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }} Subscription
+        {{
+          plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly"
+        }}
+        Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
         <ul class="m-2 p-0">
@@ -104,7 +121,13 @@
           </li>
         </ul>
       </div>
-      <div class="text-muted" :class="{ 'text-gray-secondary': plan.endDate }">
+      <div
+        :class="{
+          'text-gray-secondary': plan.status == 'CANCELLED' && !plan.activeFlag,
+          'text-danger': plan.status == 'CANCELLED' && plan.activeFlag,
+          'text-muted': plan.status != 'CANCELLED' && !plan.endDate
+        }"
+      >
         {{ plan.startDate }} -
         {{
           plan.status == "CANCELLED" ||
@@ -120,7 +143,7 @@
     <div class="col-2 d-flex align-items-center justify-content-end">
       <div
         class="fw-bolder fa-2x"
-        :class="{ 'text-gray-secondary': plan.endDate }"
+        :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
       >
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(plan.paymentAmount) }}
@@ -130,12 +153,13 @@
       </div>
       <div
         class="dropdown dropdown-primary ms-4"
+        :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
         v-click-outside="clickOutSidePlan"
       >
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="!plan.endDate ? togglePlan = true : ''"
+          @click="!plan.endDate ? (togglePlan = true) : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"
@@ -239,7 +263,6 @@ export default class Plan extends Vue {
   }
 
   public changePlan() {
-    
     this.store.dispatch(
       "updatePaymentType",
       this.plan.cardType == "Credit Card" ? this.plan.cardType : "ACH"
@@ -250,7 +273,7 @@ export default class Plan extends Vue {
     if (this.plan.cardType == "Credit Card")
       this.store.dispatch("updateCreditCard", cardNumber);
     else this.store.dispatch("updateACH", cardNumber);
-    
+
     let payload = [];
     payload.push(this.product);
     this.store.dispatch("updateProducts", payload);
@@ -259,11 +282,12 @@ export default class Plan extends Vue {
       product: this.product,
       plan: {},
       currentPlan: this.plan,
-      commitmentTerm: this.plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
+      commitmentTerm:
+        this.plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);
 
-    this.$router.push('./change-plan');
+    this.$router.push("./change-plan");
   }
 
   public clickOutSidePlan() {

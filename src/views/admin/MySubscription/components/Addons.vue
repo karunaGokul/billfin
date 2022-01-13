@@ -139,8 +139,11 @@
         </ul>
       </div>
       <div
-        class="text-muted"
-        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
+        :class="{
+          'text-gray-secondary': addons.status == 'CANCELLED' && !addons.activeFlag,
+          'text-danger': addons.status == 'CANCELLED' && addons.activeFlag,
+          'text-muted': addons.status != 'CANCELLED' && !addons.endDate
+        }"
       >
         {{ addons.startDate }} -
         {{

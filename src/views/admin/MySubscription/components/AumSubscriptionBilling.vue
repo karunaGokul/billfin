@@ -171,12 +171,6 @@ export default class AumSubscriptionBilling extends Vue {
       addons.cardType == "Credit Card" ? addons.cardType : "ACH"
     );
 
-    let cardNumber = { number: addons.cardNumber };
-
-    if (addons.cardType == "Credit Card")
-      this.store.dispatch("updateCreditCard", cardNumber);
-    else this.store.dispatch("updateACH", cardNumber);
-
     let options = {
       product: this.bliingType,
       plan: plans,

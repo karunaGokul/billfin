@@ -378,7 +378,6 @@ export default class CreditCard extends Vue {
       expdate_month: this.request.expirationMonth,
       expdate_year: this.request.expirationYear,
       name: this.request.cardHolderName,
-      cvv: this.request.cvv,
       cardType: this.card,
     };
     this.store.dispatch("updateCreditCard", cardDetails);

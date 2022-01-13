@@ -111,6 +111,7 @@ export class cardDetailsResponsetModel {
   token: string;
   typeName: string;
   status: string;
+  isDefault: boolean;
 }
 export class billingAddressRequestModel {
   firmId: number;
