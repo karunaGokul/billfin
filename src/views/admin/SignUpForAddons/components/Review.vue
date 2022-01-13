@@ -138,62 +138,67 @@
           <div class="text-gray">{{ address.bill_postcode }}</div>
           <div class="text-gray">{{ address.bill_country }}.</div>
         </div>
-        <div class="col-5">
+        <div class="col-5" v-if="card">
           <h4 class="fw-bold mt-10 pb-4">Payment Method</h4>
           <div
             class="border border-dashed rounded p-4"
             v-if="paymentType == 'Credit Card'"
           >
-            <div class="fw-bold text-dark-gray p-2">{{ creditCard.name }}</div>
+            <div class="fw-bold text-dark-gray p-2">
+              {{ card.cardHolderName }}
+            </div>
             <div class="d-flex align-items-center">
               <div>
                 <img
                   src="@/assets/mastercard.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'MasterCard'"
+                  v-if="card.cardType == 'MasterCard'"
                 />
                 <img
                   src="@/assets/visa.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'Visa'"
+                  v-if="card.cardType == 'Visa'"
                 />
                 <img
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'American'"
+                  v-if="card.cardType == 'American'"
                 />
                 <img
                   src="@/assets/discover.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'Discover'"
+                  v-if="card.cardType == 'Discover'"
+                />
+                <img
+                  src="@/assets/bank.png"
+                  alt="Card Type"
+                  width="80"
+                  v-if="card.cardType == 'chec'"
                 />
               </div>
               <div class="p-4">
                 <div class="text-dark-gray fw-bolder p-2">
-                  {{ creditCard.cardType }} ****{{
-                    creditCard.number.substr(creditCard.number.length - 4)
-                  }}
+                  {{ card.cardType }} ****{{ card.maskNumber.split("x")[1] }}
                 </div>
                 <div class="text-dark-gray fw-bold p-2 text-muted">
-                  Card expires at {{ creditCard.expdate_month }}/{{
-                    creditCard.expdate_year
-                      .toString()
-                      .substr(creditCard.expdate_year.toString().length - 2)
-                  }}
+                  Card expires at
+                  {{ card.expDate.split("-")[1] }} /
+                  {{ card.expDate.split("-")[0] }}
                 </div>
               </div>
             </div>
           </div>
           <div class="border border-dashed rounded p-4" v-else>
-            <div class="text-dark-gray fw-bold p-2">{{ ach.name }}</div>
             <div class="text-dark-gray fw-bold p-2">
-              ****{{ ach.number.substr(ach.number.length - 4) }}
+              {{ card.cardHolderName }}
             </div>
-            <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
+            <div class="text-dark-gray fw-bold p-2">
+              ****{{ card.maskNumber.split("x")[1] }}
+            </div>
           </div>
         </div>
       </div>
@@ -214,6 +219,9 @@ import { useStore } from "vuex";
 import {
   billingAddressRequestModel,
   billingAddressResponseModel,
+  cardDetailsRequestModel,
+  cardDetailsResponsetModel,
+  PaymentMethod,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
@@ -225,8 +233,11 @@ export default class Review extends Vue {
   public address: billingAddressResponseModel =
     new billingAddressResponseModel();
 
+  public card: cardDetailsResponsetModel = null;
+
   created() {
     this.getBillingAddress();
+    this.getCardDetails();
   }
 
   private getBillingAddress() {
@@ -236,6 +247,21 @@ export default class Review extends Vue {
       .getBillingAddress(request)
       .then((response) => {
         this.address = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public getCardDetails() {
+    let request = new cardDetailsRequestModel();
+    request.paymentMethod =
+      PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getCardDetails(request)
+      .then((response) => {
+        this.card = response[0];
       })
       .catch((err) => {
         console.log(err);
@@ -292,14 +318,6 @@ export default class Review extends Vue {
 
   get paymentType() {
     return this.store.getters.paymentType;
-  }
-
-  get creditCard() {
-    return this.store.getters.creditCard;
-  }
-
-  get ach() {
-    return this.store.getters.ach;
   }
 }
 </script>

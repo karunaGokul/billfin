@@ -28,7 +28,7 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">2</span>
               </div>
-              <div class="tab-label-name">Payment</div>
+              <div class="tab-label-name">Review & Confirm</div>
             </li>
             <li
               class="tab-label d-flex align-items-center ms-8 me-8"
@@ -41,19 +41,6 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">3</span>
               </div>
-              <div class="tab-label-name">Review & Confirm</div>
-            </li>
-            <li
-              class="tab-label d-flex align-items-center ms-8 me-8"
-              :class="{
-                'tab-label-active': step == 4,
-                'tab-label-complete': step > 4,
-              }"
-            >
-              <div class="tab-label-box me-4">
-                <i class="fas fa-check text-primary tab-label-icon"></i>
-                <span class="tab-label-count">4</span>
-              </div>
               <div class="tab-label-name">Sign & Subscribe</div>
             </li>
           </ul>
@@ -64,10 +51,9 @@
       <div class="tab-group">
         <div class="tab-content-group">
           <addons @next="step = 2" v-if="step == 1" />
-          <payment @back="step = 1" @next="step = 3" v-if="step == 2"/>
-          <review @back="step = 2" @next="step = 4" v-if="step == 3"/>
-          <subscribe @back="step = 3" @next="step = 5" v-if="step == 4"/>
-          <confirm v-if="step == 5"/>
+          <review @back="step = 1" @next="step = 3" v-if="step == 2"/>
+          <subscribe @back="step = 2" @next="step = 4" v-if="step == 3"/>
+          <confirm v-if="step == 4"/>
         </div>
       </div>
     </div>
@@ -76,7 +62,6 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Addons from "./components/Addons.vue";
-import Payment from "./components/Payment.vue";
 import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
@@ -84,7 +69,6 @@ import Confirm from "./components/Confirm.vue";
 @Options({
   components: {
     Addons,
-    Payment,
     Review,
     Subscribe,
     Confirm

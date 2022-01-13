@@ -49,7 +49,7 @@
         >
           <div>
             <div class="fw-bolder fs-4 p-2">
-              {{ firms.name }}
+              {{ item.cardHolderName }}
               <span
                 class="badge text-success ms-2 fs-6 bg-success-alpha"
                 v-if="status"
