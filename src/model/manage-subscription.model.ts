@@ -23,7 +23,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
   renewDate: string;
   status: string;
   cardNumber: string;
-  active: boolean;
+  activeFlag: boolean;
   description: string;
 }
 export class addonsResponseModel extends addOnsModel {
@@ -38,7 +38,7 @@ export class addonsResponseModel extends addOnsModel {
   renewDate: string;
   status: string;
   cardNumber: string;
-  active: boolean;
+  activeFlag: boolean;
   description: string;
   planId: number;
   termPlanId: number;
@@ -48,14 +48,12 @@ export class manageSubscriptionResponseModel {
   subscriptions: Array<subscriptionResponseModel> = [];
   addOns: Array<addonsResponseModel> = [];
 }
-export class termPlanAmountReqeustModel {
+export class termPlanDetailsReqeustModel {
   termPlanType: string;
   planId: number;
+  planSubscriptionId: number;
 }
-export class termAddOnAmountRequestModel extends termPlanAmountReqeustModel {
-  addOnName: string;
-}
-export class termPlanAmountResponseModel {
+export class planDetailsResponseModel {
   planName: string;
   planCode: string;
   termPlanCode: string;
@@ -64,7 +62,14 @@ export class termPlanAmountResponseModel {
   planId: number;
   termPlanId: number;
 }
-export class termAddOnAmountResponseModel {
+export class termPlanDetailsResponseModel {
+  plan: planDetailsResponseModel;
+  addOns: Array<termAddOnDetailsResponseModel>;
+}
+export class termAddOnDetailsRequestModel extends termPlanDetailsReqeustModel {
+  addOnName: string;
+}
+export class termAddOnDetailsResponseModel {
   addOnName: string;
   planAddOnAmount: number;
   planId: number;
@@ -75,7 +80,6 @@ export class termAddOnAmountResponseModel {
 export class changePlanTermRequestModel {
   eventType: string;
   subscriptionPlanId: number;
-  subscriptionAddOnId: number;
   term: string;
   termPlanId: number;
 }
@@ -97,6 +101,7 @@ export class cardDetailsRequestModel {
   firmId: number;
 }
 export class cardDetailsResponsetModel {
+  cardHolderName: string;
   cardNumber: string;
   cardType: string;
   creditCardId: string;
@@ -192,10 +197,11 @@ export class refundAddOnResponseModel {
   termAddOnId: number;
   termPlanId: number;
 }
-export class cancelAddOnRequestModel {
+export class cancelPlanAddOnRequestModel {
   eventType: string;
-  subscriptionAddOnId: number;
+  subscriptionPlanId?: number;
+  subscriptionAddOnId?: number;
 }
-export class cancelAddOnResponseModel {
+export class cancelPlanAddOnResponseModel {
   status: string;
 }

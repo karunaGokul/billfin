@@ -127,8 +127,8 @@ import { useStore } from "vuex";
 
 import {
   addonsResponseModel,
-  termAddOnAmountRequestModel,
-  termAddOnAmountResponseModel,
+  termAddOnDetailsRequestModel,
+  termAddOnDetailsResponseModel,
   CommitmentTerm,
   changeAddOnTermRequestModel,
 } from "@/model";
@@ -141,25 +141,25 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
   @Prop() addons: addonsResponseModel;
   @Prop() currentTerm: string;
 
-  public response: termAddOnAmountResponseModel =
-    new termAddOnAmountResponseModel();
+  public response: termAddOnDetailsResponseModel =
+    new termAddOnDetailsResponseModel();
 
   public store = useStore();
 
   created() {
-    this.getTermAddOnAmount();
+    this.getTermAddOnDetails();
   }
 
-  private getTermAddOnAmount() {
-    let request: termAddOnAmountRequestModel =
-      new termAddOnAmountRequestModel();
+  private getTermAddOnDetails() {
+    let request: termAddOnDetailsRequestModel =
+      new termAddOnDetailsRequestModel();
     request.termPlanType =
       CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
     request.planId = this.addons.planId;
     request.addOnName = this.addons.addOnName;
 
     this.service
-      .getTermAddOnAmount(request)
+      .getTermAddOnDetails(request)
       .then((response) => {
         this.response = response;
       })

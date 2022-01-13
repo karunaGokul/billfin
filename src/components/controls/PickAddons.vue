@@ -486,7 +486,7 @@ export default class PickAddons extends Vue {
     if (this.addOnType == "AddMoreAddOns") {
       let itemsToRemove = this.subscribedAddOns.map((item) => item.addOnName);
       this.addonsList = this.addonsList.filter(
-        (item: any) => !itemsToRemove.includes(item.addOnName)
+        (item) => !itemsToRemove.includes(item.addOnName)
       );
     }
     this.filterAddons();
@@ -559,11 +559,13 @@ export default class PickAddons extends Vue {
       );
     });
 
-    this.updateAddons();
-    this.itemsPerRow = Math.round(this.addons.length / 2);
-    this.planRow = Array.from(
-      Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
-    );
+    if (this.addonsList.length > 0) {
+      this.updateAddons();
+      this.itemsPerRow = Math.round(this.addons.length / 2);
+      this.planRow = Array.from(
+        Array(Math.ceil(this.addons.length / this.itemsPerRow)).keys()
+      );
+    }
   }
 
   public updateAddons(response?: subscribeAddonsResponseModel) {

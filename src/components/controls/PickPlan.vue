@@ -58,6 +58,15 @@
             }}
           </div>
 
+          <div class="d-flex m-2" v-if="planType == 'Change Plan'">
+            <div class="ms-4 me-4 fs-4 fw-bolder" style="width: 260px">
+              Current Plan
+            </div>
+            <div class="ms-4 me-4 fs-4 fw-bolder" style="width: 260px">
+              Select Plan
+            </div>
+          </div>
+
           <div class="d-flex justify-content-evenly mt-4 mb-4 m-2">
             <div
               class="ms-4 me-4 p-4 pt-12 pb-12 rounded position-relative"

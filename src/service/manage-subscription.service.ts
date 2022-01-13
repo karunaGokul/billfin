@@ -2,10 +2,10 @@ import { IBaseService, BaseService } from "./base.service";
 import {
   manageSubscriptionRequestModel,
   manageSubscriptionResponseModel,
-  termPlanAmountReqeustModel,
-  termPlanAmountResponseModel,
-  termAddOnAmountRequestModel,
-  termAddOnAmountResponseModel,
+  termPlanDetailsReqeustModel,
+  termPlanDetailsResponseModel,
+  termAddOnDetailsRequestModel,
+  termAddOnDetailsResponseModel,
   changePlanTermRequestModel,
   changePlanTermResponseModel,
   changeAddOnTermRequestModel,
@@ -19,8 +19,8 @@ import {
   refundResponseModel,
   changePlanRequestModel,
   changePlanResponseModel,
-  cancelAddOnRequestModel,
-  cancelAddOnResponseModel
+  cancelPlanAddOnRequestModel,
+  cancelPlanAddOnResponseModel,
 } from "@/model";
 
 export interface IManageSubscription
@@ -28,18 +28,18 @@ export interface IManageSubscription
   getSubscription(
     request: manageSubscriptionRequestModel
   ): Promise<manageSubscriptionResponseModel>;
-  getTermPlanAmount(
-    request: termPlanAmountReqeustModel
-  ): Promise<termPlanAmountResponseModel>;
+  getTermPlanDetails(
+    request: termPlanDetailsReqeustModel
+  ): Promise<termPlanDetailsResponseModel>;
   changePlanTerm(
     request: changePlanTermRequestModel
   ): Promise<changePlanTermResponseModel>;
   getCardDetails(
     request: cardDetailsRequestModel
   ): Promise<Array<cardDetailsResponsetModel>>;
-  getTermAddOnAmount(
-    request: termAddOnAmountRequestModel
-  ): Promise<termAddOnAmountResponseModel>;
+  getTermAddOnDetails(
+    request: termAddOnDetailsRequestModel
+  ): Promise<termAddOnDetailsResponseModel>;
   changeAddOnTerm(
     request: changeAddOnTermRequestModel
   ): Promise<changePlanTermResponseModel>;
@@ -49,13 +49,14 @@ export interface IManageSubscription
   subscribeAddOns(
     request: addMoreSubscriptionRequestModel
   ): Promise<addMoreSubscriptionResponseModel>;
-  getRefundDetails(request: subscribedAddonsReqeustModel): Promise<refundResponseModel>;
-  changePlan(
-    request: changePlanRequestModel
+  getRefundDetails(
+    request: subscribedAddonsReqeustModel
+  ): Promise<refundResponseModel>;
+  changePlan(request: changePlanRequestModel): Promise<changePlanResponseModel>;
+  cancelPlanAddOn(
+    request: cancelPlanAddOnRequestModel,
+    path: string
   ): Promise<changePlanResponseModel>;
-  cancelAddOn(
-    request: cancelAddOnRequestModel
-  ): Promise<cancelAddOnResponseModel>;
 }
 
 export class ManageSubscription extends BaseService<
@@ -76,26 +77,24 @@ export class ManageSubscription extends BaseService<
     );
   }
 
-  public getTermPlanAmount(
-    request: termPlanAmountReqeustModel
-  ): Promise<termPlanAmountResponseModel> {
-    return this.httpGet(
-      "private/api/v1/subscription/termPlanDetail",
-      request
-    ).then((response) => {
-      return response.data;
-    });
+  public getTermPlanDetails(
+    request: termPlanDetailsReqeustModel
+  ): Promise<termPlanDetailsResponseModel> {
+    return this.httpGet("private/api/v1/termPlanDetail", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
-  public getTermAddOnAmount(
-    request: termAddOnAmountRequestModel
-  ): Promise<termAddOnAmountResponseModel> {
-    return this.httpGet(
-      "private/api/v1/subscription/termAddOnDetail",
-      request
-    ).then((response) => {
-      return response.data;
-    });
+  public getTermAddOnDetails(
+    request: termAddOnDetailsRequestModel
+  ): Promise<termAddOnDetailsResponseModel> {
+    return this.httpGet("private/api/v1/termAddOnDetail", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
   public changePlanTerm(
@@ -141,12 +140,16 @@ export class ManageSubscription extends BaseService<
   public subscribeAddOns(
     request: addMoreSubscriptionRequestModel
   ): Promise<addMoreSubscriptionResponseModel> {
-    return this.httpPost("private/api/v1/addOn", request).then((response) => {
-      return response.data;
-    });
+    return this.httpPost("private/api/v1/addMoreAddOn", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
-  public getRefundDetails(request: subscribedAddonsReqeustModel): Promise<refundResponseModel> {
+  public getRefundDetails(
+    request: subscribedAddonsReqeustModel
+  ): Promise<refundResponseModel> {
     return this.httpGet("private/api/v1/getRefundDetails", request).then(
       (response) => {
         return response.data;
@@ -157,15 +160,18 @@ export class ManageSubscription extends BaseService<
   public changePlan(
     request: changePlanRequestModel
   ): Promise<changePlanResponseModel> {
-    return this.httpPost("private/api/v1/changePlan", request).then((response) => {
-      return response.data;
-    });
+    return this.httpPost("private/api/v1/changePlan", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
-  public cancelAddOn(
-    request: cancelAddOnRequestModel
-  ): Promise<cancelAddOnResponseModel> {
-    return this.httpPost("private/api/v1/cancelAddOn", request).then((response) => {
+  public cancelPlanAddOn(
+    request: cancelPlanAddOnRequestModel,
+    path: string
+  ): Promise<cancelPlanAddOnResponseModel> {
+    return this.httpPost("private/api/v1/" + path, request).then((response) => {
       return response.data;
     });
   }

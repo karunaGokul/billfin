@@ -9,10 +9,13 @@
           type="button"
           class="btn rounded"
           :class="{
-            'btn-success': paymenyType == 'ACH',
-            'text-muted': paymenyType != 'ACH',
+            'btn-success': paymentType == 'ACH',
+            'text-muted': paymentType != 'ACH',
           }"
-          @click="paymenyType = 'ACH'"
+          @click="
+            paymentType = 'ACH';
+            getCardDetails();
+          "
         >
           ACH
         </button>
@@ -20,21 +23,117 @@
           type="button"
           class="btn rounded"
           :class="{
-            'btn-success': paymenyType == 'Credit Card',
-            'text-muted': paymenyType != 'Credit Card',
+            'btn-success': paymentType == 'Credit Card',
+            'text-muted': paymentType != 'Credit Card',
           }"
-          @click="paymenyType = 'Credit Card'"
+          @click="
+            paymentType = 'Credit Card';
+            getCardDetails();
+          "
         >
           Credit Card
         </button>
       </div>
     </div>
-    <ACH @back="onBack" @pay="onPayNow" v-if="paymenyType == 'ACH'" />
-    <credit-card
-      @back="onBack"
-      @pay="onPayNow"
-      v-if="paymenyType == 'Credit Card'"
-    />
+    <template v-if="showCardDetails">
+      <div class="p-4 ps-10 pe-10">
+        <div class="d-flex flex-wrap">
+          <div
+            class="d-flex border p-4 rounded m-4"
+            v-for="(item, index) of cards"
+            :key="'card-' + index"
+            :class="{
+              'border border-primary bg-primary-alpha': item == selectedCard,
+            }"
+            @click="selectedCard = item"
+          >
+            <div>
+              <div class="fw-bolder fs-4 p-2">
+                {{ item.cardHolderName }}
+                <span
+                  class="badge text-success ms-2 fs-6 bg-success-alpha"
+                  v-if="status"
+                  >Primary</span
+                >
+              </div>
+              <div class="d-flex">
+                <div>
+                  <img
+                    src="@/assets/mastercard.svg"
+                    alt="Card Type"
+                    width="100"
+                    v-if="item.cardType == 'MasterCard'"
+                  />
+                  <img
+                    src="@/assets/visa.svg"
+                    alt="Card Type"
+                    width="100"
+                    v-if="item.cardType == 'Visa'"
+                  />
+                  <img
+                    src="@/assets/amex.svg"
+                    alt="Card Type"
+                    width="100"
+                    v-if="item.cardType == 'American'"
+                  />
+                  <img
+                    src="@/assets/discover.svg"
+                    alt="Card Type"
+                    width="100"
+                    v-if="item.cardType == 'Discover'"
+                  />
+                  <img
+                    src="@/assets/bank.png"
+                    alt="Card Type"
+                    width="80"
+                    v-if="item.cardType == 'chec'"
+                  />
+                </div>
+                <div class="pt-2 ps-3" v-if="paymentType == 'Credit Card'">
+                  <div class="fw-bolder">
+                    {{ item.cardType }}
+                    {{ item.maskNumber.split("x")[1] }}
+                  </div>
+                  <div class="text-gray-secondary mt-2">
+                    Card expires at
+                    {{ item.expDate.split("-")[1] }} /
+                    {{ item.expDate.split("-")[0] }}
+                  </div>
+                </div>
+                <div  class="pt-2 ps-3" v-else>
+                  <div class="fw-bolder">
+                    Checking
+                    {{ item.maskNumber.split("x")[1] }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center p-4">
+              <button class="btn btn-light me-3">Delete</button>
+              <button class="btn btn-light">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-4">
+          <button
+            class="btn btn-primary"
+            type="button"
+            @click="showCardDetails = false"
+          >
+            Add Payment Method
+          </button>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <ACH @back="onBack" @pay="onPayNow" v-if="paymentType == 'ACH'" />
+      <credit-card
+        @back="onBack"
+        @pay="onPayNow"
+        v-if="paymentType == 'Credit Card'"
+      />
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -46,8 +145,14 @@ import { useStore } from "vuex";
 import ACH from "@/components/controls/ACH.vue";
 import CreditCard from "@/components/controls/creditCard.vue";
 
-import { createCustomerRequestModel, paymentTokenRequestModel, PaymentMethod } from "@/model";
-import { ISubscripeService } from "@/service";
+import {
+  createCustomerRequestModel,
+  paymentTokenRequestModel,
+  PaymentMethod,
+  cardDetailsRequestModel,
+  cardDetailsResponsetModel,
+} from "@/model";
+import { ISubscripeService, IManageSubscription } from "@/service";
 
 declare let ChargeOver: any;
 
@@ -59,17 +164,54 @@ declare let ChargeOver: any;
 })
 export default class Payment extends Vue {
   @Inject("subscripeService") service: ISubscripeService;
+  @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
 
-  public paymenyType: string = "Credit Card";
+  public paymentType: string = "Credit Card";
   public store = useStore();
+
+  public showCardDetails: boolean = false;
+
+  public cards: Array<cardDetailsResponsetModel> = [];
+  public selectedCard: cardDetailsResponsetModel =
+    new cardDetailsResponsetModel();
+
+  public paymentCard: any = {};
+
+  created() {
+    if (this.store.getters.paymentType)
+      this.paymentType = this.store.getters.paymentType;
+    this.getCardDetails();
+  }
 
   onBack() {
     this.$emit("back");
   }
 
   onPayNow() {
-    this.store.dispatch("updatePaymentType", this.paymenyType);
+    this.store.dispatch("updatePaymentType", this.paymentType);
     this.createCustomer();
+  }
+
+  public getCardDetails() {
+    this.cards = [];
+    let request = new cardDetailsRequestModel();
+    request.paymentMethod =
+      PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
+    request.firmId = this.store.getters.selectedFirmId;
+    this.manageSubscripeService
+      .getCardDetails(request)
+      .then((response) => {
+        this.cards = response;
+        if (this.cards.length > 0) this.showCardDetails = true;
+
+        this.selectedCard = this.cards[0];
+        if (this.paymentType == "Credit Card")
+          this.paymentCard = this.creditCard;
+        else this.paymentCard = this.ach;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   private createCustomer() {
@@ -141,8 +283,9 @@ export default class Payment extends Vue {
     let request = new paymentTokenRequestModel();
     request.token = token;
     request.firmId = this.firmId;
-    request.paymentMethod = PaymentMethod[this.paymenyType as keyof typeof PaymentMethod];
-    this.paymenyType.toUpperCase();
+    request.paymentMethod =
+      PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
+    this.paymentType.toUpperCase();
     this.service
       .updatePaymentToken(request)
       .then((response) => {
@@ -175,12 +318,16 @@ export default class Payment extends Vue {
     return phoneNumber;
   }
 
-  get paymentType() {
-    return this.store.getters.paymentType;
-  }
-
   get firmId() {
     return this.store.getters.selectedFirmId;
+  }
+
+  get creditCard() {
+    return this.store.getters.creditCard;
+  }
+
+  get ach() {
+    return this.store.getters.ach;
   }
 }
 </script>

@@ -157,9 +157,10 @@
     title="Cancel Subscription"
     :name="plan.planName"
     :endDate="plan.renewDate"
+    :subscriptionPlanId="plan.subscriptionPlanId"
     type="plan"
     @close="toggleCancelModel = false"
-    @cancel="onCancelModel"
+    @cancelled="onCancelled"
     v-if="toggleCancelModel"
   />
   <renew-plan-addOn
@@ -172,6 +173,7 @@
   />
   <change-plan-commitment-term
     :plan="plan"
+    :addons="addons"
     :currentTerm="plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly'"
     @done="onUpdateTermChanged"
     @close="showCommitmentTermModel = false"
@@ -188,7 +190,7 @@ import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";
 import ChangePlanCommitmentTerm from "./ChangePlanCommitmentTerm.vue";
 
-import { subscriptionResponseModel } from "@/model";
+import { subscriptionResponseModel, addonsResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -200,6 +202,7 @@ import { subscriptionResponseModel } from "@/model";
 export default class Plan extends Vue {
   @Prop() plan: subscriptionResponseModel;
   @Prop() product: string;
+  @Prop() addons: Array<addonsResponseModel>;
 
   public store = useStore();
 
@@ -229,6 +232,11 @@ export default class Plan extends Vue {
       description: "For large RIAs requiring custom license",
     },
   ];
+
+  public onCancelled() {
+    this.toggleCancelModel = false;
+    this.$emit("planAddOnCancelled");
+  }
 
   public changePlan() {
     
@@ -275,7 +283,9 @@ export default class Plan extends Vue {
   }
 
   public onUpdateTermChanged() {
-    this.$router.push("/my-subscription");
+    this.showCommitmentTermModel = false;
+    this.toggleCancelModel = false;
+    this.$emit("termChanged");
   }
 
   get description() {

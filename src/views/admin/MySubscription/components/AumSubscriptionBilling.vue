@@ -18,7 +18,13 @@
     </div>
     <div class="card-body p-0">
       <div class="ps-9 pe-9 p-4" v-for="(item, index) in plans" :key="index">
-        <plan :plan="item" :product="bliingType" />
+        <plan
+          :plan="item"
+          :product="bliingType"
+          :addons="addons"
+          @termChanged="updateSubscription"
+          @planAddOnCancelled="updateSubscription"
+        />
       </div>
       <div class="p-8 text-center" v-if="!loading && !plans.length">
         <div class="fw-bolder fs-4 p-4">
@@ -53,7 +59,7 @@
         <addons
           :addons="item"
           :allowChangeAddonTerm="allowChangeAddonTerm"
-          @addOnCancelled="onAddOnCancelled"
+          @planAddOnCancelled="updateSubscription"
         />
       </div>
       <div class="p-8 text-center" v-if="!loading && !addons.length">
@@ -116,7 +122,11 @@ export default class AumSubscriptionBilling extends Vue {
     if (this.subscription) this.subscription();
   }
 
-  public onAddOnCancelled() {
+  public onPlanAddOnCancelled() {
+    this.getSubscription();
+  }
+
+  public updateSubscription() {
     this.getSubscription();
   }
 
@@ -166,8 +176,6 @@ export default class AumSubscriptionBilling extends Vue {
     if (addons.cardType == "Credit Card")
       this.store.dispatch("updateCreditCard", cardNumber);
     else this.store.dispatch("updateACH", cardNumber);
-
-    console.log(plans);
 
     let options = {
       product: this.bliingType,

@@ -29,7 +29,7 @@ import PickPlan from "@/components/controls/PickPlan.vue";
 export default class Plan extends Vue {
   public store = useStore();
   public plans: Array<any> = [];
-  public invalidPlan: boolean = true;
+  public invalidPlan: boolean = false;
 
   mounted() {
     if (this.products == "") this.$router.push("/my-subscription");

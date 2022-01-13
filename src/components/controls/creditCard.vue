@@ -351,11 +351,9 @@ export default class CreditCard extends Vue {
         postcode: this.request.postalCode,
         country: this.request.country,
       };
-      console.log(request);
       ChargeOver.CreditCard.validate(
         request,
         (code: number, message: any, response: any) => {
-          console.log(code, message, response);
           if (code == 200) {
             this.showInformationError = false;
             this.updateCardDetails();

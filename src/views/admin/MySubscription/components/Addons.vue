@@ -3,22 +3,32 @@
     <div class="col-4">
       <div
         class="fw-bolder fs-4 mb-2"
-        :class="{ 'text-gray-secondary': addons.endDate }"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
       >
         {{ addons.addOnName }}
-        <span class="badge fs-7 text-success ms-2 bg-success-alpha">{{
-          addons.status == "CURRENT"
-            ? "Current"
-            : addons.status == "UPCOMING"
-            ? "Upcoming"
-            : addons.status == "CANCELLED"
-            ? "Canceled"
-            : ""
-        }}</span>
+        <span
+          class="badge fs-7 ms-2"
+          :class="{
+            'bg-success-alpha text-success':
+              addons.status != 'CANCELLED' ||
+              (addons.status == 'CANCELLED' && addons.activeFlag),
+            'bg-dander-alpha text-danger':
+              addons.status == 'CANCELLED' && !addons.activeFlag,
+          }"
+          >{{
+            addons.status == "CURRENT"
+              ? "Current"
+              : addons.status == "UPCOMING"
+              ? "Upcoming"
+              : addons.status == "CANCELLED" && !addons.activeFlag
+              ? "Canceled"
+              : "Current"
+          }}</span
+        >
       </div>
       <div
         class="fs-6 text-muted"
-        :class="{ 'text-gray-secondary': addons.endDate }"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
       >
         <div
           v-if="
@@ -61,7 +71,11 @@
             alt="Card Type"
             v-if="addons.cardNumber.split(' ')[0] == 'Discover'"
           />
-          <span :class="{ 'text-gray-secondary': addons.endDate }">
+          <span
+            :class="{
+              'text-gray-secondary': addons.endDate && !addons.activeFlag,
+            }"
+          >
             ****{{
               addons.cardNumber.split(" ")[0] == "American"
                 ? addons.cardNumber.split(" ")[2]
@@ -83,8 +97,11 @@
             (addons.status == 'CURRENT' && addons.endDate == null) ||
             (addons.status == 'UPCOMING' && addons.endDate == null),
           'border-danger bg-dander-alpha text-danger':
-            addons.status == 'CANCELLED' ||
-            (addons.status == 'CURRENT' && addons.endDate != null),
+            addons.status == 'CURRENT' && addons.endDate != null,
+          'text-danger border-danger':
+            addons.status == 'CANCELLED' && addons.activeFlag,
+          'border-gray bg-gray-alpha text-gray-secondary':
+            addons.status == 'CANCELLED' && !addons.activeFlag,
         }"
       >
         {{ addOnStatus }}
@@ -96,6 +113,7 @@
     >
       <div
         class="fw-bolder fs-4 mb-2 dropdown-toggle"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
         @click="
           !addons.endDate && allowChangeAddonTerm
             ? (toggleCommitmentTerm = true)
@@ -109,7 +127,9 @@
         <ul class="m-2 p-0">
           <li
             class="dropdown-item p-4 fw-bold"
-            :class="{ 'text-gray-secondary': addons.endDate }"
+            :class="{
+              'text-gray-secondary': addons.endDate && !addons.activeFlag,
+            }"
             @click="showCommitmentTermModel = true"
           >
             Switch to
@@ -120,7 +140,7 @@
       </div>
       <div
         class="text-muted"
-        :class="{ 'text-gray-secondary': addons.endDate }"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
       >
         {{ addons.startDate }} -
         {{
@@ -135,7 +155,10 @@
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
-      <div class="fw-bolder fa-2x">
+      <div
+        class="fw-bolder fa-2x"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
+      >
         <span class="fs-7">$</span>
         {{ $filters.currencyDisplayWithoutSymbol(addons.paymentAmount) }}
         <span class="fs-8 fw-light"
@@ -144,6 +167,7 @@
       </div>
       <div
         class="dropdown dropdown-primary ms-4"
+        :class="{ 'text-gray-secondary': addons.endDate && !addons.activeFlag }"
         v-click-outside="clickOutSidePlan"
       >
         <i
@@ -220,7 +244,7 @@ export default class Addons extends Vue {
 
   public onCancelled() {
     this.showCancelModel = false;
-    this.$emit("addOnCancelled");
+    this.$emit("planAddOnCancelled");
   }
 
   public clickOutSidePlan() {

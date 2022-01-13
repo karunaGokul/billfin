@@ -42,7 +42,10 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import { IManageSubscription } from "@/service";
 
-import { cancelAddOnRequestModel, cancelAddOnResponseModel } from "@/model";
+import {
+  cancelPlanAddOnRequestModel,
+  cancelPlanAddOnResponseModel,
+} from "@/model";
 
 export default class CancelPlanAddOn extends Vue {
   @Inject("manageSubscripeService") service: IManageSubscription;
@@ -52,22 +55,36 @@ export default class CancelPlanAddOn extends Vue {
   @Prop() type: string;
   @Prop() endDate: string;
   @Prop() quantity?: string;
+  @Prop() subscriptionPlanId?: number;
   @Prop() subscriptionAddOnId?: number;
 
   public close(option: string) {
     this.$emit(option);
   }
 
+  public cancelPlan() {
+    let request = new cancelPlanAddOnRequestModel();
+    request.eventType = "CANCEL_PLAN";
+    request.subscriptionPlanId = this.subscriptionPlanId;
+    this.service
+      .cancelPlanAddOn(request, 'cancelPlan')
+      .then((response) => {
+        if (response.status == "SUCCESS") this.$emit("cancelled");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   public cancelAddOn() {
-    let request = new cancelAddOnRequestModel();
+    let request = new cancelPlanAddOnRequestModel();
     request.eventType = "CANCEL_ADDON";
     request.subscriptionAddOnId = this.subscriptionAddOnId;
 
     this.service
-      .cancelAddOn(request)
+      .cancelPlanAddOn(request, 'cancelAddOn')
       .then((response) => {
-        if(response.status == "SUCCESS")
-          this.$emit("cancelled");
+        if (response.status == "SUCCESS") this.$emit("cancelled");
       })
       .catch((err) => {
         console.log(err);
