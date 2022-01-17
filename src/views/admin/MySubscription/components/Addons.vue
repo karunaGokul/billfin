@@ -271,7 +271,7 @@ export default class Addons extends Vue {
   get addOnStatus() {
     let status: string = "";
     if (this.addons.status == "CANCELLED")
-      status = `Cancelled on ${this.addOnEndDate(this.addons.endDate)}`;
+      status = `Cancelled on ${this.addOnEndDate(this.addons.cancelDate)}`;
     else if (this.addons.status == "UPCOMING" && this.addons.endDate == null)
       status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
     else if (this.addons.status == "CURRENT" && this.addons.endDate == null)

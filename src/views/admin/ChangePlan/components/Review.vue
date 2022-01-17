@@ -354,8 +354,6 @@
                 <div class="text-dark-gray fw-bold p-2 text-muted">
                   Card expires at {{ creditCard.expdate_month }}/{{
                     creditCard.expdate_year
-                      .toString()
-                      .substr(creditCard.expdate_year.toString().length - 2)
                   }}
                 </div>
               </div>
@@ -366,7 +364,17 @@
             <div class="text-dark-gray fw-bold p-2">
               ****{{ ach.number.substr(ach.number.length - 4) }}
             </div>
-            <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
+            <div class="d-flex align-items-center">
+              <div>
+                <img src="@/assets/bank.png" alt="Card Type" width="80" />
+              </div>
+              <div class="p-4">
+                <div class="text-dark-gray fw-bold p-2">
+                  ****{{ ach.number.substr(ach.number.length - 4) }}
+                </div>
+                <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

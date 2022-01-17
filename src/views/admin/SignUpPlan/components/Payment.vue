@@ -12,10 +12,7 @@
             'btn-success': paymentType == 'ACH',
             'text-muted': paymentType != 'ACH',
           }"
-          @click="
-            paymentType = 'ACH';
-            getCardDetails();
-          "
+          @click="eventPaymentHandler('ACH')"
         >
           ACH
         </button>
@@ -26,17 +23,21 @@
             'btn-success': paymentType == 'Credit Card',
             'text-muted': paymentType != 'Credit Card',
           }"
-          @click="
-            paymentType = 'Credit Card';
-            getCardDetails();
-          "
+          @click="eventPaymentHandler('Credit Card')"
         >
           Credit Card
         </button>
       </div>
     </div>
-    <payment-card :cards="cards" v-if="!addNewPayment" @addNewPayment="addNewPayment = true" />
-    
+    <payment-card
+      :cards="cards"
+      :paymentType="paymentType"
+      @addNewPayment="addNewPayment = true"
+      @back="onBack"
+      @next="onNext"
+      v-if="!addNewPayment"
+    />
+
     <template v-else>
       <ACH @back="onBack" @pay="onPayNow" v-if="paymentType == 'ACH'" />
       <credit-card
@@ -89,11 +90,21 @@ export default class Payment extends Vue {
   created() {
     if (this.store.getters.paymentType)
       this.paymentType = this.store.getters.paymentType;
+
     this.getCardDetails();
+  }
+
+  public eventPaymentHandler(paymentType: string) {
+    this.paymentType = paymentType;
+    if (!this.addNewPayment) this.getCardDetails();
   }
 
   onBack() {
     this.$emit("back");
+  }
+  
+  onNext() {
+    this.$emit("next");
   }
 
   onPayNow() {

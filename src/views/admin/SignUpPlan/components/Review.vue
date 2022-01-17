@@ -9,7 +9,9 @@
           <div class="text-dark-black fs-4">
             <span class="fw-bolder">AUM Billing: </span>
             <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{aumBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{ $filters.currencyDisplay(aumBilling.plan.termPlanAmount) }}
@@ -32,7 +34,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -41,10 +45,16 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{aumBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ aumBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="col-2 text-end fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -56,7 +66,9 @@
             <span class="fw-bold ms-2">{{
               subscriptionBilling.plan.planName
             }}</span>
-            <span class="ms-4 fst-italic fw-light fs-5">({{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-5"
+              >({{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
           <div class="text-light-gray fs-4 fw-bold">
             {{
@@ -81,7 +93,9 @@
               {{
                 item.addOnName == "Admin User License"
                   ? "Additional Admin User"
-                  : item.addOnName == "Multi-Connector Integrations" ? "Additional Connectors" : item.addOnName
+                  : item.addOnName == "Multi-Connector Integrations"
+                  ? "Additional Connectors"
+                  : item.addOnName
               }}
               1<template v-if="parseInt(item.quantity) > 1"
                 >X{{ item.quantity }}</template
@@ -90,10 +104,18 @@
             <template v-else>
               {{ item.addOnName }}
             </template>
-            <span class="ms-4 fst-italic fw-light fs-6">(On {{subscriptionBilling.commitmentTerm}} Commitment)</span>
+            <span class="ms-4 fst-italic fw-light fs-6"
+              >(On {{ subscriptionBilling.commitmentTerm }} Commitment)</span
+            >
           </div>
-          <div class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray">
-            {{ $filters.currencyDisplay(item.planAddOnAmount*parseInt(item.quantity)) }}
+          <div
+            class="col-2 text-end text-light-gray fs-4 fw-bold text-light-gray"
+          >
+            {{
+              $filters.currencyDisplay(
+                item.planAddOnAmount * parseInt(item.quantity)
+              )
+            }}
           </div>
         </div>
       </template>
@@ -167,8 +189,6 @@
                 <div class="text-dark-gray fw-bold p-2 text-muted">
                   Card expires at {{ creditCard.expdate_month }}/{{
                     creditCard.expdate_year
-                      .toString()
-                      .substr(creditCard.expdate_year.toString().length - 2)
                   }}
                 </div>
               </div>
@@ -176,10 +196,21 @@
           </div>
           <div class="border border-dashed rounded p-4" v-else>
             <div class="text-dark-gray fw-bold p-2">{{ ach.name }}</div>
-            <div class="text-dark-gray fw-bold p-2">
-              ****{{ ach.number.substr(ach.number.length - 4) }}
+            <div class="d-flex align-items-center">
+              <div>
+                <img
+                  src="@/assets/bank.png"
+                  alt="Card Type"
+                  width="80"
+                />
+              </div>
+              <div class="p-4">
+                <div class="text-dark-gray fw-bold p-2">
+                  ****{{ ach.number.substr(ach.number.length - 4) }}
+                </div>
+                <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
+              </div>
             </div>
-            <div class="text-dark-gray fw-bold p-2">{{ ach.routing }}</div>
           </div>
         </div>
       </div>
@@ -232,7 +263,7 @@ export default class Review extends Vue {
       aumAmount: number = 0;
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
-        return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+        return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
       }, 0);
       aumAmount = aumAmount + this.aumBilling.plan.termPlanAmount;
     }
@@ -240,7 +271,7 @@ export default class Review extends Vue {
     if (this.showSubscription) {
       subAmount = this.subscriptionBilling.addons.reduce(
         (prev: number, cur: any) => {
-          return prev + parseInt(cur.planAddOnAmount)*parseInt(cur.quantity);
+          return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
         },
         0
       );
@@ -254,10 +285,12 @@ export default class Review extends Vue {
   }
 
   get creditCard() {
+    console.log(this.store.getters.creditCard);
     return this.store.getters.creditCard;
   }
 
   get ach() {
+    console.log(this.store.getters.ach);
     return this.store.getters.ach;
   }
   get address() {

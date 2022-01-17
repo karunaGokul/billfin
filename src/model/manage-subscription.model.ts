@@ -14,6 +14,7 @@ export class subscriptionResponseModel extends subscriptionsModel {
   subscriptionPlanId: number;
   cardType: string;
   customerId: string;
+  cancelDate: string;
   planName: string;
   planId: number;
   paymentToken: string;
@@ -30,6 +31,7 @@ export class addonsResponseModel extends addOnsModel {
   subscriptionAddOnId: number;
   addOnName: string;
   addOnId: number;
+  cancelDate: string;
   cardType: string;
   paymentToken: string;
   commitmentTerm: string;
@@ -111,7 +113,7 @@ export class cardDetailsResponsetModel {
   token: string;
   typeName: string;
   status: string;
-  isDefault: boolean;
+  default: boolean;
 }
 export class billingAddressRequestModel {
   firmId: number;

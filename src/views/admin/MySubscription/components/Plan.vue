@@ -320,7 +320,7 @@ export default class Plan extends Vue {
   get planStatus() {
     let status: string = "";
     if (this.plan.status == "CANCELLED")
-      status = `Cancelled on ${this.planEndDate(this.plan.endDate)}`;
+      status = `Cancelled on ${this.planEndDate(this.plan.cancelDate)}`;
     else if (this.plan.status == "UPCOMING" && this.plan.endDate == null)
       status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
     else if (this.plan.status == "CURRENT" && this.plan.endDate == null)

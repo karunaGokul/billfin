@@ -6,7 +6,7 @@
         v-for="(item, index) of cards"
         :key="'card-' + index"
         :class="{
-          'border border-primary bg-primary-alpha': item == selectedCard,
+          'border border-primary bg-primary-alpha': item.default,
         }"
       >
         <div>
@@ -14,13 +14,13 @@
             {{ item.cardHolderName }}
             <span
               class="badge text-success ms-2 fs-6 bg-success-alpha"
-              v-if="item.isDefault"
+              v-if="item.default"
               >Primary</span
             >
             <span
               class="badge text-orange ms-2 fs-6 bg-orange"
-              v-if="!item.isDefault"
-              @click="selectedCard = item"
+              v-if="!item.default"
+              @click="makePrimary(item)"
               >Make Primary</span
             >
           </div>
@@ -77,7 +77,11 @@
           </div>
         </div>
         <div class="d-flex align-items-center p-4">
-          <button class="btn btn-light me-3" :disabled="!item.isDefault">
+          <button
+            class="btn me-3"
+            :disabled="!item.default"
+            :class="{ 'btn-light': !item.default, 'btn-primary': item.default }"
+          >
             Delete
           </button>
         </div>
@@ -89,6 +93,16 @@
       </button>
     </div>
   </div>
+  <div class="mt-6 p-4 d-flex align-items-center justify-content-center">
+    <button type="button" class="btn btn-light me-5" @click="back">Back</button>
+    <button
+      type="submit"
+      class="btn btn-primary ms-5"
+      @click="updateCardDetails"
+    >
+      Continue
+    </button>
+  </div>
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
@@ -96,24 +110,22 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import {
-  cardDetailsResponsetModel,
-  billingAddressRequestModel,
-} from "@/model";
+import { cardDetailsResponsetModel, billingAddressRequestModel } from "@/model";
 import { IManageSubscription } from "@/service";
 
 export default class PaymentCard extends Vue {
   @Prop() cards: Array<cardDetailsResponsetModel> = [];
+  @Prop() paymentType: string;
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   public store = useStore();
 
-  public selectedCard: cardDetailsResponsetModel = null;
-
   created() {
     this.getBillingAddress();
-    this.selectedCard = this.cards[0];
-    this.selectedCard.isDefault = true;
+  }
+
+  public back() {
+    this.$emit("back");
   }
 
   public addNewPayment() {
@@ -132,5 +144,39 @@ export default class PaymentCard extends Vue {
         console.log(err);
       });
   }
+
+  public makePrimary(card: cardDetailsResponsetModel) {
+    console.log(card);
+  }
+
+  private updateCardDetails() {
+    this.store.dispatch("updatePaymentType", this.paymentType);
+    let selectedCard =
+      this.cards.find((item) => {
+        return item.default;
+      }) || null;
+
+    if (this.paymentType == "Credit Card") {
+      let cardDetails = {
+        number: selectedCard.cardNumber,
+        expdate_month: selectedCard.expDate.split("-")[1],
+        expdate_year: selectedCard.expDate.split("-")[0],
+        name: selectedCard.cardHolderName,
+        cardType: selectedCard.cardType,
+      };
+      this.store.dispatch("updateCreditCard", cardDetails);
+    } else {
+      let ach = {
+        number: selectedCard.cardNumber,
+        name: selectedCard.cardHolderName,
+      };
+
+      this.store.dispatch("updateACH", ach);
+    }
+
+    this.$emit("next")
+
+  }
+
 }
 </script>
