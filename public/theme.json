@@ -87,7 +87,6 @@
     {
       "addOnName": "Average Daily Balances",
       "description": "Support ADB calculations and reporting",
-      "extraInfo": "$125/month",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false
@@ -95,7 +94,6 @@
     {
       "addOnName": "Flow Billing",
       "description": "Adjust billing for intra-period flows",
-      "extraInfo": "$250/month",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false
@@ -103,7 +101,6 @@
     {
       "addOnName": "Admin User License",
       "description": "Multiple fee calculations per account",
-      "extraInfo": "$150/month",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false
@@ -111,7 +108,6 @@
     {
       "addOnName": "Multi-Fee Billing",
       "description": "Multiple fee calculations per account",
-      "extraInfo": "$150/month",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false
@@ -119,7 +115,6 @@
     {
       "addOnName": "Revenue Sharing",
       "description": "Flexible revenue sharing and fee splitting",
-      "extraInfo": "$500/month",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false
@@ -127,7 +122,6 @@
     {
       "addOnName": "Multi-Connector Integrations",
       "description": "Integrate with multiple custody sources",
-      "extraInfo": "Per Connector",
       "selected": false,
       "quantity": "1",
       "isPreInclueded": false

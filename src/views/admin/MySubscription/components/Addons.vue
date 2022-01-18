@@ -71,6 +71,11 @@
             alt="Card Type"
             v-if="addons.cardNumber.split(' ')[0] == 'Discover'"
           />
+          {{
+            addons.cardNumber.split(" ")[0] == "American"
+              ? "American Express"
+              : addons.cardNumber.split(" ")[0]
+          }}
           <span
             :class="{
               'text-gray-secondary': addons.endDate && !addons.activeFlag,

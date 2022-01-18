@@ -102,7 +102,7 @@ export default class Payment extends Vue {
   onBack() {
     this.$emit("back");
   }
-  
+
   onNext() {
     this.$emit("next");
   }
@@ -122,7 +122,13 @@ export default class Payment extends Vue {
       .getCardDetails(request)
       .then((response) => {
         this.cards = response;
-        if (this.cards.length > 0) this.addNewPayment = false;
+
+        if (this.cards.length == 0) {
+          if (this.paymentType == "Credit Card") {
+            this.paymentType = "ACH";
+            this.getCardDetails();
+          } else if (this.paymentType == "ACH") this.addNewPayment = true;
+        }
       })
       .catch((err) => {
         console.log(err);

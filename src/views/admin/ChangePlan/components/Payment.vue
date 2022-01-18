@@ -59,7 +59,6 @@ import CreditCard from "@/components/controls/creditCard.vue";
 import PaymentCard from "@/components/controls/PaymentCard.vue";
 
 import {
-  createCustomerRequestModel,
   paymentTokenRequestModel,
   PaymentMethod,
   cardDetailsRequestModel,
@@ -109,7 +108,7 @@ export default class Payment extends Vue {
 
   onPayNow() {
     this.store.dispatch("updatePaymentType", this.paymentType);
-    this.createCustomer();
+    this.tokenizeAccount();
   }
 
   public getCardDetails() {
@@ -122,37 +121,22 @@ export default class Payment extends Vue {
       .getCardDetails(request)
       .then((response) => {
         this.cards = response;
-        if (this.cards.length > 0) this.addNewPayment = false;
+        if (this.cards.length == 0) {
+          if (this.paymentType == "Credit Card") {
+            this.paymentType = "ACH";
+            this.getCardDetails();
+          } else if (this.paymentType == "ACH") this.addNewPayment = true;
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  private createCustomer() {
-    let request: createCustomerRequestModel = {
-      company: this.adddress.company,
-      bill_addr1: this.adddress.bill_addr1,
-      bill_city: this.adddress.bill_city,
-      bill_state: this.adddress.bill_state,
-      bill_postcode: this.adddress.bill_postcode,
-      bill_country: this.adddress.bill_country,
-      external_key: this.firmId,
-      superuser_name: this.userInfo.firstName,
-      superuser_email: this.userInfo.email,
-      superuser_phone: this.phoneNumber,
-    };
-
-    this.service
-      .createCustomer(request)
-      .then((response) => {
-        this.$emit("next");
+  private tokenizeAccount() {
+      this.$emit("next");
         if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
         else this.tokenizingAch();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
   private tokenizingCreditCard() {

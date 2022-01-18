@@ -214,6 +214,8 @@ export default class Home extends Vue {
   public lastOnboardingStep: number = 1;
   public showTrailExpireDays: number = 0;
 
+  public trailExpired:boolean = false;
+
   created() {
     this.getFirms();
   }
@@ -221,14 +223,17 @@ export default class Home extends Vue {
   private getFirms() {
     if (
       this.dataEntitlements.length == 1 &&
-      this.dataEntitlements[0].trialOnboardingStatus != "COMPLETED"
+      this.firms.trialOnboardingStatus != "COMPLETED"
     ) {
+
+      if(this.firms.firmStatus == 'IN_TRIAL' && this.trailExpireDays < 0) this.trailExpired = true;
+
       this.showOnBoard = true;
-      if (this.dataEntitlements[0].trialOnboardingStatus == "NOT_STARTED")
+      if (this.firms.trialOnboardingStatus == "NOT_STARTED")
         this.lastOnboardingStep = 1;
       else
         this.lastOnboardingStep =
-          this.dataEntitlements[0].lastOnboardingStepCompleted;
+          this.firms.lastOnboardingStepCompleted;
     }
   }
 
@@ -236,7 +241,7 @@ export default class Home extends Vue {
     this.toggleFirms = false;
     this.store.dispatch("firmIdChanged", firm.firmId);
     this.store.dispatch("clearSubscription");
-    this.$router.push({ name: "Dashboard" });
+    this.$router.push("/dashboard");
   }
 
   public openAvatarUpload() {

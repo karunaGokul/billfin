@@ -390,9 +390,37 @@
                         'text-gray': !item.selected,
                         'text-gray-secondary': item.isPreInclueded,
                       }"
-                      v-if="item.extraInfo"
+                      v-if="
+                        item.planType == 'Yr' &&
+                        item.addOnName != 'Multi-Connector Integrations' &&
+                        item.addOnName != 'Admin User License'
+                      "
                     >
-                      ({{ item.extraInfo }})
+                      ({{
+                        $filters.currencyDisplay(item.extraInfo, 2, 0)
+                      }}/month)
+                    </div>
+                    <div
+                      class="fs-7 text-center ms-5 fw-light"
+                      :class="{
+                        'text-white': item.selected && !item.isPreInclueded,
+                        'text-gray': !item.selected,
+                        'text-gray-secondary': item.isPreInclueded,
+                      }"
+                      v-if="item.planType == 'Yr' && item.addOnName == 'Admin User License'"
+                    >
+                      (Per User)
+                    </div>
+                    <div
+                      class="fs-7 text-center ms-5 fw-light"
+                      :class="{
+                        'text-white': item.selected && !item.isPreInclueded,
+                        'text-gray': !item.selected,
+                        'text-gray-secondary': item.isPreInclueded,
+                      }"
+                      v-if="item.planType == 'Yr' && item.addOnName == 'Multi-Connector Integrations'"
+                    >
+                      (Per Connector)
                     </div>
                   </div>
                 </div>
@@ -550,7 +578,9 @@ export default class PickAddons extends Vue {
               selected: addons.selected,
               quantity: addons.quantity,
               extraInfo:
-                this.commitmentTerm == "Annual" ? addons.extraInfo : "",
+                this.commitmentTerm == "Annual"
+                  ? item.planAddOnAmount / 12
+                  : "",
               isPreInclueded: addons.isPreInclueded,
             };
             this.addons.push(this.$vuehelper.clone(addOns));
