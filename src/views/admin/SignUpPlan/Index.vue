@@ -1,6 +1,7 @@
 <template>
   <confirm v-if="firmStatus == 'SUBSCRIBED'" />
   <div class="signup-plan-container" v-else>
+    <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4"> Reactivate Account </h3>
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -89,7 +90,7 @@
     <div class="m-6">
       <div class="tab-group">
         <div class="tab-content-group">
-          <products @next="step = 2" v-if="step == 1" />
+          <products @next="step = 2" @back="onBack" v-if="step == 1" />
           <plan @back="step = 1" @next="step = 3" v-if="step == 2" />
           <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
           <payment @back="step = 3" @next="step = 5" v-if="step == 4" />
@@ -133,9 +134,24 @@ export default class SignUpPlan extends Vue {
 
   public firmStatus: string = "";
 
+  public pageType: string = '';
+
+  created() {
+    this.pageType = this.$route.params.type.toString();
+  }
+
   public updateFirmStatus() {
     this.store.dispatch("updateFirmStatus");
     this.firmStatus = "SUBSCRIBED";
+    
+    if(this.pageType == 'Reactivate') {
+      this.store.dispatch("loadEntitlements");
+      //this.$router.push('/');
+    }
+  }
+
+  onBack() {
+    if(this.pageType == 'Reactivate') this.$router.push('./account-expired');
   }
 }
 </script>

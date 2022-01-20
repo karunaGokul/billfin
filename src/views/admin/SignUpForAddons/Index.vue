@@ -15,7 +15,9 @@
                 <i class="fas fa-check text-primary tab-label-icon"></i>
                 <span class="tab-label-count">1</span>
               </div>
-              <div class="tab-label-name">Addons</div>
+              <div class="tab-label-name" v-if="page == 'Add AddOns'">Addons</div>
+              <div class="tab-label-name" v-if="page == 'Add User'">Add User</div>
+              <div class="tab-label-name" v-if="page == 'Add Connectors'">Connectors</div>
             </li>
             <li
               class="tab-label d-flex align-items-center ms-8 me-8"
@@ -50,10 +52,11 @@
     <div class="m-6">
       <div class="tab-group">
         <div class="tab-content-group">
-          <addons @next="step = 2" v-if="step == 1" />
-          <review @back="step = 1" @next="step = 3" v-if="step == 2"/>
-          <subscribe @back="step = 2" @next="step = 4" v-if="step == 3"/>
-          <confirm v-if="step == 4"/>
+          <addons @next="step = 2" v-if="step == 1 && page == 'Add AddOns'" />
+          <add-user-connectors @next="step = 2" v-if="step == 1 && page == 'Add User' || page == 'Add Connectors'"/>
+          <review @back="step = 1" @next="step = 3" v-if="step == 2" />
+          <subscribe @back="step = 2" @next="step = 4" v-if="step == 3" />
+          <confirm v-if="step == 4" />
         </div>
       </div>
     </div>
@@ -62,6 +65,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Addons from "./components/Addons.vue";
+import AddUserConnectors from './components/AddUserConnectors.vue';
 import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
@@ -69,12 +73,25 @@ import Confirm from "./components/Confirm.vue";
 @Options({
   components: {
     Addons,
+    AddUserConnectors,
     Review,
     Subscribe,
-    Confirm
+    Confirm,
   },
 })
 export default class SignUpForAddons extends Vue {
   public step: number = 1;
+
+  get page() {
+    let page: string = "";
+    if (!this.$route) return "";
+
+    if (this.$route.name.toString() == "Sign Up For Add-Ons")
+      page = "Add AddOns";
+    else if (this.$route.name.toString() == "Add User") page = "Add User";
+    else page = "Add Connectors";
+
+    return page;
+  }
 }
 </script>

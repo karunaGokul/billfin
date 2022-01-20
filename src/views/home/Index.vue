@@ -1,14 +1,21 @@
 <template>
   <div class="home-page d-flex">
-    <side-bar :sideBar="sideBar" />
+    <side-bar :sideBar="sideBar" v-if="!trailExpired" />
     <div
       class="wrapper"
-      :class="{ 'wrapper-default': !sideBar, 'wrapper-minimize': sideBar }"
+      :class="{
+        'ps-0 pe-0': trailExpired,
+        'wrapper-default': !sideBar,
+        'wrapper-minimize': sideBar,
+      }"
     >
       <nav class="navbar bg-white">
         <div class="row w-100 align-items-center">
           <div class="col-lg-1 pe-0">
-            <button class="btn float-start" @click="sideBar = !sideBar">
+            <div class="p-4" v-if="trailExpired">
+              <img src="@/assets/billfin.svg" alt="Logo" width="40" />
+            </div>
+            <button class="btn float-start" @click="sideBar = !sideBar" v-else>
               <img
                 src="@/assets/arrow-to-right.svg"
                 alt="Arrow Icon"
@@ -49,7 +56,10 @@
             </div>
           </div>
           <div class="col-lg-5 mt-4 d-flex justify-content-center">
-            <div class="input-group input-group-solid mb-2 w-50">
+            <div
+              class="input-group input-group-solid mb-2 w-50"
+              v-if="!trailExpired"
+            >
               <span class="input-group-text">
                 <img src="@/assets/search.svg" alt="Search Icon" />
               </span>
@@ -62,12 +72,19 @@
             </div>
           </div>
           <div class="col-lg-2">
-            <button type="button" class="btn btn-primary fs-7">
+            <button
+              type="button"
+              class="btn btn-primary fs-7"
+              v-if="!trailExpired"
+            >
               Create New
             </button>
           </div>
-          <div class="col-lg-2 d-flex align-items-center p-0">
-            <button class="btn">
+          <div
+            class="col-lg-2 d-flex align-items-center p-0"
+            :class="{ 'justify-content-center': trailExpired }"
+          >
+            <button class="btn" v-if="!trailExpired">
               <img
                 src="@/assets/notification-bell.svg"
                 alt="Notification bell icon"
@@ -124,8 +141,14 @@
         </div>
       </nav>
 
-      <div class="h-100 bg-light rounded-top-20 p-4">
-        <div class="d-flex align-items-center position-relative">
+      <div
+        class="h-100 bg-light p-4"
+        :class="{ 'rounded-top-20': !trailExpired }"
+      >
+        <div
+          class="d-flex align-items-center position-relative"
+          v-if="!trailExpired"
+        >
           <div>
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
               {{ page }}
@@ -164,7 +187,11 @@
             <i class="fas fa-info-circle text-danger"></i> You only have
             {{ trailExpireDays }} more day(s) in your trial. Ready to sign-up?
             Click
-            <router-link to="/signup" tag="a">here </router-link>
+            <router-link
+              :to="{ name: 'Sign Up', params: { type: 'SignUp' } }"
+              tag="a"
+              >here
+            </router-link>
             to get started
           </div>
         </div>
@@ -193,9 +220,6 @@ import Welcome from "./components/OnBoard.vue";
 import { IFirmService } from "@/service";
 import { firmRequestModel } from "@/model";
 
-import { Settings } from "@/config";
-import axios from "axios";
-
 @Options({
   components: {
     SideBar,
@@ -214,7 +238,7 @@ export default class Home extends Vue {
   public lastOnboardingStep: number = 1;
   public showTrailExpireDays: number = 0;
 
-  public trailExpired:boolean = false;
+  public trailExpired: boolean = false;
 
   created() {
     this.getFirms();
@@ -225,15 +249,15 @@ export default class Home extends Vue {
       this.dataEntitlements.length == 1 &&
       this.firms.trialOnboardingStatus != "COMPLETED"
     ) {
-
-      if(this.firms.firmStatus == 'IN_TRIAL' && this.trailExpireDays < 0) this.trailExpired = true;
-
-      this.showOnBoard = true;
-      if (this.firms.trialOnboardingStatus == "NOT_STARTED")
-        this.lastOnboardingStep = 1;
-      else
-        this.lastOnboardingStep =
-          this.firms.lastOnboardingStepCompleted;
+      if (this.firms.firmStatus == "IN_TRIAL" && this.trailExpireDays < 0) {
+        this.trailExpired = true;
+        this.$router.push("./account-expired");
+      } else {
+        this.showOnBoard = true;
+        if (this.firms.trialOnboardingStatus == "NOT_STARTED")
+          this.lastOnboardingStep = 1;
+        else this.lastOnboardingStep = this.firms.lastOnboardingStepCompleted;
+      }
     }
   }
 

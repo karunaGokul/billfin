@@ -50,6 +50,7 @@ import {
 export default class CancelPlanAddOn extends Vue {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
+  @Prop() product?: string;
   @Prop() title: string;
   @Prop() name: string;
   @Prop() type: string;
@@ -105,7 +106,7 @@ export default class CancelPlanAddOn extends Vue {
   }
 
   get subscription() {
-    return this.type == "plan" ? "your AUM Billing subscription" : this.name;
+    return this.type == "plan" ? `your ${this.product} Billing subscription` : this.name;
   }
 
   get message() {
@@ -123,7 +124,7 @@ export default class CancelPlanAddOn extends Vue {
       "ten",
     ];
     return this.type == "plan"
-      ? `Your ${this.name} and all associated add-ons will be 
+      ? `Your ${this.name} Plan and all associated add-ons will be 
 canceled at the end of the plan’s current billing period, which ends 
 on ${this.planEndDate(this.endDate)}`
       : this.name == "Admin User License" ||

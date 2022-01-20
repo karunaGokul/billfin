@@ -32,19 +32,17 @@
       >
         <div
           v-if="
-            addons.addOnName != 'Admin User License' ||
+            addons.addOnName != 'Admin User License' &&
             addons.addOnName != 'Multi-Connector Integrations'
           "
         >
           {{ description }}
         </div>
-        <div v-else>
-          <div v-if="addons.addOnName == 'Admin User License'">
-            Number of users: {{ addons.quantity }}
-          </div>
-          <div v-if="addons.addOnName == 'Multi-Connector Integrations'">
-            Number of connectors: {{ addons.quantity }}
-          </div>
+        <div v-if="addons.addOnName == 'Admin User License'">
+          Number of users: {{ addons.quantity }}
+        </div>
+        <div v-if="addons.addOnName == 'Multi-Connector Integrations'">
+          Number of connectors: {{ addons.quantity }}
         </div>
       </div>
     </div>
@@ -145,9 +143,10 @@
       </div>
       <div
         :class="{
-          'text-gray-secondary': addons.status == 'CANCELLED' && !addons.activeFlag,
+          'text-gray-secondary':
+            addons.status == 'CANCELLED' && !addons.activeFlag,
           'text-danger': addons.status == 'CANCELLED' && addons.activeFlag,
-          'text-muted': addons.status != 'CANCELLED' && !addons.endDate
+          'text-muted': addons.status != 'CANCELLED' && !addons.endDate,
         }"
       >
         {{ addons.startDate }} -
@@ -190,9 +189,17 @@
         >
           <li
             class="dropdown-item pt-2 pb-2"
+            @click="addUserConnector('Add User')"
             v-if="addons.addOnName == 'Admin User License'"
           >
             Add User
+          </li>
+          <li
+            class="dropdown-item pt-2 pb-2"
+            @click="addUserConnector('Add Connectors')"
+            v-if="addons.addOnName == 'Multi-Connector Integrations '"
+          >
+            Add Connectors
           </li>
           <li class="dropdown-item pt-2 pb-2">View Invoice</li>
           <li class="dropdown-item" @click="showCancelModel = true">
@@ -250,6 +257,10 @@ export default class Addons extends Vue {
 
   public showCommitmentTermModel: boolean = false;
 
+  public addUserConnector(type: string) {
+    this.$emit("addUserConnector", type, this.addons);
+  }
+
   public onCancelled() {
     this.showCancelModel = false;
     this.$emit("planAddOnCancelled");
@@ -292,11 +303,7 @@ export default class Addons extends Vue {
 
   private addOnEndDate(endDate: string) {
     let value: string = "";
-    let date = new Date(
-      parseInt(endDate.split("/")[2]),
-      parseInt(endDate.split("/")[1]) - 1,
-      parseInt(endDate.split("/")[0])
-    );
+    let date = new Date(endDate);
     let month = date.toLocaleString("default", { month: "long" });
 
     value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${

@@ -5,7 +5,7 @@
     </div>
     <div class="card-body p-0">
       <div class="d-flex flex-wrap">
-        <div
+       <!-- <div
           class="d-flex border border-dashed p-4 rounded m-4"
           v-for="(item, index) of availableCards"
           :key="index"
@@ -59,59 +59,77 @@
             <button class="btn btn-light me-3">Delete</button>
             <button class="btn btn-light">Edit</button>
           </div>
-        </div>
+        </div> -->
       </div>
-      <div
-        class="
-          d-flex
-          bg-primary-alpha
-          border border-dashed border-primary
-          rounded
-          m-4
-          p-4
-          w-50
-        "
-      >
-        <div class="w-50">
-          <div class="fs-4 fw-bolder">Important Note!</div>
-          <p class="fw-bold text-gray">
-            Please carefully read <a href="">BillFin Terms</a> before adding
-            your new payment method.
-          </p>
-        </div>
-        <div class="d-flex align-items-center justify-content-center w-50">
-          <router-link
-            to="/payment"
-            tag="button"
-            class="btn btn-primary"
-          >
-            Add Payment Method
-          </router-link>
-        </div>
-      </div>
+      <router-link to="/payment" tag="button" class="btn btn-primary">
+        Add Payment Method
+      </router-link>
     </div>
   </div>
 
-  <div class="p-4">
+  <div class="p-4" v-if="response">
     <div class="p-4 fw-bolder fs-4 border-bottom border-gray-secondary">
       Bills
     </div>
-    <div v-for="(item, index) of bills" :key="index">
+    <div v-for="(item, index) of response" :key="index">
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
         <div>
-          <div class="fw-bolder">{{ item.billingDate }}</div>
-          <div>Transaction ID {{ item.transactionId }}</div>
+          <div class="fw-bolder">{{ planEndDate(item.transactionDate) }}</div>
+          <div class="fw-bolder mb-2 fs-5">
+            <img
+              src="@/assets/mastercard.png"
+              alt="Card Type"
+              v-if="item.transactionCardType == 'MasterCard'"
+            />
+            <img
+              src="@/assets/visa.png"
+              alt="Card Type"
+              v-if="item.transactionCardType == 'Visa'"
+            />
+            <img
+              src="@/assets/amex.png"
+              alt="Card Type"
+              v-if="item.transactionCardType == 'American'"
+            />
+            <img
+              src="@/assets/discover.png"
+              alt="Card Type"
+              v-if="item.transactionCardType == 'Discover'"
+            />
+            {{
+              item.transactionCardType == "American"
+                ? "American Express"
+                : item.transactionCardType
+            }}
+            ****{{
+              item.transactionCardDetail.split(" ")[0] == "American"
+                ? item.transactionCardDetail.split(" ")[2]
+                : item.transactionCardDetail.split(" ")[1]
+            }}
+          </div>
         </div>
-        <a class="btn btn-link">Print Receipt</a>
+        <a class="btn btn-link">Download Invoice</a>
       </div>
-      <billng :plans="item.plans" />
+      <billng :products="item.products" />
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
+
+import { useStore } from "vuex";
 
 import Billng from "./component/Billing.vue";
+
+import { IBillsAndPaymentService, IManageSubscription } from "@/service";
+
+import {
+  billsAndPaymentRequestModel,
+  billsAndPaymentResponseModel,
+  cardDetailsRequestModel,
+  cardDetailsResponsetModel,
+} from "@/model";
 
 @Options({
   components: {
@@ -119,59 +137,59 @@ import Billng from "./component/Billing.vue";
   },
 })
 export default class Index extends Vue {
-  public availableCards = [
-    {
-      cardHolderName: "Joe Blacke",
-      cardType: "mast",
-      cardNumber: "6789",
-      expiryMonth: "20",
-      expiryyear: "2030",
-      status: "Primary",
-    },
-    {
-      cardType: "visa",
-      cardNumber: "9010",
-      cardHolderName: "Joe Blacke",
-      expiryMonth: "20",
-      expiryyear: "2030",
-      status: "",
-    },
-  ];
+  @Inject("billsAndPaymentService") service: IBillsAndPaymentService;
+  @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
 
-  public bills = [
-    {
-      billingDate: "2 January 2021",
-      transactionId: "AMXBI896587043534",
-      plans: [
-        {
-          planName: "Professional Plan",
-          description: "For small to medium-sized RIAs",
-          product: "AUM Billing Plan",
-          commitmentTerm: "Annual",
-          termPlanAmount: 2300,
-        },
-        {
-          planName: "Average Daily Balances",
-          description: "Support ADB calculations and reporting",
-          product: "AUM Billing Add-on",
-          commitmentTerm: "Annual",
-          termPlanAmount: 11808,
-        },
-      ],
-    },
-    {
-      billingDate: "30 December 2020",
-      transactionId: "DHKY4764345433456",
-      plans: [
-        {
-          planName: "Launch Plan",
-          description: "Easy and lightweight payment processing",
-          product: "Subscription Billing Plan",
-          commitmentTerm: "Annual",
-          termPlanAmount: 1250,
-        },
-      ],
-    },
-  ];
+  public store = useStore();
+
+  public response: Array<billsAndPaymentResponseModel> = null;
+  public cards: Array<cardDetailsResponsetModel> = [];
+
+  created() {
+    this.getBillAndPayment();
+    this.getCardDetails();
+  }
+
+  public getCardDetails() {
+    this.cards = [];
+    let request = new cardDetailsRequestModel();
+    request.paymentMethod = "BOTH";
+    request.firmId = this.store.getters.selectedFirmId;
+    this.manageSubscripeService
+      .getCardDetails(request)
+      .then((response) => {
+        this.cards = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  getBillAndPayment() {
+    let request = new billsAndPaymentRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+
+    this.service
+      .geiBillAndPayment(request)
+      .then((response) => {
+        this.response = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  planEndDate(endDate: string) {
+    let value: string = "";
+    let date = new Date(
+      parseInt(endDate.split("-")[0]),
+      parseInt(endDate.split("-")[1]) - 1,
+      parseInt(endDate.split("-")[2])
+    );
+    let month = date.toLocaleString("default", { month: "long" });
+
+    value = `${endDate.split("-")[2]} ${month}, ${endDate.split("-")[0]}`;
+    return value;
+  }
 }
 </script>

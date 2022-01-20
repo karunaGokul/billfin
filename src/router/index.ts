@@ -99,9 +99,29 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/admin/SignUpForAddons/Index.vue")
       },
       {
+        path: "/add-user",
+        name: "Add User",
+        component: () => import("@/views/admin/SignUpForAddons/Index.vue")
+      },
+      {
+        path: "/add-connectors",
+        name: "Add Connectors",
+        component: () => import("@/views/admin/SignUpForAddons/Index.vue")
+      },
+      {
         path: "/change-plan",
         name: "Change Plan",
         component: () => import("@/views/admin/ChangePlan/Index.vue")
+      },
+      {
+        path: "/account-expired",
+        name: 'Account Expired',
+        component: () => import("@/views/auth/account-expired/Index.vue")
+      },
+      {
+        path: '/account-expired/signup',
+        name: 'Reactivate Account',
+        component: () => import("@/views/admin/SignUpPlan/Index.vue"),
       }
     ],
   },

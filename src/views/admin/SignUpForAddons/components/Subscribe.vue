@@ -155,7 +155,7 @@ export default class Subscribe extends Vue {
   }
 
   get startDate() {
-    return moment(String(new Date())).format("DD/MM/YYYY");
+    return moment(String(new Date())).format("MM/DD/YYYY");
   }
 }
 </script>

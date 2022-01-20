@@ -1,6 +1,8 @@
 <template>
   <div class="card">
-    <p class="p-6 fw-bolder fs-4 border-bottom text-dark-gray">Select the products to which you’d like to subscribe</p>
+    <p class="p-6 fw-bolder fs-4 border-bottom text-dark-gray">
+      Select the products to which you’d like to subscribe
+    </p>
     <div class="w-50 mx-auto m-12">
       <div
         class="
@@ -74,7 +76,7 @@
       </div>
 
       <div class="text-center mt-10">
-        <button class="btn btn-light me-5">Cancel</button>
+        <button class="btn btn-light me-5" @click="back">Cancel</button>
         <button
           class="btn btn-primary ms-5"
           @click="next"
@@ -96,13 +98,17 @@ export default class Products extends Vue {
   public store = useStore();
 
   mounted() {
-    this.products = this.store.getters.products;
+    if (this.store.getters.products)
+      this.products = this.store.getters.products;
   }
 
   public next() {
     this.store.dispatch("updateProducts", this.products.sort());
     this.$emit("next");
   }
-  
+
+  public back() {
+    this.$emit("back");
+  }
 }
 </script>

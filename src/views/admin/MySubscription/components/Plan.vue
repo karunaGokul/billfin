@@ -179,6 +179,7 @@
   </div>
   <cancel-plan-addOn
     title="Cancel Subscription"
+    :product="product"
     :name="plan.planName"
     :endDate="plan.renewDate"
     :subscriptionPlanId="plan.subscriptionPlanId"
@@ -238,25 +239,6 @@ export default class Plan extends Vue {
 
   public showCommitmentTermModel: boolean = false;
 
-  private planInfo = [
-    {
-      planName: "Launch",
-      description: "Essentials for the starting to small RIA",
-    },
-    {
-      planName: "Professional",
-      description: "For small to medium-sized RIAs",
-    },
-    {
-      planName: "Elite",
-      description: "For medium to large-sized RIAs",
-    },
-    {
-      planName: "Enterprise",
-      description: "For large RIAs requiring custom license",
-    },
-  ];
-
   public onCancelled() {
     this.toggleCancelModel = false;
     this.$emit("planAddOnCancelled");
@@ -313,8 +295,12 @@ export default class Plan extends Vue {
   }
 
   get description() {
-    return this.planInfo.find((e: any) => e.planName == this.plan.planName)
+    return this.planList.find((e: any) => e.planName == this.plan.planName)
       .description;
+  }
+
+  get planList() {
+    return this.store.getters.planList;
   }
 
   get planStatus() {
@@ -332,14 +318,12 @@ export default class Plan extends Vue {
 
   planEndDate(endDate: string) {
     let value: string = "";
-    let date = new Date(
-      parseInt(endDate.split("/")[2]),
-      parseInt(endDate.split("/")[1]) - 1,
-      parseInt(endDate.split("/")[0])
-    );
+    let date = new Date(endDate);
+
+    console.log(date);
     let month = date.toLocaleString("default", { month: "long" });
 
-    value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${
+    value = `${endDate.split("/")[1]} ${month.substring(0, 3)}, ${
       endDate.split("/")[2]
     }`;
     return value;

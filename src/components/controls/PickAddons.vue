@@ -110,7 +110,7 @@
                       {{
                         item.addOnName == "Admin User License"
                           ? "users"
-                          : "conntects"
+                          : "connectors"
                       }}
                       - {{ item.quantity }}
                     </div>

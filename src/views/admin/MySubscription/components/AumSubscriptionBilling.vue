@@ -50,7 +50,11 @@
             : "Subscription Billing Add-Ons"
         }}
       </div>
-      <button type="button" class="btn btn-primary" @click="addMoreAddons">
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="addMoreAddons('Sign Up For Add-Ons')"
+      >
         Add More
       </button>
     </div>
@@ -59,6 +63,7 @@
         <addons
           :addons="item"
           :allowChangeAddonTerm="allowChangeAddonTerm"
+          @addUserConnector="onAddUserConnector"
           @planAddOnCancelled="updateSubscription"
         />
       </div>
@@ -66,7 +71,11 @@
         <div class="fw-bolder fs-4 p-4">
           You currently are not subscribed to add-ons.
         </div>
-        <button type="button" class="btn btn-primary" @click="addMoreAddons">
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="addMoreAddons('Sign Up For Add-Ons')"
+        >
           Subscribe to Add-ons
         </button>
       </div>
@@ -149,10 +158,30 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   public signUpPlan() {
-    this.$router.push("/signup");
+    this.$router.push({ name: "Sign Up", params: { type: "SignUp" } });
   }
 
-  public addMoreAddons() {
+  public onAddUserConnector(type: string, addons: addonsResponseModel) {
+    let plans = new subscriptionResponseModel();
+
+    if (this.upcomingPlanStatus) plans = this.upcomingPlanStatus;
+    else if (this.newPlanStatus) plans = this.newPlanStatus;
+
+    let payload = [];
+    payload.push(this.bliingType);
+    this.store.dispatch("updateProducts", payload);
+
+    let options = {
+      product: this.bliingType,
+      plan: plans,
+      addons: addons,
+      commitmentTerm: plans.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
+    };
+    this.store.dispatch("updatePlan", options);
+    this.$router.push({ name: type });
+  }
+
+  public addMoreAddons(page: string) {
     let plans = new subscriptionResponseModel(),
       addons = new addonsResponseModel();
 
@@ -177,7 +206,7 @@ export default class AumSubscriptionBilling extends Vue {
       commitmentTerm: plans.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);
-    this.$router.push("/add-more-addons");
+    this.$router.push({ name: page });
   }
 
   get allowChangeAddonTerm() {
