@@ -43,7 +43,7 @@
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'American'"
+                  v-if="item.cardType == 'American Express'"
                 />
                 <img
                   src="@/assets/discover.svg"
