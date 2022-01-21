@@ -16,7 +16,7 @@
                 <span class="tab-label-count">1</span>
               </div>
               <div class="tab-label-name" v-if="page == 'Add AddOns'">Addons</div>
-              <div class="tab-label-name" v-if="page == 'Add User'">Add User</div>
+              <div class="tab-label-name" v-if="page == 'Add Users'">Add Users</div>
               <div class="tab-label-name" v-if="page == 'Add Connectors'">Connectors</div>
             </li>
             <li
@@ -53,7 +53,7 @@
       <div class="tab-group">
         <div class="tab-content-group">
           <addons @next="step = 2" v-if="step == 1 && page == 'Add AddOns'" />
-          <add-user-connectors @next="step = 2" v-if="step == 1 && page == 'Add User' || page == 'Add Connectors'"/>
+          <add-user-connectors :page="page" @next="step = 2" v-if="step == 1 && (page == 'Add Users' || page == 'Add Connectors')"/>
           <review @back="step = 1" @next="step = 3" v-if="step == 2" />
           <subscribe @back="step = 2" @next="step = 4" v-if="step == 3" />
           <confirm v-if="step == 4" />
@@ -88,7 +88,7 @@ export default class SignUpForAddons extends Vue {
 
     if (this.$route.name.toString() == "Sign Up For Add-Ons")
       page = "Add AddOns";
-    else if (this.$route.name.toString() == "Add User") page = "Add User";
+    else if (this.$route.name.toString() == "Add Users") page = "Add Users";
     else page = "Add Connectors";
 
     return page;

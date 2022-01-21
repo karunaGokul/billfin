@@ -349,9 +349,12 @@ export default class Home extends Vue {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
         this.page == "Manage Subscription" ? "My Subscription" : this.page
       }</li>`;
-    } else if (this.page == "Sign Up For Add-Ons") {
-      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
-    } else if (this.page == "Change Plan") {
+    } else if (
+      this.page == "Sign Up For Add-Ons" ||
+      this.page == "Add Users" ||
+      this.page == "Add Connectors" ||
+      this.page == "Change Plan"
+    ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
     }
 

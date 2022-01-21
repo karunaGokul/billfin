@@ -5,7 +5,7 @@
     </div>
     <div class="card-body p-0">
       <div class="d-flex flex-wrap">
-       <!-- <div
+        <div
           class="d-flex border border-dashed p-4 rounded m-4"
           v-for="(item, index) of availableCards"
           :key="index"
@@ -13,9 +13,17 @@
           <div>
             <div class="fw-bolder fs-4 p-4">
               {{ item.cardHolderName }}
-              <span class="badge text-success ms-2 fs-6 bg-success-alpha">{{
-                item.status
-              }}</span>
+              <span
+                class="badge text-success ms-2 fs-6 bg-success-alpha"
+                v-if="item.default"
+                >Primary</span
+              >
+              <span
+                class="badge text-orange ms-2 fs-6 bg-orange"
+                v-if="!item.default"
+                @click="makePrimary(item)"
+                >Make Primary</span
+              >
             </div>
             <div class="d-flex">
               <div>
@@ -23,34 +31,48 @@
                   src="@/assets/mastercard.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'mast'"
+                  v-if="item.cardType == 'MasterCard'"
                 />
                 <img
                   src="@/assets/visa.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'visa'"
+                  v-if="item.cardType == 'Visa'"
                 />
                 <img
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'amex'"
+                  v-if="item.cardType == 'American'"
                 />
                 <img
                   src="@/assets/discover.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'disc'"
+                  v-if="item.cardType == 'Discover'"
+                />
+                <img
+                  src="@/assets/bank.png"
+                  alt="Card Type"
+                  width="80"
+                  v-if="item.cardType == 'chec'"
                 />
               </div>
-              <div class="pt-2 ps-3">
+              <div class="pt-2 ps-3" v-if="item.cardType != 'chec'">
                 <div class="fw-bolder">
-                  {{ $filters.creditCardType(item.cardType) }}
-                  {{ item.cardNumber }}
+                  {{ item.cardType }}
+                  {{ item.maskNumber.split("x")[1] }}
                 </div>
                 <div class="text-gray-secondary mt-2">
-                  Card expires at {{ item.expiryMonth }} / {{ item.expiryyear }}
+                  Card expires at
+                  {{ item.expDate.split("-")[1] }} /
+                  {{ item.expDate.split("-")[0] }}
+                </div>
+              </div>
+              <div class="pt-2 ps-3" v-else>
+                <div class="fw-bolder">
+                  Checking
+                  {{ item.maskNumber.split("x")[1] }}
                 </div>
               </div>
             </div>
@@ -59,11 +81,13 @@
             <button class="btn btn-light me-3">Delete</button>
             <button class="btn btn-light">Edit</button>
           </div>
-        </div> -->
+        </div>
       </div>
-      <router-link to="/payment" tag="button" class="btn btn-primary">
-        Add Payment Method
-      </router-link>
+      <div class="p-4">
+        <router-link to="/payment" tag="button" class="btn btn-primary">
+          Add Payment Method
+        </router-link>
+      </div>
     </div>
   </div>
 
@@ -73,8 +97,8 @@
     </div>
     <div v-for="(item, index) of response" :key="index">
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
-        <div>
-          <div class="fw-bolder">{{ planEndDate(item.transactionDate) }}</div>
+        <div class="fs-5">
+          <div class="fw-bolder mt-2 mb-2">{{ planEndDate(item.transactionDate) }}</div>
           <div class="fw-bolder mb-2 fs-5">
             <img
               src="@/assets/mastercard.png"
@@ -122,7 +146,7 @@ import { useStore } from "vuex";
 
 import Billng from "./component/Billing.vue";
 
-import { IBillsAndPaymentService, IManageSubscription } from "@/service";
+import { IBillsAndPaymentService } from "@/service";
 
 import {
   billsAndPaymentRequestModel,
@@ -138,12 +162,11 @@ import {
 })
 export default class Index extends Vue {
   @Inject("billsAndPaymentService") service: IBillsAndPaymentService;
-  @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
 
   public store = useStore();
 
   public response: Array<billsAndPaymentResponseModel> = null;
-  public cards: Array<cardDetailsResponsetModel> = [];
+  public availableCards: Array<cardDetailsResponsetModel> = [];
 
   created() {
     this.getBillAndPayment();
@@ -151,14 +174,13 @@ export default class Index extends Vue {
   }
 
   public getCardDetails() {
-    this.cards = [];
+    this.availableCards = [];
     let request = new cardDetailsRequestModel();
-    request.paymentMethod = "BOTH";
     request.firmId = this.store.getters.selectedFirmId;
-    this.manageSubscripeService
+    this.service
       .getCardDetails(request)
       .then((response) => {
-        this.cards = response;
+        this.availableCards = response;
       })
       .catch((err) => {
         console.log(err);

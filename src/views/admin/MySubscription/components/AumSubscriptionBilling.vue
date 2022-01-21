@@ -171,10 +171,18 @@ export default class AumSubscriptionBilling extends Vue {
     payload.push(this.bliingType);
     this.store.dispatch("updateProducts", payload);
 
+    this.store.dispatch(
+      "updatePaymentType",
+      addons.cardType == "Credit Card" ? addons.cardType : "ACH"
+    );
+
+    let data: Array<addonsResponseModel> = [];
+    data.push(addons);
+
     let options = {
       product: this.bliingType,
       plan: plans,
-      addons: addons,
+      addons: data,
       commitmentTerm: plans.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);

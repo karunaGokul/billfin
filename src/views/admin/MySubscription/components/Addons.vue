@@ -189,7 +189,7 @@
         >
           <li
             class="dropdown-item pt-2 pb-2"
-            @click="addUserConnector('Add User')"
+            @click="addUserConnector('Add Users')"
             v-if="addons.addOnName == 'Admin User License'"
           >
             Add User
@@ -197,7 +197,7 @@
           <li
             class="dropdown-item pt-2 pb-2"
             @click="addUserConnector('Add Connectors')"
-            v-if="addons.addOnName == 'Multi-Connector Integrations '"
+            v-if="addons.addOnName == 'Multi-Connector Integrations'"
           >
             Add Connectors
           </li>

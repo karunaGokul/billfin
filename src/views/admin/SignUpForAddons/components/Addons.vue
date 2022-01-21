@@ -37,7 +37,6 @@ export default class Addons extends Vue {
   public plans: Array<any> = [];
 
   created() {
-    console.log(this.aumBilling);
     if (this.products == "AUM")
       this.plans.push({
         product: this.products,

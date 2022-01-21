@@ -99,8 +99,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/admin/SignUpForAddons/Index.vue")
       },
       {
-        path: "/add-user",
-        name: "Add User",
+        path: "/add-users",
+        name: "Add Users",
         component: () => import("@/views/admin/SignUpForAddons/Index.vue")
       },
       {
