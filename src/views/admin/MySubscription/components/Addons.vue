@@ -287,13 +287,13 @@ export default class Addons extends Vue {
   get addOnStatus() {
     let status: string = "";
     if (this.addons.status == "CANCELLED")
-      status = `Cancelled on ${this.addOnEndDate(this.addons.cancelDate)}`;
+      status = `Cancelled on ${this.$datehelper.changeMonthFormat(this.addons.cancelDate, 3)}`;
     else if (this.addons.status == "UPCOMING" && this.addons.endDate == null)
-      status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.addons.renewDate, 3)}`;
     else if (this.addons.status == "CURRENT" && this.addons.endDate == null)
-      status = `Auto-renews on ${this.addOnEndDate(this.addons.renewDate)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.addons.renewDate, 3)}`;
     else if (this.addons.status == "CURRENT" && this.addons.endDate != null)
-      status = `Expires on ${this.addOnEndDate(this.addons.endDate)}`;
+      status = `Expires on ${this.$datehelper.changeMonthFormat(this.addons.endDate, 3)}`;
     return status;
   }
 
@@ -301,15 +301,5 @@ export default class Addons extends Vue {
     return this.store.getters.addOnsList;
   }
 
-  private addOnEndDate(endDate: string) {
-    let value: string = "";
-    let date = new Date(endDate);
-    let month = date.toLocaleString("default", { month: "long" });
-
-    value = `${endDate.split("/")[0]} ${month.substring(0, 3)}, ${
-      endDate.split("/")[2]
-    }`;
-    return value;
-  }
 }
 </script>

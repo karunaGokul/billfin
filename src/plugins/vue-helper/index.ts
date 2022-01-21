@@ -10,6 +10,6 @@ export default {
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $vuehelper: any;
-    $dateHelper: any;
+    $datehelper: any;
   }
 }

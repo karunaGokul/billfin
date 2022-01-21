@@ -63,12 +63,14 @@ export default class Payment extends Vue {
   public paymentType: string = "Credit Card";
   public store = useStore();
 
-  created() {
-    console.log(this.$route.params);
-  }
-
   onExit() {
-    this.$router.push(`/${this.$route.params.pageType}`);
+    this.$router.push(
+      `/${
+        this.$route.params.redirectPage
+          ? this.$route.params.redirectPage
+          : "bills-payments"
+      }`
+    );
   }
 
   onPayNow() {
@@ -125,7 +127,7 @@ export default class Payment extends Vue {
     this.service
       .updatePaymentToken(request)
       .then((response) => {
-        this.$router.push(`/${this.$route.params.pageType}`);
+        this.onExit();
       })
       .catch((err) => {
         console.log(err);

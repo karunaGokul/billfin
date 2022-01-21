@@ -306,27 +306,15 @@ export default class Plan extends Vue {
   get planStatus() {
     let status: string = "";
     if (this.plan.status == "CANCELLED")
-      status = `Cancelled on ${this.planEndDate(this.plan.cancelDate)}`;
+      status = `Cancelled on ${this.$datehelper.changeMonthFormat(this.plan.cancelDate, 3)}`;
     else if (this.plan.status == "UPCOMING" && this.plan.endDate == null)
-      status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.plan.renewDate, 3)}`;
     else if (this.plan.status == "CURRENT" && this.plan.endDate == null)
-      status = `Auto-renews on ${this.planEndDate(this.plan.renewDate)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.plan.renewDate, 3)}`;
     else if (this.plan.status == "CURRENT" && this.plan.endDate != null)
-      status = `Expires on ${this.planEndDate(this.plan.endDate)}`;
+      status = `Expires on ${this.$datehelper.changeMonthFormat(this.plan.endDate, 3)}`;
     return status;
   }
 
-  planEndDate(endDate: string) {
-    let value: string = "";
-    let date = new Date(endDate);
-
-    console.log(date);
-    let month = date.toLocaleString("default", { month: "long" });
-
-    value = `${endDate.split("/")[1]} ${month.substring(0, 3)}, ${
-      endDate.split("/")[2]
-    }`;
-    return value;
-  }
 }
 </script>

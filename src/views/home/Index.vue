@@ -353,7 +353,8 @@ export default class Home extends Vue {
       this.page == "Sign Up For Add-Ons" ||
       this.page == "Add Users" ||
       this.page == "Add Connectors" ||
-      this.page == "Change Plan"
+      this.page == "Change Plan" || 
+      this.page == "Add Payment Method"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
     }

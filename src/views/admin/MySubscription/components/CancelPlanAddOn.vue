@@ -68,7 +68,7 @@ export default class CancelPlanAddOn extends Vue {
     request.eventType = "CANCEL_PLAN";
     request.subscriptionPlanId = this.subscriptionPlanId;
     this.service
-      .cancelPlanAddOn(request, 'cancelPlan')
+      .cancelPlanAddOn(request, "cancelPlan")
       .then((response) => {
         if (response.status == "SUCCESS") this.$emit("cancelled");
       })
@@ -83,7 +83,7 @@ export default class CancelPlanAddOn extends Vue {
     request.subscriptionAddOnId = this.subscriptionAddOnId;
 
     this.service
-      .cancelPlanAddOn(request, 'cancelAddOn')
+      .cancelPlanAddOn(request, "cancelAddOn")
       .then((response) => {
         if (response.status == "SUCCESS") this.$emit("cancelled");
       })
@@ -92,21 +92,10 @@ export default class CancelPlanAddOn extends Vue {
       });
   }
 
-  private planEndDate(endDate: string) {
-    let value: string = "";
-    let date = new Date(
-      parseInt(endDate.split("/")[2]),
-      parseInt(endDate.split("/")[1]) - 1,
-      parseInt(endDate.split("/")[0])
-    );
-    let month = date.toLocaleString("default", { month: "long" });
-
-    value = `${endDate.split("/")[0]} ${month}, ${endDate.split("/")[2]}`;
-    return value;
-  }
-
   get subscription() {
-    return this.type == "plan" ? `your ${this.product} Billing subscription` : this.name;
+    return this.type == "plan"
+      ? `your ${this.product} Billing subscription`
+      : this.name;
   }
 
   get message() {
@@ -126,19 +115,19 @@ export default class CancelPlanAddOn extends Vue {
     return this.type == "plan"
       ? `Your ${this.name} Plan and all associated add-ons will be 
 canceled at the end of the plan’s current billing period, which ends 
-on ${this.planEndDate(this.endDate)}`
+on ${this.$datehelper.changeMonthFormat(this.endDate)}`
       : this.name == "Admin User License" ||
         this.name == "Multi-Connector Integrations"
       ? `All ${value[+this.quantity]} of your ${
           this.name == "Admin User License"
             ? "admin user licenses"
             : "multi-connector integrations"
-        } will be canceled at the end of your current billing period, which ends on ${this.planEndDate(
+        } will be canceled at the end of your current billing period, which ends on ${this.$datehelper.changeMonthFormat(
           this.endDate
         )}`
       : `${
           this.name
-        } will be canceled at the end of your current billing period, which ends on ${this.planEndDate(
+        } will be canceled at the end of your current billing period, which ends on ${this.$datehelper.changeMonthFormat(
           this.endDate
         )}`;
   }

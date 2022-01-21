@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="p-4">
-        <router-link to="/payment" tag="button" class="btn btn-primary">
+        <router-link :to="{ name: 'Add Payment Method', params: { redirectPage: 'bills-payments' }}" tag="button" class="btn btn-primary">
           Add Payment Method
         </router-link>
       </div>

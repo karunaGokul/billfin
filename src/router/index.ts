@@ -43,8 +43,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/admin/BillsPayments/Index.vue"),
       },
       {
-        path: "/payment",
-        name: "Payment Method",
+        path: "/add-payment-method",
+        name: "Add Payment Method",
         component: () => import("@/views/admin/PaymentMethod/Index.vue"),
         props: true
       },
