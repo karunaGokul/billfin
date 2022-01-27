@@ -53,6 +53,7 @@ export class paymentTokenRequestModel {
   token: string;
   paymentMethod: string;
   firmId: number;
+  reqType: string;
 }
 export class addOnsModel {
   termAddOnId: number;

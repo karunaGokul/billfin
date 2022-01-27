@@ -1,0 +1,191 @@
+<template>
+  <credit-card v-if="addNewPayment" @back="back" @pay="onPayNow"/>
+  <template v-else>
+    <div class="p-4 ps-10 pe-10">
+      <div class="d-flex flex-wrap">
+        <div
+          class="d-flex border p-4 rounded m-4"
+          v-for="(item, index) of cards"
+          :key="'card-' + index"
+          :class="{
+            'border border-primary bg-primary-alpha': item.default,
+          }"
+        >
+          <div>
+            <div class="fw-bolder fs-4 p-2">
+              {{ item.cardHolderName }}
+              <span
+                class="badge text-success ms-2 fs-6 bg-success-alpha"
+                v-if="item.default"
+                >Primary</span
+              >
+              <span
+                class="badge text-orange ms-2 fs-6 bg-orange"
+                v-if="!item.default"
+                @click="makePrimary(item)"
+                >Make Primary</span
+              >
+            </div>
+            <div class="d-flex">
+              <div>
+                <img
+                  src="@/assets/mastercard.svg"
+                  alt="Card Type"
+                  width="100"
+                  v-if="item.cardType == 'MasterCard'"
+                />
+                <img
+                  src="@/assets/visa.svg"
+                  alt="Card Type"
+                  width="100"
+                  v-if="item.cardType == 'Visa'"
+                />
+                <img
+                  src="@/assets/amex.svg"
+                  alt="Card Type"
+                  width="100"
+                  v-if="item.cardType == 'American'"
+                />
+                <img
+                  src="@/assets/discover.svg"
+                  alt="Card Type"
+                  width="100"
+                  v-if="item.cardType == 'Discover'"
+                />
+              </div>
+              <div class="pt-2 ps-3">
+                <div class="fw-bolder">
+                  {{ item.cardType }}
+                  {{ item.maskNumber.split("x")[1] }}
+                </div>
+                <div class="text-gray-secondary mt-2">
+                  Card expires at
+                  {{ item.expDate.split("-")[1] }} /
+                  {{ item.expDate.split("-")[0] }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center p-4">
+            <button
+              class="btn me-3"
+              :disabled="!item.default"
+              :class="{
+                'btn-light': !item.default,
+                'btn-primary': item.default,
+              }"
+              @click="deleteCard(item)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="m-4">
+        <button
+          class="btn btn-primary"
+          type="button"
+          @click="addPayment"
+        >
+          Add Payment Method
+        </button>
+      </div>
+    </div>
+    <div class="mt-6 p-4 d-flex align-items-center justify-content-center">
+      <button type="button" class="btn btn-light me-5" @click="back">
+        Back
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary ms-5"
+        :disabled="cardValidation"
+        @click="updateCardDetails"
+      >
+        Continue
+      </button>
+    </div>
+  </template>
+</template>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+
+import { useStore } from "vuex";
+
+import CreditCard from "@/components/controls/creditCard.vue";
+
+import { cardDetailsResponsetModel } from "@/model";
+
+@Options({
+  components: {
+    CreditCard,
+  },
+})
+export default class PickCard extends Vue {
+  @Prop() cards: Array<cardDetailsResponsetModel>;
+  @Prop() showPaymentMethod: boolean;
+
+  public store = useStore();
+
+  public addNewPayment: boolean = false;
+
+  created() {
+    this.addNewPayment = this.showPaymentMethod;
+  }
+
+  @Watch("showPaymentMethod")
+  update() {
+    this.addNewPayment = this.showPaymentMethod;
+  }
+
+  public back() {
+    if(this.cards.length >= 0) this.addNewPayment = false;
+    this.$emit("back");
+  }
+
+  public addPayment() {
+     this.addNewPayment = true;
+    this.$emit("addNewPayment");
+  }
+  
+  public onPayNow() {
+    this.$emit("payNow");
+  }
+
+  public deleteCard(card: cardDetailsResponsetModel) {
+    this.$emit("deleteCard", card);
+  }
+
+  public makePrimary(card: cardDetailsResponsetModel) {
+    this.$emit("makePrimary", card.token);
+  }
+
+  public updateCardDetails() {
+    this.store.dispatch("updatePaymentType", "Credit Card");
+    let selectedCard =
+      this.cards.find((item) => {
+        return item.default;
+      }) || null;
+
+    let cardDetails = {
+      number: selectedCard.cardNumber,
+      expdate_month: selectedCard.expDate.split("-")[1],
+      expdate_year: selectedCard.expDate.split("-")[0],
+      name: selectedCard.cardHolderName,
+      cardType: selectedCard.cardType,
+    };
+    this.store.dispatch("updateCreditCard", cardDetails);
+    this.$emit("next");
+  }
+
+  get cardValidation() {
+    let valid: boolean = false,
+      selectedCard =
+        this.cards.find((item) => {
+          return item.default;
+        }) || null;
+    selectedCard ? (valid = false) : (valid = true);
+    return valid;
+  }
+}
+</script>   

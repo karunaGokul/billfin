@@ -134,7 +134,7 @@
           (plan.status == "CURRENT" && plan.endDate != null)
             ? plan.endDate
             : (plan.status == "UPCOMING" && plan.endDate == null) ||
-              (plan.status == "CURRENT" && this.plan.endDate == null)
+              (plan.status == "CURRENT" && plan.endDate == null)
             ? plan.renewDate
             : ""
         }}

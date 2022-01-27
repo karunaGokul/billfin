@@ -1,7 +1,9 @@
 <template>
-  <confirm v-if="firmStatus == 'SUBSCRIBED'" />
+  <confirm v-if="firmStatus == 'SUBSCRIBED'" :pageType="pageType"/>
   <div class="signup-plan-container" v-else>
-    <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4"> Reactivate Account </h3>
+    <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4">
+      Reactivate Account
+    </h3>
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -93,7 +95,7 @@
           <products @next="step = 2" @back="onBack" v-if="step == 1" />
           <plan @back="step = 1" @next="step = 3" v-if="step == 2" />
           <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
-          <payment @back="step = 3" @next="step = 5" v-if="step == 4" />
+          <pick-payment @back="step = 3" @next="step = 5" :pageType="SignUp" v-if="step == 4" />
           <review @back="step = 4" @next="step = 6" v-if="step == 5" />
           <subscribe
             @back="step = 5"
@@ -112,7 +114,7 @@ import { useStore } from "vuex";
 import Products from "./components/Products.vue";
 import Plan from "./components/Plan.vue";
 import Addons from "./components/Addons.vue";
-import Payment from "./components/Payment.vue";
+import PickPayment from "@/components/controls/PickPayment/Index.vue";
 import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
@@ -122,7 +124,7 @@ import Confirm from "./components/Confirm.vue";
     Products,
     Plan,
     Addons,
-    Payment,
+    PickPayment,
     Review,
     Subscribe,
     Confirm,
@@ -134,24 +136,26 @@ export default class SignUpPlan extends Vue {
 
   public firmStatus: string = "";
 
-  public pageType: string = '';
+  public pageType: string = "";
 
   created() {
-    this.pageType = this.$route.params.type.toString();
+    if (this.$route.params.type) this.pageType = this.$route.params.type.toString();
   }
 
   public updateFirmStatus() {
     this.store.dispatch("updateFirmStatus");
     this.firmStatus = "SUBSCRIBED";
-    
-    if(this.pageType == 'Reactivate') {
+
+    if (this.pageType == "Reactivate") {
+
+      this.store.dispatch("clearFirm");
       this.store.dispatch("loadEntitlements");
       //this.$router.push('/');
     }
   }
 
   onBack() {
-    if(this.pageType == 'Reactivate') this.$router.push('./account-expired');
+    if (this.pageType == "Reactivate") this.$router.push("./account-expired");
   }
 }
 </script>

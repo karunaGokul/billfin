@@ -57,6 +57,9 @@ const mutations: MutationTree<any> = {
   onLoadSettings: (state, response) => {
     state.settings = response;
   },
+  onFirmSubscribed: (state) => {
+    console.log(state.frims);
+  }
 };
 const actions: ActionTree<any, any> = {
   loadEntitlements(context) {
@@ -66,6 +69,7 @@ const actions: ActionTree<any, any> = {
     ) {
       let service = new FirmService();
       return service.getFirms().then((response) => {
+        console.log(response);
         context.commit("onLoadEntitlements", response);
       });
     } else {
@@ -89,7 +93,11 @@ const actions: ActionTree<any, any> = {
       });
     }
   },
-  clearFirm() {
+  firmSubscribed(context) {
+    context.commit("onFirmSubscribed");
+  },
+  clearFirm({commit, state}) {
+    state.dataEntitlements = [];   
     localStorage.removeItem(FIRM_KEY);
     state.firmId = "";
   },

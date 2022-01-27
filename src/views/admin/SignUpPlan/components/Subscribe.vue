@@ -156,7 +156,7 @@ export default class Subscribe extends Vue {
   }
 
   get startDate() {
-    return moment(String(new Date())).format("MM/DD/YYYY");
+    return this.$datehelper.changeDateFormatWithSlash(moment(String(new Date())).format("MM/DD/YYYY"));
   }
 }
 </script>

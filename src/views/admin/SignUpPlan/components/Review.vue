@@ -159,30 +159,30 @@
                   src="@/assets/mastercard.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'mast'"
+                  v-if="creditCard.cardType == 'MasterCard'"
                 />
                 <img
                   src="@/assets/visa.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'visa'"
+                  v-if="creditCard.cardType == 'Visa'"
                 />
                 <img
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'amex'"
+                  v-if="creditCard.cardType == 'American Express'"
                 />
                 <img
                   src="@/assets/discover.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="creditCard.cardType == 'disc'"
+                  v-if="creditCard.cardType == 'Discover'"
                 />
               </div>
               <div class="p-4">
                 <div class="text-dark-gray fw-bolder p-2">
-                  {{ cardType }} ****{{
+                  {{ creditCard.cardType }} ****{{
                     creditCard.number.substr(creditCard.number.length - 4)
                   }}
                 </div>
@@ -297,13 +297,5 @@ export default class Review extends Vue {
     return this.store.getters.address;
   }
 
-  get cardType() {
-    let cardType: string = "";
-    if (this.creditCard.cardType == "mast") cardType = "Master card";
-    else if (this.creditCard.cardType == "visa") cardType = "Visa";
-    else if (this.creditCard.cardType == "amex") cardType = "American Express";
-    else cardType = "Discover";
-    return cardType;
-  }
 }
 </script>

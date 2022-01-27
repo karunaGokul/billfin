@@ -21,6 +21,8 @@ import {
   changePlanResponseModel,
   cancelPlanAddOnRequestModel,
   cancelPlanAddOnResponseModel,
+  deleteCardRequestModel,
+  deleteCardResponseModel
 } from "@/model";
 
 export interface IManageSubscription
@@ -57,6 +59,9 @@ export interface IManageSubscription
     request: cancelPlanAddOnRequestModel,
     path: string
   ): Promise<changePlanResponseModel>;
+  deleteCard(
+    request: deleteCardRequestModel
+  ): Promise<deleteCardResponseModel>
 }
 
 export class ManageSubscription extends BaseService<
@@ -172,6 +177,14 @@ export class ManageSubscription extends BaseService<
     path: string
   ): Promise<cancelPlanAddOnResponseModel> {
     return this.httpPost("private/api/v1/" + path, request).then((response) => {
+      return response.data;
+    });
+  }
+
+  public deleteCard(
+    request: deleteCardRequestModel
+  ): Promise<deleteCardResponseModel> {
+    return this.httpPost("private/api/v1/deleteCard", request).then((response) => {
       return response.data;
     });
   }

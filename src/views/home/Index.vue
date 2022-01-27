@@ -218,7 +218,7 @@ import SideBar from "@/components/controls/SideBar.vue";
 import Welcome from "./components/OnBoard.vue";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel } from "@/model";
+import { firmRequestModel, firmsResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -240,11 +240,28 @@ export default class Home extends Vue {
 
   public trailExpired: boolean = false;
 
+  public subscription: any = null;
+
+  public firms: firmsResponseModel = new firmsResponseModel();
+
   created() {
     this.getFirms();
   }
 
+  mounted() {
+    this.subscription = this.store.subscribe((mutations, type) => {
+      if (mutations.type == "onFirmSubscribed") this.getFirms();
+    });
+  }
+
+  unmounted() {
+    if (this.subscription) this.subscription();
+  }
+
   private getFirms() {
+
+    this.firms = this.store.getters.firms;
+
     if (
       this.dataEntitlements.length == 1 &&
       this.firms.trialOnboardingStatus != "COMPLETED"
@@ -254,6 +271,7 @@ export default class Home extends Vue {
         this.$router.push("./account-expired");
       } else {
         this.showOnBoard = true;
+        this.trailExpired = false;
         if (this.firms.trialOnboardingStatus == "NOT_STARTED")
           this.lastOnboardingStep = 1;
         else this.lastOnboardingStep = this.firms.lastOnboardingStepCompleted;
@@ -266,6 +284,7 @@ export default class Home extends Vue {
     this.store.dispatch("firmIdChanged", firm.firmId);
     this.store.dispatch("clearSubscription");
     this.$router.push("/dashboard");
+    this.firms = this.store.getters.firms;
   }
 
   public openAvatarUpload() {
@@ -324,10 +343,6 @@ export default class Home extends Vue {
     return this.store.getters.userInfo;
   }
 
-  get firms() {
-    return this.store.getters.firms;
-  }
-
   get dataEntitlements() {
     return this.store.getters.dataEntitlements;
   }
@@ -353,7 +368,7 @@ export default class Home extends Vue {
       this.page == "Sign Up For Add-Ons" ||
       this.page == "Add Users" ||
       this.page == "Add Connectors" ||
-      this.page == "Change Plan" || 
+      this.page == "Change Plan" ||
       this.page == "Add Payment Method"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;

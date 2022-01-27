@@ -114,6 +114,8 @@ export class cardDetailsResponsetModel {
   typeName: string;
   status: string;
   default: boolean;
+  customerId: number;
+  paymentFirmTokenId: number;
 }
 export class billingAddressRequestModel {
   firmId: number;
@@ -206,5 +208,12 @@ export class cancelPlanAddOnRequestModel {
   subscriptionAddOnId?: number;
 }
 export class cancelPlanAddOnResponseModel {
+  status: string;
+}
+export class deleteCardRequestModel {
+  paymentFirmTokenId: number;
+  customerId: number;
+}
+export class deleteCardResponseModel {
   status: string;
 }

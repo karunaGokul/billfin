@@ -29,87 +29,105 @@
         </button>
       </div>
     </div>
-    <payment-card
+    <pick-card
       :cards="cards"
-      :paymentType="paymentType"
-      @addNewPayment="addNewPayment = true"
+      :showPaymentMethod="showPaymentMethod"
+      @addNewPayment="showPaymentMethod = true"
+      @makePrimary="makePrimary"
+      @deleteCard="deleteCard"
+      @payNow="onPayNow"
       @back="onBack"
       @next="onNext"
-      v-if="!addNewPayment"
+      v-if="paymentType == 'Credit Card'"
     />
-
-    <template v-else>
-      <ACH @back="onBack" @pay="onPayNow" v-if="paymentType == 'ACH'" />
-      <credit-card
-        @back="onBack"
-        @pay="onPayNow"
-        v-if="paymentType == 'Credit Card'"
-      />
-    </template>
+    <PickACH
+      :cards="ach"
+      :showPaymentMethod="showPaymentMethod"
+      @addNewPayment="showPaymentMethod = true"
+      @makePrimary="makePrimary"
+      @deleteCard="deleteCard"
+      @payNow="onPayNow"
+      @back="onBack"
+      @next="onNext"
+      v-if="paymentType == 'ACH'"
+    />
   </div>
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Inject } from "vue-property-decorator";
+import { Prop, Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import ACH from "@/components/controls/ACH.vue";
-import CreditCard from "@/components/controls/creditCard.vue";
-import PaymentCard from "@/components/controls/PaymentCard.vue";
-
 import {
-  createCustomerRequestModel,
-  paymentTokenRequestModel,
-  PaymentMethod,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
+  billingAddressRequestModel,
+  PaymentMethod,
+  createCustomerRequestModel,
+  paymentTokenRequestModel,
+  CardPrimaryType,
+  deleteCardRequestModel,
+  deleteCardResponseModel,
 } from "@/model";
-import { ISubscripeService, IManageSubscription } from "@/service";
+import { IManageSubscription, ISubscripeService } from "@/service";
+
+import PickACH from "./PickACH.vue";
+import PickCard from "./PickCard.vue";
 
 declare let ChargeOver: any;
 
 @Options({
   components: {
-    ACH,
-    CreditCard,
-    PaymentCard,
+    PickACH,
+    PickCard,
   },
 })
-export default class Payment extends Vue {
-  @Inject("subscripeService") service: ISubscripeService;
-  @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
+export default class PickPayment extends Vue {
+  @Prop() pageType: string;
 
-  public paymentType: string = "Credit Card";
+  @Inject("manageSubscripeService") service: IManageSubscription;
+  @Inject("subscripeService") subscripeService: ISubscripeService;
+
   public store = useStore();
 
-  public addNewPayment: boolean = false;
+  public paymentType: string = "Credit Card";
 
-  public cards: Array<cardDetailsResponsetModel> = [];
+  public cards: Array<cardDetailsResponsetModel> = null;
+  public ach: Array<cardDetailsResponsetModel> = null;
+
+  public showPaymentMethod: boolean = false;
 
   created() {
-    if (this.store.getters.paymentType)
-      this.paymentType = this.store.getters.paymentType;
-
+    this.getBillingAddress();
     this.getCardDetails();
   }
 
-  public eventPaymentHandler(paymentType: string) {
-    this.paymentType = paymentType;
-    if (!this.addNewPayment) this.getCardDetails();
-  }
-
-  onBack() {
+  public onBack() {
     this.$emit("back");
   }
 
-  onNext() {
+  public onNext() {
     this.$emit("next");
   }
 
-  onPayNow() {
-    this.store.dispatch("updatePaymentType", this.paymentType);
-    this.createCustomer();
+  public eventPaymentHandler(paymentType: string) {
+    console.log(this.showPaymentMethod);
+    this.paymentType = paymentType;
+    if (!this.showPaymentMethod) this.getCardDetails();
+  }
+
+  private getBillingAddress() {
+    let request = new billingAddressRequestModel();
+    request.firmId = this.store.getters.selectedFirmId;
+    this.service
+      .getBillingAddress(request)
+      .then((response) => {
+        this.store.dispatch("updateAddress", response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public getCardDetails() {
@@ -118,21 +136,36 @@ export default class Payment extends Vue {
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
     request.firmId = this.store.getters.selectedFirmId;
-    this.manageSubscripeService
+    this.service
       .getCardDetails(request)
       .then((response) => {
-        this.cards = response;
+        if (this.paymentType == "Credit Card") this.cards = response;
+        else this.ach = response;
 
-        if (this.cards.length == 0) {
-          if (this.paymentType == "Credit Card") {
-            this.paymentType = "ACH";
-            this.getCardDetails();
-          } else if (this.paymentType == "ACH") this.addNewPayment = true;
-        }
+        this.redirectPayment();
       })
       .catch((err) => {
-        console.log(err);
+        this.redirectPayment();
       });
+  }
+
+  private redirectPayment() {
+    if (this.paymentType == "Credit Card" && this.cards.length == 0) {
+      this.paymentType = "ACH";
+      this.getCardDetails();
+    } else if (
+      this.paymentType == "ACH" &&
+      this.cards.length == 0 &&
+      this.ach.length == 0
+    ) {
+      this.paymentType = "Credit Card";
+      this.showPaymentMethod = true;
+    }
+  }
+
+  public onPayNow() {
+    this.store.dispatch("updatePaymentType", this.paymentType);
+    this.pageType == "SignUp" ? this.createCustomer() : this.tokenizeAccount();
   }
 
   private createCustomer() {
@@ -149,16 +182,19 @@ export default class Payment extends Vue {
       superuser_phone: this.phoneNumber,
     };
 
-    this.service
+    this.subscripeService
       .createCustomer(request)
       .then((response) => {
-        this.$emit("next");
-        if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
-        else this.tokenizingAch();
+        this.tokenizeAccount();
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  private tokenizeAccount() {
+    if (this.paymentType == "Credit Card") this.tokenizingCreditCard();
+    else this.tokenizingAch();
   }
 
   private tokenizingCreditCard() {
@@ -171,7 +207,7 @@ export default class Payment extends Vue {
       (code: any, message: any, response: any) => {
         console.log(message, response);
         if (code == 200) {
-          this.updateToken(response.creditcard.token);
+          this.updateToken(response.creditcard.token, "new");
         } else if (code == 400) {
           console.log(message);
         } else {
@@ -190,7 +226,7 @@ export default class Payment extends Vue {
       request,
       (code: any, message: any, response: any) => {
         if (code == 200) {
-          this.updateToken(response.ach.token);
+          this.updateToken(response.ach.token, "new");
         } else if (code == 400) {
           console.log(message);
         } else {
@@ -200,17 +236,38 @@ export default class Payment extends Vue {
     );
   }
 
-  private updateToken(token: string) {
+  private updateToken(token: string, cardType: string) {
     let request = new paymentTokenRequestModel();
     request.token = token;
     request.firmId = this.firmId;
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
-    this.paymentType.toUpperCase();
-    this.service
+    request.reqType = CardPrimaryType[cardType as keyof typeof CardPrimaryType];
+    this.subscripeService
       .updatePaymentToken(request)
       .then((response) => {
-        console.log(response);
+        this.getCardDetails();
+        this.showPaymentMethod = false;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public makePrimary(token: string) {
+    this.updateToken(token, "primary");
+  }
+
+  public deleteCard(card: cardDetailsResponsetModel) {
+    let request = new deleteCardRequestModel();
+    request.paymentFirmTokenId = card.paymentFirmTokenId;
+    request.customerId = card.customerId;
+    console.log(request);
+
+    this.service
+      .deleteCard(request)
+      .then((response) => {
+        if (response.status == "SUCCESS") this.getCardDetails();
       })
       .catch((err) => {
         console.log(err);
@@ -242,13 +299,5 @@ export default class Payment extends Vue {
   get firmId() {
     return this.store.getters.selectedFirmId;
   }
-
-  get creditCard() {
-    return this.store.getters.creditCard;
-  }
-
-  get ach() {
-    return this.store.getters.ach;
-  }
 }
-</script>
+</script>   

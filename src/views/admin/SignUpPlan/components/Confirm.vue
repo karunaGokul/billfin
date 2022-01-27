@@ -22,32 +22,45 @@
       </div>
       <div class="fa-lg mt-4 mb-6 fw-bold">Thank you!</div>
       <div>
-        <router-link to="/dashboard" tag="button" class="btn btn-primary">
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="navigatePage('/dashboard')"
+        >
           Go to dashboard
-        </router-link>
+        </button>
       </div>
       <div>
-        <router-link
-          to="/my-subscription"
-          tag="a"
+        <button
+          type="button"
           class="btn btn-link text-gray-secondary"
+          @click="navigatePage('/my-subscription')"
         >
           Manage subscription
-        </router-link>
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 
-import moment from "moment";
 import { useStore } from "vuex";
 
+import moment from "moment";
+
 export default class Confirm extends Vue {
+  @Prop() pageType: string;
   public store = useStore();
   public dueAmount: number = 0;
-    
+
+  public navigatePage(page: string) {
+    if (this.pageType == "Reactivate") this.store.dispatch("firmSubscribed");
+
+    this.$router.push(page);
+  }
+
   get products() {
     return this.store.getters.products;
   }
@@ -93,7 +106,10 @@ export default class Confirm extends Vue {
   get nextPaymentDate() {
     let currentDate = new Date();
     let date = new Date(currentDate);
-    if (this.aumBilling.commitmentTerm == "Monthly" || this.subscriptionBilling.commitmentTerm == "Monthly") {
+    if (
+      this.aumBilling.commitmentTerm == "Monthly" ||
+      this.subscriptionBilling.commitmentTerm == "Monthly"
+    ) {
       date.setMonth(currentDate.getMonth() + 1);
       date.setDate(currentDate.getDate() + 1);
     } else {

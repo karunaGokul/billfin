@@ -48,6 +48,18 @@ export class DateHelper {
     return value;
   }
 
+  changeDateFormatWithHyphen(date: string) {
+    if (!date) date = ""; // YYYY-MM-DD to MM/DD/YYYY
+
+    return `${date.split("-")[1] + "/" + date.split("-")[2] + "/" + date.split("-")[0] }`;
+  }
+
+  changeDateFormatWithSlash(date: string) {
+    if (!date) date = ""; // MM/DD/YYYY to YYYY-MM-DD
+
+    return `${date.split("/")[2] + "-" + date.split("/")[0] + "-" + date.split("/")[1]}`
+  }
+
   convertDate(date: string) {
     if (!date) date = ""; //MM/DD/YYYY;
     return `${date.split("/")[1] +
