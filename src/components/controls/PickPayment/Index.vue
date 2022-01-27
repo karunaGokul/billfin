@@ -93,8 +93,8 @@ export default class PickPayment extends Vue {
 
   public paymentType: string = "Credit Card";
 
-  public cards: Array<cardDetailsResponsetModel> = null;
-  public ach: Array<cardDetailsResponsetModel> = null;
+  public cards: Array<cardDetailsResponsetModel> = [];
+  public ach: Array<cardDetailsResponsetModel> = [];
 
   public showPaymentMethod: boolean = false;
 

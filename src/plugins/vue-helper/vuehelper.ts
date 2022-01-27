@@ -48,19 +48,21 @@ export class DateHelper {
     return value;
   }
 
-  changeDateFormatWithHyphen(date: string) {
+  changeDateFormatWithSlash(date: string) {
     if (!date) date = ""; // YYYY-MM-DD to MM/DD/YYYY
 
-    return `${date.split("-")[1] + "/" + date.split("-")[2] + "/" + date.split("-")[0] }`;
+    return moment(String(new Date(date))).format("MM/DD/YYYY")
   }
 
-  changeDateFormatWithSlash(date: string) {
+  changeDateFormatWithHyphen(date: string) {
     if (!date) date = ""; // MM/DD/YYYY to YYYY-MM-DD
 
-    return `${date.split("/")[2] + "-" + date.split("/")[0] + "-" + date.split("/")[1]}`
+    return moment(String(new Date(date))).format("YYYY-MM-DD")
+    //return `${date.split("/")[2] + "-" + date.split("/")[0] + "-" + date.split("/")[1]}`
   }
 
   convertDate(date: string) {
+    console.log(date);
     if (!date) date = ""; //MM/DD/YYYY;
     return `${date.split("/")[1] +
       "/" +

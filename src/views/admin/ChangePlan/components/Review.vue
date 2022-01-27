@@ -169,15 +169,9 @@
               <tbody>
                 <tr>
                   <td class="pt-0 p-4 fw-bold">
-                    {{
-                      $datehelper.format(
-                        $datehelper.convertDate(plan.startDate)
-                      )
-                    }}
+                    {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
                     -
-                    {{
-                      $datehelper.format($datehelper.convertDate(plan.endDate))
-                    }}
+                    {{ $datehelper.changeDateFormatWithSlash(plan.endDate) }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
                     {{ $filters.currencyDisplay(plan.paymentAmount) }}
@@ -243,22 +237,16 @@
               <tbody>
                 <tr>
                   <td class="pt-0 p-4 fw-bold">
-                    {{
-                      $datehelper.format(
-                        $datehelper.convertDate(item.startDate)
-                      )
-                    }}
+                    {{ $datehelper.changeDateFormatWithSlash(item.startDate) }}
                     -
-                    {{
-                      $datehelper.format($datehelper.convertDate(item.endDate))
-                    }}
+                    {{ $datehelper.changeDateFormatWithSlash(item.endDate) }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
                     {{ $filters.currencyDisplay(item.paymentAmount) }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
-                    {{ $datehelper.format(item.refundStartDate) }} -
-                    {{ $datehelper.format(item.refundEndDate) }}
+                    {{ $datehelper.changeDateFormatWithSlash(item.refundStartDate) }} -
+                    {{ $datehelper.changeDateFormatWithSlash(item.refundEndDate) }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
                     {{ $filters.currencyDisplay(item.refundAmount) }}
@@ -559,6 +547,5 @@ export default class Review extends Vue {
   get planAction() {
     return this.store.getters.planAction;
   }
-
 }
 </script>

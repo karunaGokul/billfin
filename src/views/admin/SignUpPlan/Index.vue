@@ -95,7 +95,7 @@
           <products @next="step = 2" @back="onBack" v-if="step == 1" />
           <plan @back="step = 1" @next="step = 3" v-if="step == 2" />
           <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
-          <pick-payment @back="step = 3" @next="step = 5" :pageType="SignUp" v-if="step == 4" />
+          <pick-payment @back="step = 3" @next="step = 5" pageType="SignUp" v-if="step == 4" />
           <review @back="step = 4" @next="step = 6" v-if="step == 5" />
           <subscribe
             @back="step = 5"

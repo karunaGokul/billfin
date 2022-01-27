@@ -128,14 +128,14 @@
           'text-muted': plan.status != 'CANCELLED' && !plan.endDate
         }"
       >
-        {{ plan.startDate }} -
+        {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
         {{
           plan.status == "CANCELLED" ||
           (plan.status == "CURRENT" && plan.endDate != null)
-            ? plan.endDate
+            ? $datehelper.changeDateFormatWithSlash(plan.endDate)
             : (plan.status == "UPCOMING" && plan.endDate == null) ||
               (plan.status == "CURRENT" && plan.endDate == null)
-            ? plan.renewDate
+            ? $datehelper.changeDateFormatWithSlash(plan.renewDate)
             : ""
         }}
       </div>
@@ -210,6 +210,8 @@ import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 import { useStore } from "vuex";
+
+import moment from "moment";
 
 import CancelPlanAddOn from "./CancelPlanAddOn.vue";
 import RenewPlanAddOn from "./RenewPlanAddOn.vue";

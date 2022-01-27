@@ -36,7 +36,17 @@
                       <tr>
                         <td class="fw-bold ps-4 pe-4">{{ currentTerm }}</td>
                         <td class="fw-bold ps-4 pe-4">
-                          {{ $datehelper.convertDate(plan.startDate) }} - {{ $datehelper.convertDate(plan.renewDate) }}
+                          {{
+                            $datehelper.changeDateFormatWithSlash(
+                              plan.startDate
+                            )
+                          }}
+                          -
+                          {{
+                            $datehelper.changeDateFormatWithSlash(
+                              plan.renewDate
+                            )
+                          }}
                         </td>
                         <td class="ps-4 pe-4 fw-bold">
                           {{ $filters.currencyDisplay(plan.paymentAmount) }}
@@ -302,28 +312,17 @@ export default class ChangePlanCommitmentTerm extends Vue {
   }
 
   get newTermStartDate() {
-    let endDate = this.plan.renewDate.split("/");
-    let currentDate = new Date(
-      parseInt(endDate[2]),
-      parseInt(endDate[1]) - 1,
-      parseInt(endDate[0])
-    );
-    let date = new Date(currentDate);
-    if (this.newTerm == "Monthly") date.setDate(currentDate.getDate() + 1);
-    else date.setDate(currentDate.getDate() + 1);
+    let date = new Date(this.plan.renewDate);
+
+    if (this.newTerm == "Monthly") date.setDate(date.getDate() + 1);
+    else date.setDate(date.getDate() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }
 
   get newTermEndDate() {
-    let endDate = this.plan.renewDate.split("/");
-    let currentDate = new Date(
-      parseInt(endDate[2]),
-      parseInt(endDate[1]) - 1,
-      parseInt(endDate[0])
-    );
-    let date = new Date(currentDate);
-    date.setFullYear(currentDate.getFullYear() + 1);
+    let date = new Date(this.plan.renewDate);
+    date.setFullYear(date.getFullYear() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }

@@ -149,14 +149,14 @@
           'text-muted': addons.status != 'CANCELLED' && !addons.endDate,
         }"
       >
-        {{ addons.startDate }} -
+        {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
         {{
           addons.status == "CANCELLED" ||
           (addons.status == "CURRENT" && addons.endDate != null)
-            ? addons.endDate
+            ? $datehelper.changeDateFormatWithSlash(addons.endDate)
             : (addons.status == "UPCOMING" && addons.endDate == null) ||
               (addons.status == "CURRENT" && this.addons.endDate == null)
-            ? addons.renewDate
+            ? $datehelper.changeDateFormatWithSlash(addons.renewDate)
             : ""
         }}
       </div>

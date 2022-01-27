@@ -91,7 +91,7 @@
         <div class="tab-content-group">
           <plan @next="step = 2" v-if="step == 1" />
           <addons @back="step = 1" @next="step = 3" v-if="step == 2" />
-          <pick-payment @back="step = 2" @next="step = 4" :pageType="ChangePlan" v-if="step == 3"/>
+          <pick-payment @back="step = 2" @next="step = 4" pageType="ChangePlan" v-if="step == 3"/>
           <activate-plan @back="step = 3" @next="step = 5" v-if="step == 4"/>
           <review @back="step = 4" @next="step = 6" v-if="step == 5"/>
           <subscribe @back="step = 5" @next="step = 7" v-if="step == 6"/>

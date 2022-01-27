@@ -135,6 +135,7 @@ export default class PickCard extends Vue {
 
   @Watch("showPaymentMethod")
   update() {
+    console.log('its called');
     this.addNewPayment = this.showPaymentMethod;
   }
 

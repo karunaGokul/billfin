@@ -123,7 +123,7 @@
                       border-bottom border-dashed
                     "
                   >
-                    {{ item.startDate }} - {{ item.renewDate }}
+                    {{ $datehelper.changeDateFormatWithSlash(item.startDate) }} - {{ $datehelper.changeDateFormatWithSlash(item.renewDate) }}
                   </td>
                   <td
                     class="
