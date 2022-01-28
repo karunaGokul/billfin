@@ -149,16 +149,36 @@
           'text-muted': addons.status != 'CANCELLED' && !addons.endDate,
         }"
       >
-        {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
-        {{
-          addons.status == "CANCELLED" ||
-          (addons.status == "CURRENT" && addons.endDate != null)
-            ? $datehelper.changeDateFormatWithSlash(addons.endDate)
-            : (addons.status == "UPCOMING" && addons.endDate == null) ||
-              (addons.status == "CURRENT" && this.addons.endDate == null)
-            ? $datehelper.changeDateFormatWithSlash(addons.renewDate)
-            : ""
-        }}
+        <div
+          v-if="
+            addons.status == 'CANCELLED' ||
+            (addons.status == 'CURRENT' && addons.endDate != null)
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(addons.endDate) }}
+        </div>
+        <div
+          v-if="
+            addons.commitmentTerm == 'ANNUAL' &&
+            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
+              (addons.status == 'CURRENT' && addons.endDate == null))
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
+        </div>
+        <div
+          v-if="
+            addons.commitmentTerm == 'MONTHLY' &&
+            !addons.activeFlag &&
+            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
+              (addons.status == 'CURRENT' && addons.endDate == null))
+          "
+        >
+          Subscribed since
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }}
+        </div>
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
@@ -287,19 +307,30 @@ export default class Addons extends Vue {
   get addOnStatus() {
     let status: string = "";
     if (this.addons.status == "CANCELLED")
-      status = `Cancelled on ${this.$datehelper.changeMonthFormat(this.addons.cancelDate, 3)}`;
+      status = `Cancelled on ${this.$datehelper.changeMonthFormat(
+        this.addons.cancelDate,
+        3
+      )}`;
     else if (this.addons.status == "UPCOMING" && this.addons.endDate == null)
-      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.addons.renewDate, 3)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(
+        this.addons.renewDate,
+        3
+      )}`;
     else if (this.addons.status == "CURRENT" && this.addons.endDate == null)
-      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.addons.renewDate, 3)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(
+        this.addons.renewDate,
+        3
+      )}`;
     else if (this.addons.status == "CURRENT" && this.addons.endDate != null)
-      status = `Expires on ${this.$datehelper.changeMonthFormat(this.addons.endDate, 3)}`;
+      status = `Expires on ${this.$datehelper.changeMonthFormat(
+        this.addons.endDate,
+        3
+      )}`;
     return status;
   }
 
   get addOnsList() {
     return this.store.getters.addOnsList;
   }
-
 }
 </script>

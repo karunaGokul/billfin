@@ -104,9 +104,7 @@
         :class="{ 'text-gray-secondary': plan.endDate && !plan.activeFlag }"
         @click="!plan.endDate ? (toggleCommitmentTerm = true) : ''"
       >
-        {{
-          plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly"
-        }}
+        {{ plan.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly" }}
         Subscription
       </div>
       <div class="dropdown-menu" :class="{ show: toggleCommitmentTerm }">
@@ -125,19 +123,39 @@
         :class="{
           'text-gray-secondary': plan.status == 'CANCELLED' && !plan.activeFlag,
           'text-danger': plan.status == 'CANCELLED' && plan.activeFlag,
-          'text-muted': plan.status != 'CANCELLED' && !plan.endDate
+          'text-muted': plan.status != 'CANCELLED' && !plan.endDate,
         }"
       >
-        {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
-        {{
-          plan.status == "CANCELLED" ||
-          (plan.status == "CURRENT" && plan.endDate != null)
-            ? $datehelper.changeDateFormatWithSlash(plan.endDate)
-            : (plan.status == "UPCOMING" && plan.endDate == null) ||
-              (plan.status == "CURRENT" && plan.endDate == null)
-            ? $datehelper.changeDateFormatWithSlash(plan.renewDate)
-            : ""
-        }}
+        <div
+          v-if="
+            plan.status == 'CANCELLED' ||
+            (plan.status == 'CURRENT' && plan.endDate != null)
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.endDate) }}
+        </div>
+        <div
+          v-if="
+            plan.commitmentTerm == 'ANNUAL' &&
+            ((plan.status == 'UPCOMING' && plan.endDate == null) ||
+              (plan.status == 'CURRENT' && plan.endDate == null))
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.renewDate) }}
+        </div>
+        <div
+          v-if="
+            plan.commitmentTerm == 'MONTHLY' &&
+            !plan.activeFlag &&
+            ((plan.status == 'UPCOMING' && plan.endDate == null) ||
+              (plan.status == 'CURRENT' && plan.endDate == null))
+          "
+        >
+          Subscribed since
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
+        </div>
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
@@ -308,15 +326,26 @@ export default class Plan extends Vue {
   get planStatus() {
     let status: string = "";
     if (this.plan.status == "CANCELLED")
-      status = `Cancelled on ${this.$datehelper.changeMonthFormat(this.plan.cancelDate, 3)}`;
+      status = `Cancelled on ${this.$datehelper.changeMonthFormat(
+        this.plan.cancelDate,
+        3
+      )}`;
     else if (this.plan.status == "UPCOMING" && this.plan.endDate == null)
-      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.plan.renewDate, 3)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(
+        this.plan.renewDate,
+        3
+      )}`;
     else if (this.plan.status == "CURRENT" && this.plan.endDate == null)
-      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(this.plan.renewDate, 3)}`;
+      status = `Auto-renews on ${this.$datehelper.changeMonthFormat(
+        this.plan.renewDate,
+        3
+      )}`;
     else if (this.plan.status == "CURRENT" && this.plan.endDate != null)
-      status = `Expires on ${this.$datehelper.changeMonthFormat(this.plan.endDate, 3)}`;
+      status = `Expires on ${this.$datehelper.changeMonthFormat(
+        this.plan.endDate,
+        3
+      )}`;
     return status;
   }
-
 }
 </script>
