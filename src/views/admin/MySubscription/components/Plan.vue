@@ -156,6 +156,17 @@
           Subscribed since
           {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
         </div>
+        <div
+          v-if="
+            plan.commitmentTerm == 'MONTHLY' &&
+            plan.activeFlag &&
+            ((plan.status == 'UPCOMING' && plan.endDate == null) ||
+              (plan.status == 'CURRENT' && plan.endDate == null))
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.renewDate) }}
+        </div>
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">

@@ -69,7 +69,6 @@ const actions: ActionTree<any, any> = {
     ) {
       let service = new FirmService();
       return service.getFirms().then((response) => {
-        console.log(response);
         context.commit("onLoadEntitlements", response);
       });
     } else {

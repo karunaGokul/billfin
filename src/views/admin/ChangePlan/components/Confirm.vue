@@ -91,16 +91,15 @@ export default class Confirm extends Vue {
   }
 
   get nextPaymentDate() {
-    let currentDate = new Date();
-    let date = new Date(currentDate);
-    if (this.aumBilling.commitmentTerm == "Monthly" || this.subscriptionBilling.commitmentTerm == "Monthly") {
-      date.setMonth(currentDate.getMonth() + 1);
-      date.setDate(currentDate.getDate() + 1);
+    let date = new Date();
+    if (
+      this.aumBilling.commitmentTerm == "Monthly" ||
+      this.subscriptionBilling.commitmentTerm == "Monthly"
+    ) {
+      date.setMonth(date.getMonth() + 1);
     } else {
-      date.setFullYear(currentDate.getFullYear() + 1);
-      date.setDate(currentDate.getDate() + 1);
+      date.setFullYear(date.getFullYear() + 1);
     }
-
     return moment(String(date)).format("MM/DD/YYYY");
   }
 }

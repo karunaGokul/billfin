@@ -179,6 +179,17 @@
           Subscribed since
           {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }}
         </div>
+        <div
+          v-if="
+            addons.commitmentTerm == 'MONTHLY' &&
+            addons.activeFlag &&
+            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
+              (addons.status == 'CURRENT' && addons.endDate == null))
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
+        </div>
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">

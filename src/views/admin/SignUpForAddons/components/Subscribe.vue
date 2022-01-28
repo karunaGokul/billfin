@@ -96,15 +96,22 @@ export default class Subscribe extends Vue {
     request.firmId = this.store.getters.selectedFirmId;
 
     if (this.showAumBilling) {
-      request.term = CommitmentTerm[this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm];
+      request.term =
+        CommitmentTerm[
+          this.aumBilling.commitmentTerm as keyof typeof CommitmentTerm
+        ];
       request.termPlanId = this.aumBilling.plan.termPlanId;
       request.subscriptionPlanId = this.aumBilling.plan.subscriptionPlanId;
       request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
-      request.term = CommitmentTerm[this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm];
+      request.term =
+        CommitmentTerm[
+          this.subscriptionBilling.commitmentTerm as keyof typeof CommitmentTerm
+        ];
       request.termPlanId = this.subscriptionBilling.plan.termPlanId;
-      request.subscriptionPlanId = this.subscriptionBilling.plan.subscriptionPlanId;
+      request.subscriptionPlanId =
+        this.subscriptionBilling.plan.subscriptionPlanId;
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
@@ -113,7 +120,6 @@ export default class Subscribe extends Vue {
       .then((response) => {
         if (response.status == "SUCCESS") {
           this.$emit("next");
-          //this.store.dispatch("clearSubscription");
         }
       })
       .catch((err) => {
