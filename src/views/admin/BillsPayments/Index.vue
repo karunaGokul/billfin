@@ -17,11 +17,11 @@
                 class="badge text-success ms-2 fs-6 bg-success-alpha"
                 v-if="item.default"
                 >Primary</span
-              >
+              >  
               <span
                 class="badge text-orange ms-2 fs-6 bg-orange"
                 v-if="!item.default"
-                @click="makePrimary(item)"
+                @click="makePrimary(item, 'primary')"
                 >Make Primary</span
               >
             </div>
@@ -78,13 +78,29 @@
             </div>
           </div>
           <div class="d-flex align-items-center p-4">
-            <button class="btn btn-light me-3">Delete</button>
-            <button class="btn btn-light">Edit</button>
+            <button
+              class="btn me-3"
+              :class="{
+                'btn-light': !item.default,
+                'btn-primary': item.default,
+              }"
+              :disabled="!item.default"
+              @click="deleteCard(item)"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
       <div class="p-4">
-        <router-link :to="{ name: 'Add Payment Method', params: { redirectPage: 'bills-payments' }}" tag="button" class="btn btn-primary">
+        <router-link
+          :to="{
+            name: 'Add Payment Method',
+            params: { redirectPage: 'bills-payments' },
+          }"
+          tag="button"
+          class="btn btn-primary"
+        >
           Add Payment Method
         </router-link>
       </div>
@@ -98,7 +114,9 @@
     <div v-for="(item, index) of response" :key="index">
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
         <div class="fs-5">
-          <div class="fw-bolder mt-2 mb-2">{{ planEndDate(item.transactionDate) }}</div>
+          <div class="fw-bolder mt-2 mb-2">
+            {{ planEndDate(item.transactionDate) }}
+          </div>
           <div class="fw-bolder mb-2 fs-5">
             <img
               src="@/assets/mastercard.png"
@@ -146,13 +164,21 @@ import { useStore } from "vuex";
 
 import Billng from "./component/Billing.vue";
 
-import { IBillsAndPaymentService } from "@/service";
+import {
+  IBillsAndPaymentService,
+  IManageSubscription,
+  ISubscripeService,
+} from "@/service";
 
 import {
   billsAndPaymentRequestModel,
   billsAndPaymentResponseModel,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
+  deleteCardRequestModel,
+  paymentTokenRequestModel,
+  PaymentMethod,
+  CardPrimaryType,
 } from "@/model";
 
 @Options({
@@ -162,6 +188,8 @@ import {
 })
 export default class Index extends Vue {
   @Inject("billsAndPaymentService") service: IBillsAndPaymentService;
+  @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
+  @Inject("subscripeService") subscripeService: ISubscripeService;
 
   public store = useStore();
 
@@ -173,7 +201,50 @@ export default class Index extends Vue {
     this.getCardDetails();
   }
 
-  public getCardDetails() {
+  public deleteCard(details: cardDetailsResponsetModel) {
+    let request = new deleteCardRequestModel();
+    request.paymentFirmTokenId = details.paymentFirmTokenId;
+    request.customerId = details.customerId;
+
+    this.manageSubscripeService
+      .deleteCard(request)
+      .then((response) => {
+        if (response.status == "SUCCESS") this.getCardDetails();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public makePrimary(details: cardDetailsResponsetModel, cardType: string) {
+    let request = new paymentTokenRequestModel(),
+      paymentType: string;
+    request.token = details.token;
+    request.firmId = this.firmId;
+
+    if (
+      details.cardType == "Visa" ||
+      details.cardType == "MasterCard " ||
+      details.cardType == "Discover" ||
+      details.cardType == "American Express"
+    )
+      paymentType = "Credit Card";
+    else paymentType = "ACH";
+
+    request.paymentMethod =
+      PaymentMethod[paymentType as keyof typeof PaymentMethod];
+    request.reqType = CardPrimaryType[cardType as keyof typeof CardPrimaryType];
+    this.subscripeService
+      .updatePaymentToken(request)
+      .then((response) => {
+        this.getCardDetails();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private getCardDetails() {
     this.availableCards = [];
     let request = new cardDetailsRequestModel();
     request.firmId = this.store.getters.selectedFirmId;
@@ -187,7 +258,7 @@ export default class Index extends Vue {
       });
   }
 
-  getBillAndPayment() {
+  private getBillAndPayment() {
     let request = new billsAndPaymentRequestModel();
     request.firmId = this.store.getters.selectedFirmId;
 
@@ -212,6 +283,10 @@ export default class Index extends Vue {
 
     value = `${endDate.split("-")[2]} ${month}, ${endDate.split("-")[0]}`;
     return value;
+  }
+
+  get firmId() {
+    return this.store.getters.selectedFirmId;
   }
 }
 </script>

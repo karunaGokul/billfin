@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="m-4">
-        <button class="btn btn-primary" type="button" @click="addPayment">
+        <button class="btn btn-primary" type="button" @click="addPayment" :disabled="cardValidation">
           Add Payment Method
         </button>
       </div>
@@ -142,7 +142,7 @@ export default class PickACH extends Vue {
     this.$emit("next");
   }
 
-  /*get cardValidation() {
+  get cardValidation() {
     let valid: boolean = false,
       selectedCard =
         this.cards.find((item) => {
@@ -150,6 +150,6 @@ export default class PickACH extends Vue {
         }) || null;
     selectedCard ? (valid = false) : (valid = true);
     return valid;
-  }*/
+  }
 }
 </script>   

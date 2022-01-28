@@ -262,7 +262,6 @@ export default class PickPayment extends Vue {
     let request = new deleteCardRequestModel();
     request.paymentFirmTokenId = card.paymentFirmTokenId;
     request.customerId = card.customerId;
-    console.log(request);
 
     this.service
       .deleteCard(request)
