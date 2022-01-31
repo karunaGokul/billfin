@@ -45,6 +45,8 @@ const mutations: MutationTree<any> = {
       state.firmId = state.dataEntitlements[0].firmId;
       localStorage.setItem(FIRM_KEY, state.firmId);
     }
+
+    axios.defaults.headers.common["firmId"] = state.firmId;
   },
   onFirmIdChanged: (state, firmId) => {
     localStorage.setItem(FIRM_KEY, firmId);

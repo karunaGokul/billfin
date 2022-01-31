@@ -121,16 +121,6 @@ export default class AumSubscriptionBilling extends Vue {
     this.getSubscription();
   }
 
-  mounted() {
-    this.subscription = this.store.subscribe((mutations) => {
-      if (mutations.type == "onFirmIdChanged") this.getSubscription();
-    });
-  }
-
-  unmounted() {
-    if (this.subscription) this.subscription();
-  }
-
   public onPlanAddOnCancelled() {
     this.getSubscription();
   }
