@@ -12,7 +12,18 @@
         "Unlimited invoices",
         "Unlimited email/phone support"
       ],
-      "preIncludedAddons": []
+      "preIncludedAddons": [
+        {
+          "addOnName": "Admin User License",
+          "quantity": 2,
+          "isPreInclueded": true
+        },
+        {
+          "addOnName": "Multi-Connector Integrations",
+          "quantity": 1,
+          "isPreInclueded": true
+        }
+      ]
     },
     {
       "planName": "Professional",
@@ -33,6 +44,16 @@
         },
         {
           "addOnName": "Flow Billing",
+          "isPreInclueded": true
+        },
+        {
+          "addOnName": "Admin User License",
+          "quantity": 3,
+          "isPreInclueded": true
+        },
+        {
+          "addOnName": "Multi-Connector Integrations",
+          "quantity": 2,
           "isPreInclueded": true
         }
       ]
@@ -64,6 +85,16 @@
         },
         {
           "addOnName": "Product Attribution",
+          "isPreInclueded": true
+        },
+        {
+          "addOnName": "Admin User License",
+          "quantity": 5,
+          "isPreInclueded": true
+        },
+        {
+          "addOnName": "Multi-Connector Integrations",
+          "quantity": 3,
           "isPreInclueded": true
         }
       ]

@@ -224,7 +224,7 @@ export default class Index extends Vue {
 
     if (
       details.cardType == "Visa" ||
-      details.cardType == "MasterCard " ||
+      details.cardType == "MasterCard" ||
       details.cardType == "Discover" ||
       details.cardType == "American Express"
     )

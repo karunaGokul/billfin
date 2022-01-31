@@ -112,7 +112,6 @@ export default class PickPayment extends Vue {
   }
 
   public eventPaymentHandler(paymentType: string) {
-    console.log(this.showPaymentMethod);
     this.paymentType = paymentType;
     if (!this.showPaymentMethod) this.getCardDetails();
   }

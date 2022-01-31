@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="m-4">
-        <button class="btn btn-primary" type="button" @click="addPayment" :disabled="cardValidation">
+        <button class="btn btn-primary" type="button" @click="addPayment">
           Add Payment Method
         </button>
       </div>
@@ -66,6 +66,7 @@
       <button
         type="submit"
         class="btn btn-primary ms-5"
+        :disabled="cardValidation"
         @click="updateCardDetails"
       >
         Continue
