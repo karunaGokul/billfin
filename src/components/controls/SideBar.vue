@@ -182,7 +182,7 @@
                   <span class="menu-link-title fs-7">Setup</span>
                 </router-link>
                 <router-link
-                  :to="{ name: 'Sign Up', params: { type: 'SignUp' }}"
+                  :to="{ name: 'Sign Up', params: { type: 'SignUp', redirectPage: '/dashboard' }}"
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"

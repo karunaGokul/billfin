@@ -123,7 +123,9 @@
                       border-bottom border-dashed
                     "
                   >
-                    {{ $datehelper.changeDateFormatWithSlash(item.startDate) }} - {{ $datehelper.changeDateFormatWithSlash(item.renewDate) }}
+                    {{ $datehelper.changeDateFormatWithSlash(item.startDate) }}
+                    -
+                    {{ $datehelper.changeDateFormatWithSlash(item.renewDate) }}
                   </td>
                   <td
                     class="
@@ -310,16 +312,26 @@
                     >
                       {{ item.description }}
                     </div>
-                    <div v-if="item.addOnName == 'Admin User License' || item.addOnName == 'Multi-Connector Integrations'">
+                    <div
+                      v-if="
+                        item.addOnName == 'Admin User License' ||
+                        item.addOnName == 'Multi-Connector Integrations'
+                      "
+                    >
                       <div class="row g-0">
                         <div class="fw-bolder col-7" style="line-height: 3">
-                          Add more {{item.addOnName == 'Admin User License' ? 'users' : 'connectors'}}?
+                          Add more
+                          {{
+                            item.addOnName == "Admin User License"
+                              ? "users"
+                              : "connectors"
+                          }}?
                         </div>
                         <div class="col-3">
                           <select
                             class="form-select form-select-solid"
                             style="width: 100px"
-                            :disabled="item.isPreInclueded"
+                            @change="updateAddons(item)"
                             v-model="item.quantity"
                           >
                             <option selected value="1">1</option>
@@ -381,7 +393,10 @@
                         'text-gray': !item.selected,
                         'text-gray-secondary': item.isPreInclueded,
                       }"
-                      v-if="item.planType == 'Yr' && item.addOnName == 'Admin User License'"
+                      v-if="
+                        item.planType == 'Yr' &&
+                        item.addOnName == 'Admin User License'
+                      "
                     >
                       (Per User)
                     </div>
@@ -392,7 +407,10 @@
                         'text-gray': !item.selected,
                         'text-gray-secondary': item.isPreInclueded,
                       }"
-                      v-if="item.planType == 'Yr' && item.addOnName == 'Multi-Connector Integrations'"
+                      v-if="
+                        item.planType == 'Yr' &&
+                        item.addOnName == 'Multi-Connector Integrations'
+                      "
                     >
                       (Per Connector)
                     </div>
@@ -446,6 +464,7 @@ export default class PickAddons extends Vue {
 
   created() {
     this.addonsList = this.$vuehelper.clone(this.store.getters.addOnsList);
+    console.log(this.addonsList);
     this.commitmentTerm = this.termPlanType;
 
     if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
@@ -499,7 +518,7 @@ export default class PickAddons extends Vue {
       (item: {
         addOnName: string;
         selected: boolean;
-        quantity: string;
+        quantity: number;
         isPreInclueded: boolean;
       }) => {
         this.preAddons.forEach((addons: subscribeAddonsResponseModel) => {
@@ -539,7 +558,7 @@ export default class PickAddons extends Vue {
           description: string;
           extraInfo: string;
           selected: boolean;
-          quantity: string;
+          quantity: number;
           isPreInclueded: boolean;
         }) => {
           if (item.addOnName == addons.addOnName) {
@@ -562,7 +581,6 @@ export default class PickAddons extends Vue {
         }
       );
     });
-
     if (this.addonsList.length > 0) {
       this.updateAddons();
       this.itemsPerRow = Math.round(this.addons.length / 2);
@@ -573,7 +591,8 @@ export default class PickAddons extends Vue {
   }
 
   public updateAddons(response?: subscribeAddonsResponseModel) {
-    if (response) response.selected = !response.selected;
+    if (response && !response.isPreInclueded)
+      response.selected = !response.selected;
 
     if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
       this.store.dispatch("updateTerm", {
@@ -581,11 +600,37 @@ export default class PickAddons extends Vue {
         commitmentTerm: this.commitmentTerm,
       });
 
-    let payload: any[] = [];
-    payload = this.addons.filter((item) => item.selected);
+    let data: Array<subscribeAddonsResponseModel> = [];
+    data = this.$vuehelper.clone(
+      this.addons.filter(
+        (item) =>
+          item.selected &&
+          (item.addOnName == "Admin User License" ||
+            item.addOnName == "Multi-Connector Integrations" ||
+            !item.isPreInclueded)
+      )
+    );
+
+    data.forEach((item: subscribeAddonsResponseModel) => {
+      this.addonsList.forEach((addOns) => {
+        if (
+          (item.addOnName == "Admin User License" &&
+            addOns.addOnName == "Admin User License") ||
+          (item.addOnName == "Multi-Connector Integrations" &&
+            addOns.addOnName == "Multi-Connector Integrations")
+        ) {
+          if (item.quantity != addOns.quantity) {
+            if (item.quantity > addOns.quantity)
+              item.quantity = item.quantity - addOns.quantity;
+            else item.quantity = addOns.quantity - item.quantity;
+          }
+        }
+      });
+    });
+
     this.store.dispatch("updateAddons", {
       product: this.product,
-      addons: payload,
+      addons: data,
     });
   }
 

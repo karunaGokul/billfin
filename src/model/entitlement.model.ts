@@ -23,7 +23,7 @@ export class addOnsListResponseModel {
   description: string;
   extraInfo: string;
   selected: boolean;
-  quantity: string;
+  quantity: number;
   isPreInclueded: boolean;
 }
 export class EntitlemenetResponseModel {

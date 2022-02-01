@@ -45,7 +45,7 @@ export class subscribeAddonsResponseModel {
   selected: boolean;
   description: string;
   planType: string;
-  quantity: string;
+  quantity: number;
   extraInfo: string;
   isPreInclueded: boolean;
 }

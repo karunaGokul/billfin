@@ -15,7 +15,7 @@
 
     <div class="m-4">
       <router-link
-        :to="{ name: 'Reactivate Account', params: { type: 'Reactivate' }}"
+        :to="{ name: 'Reactivate Account', params: { type: 'Reactivate', redirectPage: '/account-expired' }}"
         tag="button"
         class="btn btn-primary"
       >

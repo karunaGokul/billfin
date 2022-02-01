@@ -148,7 +148,10 @@ export default class AumSubscriptionBilling extends Vue {
   }
 
   public signUpPlan() {
-    this.$router.push({ name: "Sign Up", params: { type: "SignUp" } });
+    let payload = [];
+    payload.push(this.bliingType);
+    this.store.dispatch("updateProducts", payload);
+    this.$router.push({ name: "Sign Up", params: { pageType: "SignUp", navigateTab: this.bliingType, redirectPage: '/my-subscription' } });
   }
 
   public onAddUserConnector(type: string, addons: addonsResponseModel) {

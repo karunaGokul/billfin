@@ -1,5 +1,5 @@
 <template>
-  <confirm v-if="firmStatus == 'SUBSCRIBED'" :pageType="pageType"/>
+  <confirm v-if="firmStatus == 'SUBSCRIBED'" :pageType="pageType" />
   <div class="signup-plan-container" v-else>
     <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4">
       Reactivate Account
@@ -95,7 +95,12 @@
           <products @next="step = 2" @back="onBack" v-if="step == 1" />
           <plan @back="step = 1" @next="step = 3" v-if="step == 2" />
           <addons @back="step = 2" @next="step = 4" v-if="step == 3" />
-          <pick-payment @back="step = 3" @next="step = 5" pageType="SignUp" v-if="step == 4" />
+          <pick-payment
+            @back="step = 3"
+            @next="step = 5"
+            pageType="SignUp"
+            v-if="step == 4"
+          />
           <review @back="step = 4" @next="step = 6" v-if="step == 5" />
           <subscribe
             @back="step = 5"
@@ -135,11 +140,11 @@ export default class SignUpPlan extends Vue {
   public store = useStore();
 
   public firmStatus: string = "";
-
   public pageType: string = "";
 
   created() {
-    if (this.$route.params.type) this.pageType = this.$route.params.type.toString();
+    if (this.$route.params.pageType)
+      this.pageType = this.$route.params.pageType.toString();
   }
 
   public updateFirmStatus() {
@@ -147,15 +152,17 @@ export default class SignUpPlan extends Vue {
     this.firmStatus = "SUBSCRIBED";
 
     if (this.pageType == "Reactivate") {
-
       this.store.dispatch("clearFirm");
       this.store.dispatch("loadEntitlements");
-      //this.$router.push('/');
     }
   }
 
   onBack() {
-    if (this.pageType == "Reactivate") this.$router.push("./account-expired");
+    this.store.dispatch("clearSubscription");
+    let redirectPage = this.$route.params.redirectPage
+      ? this.$route.params.redirectPage.toString()
+      : "/dashboard";
+    this.$router.push(redirectPage);
   }
 }
 </script>
