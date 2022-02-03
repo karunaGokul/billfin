@@ -31,7 +31,9 @@
                       Current Term Start On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ addons.startDate }}
+                      {{
+                        $datehelper.changeDateFormatWithSlash(addons.startDate)
+                      }}
                     </td>
                   </tr>
                   <tr>
@@ -39,7 +41,9 @@
                       Current Term End On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      {{ addons.renewDate }}
+                      {{
+                        $datehelper.changeDateFormatWithSlash(addons.renewDate)
+                      }}
                     </td>
                   </tr>
                   <tr>
@@ -109,7 +113,11 @@
           >
             Exit
           </button>
-          <button type="button" class="btn btn-primary" @click="changeAddOnTerm">
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="changeAddOnTerm"
+          >
             Switch Add-on
           </button>
         </div>
@@ -196,22 +204,12 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
   }
 
   get newTermStartDate() {
-    let endDate = this.addons.renewDate.split("/");
-    let currentDate = new Date(
-      parseInt(endDate[2]),
-      parseInt(endDate[1]) - 1,
-      parseInt(endDate[0])
-    );
-    let date = new Date(currentDate);
-    if (this.newTerm == "Monthly") {
-      date.setMonth(currentDate.getMonth() + 1);
-      date.setDate(currentDate.getDate() + 1);
-    } else {
-      date.setFullYear(currentDate.getFullYear() + 1);
-      date.setDate(currentDate.getDate() + 1);
-    }
+    let date = new Date(this.addons.renewDate);
 
-    return moment(String(date)).format("DD/MM/YYYY");
+    if (this.newTerm == "Monthly") date.setDate(date.getDate() + 1);
+    else date.setDate(date.getDate() + 1);
+
+    return moment(String(date)).format("MM/DD/YYYY");
   }
 }
 </script>

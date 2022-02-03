@@ -7,6 +7,7 @@ import { ISubscripeService, SubscripeService } from "@/service";
 import { IAddressService, AddressService } from "@/service";
 import { IManageSubscription, ManageSubscription } from "@/service";
 import { IBillsAndPaymentService, BillsAndPaymentService } from "@/service";
+import { IAdvisorsService, AdvisorsService } from "@/service";
 
 export class DIContainer extends Vue {
   @Provide("signUpService") signUpService: ISignUpService = new SignUpService();
@@ -15,4 +16,5 @@ export class DIContainer extends Vue {
   @Provide("addressService") addressService: IAddressService = new AddressService();
   @Provide("manageSubscripeService") manageSubscripeService: IManageSubscription = new ManageSubscription();
   @Provide("billsAndPaymentService") billsAndPaymentService: IBillsAndPaymentService = new BillsAndPaymentService();
+  @Provide("advisorsService") advisorsService: IAdvisorsService = new AdvisorsService();
 }

@@ -12,3 +12,4 @@ export * from "./payment.model";
 export * from "./subscribe.model";
 export * from "./manage-subscription.model";
 export * from "./bills-and-payment.model";
+export * from "./advisors.model";

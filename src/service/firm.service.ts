@@ -40,7 +40,7 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
     }
 
     getFirms(): Promise<Array<firmsResponseModel>> {
-        return this.httpGet('private/api/v1/firm', null).then(response => {
+        return this.httpGet('private/api/v1/firms', null).then(response => {
             return response.data;
         });
     }

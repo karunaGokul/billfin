@@ -359,7 +359,8 @@ export default class Home extends Vue {
       this.page == "Manage Subscription" ||
       this.page == "Sign Up" ||
       this.page == "Setup" ||
-      this.page == "Bills & Payments"
+      this.page == "Bills & Payments" ||
+      this.page == "Advisors"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
         this.page == "Manage Subscription" ? "My Subscription" : this.page
