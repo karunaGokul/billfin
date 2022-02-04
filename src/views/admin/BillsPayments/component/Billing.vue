@@ -87,7 +87,7 @@ export default class Billng extends Vue {
   public store = useStore();
 
   public description(type: string, planName: string) {
-    if (type == "PLAN")
+    if (type == "Plan")
       return this.planList.find((e: any) => e.planName == planName).description;
     else
       return this.addOnsList.find((e: any) => e.addOnName == planName)

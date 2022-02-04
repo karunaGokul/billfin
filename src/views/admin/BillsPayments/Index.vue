@@ -17,7 +17,7 @@
                 class="badge text-success ms-2 fs-6 bg-success-alpha"
                 v-if="item.default"
                 >Primary</span
-              >  
+              >
               <span
                 class="badge text-orange ms-2 fs-6 bg-orange"
                 v-if="!item.default"
@@ -85,7 +85,7 @@
                 'btn-primary': item.default,
               }"
               :disabled="!item.default"
-              @click="deleteCard(item)"
+              @click="confirmation(item)"
             >
               Delete
             </button>
@@ -106,6 +106,14 @@
       </div>
     </div>
   </div>
+
+  <app-delete
+    message="Do you really want to delete this payment method?"
+    subMessage="This process cannot be undone."
+    @cancel="cancelDelete"
+    @delete="deleteCard"
+    v-if="showDeleteModel"
+  />
 
   <div class="p-4" v-if="response">
     <div class="p-4 fw-bolder fs-4 border-bottom border-gray-secondary">
@@ -152,6 +160,7 @@
         </div>
         <a class="btn btn-link">Download Invoice</a>
       </div>
+
       <billng :products="item.products" />
     </div>
   </div>
@@ -163,6 +172,7 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import Billng from "./component/Billing.vue";
+import AppDelete from "@/components/Models/AppDelete.vue";
 
 import {
   IBillsAndPaymentService,
@@ -184,6 +194,7 @@ import {
 @Options({
   components: {
     Billng,
+    AppDelete,
   },
 })
 export default class Index extends Vue {
@@ -196,15 +207,31 @@ export default class Index extends Vue {
   public response: Array<billsAndPaymentResponseModel> = null;
   public availableCards: Array<cardDetailsResponsetModel> = [];
 
+  public showDeleteModel: boolean = false;
+
+  private selectedCard: cardDetailsResponsetModel =
+    new cardDetailsResponsetModel();
+
   created() {
     this.getBillAndPayment();
     this.getCardDetails();
   }
 
-  public deleteCard(details: cardDetailsResponsetModel) {
+  public confirmation(card: cardDetailsResponsetModel) {
+    this.selectedCard = card;
+    this.showDeleteModel = true;
+  }
+
+  public cancelDelete() {
+    this.showDeleteModel = false;
+    this.selectedCard = new cardDetailsResponsetModel();
+  }
+
+  public deleteCard() {
+    this.showDeleteModel = false;
     let request = new deleteCardRequestModel();
-    request.paymentFirmTokenId = details.paymentFirmTokenId;
-    request.customerId = details.customerId;
+    request.paymentFirmTokenId = this.selectedCard.paymentFirmTokenId;
+    request.customerId = this.selectedCard.customerId;
 
     this.manageSubscripeService
       .deleteCard(request)
@@ -252,6 +279,9 @@ export default class Index extends Vue {
       .getCardDetails(request)
       .then((response) => {
         this.availableCards = response;
+        this.availableCards = this.availableCards.sort((a) => {
+          return a.default ? -1 : 1;
+        });
       })
       .catch((err) => {
         console.log(err);
