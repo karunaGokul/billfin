@@ -1,5 +1,5 @@
 <template>
-  <credit-card v-if="addNewPayment" @back="back" @pay="onPayNow"/>
+  <credit-card v-if="addNewPayment" @back="back" @pay="onPayNow" />
   <template v-else>
     <div class="p-4 ps-10 pe-10">
       <div class="d-flex flex-wrap">
@@ -10,6 +10,7 @@
           :class="{
             'border border-primary bg-primary-alpha': item.default,
           }"
+          style="width: 420px;"
         >
           <div>
             <div class="fw-bolder fs-4 p-2">
@@ -74,7 +75,7 @@
                 'btn-light': !item.default,
                 'btn-primary': item.default,
               }"
-              @click="deleteCard(item)"
+              @click="confirmation(item)"
             >
               Delete
             </button>
@@ -82,11 +83,7 @@
         </div>
       </div>
       <div class="m-4">
-        <button
-          class="btn btn-primary"
-          type="button"
-          @click="addPayment"
-        >
+        <button class="btn btn-primary" type="button" @click="addPayment">
           Add Payment Method
         </button>
       </div>
@@ -104,6 +101,13 @@
         Continue
       </button>
     </div>
+    <app-delete
+      message="Do you really want to delete this payment method?"
+      subMessage="This process cannot be undone."
+      @cancel="cancelDelete"
+      @delete="deleteCard"
+      v-if="showDeleteModel"
+    />
   </template>
 </template>
 <script lang="ts">
@@ -113,12 +117,14 @@ import { Prop, Watch } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import CreditCard from "@/components/controls/creditCard.vue";
+import AppDelete from "@/components/Models/AppDelete.vue";
 
 import { cardDetailsResponsetModel } from "@/model";
 
 @Options({
   components: {
     CreditCard,
+    AppDelete
   },
 })
 export default class PickCard extends Vue {
@@ -128,6 +134,10 @@ export default class PickCard extends Vue {
   public store = useStore();
 
   public addNewPayment: boolean = false;
+  public showDeleteModel: boolean = false;
+
+  private selectedCard: cardDetailsResponsetModel =
+    new cardDetailsResponsetModel();
 
   created() {
     this.addNewPayment = this.showPaymentMethod;
@@ -139,21 +149,32 @@ export default class PickCard extends Vue {
   }
 
   public back() {
-    if(this.cards.length >= 0) this.addNewPayment = false;
+    if (this.cards.length >= 0) this.addNewPayment = false;
     this.$emit("back");
   }
 
   public addPayment() {
-     this.addNewPayment = true;
+    this.addNewPayment = true;
     this.$emit("addNewPayment");
   }
-  
+
   public onPayNow() {
     this.$emit("payNow");
   }
 
-  public deleteCard(card: cardDetailsResponsetModel) {
-    this.$emit("deleteCard", card);
+  public confirmation(card: cardDetailsResponsetModel) {
+    this.selectedCard = card;
+    this.showDeleteModel = true;
+  }
+
+  public cancelDelete() {
+    this.showDeleteModel = false;
+    this.selectedCard = new cardDetailsResponsetModel();
+  }
+
+  public deleteCard() {
+    this.showDeleteModel = false;
+    this.$emit("deleteCard", this.selectedCard);
   }
 
   public makePrimary(card: cardDetailsResponsetModel) {

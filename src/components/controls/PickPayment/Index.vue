@@ -141,6 +141,14 @@ export default class PickPayment extends Vue {
         if (this.paymentType == "Credit Card") this.cards = response;
         else this.ach = response;
 
+        console.log(this.cards);
+
+        this.cards = this.cards.sort((a) => {
+          return a.default ? -1 : 1;
+        });
+
+        console.log(this.cards);
+
         this.redirectPayment();
       })
       .catch((err) => {

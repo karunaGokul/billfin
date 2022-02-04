@@ -4,7 +4,7 @@
       class="btn btn-primary position-absolute translate-middle"
       type="button"
       style="top: -40px; right: -58px"
-      @click="showAdvisorModel = true"
+      @click="addAdvisor('Add Advisor')"
     >
       Add Advisor
     </button>
@@ -27,8 +27,7 @@
     <div class="card-body pt-0">
       <table
         class="
-          table
-          table-hover
+          table table-hover
           fs-6
           border-top-0
           border-start-0
@@ -103,7 +102,7 @@
                 p-4
               "
             >
-              {{ item.email }}
+              {{ item.emailAddress }}
             </td>
             <td
               class="
@@ -130,10 +129,13 @@
                 p-4
               "
             >
-              {{ item.branch.join(", ") }}
+            <!--  {{ item.branch.join(", ") }} -->
             </td>
             <td class="border-bottom border-dashed border-light p-4">
-              <i class="fa fa-pen text-dark-gray edit-row" @click="showAdvisorModel = true"></i>
+              <i
+                class="fa fa-pen text-dark-gray edit-row"
+                @click="addAdvisor('View Advisor', item)"
+              ></i>
             </td>
           </tr>
         </tbody>
@@ -142,7 +144,8 @@
   </div>
   <add-advisor
     pageType="Advisor"
-    type="Add Advisor"
+    :type="type"
+    :selectedAdvisor="selectedAdvisor"
     @close="showAdvisorModel = false"
     v-if="showAdvisorModel"
   />
@@ -165,7 +168,10 @@ export default class Advisors extends Vue {
   @Inject("advisorsService") service: IAdvisorsService;
 
   public response: Array<advisorsResponseModel> = [];
+  public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
   public showAdvisorModel: boolean = false;
+
+  public type: string = "Add Advisor";
 
   created() {
     this.getAdvisors();
@@ -174,8 +180,13 @@ export default class Advisors extends Vue {
   private getAdvisors() {
     this.service.getAdvisors().then((response) => {
       this.response = response;
-      console.log(response);
     });
+  }
+
+  public addAdvisor(type: string, advisor?: advisorsResponseModel) {
+    this.type = type;
+    if (advisor) this.selectedAdvisor = advisor;
+    this.showAdvisorModel = true;
   }
 }
 </script>

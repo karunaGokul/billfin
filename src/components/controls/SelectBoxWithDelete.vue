@@ -65,12 +65,18 @@ export default class SelectBoxWithDelete extends Vue {
     let index = this.response.findIndex((item) => item == this.selectedItem);
     this.response.splice(index, 1);
     this.selectedItem = this.response[0];
+    this.updateItem();
   }
 
   public removeItem(index: number, data: ListItem) {
     this.item.splice(index, 1);
     this.response.push(data);
     this.selectedItem = this.response[0];
+    this.updateItem();
+  }
+
+  private updateItem() {
+    this.$emit('updateValue', this.item);
   }
 
 }

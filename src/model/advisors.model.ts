@@ -1,21 +1,21 @@
 export class advisorsRequestModel {}
 export class advisorsResponseModel {
+  firstName: string;
+  lastName: string;
+  middleName: string;
   displayName: string;
-  email: string;
+  emailAddress: string;
+  contactPhone: string;
   repCode: Array<string>;
   branch: Array<string>;
+  id: string;
 
   /* advisorId: number;
   advisorIdentifier: string;
   contactPhone: string;
-  emailAddress: string;
   errorCode: string;
   errorMessage: string;
   firmId: number;
-  firstName: string;
-  lastName: string;
-  message: string;
-  middleName: string;
   status: string;
   userId: string;*/
 }
@@ -27,6 +27,10 @@ export class addAdvisorReqeustModel {
   contactPhone: number;
   emailAddress: string;
   id: string;
+  repCodes: Array<assignRepCodesResponseModel> = [];
+}
+export class addAdvisorResponseModel {
+  status: string;
 }
 export class assignRepCodesResponseModel {
   repId: number;
