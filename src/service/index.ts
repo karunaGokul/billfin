@@ -5,3 +5,4 @@ export * from './address.service';
 export * from './manage-subscription.service';
 export * from './bills-and-payment.service';  
 export * from './advisors.service';
+export * from './rep-codes.service';

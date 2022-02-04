@@ -83,7 +83,17 @@
                         <tr>
                           <td class="fw-bold ps-4 pe-4">{{ currentTerm }}</td>
                           <td class="fw-bold ps-4 pe-4">
-                            {{ item.startDate }} - {{ item.renewDate }}
+                            {{
+                              $datehelper.changeDateFormatWithSlash(
+                                item.startDate
+                              )
+                            }}
+                            -
+                            {{
+                              $datehelper.changeDateFormatWithSlash(
+                                item.renewDate
+                              )
+                            }}
                           </td>
                           <td class="ps-4 pe-4 fw-bold">
                             {{ $filters.currencyDisplay(item.paymentAmount) }}

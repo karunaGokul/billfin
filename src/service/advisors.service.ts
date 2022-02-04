@@ -4,7 +4,7 @@ import {
   advisorsResponseModel,
   assignRepCodesResponseModel,
   validateAdvisorRequestModel,
-  addAdvisorReqeustModel,
+  addAdvisorRequestModel,
   addAdvisorResponseModel,
 } from "@/model";
 
@@ -12,13 +12,15 @@ export interface IAdvisorsService extends IBaseService<any, any> {
   getAdvisors(): Promise<Array<advisorsResponseModel>>;
   listOfRepCodes(): Promise<Array<assignRepCodesResponseModel>>;
   validateAdvisor(request: validateAdvisorRequestModel): Promise<any>;
-  addAdvisor(request: addAdvisorReqeustModel): Promise<addAdvisorResponseModel>;
+  addAdvisor(request: addAdvisorRequestModel): Promise<addAdvisorResponseModel>;
 }
 export class AdvisorsService extends BaseService<any, any>
   implements IAdvisorsService {
+
   constructor() {
     super("private");
   }
+  
   public getAdvisors(): Promise<Array<advisorsResponseModel>> {
     return this.httpGet('private/api/v1/advisor', null).then(response => {
       return response.data;
@@ -118,15 +120,8 @@ export class AdvisorsService extends BaseService<any, any>
   }
 
   public listOfRepCodes(): Promise<Array<assignRepCodesResponseModel>> {
-    return new Promise((resolve, reject) => {
-      let response: Array<assignRepCodesResponseModel> = [];
-      response.push({ repId: 1, repCode: "AE01" });
-      response.push({ repId: 2, repCode: "AE02" });
-      response.push({ repId: 3, repCode: "AE03" });
-      response.push({ repId: 4, repCode: "AE04" });
-      response.push({ repId: 5, repCode: "AE05" });
-
-      resolve(response);
+    return this.httpGet('private/api/v1/firmRepCode', null).then(response => {
+      return response.data;
     });
   }
 
@@ -139,7 +134,7 @@ export class AdvisorsService extends BaseService<any, any>
   }
 
   public addAdvisor(
-    request: addAdvisorReqeustModel
+    request: addAdvisorRequestModel
   ): Promise<addAdvisorResponseModel> {
     return this.httpPost("private/api/v1/advisor", request).then(
       (response) => {

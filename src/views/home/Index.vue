@@ -195,6 +195,7 @@
             to get started
           </div>
         </div>
+        <AppAlert />
         <router-view></router-view>
       </div>
     </div>
@@ -214,6 +215,7 @@ import { useStore } from "vuex";
 import moment from "moment";
 
 import SideBar from "@/components/controls/SideBar.vue";
+import AppAlert from "@/components/layout/AppAlert.vue";
 
 import Welcome from "./components/OnBoard.vue";
 
@@ -224,6 +226,7 @@ import { firmRequestModel, firmsResponseModel } from "@/model";
   components: {
     SideBar,
     Welcome,
+    AppAlert
   },
 })
 export default class Home extends Vue {

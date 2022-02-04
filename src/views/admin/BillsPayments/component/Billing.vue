@@ -32,10 +32,10 @@
             >
               {{ description(item.type, item.planName) }}
             </div>
-            <div v-if="item.planName == 'Admin User License'">
+            <div class="text-gray pt-2 pb-2" v-if="item.planName == 'Admin User License'">
               Number of users: {{ item.quantity }}
             </div>
-            <div v-if="item.planName == 'Multi-Connector Integrations'">
+            <div class="text-gray pt-2 pb-2" v-if="item.planName == 'Multi-Connector Integrations'">
               Number of connectors: {{ item.quantity }}
             </div>
           </td>

@@ -10,7 +10,6 @@
           :class="{
             'border border-primary bg-primary-alpha': item.default,
           }"
-          style="width: 420px"
         >
           <div>
             <div class="fw-bolder fs-4 p-2">

@@ -118,7 +118,11 @@ export default class Subscribe extends Vue {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "An error occured while attempting to subscribe. Please verify your payment information and try again.",
+            title: "Oops, sorry!",
+          });
       });
   }
 

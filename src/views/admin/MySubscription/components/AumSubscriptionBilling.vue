@@ -143,7 +143,16 @@ export default class AumSubscriptionBilling extends Vue {
       })
       .catch((err) => {
         this.loading = false;
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please try again",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -151,7 +160,14 @@ export default class AumSubscriptionBilling extends Vue {
     let payload = [];
     payload.push(this.bliingType);
     this.store.dispatch("updateProducts", payload);
-    this.$router.push({ name: "Sign Up", params: { pageType: "SignUp", navigateTab: this.bliingType, redirectPage: '/my-subscription' } });
+    this.$router.push({
+      name: "Sign Up",
+      params: {
+        pageType: "SignUp",
+        navigateTab: this.bliingType,
+        redirectPage: "/my-subscription",
+      },
+    });
   }
 
   public onAddUserConnector(type: string, addons: addonsResponseModel) {

@@ -183,7 +183,7 @@ import EmailInput from "@/components/controls/EmailInput.vue";
 import SelectBoxWithDelete from "@/components/controls/SelectBoxWithDelete.vue";
 
 import {
-  addAdvisorReqeustModel,
+  addAdvisorRequestModel,
   validateAdvisorRequestModel,
   assignRepCodesResponseModel,
   ListItem,
@@ -249,10 +249,10 @@ export default class AddAdvisor extends Vue {
 
   @Prop() pageType: string;
   @Prop() type: string;
-  @Prop() selectedAdvisor?: addAdvisorReqeustModel;
+  @Prop() selectedAdvisor?: addAdvisorRequestModel;
 
   public v$: any = setup(() => this.validate());
-  public request: addAdvisorReqeustModel = new addAdvisorReqeustModel();
+  public request: addAdvisorRequestModel = new addAdvisorRequestModel();
   public modelType: string = "";
 
   public repCodes: Array<ListItem> = [];
@@ -264,7 +264,7 @@ export default class AddAdvisor extends Vue {
   created() {
     this.modelType = this.type;
     if (this.modelType == "View Advisor") this.request = this.selectedAdvisor;
-    //this.listOfRepCodes();
+    this.listOfRepCodes();
   }
 
   public close(action: string) {

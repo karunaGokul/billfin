@@ -19,7 +19,7 @@ export class advisorsResponseModel {
   status: string;
   userId: string;*/
 }
-export class addAdvisorReqeustModel {
+export class addAdvisorRequestModel {
   firstName: string;
   middleName: string;
   lastName: string;

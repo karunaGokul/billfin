@@ -10,7 +10,6 @@
           :class="{
             'border border-primary bg-primary-alpha': item.default,
           }"
-          style="width: 420px;"
         >
           <div>
             <div class="fw-bolder fs-4 p-2">
@@ -45,7 +44,7 @@
                   src="@/assets/amex.svg"
                   alt="Card Type"
                   width="100"
-                  v-if="item.cardType == 'American'"
+                  v-if="item.cardType == 'American Express'"
                 />
                 <img
                   src="@/assets/discover.svg"
