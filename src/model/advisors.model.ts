@@ -7,7 +7,7 @@ export class advisorsResponseModel {
   emailAddress: string;
   contactPhone: string;
   repCode: Array<string>;
-  branch: Array<string>;
+  branch: string;
   id: string;
 
   /* advisorId: number;

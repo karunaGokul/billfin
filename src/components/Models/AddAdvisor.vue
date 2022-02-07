@@ -18,7 +18,7 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="modal-body m-8 p-4">
+        <div class="modal-body ms-8 me-8 mt-4 mb-4 p-4">
           <template
             v-if="modelType == 'Add Advisor' || modelType == 'Edit Advisors'"
           >
@@ -48,31 +48,43 @@
                 />
               </div>
             </div>
-            <div>
-              <text-input
-                formFieldType="inputBlock"
-                label="Display Name"
-                :controls="v$.request.displayName"
-                :validation="['required']"
-              />
+            <div class="row">
+              <div class="col-6">
+                <text-input
+                  formFieldType="inputBlock"
+                  label="Display Name"
+                  :controls="v$.request.displayName"
+                  :validation="['required']"
+                />
+              </div>
+              <div class="col-6">
+                <phone-input
+                  label="Phone number"
+                  :controls="v$.request.contactPhone"
+                  formFieldType="inputBlock"
+                  :validation="[
+                    'required',
+                    'phone',
+                    'minLength',
+                    'phoneLength',
+                  ]"
+                />
+              </div>
             </div>
-            <div>
-              <phone-input
-                label="Phone number"
-                :controls="v$.request.contactPhone"
-                formFieldType="inputBlock"
-                :validation="['required', 'phone', 'minLength', 'phoneLength']"
-              />
-            </div>
-            <div>
+            <div class="position-relative pb-1">
               <email-input
                 label="Email ID"
                 :controls="v$.request.emailAddress"
-                :validation="['required', 'email', 'domain']"
+                :validation="['required', 'email']"
                 @validateEmail="
                   !v$.request.emailAddress.$invalid ? validateEmail() : ''
                 "
               />
+              <div class="position-absolute bottom-0 m-4 ms-0">
+                <div class="invalid-feedback" v-if="emailErrorMessage">
+                  {{ emailErrorMessage }}
+                </div>
+              </div>
             </div>
             <div>
               <text-input
@@ -140,7 +152,7 @@
           </template>
         </div>
 
-        <div class="modal-footer justify-content-center border-0">
+        <div class="modal-footer justify-content-center border-0 p-4">
           <button
             type="button"
             class="btn btn-link text-gray"
@@ -151,7 +163,7 @@
           </button>
           <button
             type="button"
-            class="btn btn-primary ms-4"
+            class="btn btn-primary ms-8"
             @click="addAdvisor"
             v-if="modelType == 'Add Advisor' || modelType == 'Edit Advisors'"
           >
@@ -171,8 +183,8 @@
 </template>
 <script lang="ts">
 import { Vue, Options, setup } from "vue-class-component";
-
 import { Prop, Inject } from "vue-property-decorator";
+import { useStore } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
@@ -228,17 +240,6 @@ import { IAdvisorsService } from "@/service";
             value.indexOf("@") != -1 && value.lastIndexOf(".com") != -1;
           return validation;
         },
-        domain: (value: string) => {
-          const validation =
-            value.indexOf("gmail") == -1 &&
-            value.indexOf("yahoo") == -1 &&
-            value.indexOf("hotmail") == -1 &&
-            value.indexOf("aol") == -1 &&
-            value.indexOf("outlook") == -1 &&
-            value.indexOf("protonmail") == -1 &&
-            value.indexOf("icloud") == -1;
-          return validation;
-        },
       },
       id: {},
     },
@@ -252,8 +253,11 @@ export default class AddAdvisor extends Vue {
   @Prop() selectedAdvisor?: addAdvisorRequestModel;
 
   public v$: any = setup(() => this.validate());
+  public store = useStore();
   public request: addAdvisorRequestModel = new addAdvisorRequestModel();
+
   public modelType: string = "";
+  public emailErrorMessage: string = null;
 
   public repCodes: Array<ListItem> = [];
 
@@ -263,7 +267,8 @@ export default class AddAdvisor extends Vue {
 
   created() {
     this.modelType = this.type;
-    if (this.modelType == "View Advisor") this.request = this.selectedAdvisor;
+    if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")
+      this.request = this.selectedAdvisor;
     this.listOfRepCodes();
   }
 
@@ -274,9 +279,22 @@ export default class AddAdvisor extends Vue {
   public validateEmail() {
     let request = new validateAdvisorRequestModel();
     request.emailAddress = this.request.emailAddress;
-    this.service.validateAdvisor(request).then((response) => {
-      console.log(response);
-    });
+    this.service
+      .validateAdvisor(request)
+      .then((response) => {
+        this.emailErrorMessage = null;
+      })
+      .catch((err) => {
+        if (err.response.status == 400) {
+          this.emailErrorMessage = err.response.data.message;
+        } else if (err.response.status == 500) {
+          this.emailErrorMessage = err.response.data.message;
+          /*this.store.dispatch("showAlert", {
+            message: "Something went wrong, Please try again!",
+            title: "Oops, sorry!",
+          });*/
+        }
+      });
   }
 
   private listOfRepCodes() {
@@ -308,10 +326,12 @@ export default class AddAdvisor extends Vue {
   public addAdvisor() {
     this.v$.$touch();
     if (!this.v$.invalid) {
-
       this.request.middleName = this.valueCheck(this.request.middleName);
       this.request.id = this.valueCheck(this.request.id);
-      this.request.repCodes = this.request.repCodes.length == 0 ? null : this.request.repCodes;
+      this.request.repCodes =
+        this.request.repCodes && this.request.repCodes.length > 0
+          ? this.request.repCodes
+          : null;
 
       this.service
         .addAdvisor(this.request)

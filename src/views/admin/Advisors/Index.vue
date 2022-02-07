@@ -91,6 +91,7 @@
                 border-bottom border-dashed border-light
                 p-4
               "
+              @click="addAdvisor('View Advisor', item)"
             >
               {{ item.displayName }}
             </td>
@@ -101,6 +102,7 @@
                 border-bottom border-dashed border-light
                 p-4
               "
+              @click="addAdvisor('View Advisor', item)"
             >
               {{ item.emailAddress }}
             </td>
@@ -128,13 +130,14 @@
                 border-bottom border-dashed border-light
                 p-4
               "
+              @click="addAdvisor('View Advisor', item)"
             >
-            <!--  {{ item.branch.join(", ") }} -->
+              {{ item.branch }}
             </td>
             <td class="border-bottom border-dashed border-light p-4">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
-                @click="addAdvisor('View Advisor', item)"
+                @click="addAdvisor('Edit Advisors', item)"
               ></i>
             </td>
           </tr>

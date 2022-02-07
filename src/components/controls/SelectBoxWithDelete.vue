@@ -1,5 +1,5 @@
 <template>
-  <div class="position-relative mb-8">
+  <div class="position-relative">
     <label :for="label" class="form-label fw-bolder">
       {{ label }}
     </label>

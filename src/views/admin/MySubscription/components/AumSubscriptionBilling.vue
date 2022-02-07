@@ -150,7 +150,7 @@ export default class AumSubscriptionBilling extends Vue {
           });
         else if (err.response.status == 400)
           this.store.dispatch("showAlert", {
-            message: err.response,
+            message: err.response.message,
             title: "Oops, sorry!",
           });
       });
