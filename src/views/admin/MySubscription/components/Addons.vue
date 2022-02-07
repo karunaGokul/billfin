@@ -10,8 +10,9 @@
           class="badge fs-7 ms-2"
           :class="{
             'bg-success-alpha text-success':
-              addons.status != 'CANCELLED' ||
+              addons.status == 'CURRENT' ||
               (addons.status == 'CANCELLED' && addons.activeFlag),
+            'bg-warning-alpha text-warning': addons.status == 'UPCOMING',
             'bg-dander-alpha text-danger':
               addons.status == 'CANCELLED' && !addons.activeFlag,
           }"
@@ -149,31 +150,15 @@
           'text-muted': addons.status != 'CANCELLED' && !addons.endDate,
         }"
       >
-        <div
-          v-if="
-            addons.status == 'CANCELLED' ||
-            (addons.status == 'CURRENT' && addons.endDate != null)
-          "
-        >
+        <div v-if="addons.status == 'CANCELLED'">
           {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(addons.endDate) }}
         </div>
         <div
           v-if="
-            addons.commitmentTerm == 'ANNUAL' &&
-            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
-              (addons.status == 'CURRENT' && addons.endDate == null))
-          "
-        >
-          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
-          {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
-        </div>
-        <div
-          v-if="
             addons.commitmentTerm == 'MONTHLY' &&
-            !addons.activeFlag &&
-            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
-              (addons.status == 'CURRENT' && addons.endDate == null))
+            addons.status == 'CURRENT' &&
+            addons.activeFlag
           "
         >
           Subscribed since
@@ -182,13 +167,24 @@
         <div
           v-if="
             addons.commitmentTerm == 'MONTHLY' &&
-            addons.activeFlag &&
-            ((addons.status == 'UPCOMING' && addons.endDate == null) ||
-              (addons.status == 'CURRENT' && addons.endDate == null))
+            addons.status == 'UPCOMING' &&
+            !addons.activeFlag
           "
+        >
+          Subscription starts
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }}
+        </div>
+
+        <div
+          v-if="addons.commitmentTerm != 'MONTHLY' && addons.endDate == null"
         >
           {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
+        </div>
+
+        <div v-if="addons.commitmentTerm == 'ANNUAL' && addons.endDate != null">
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(addons.endDate) }}
         </div>
       </div>
     </div>
@@ -306,7 +302,8 @@ export default class Addons extends Vue {
   }
 
   public onUpdateTermChanged() {
-    this.$router.push("/my-subscription");
+    this.showCommitmentTermModel = false;
+    this.$emit("termChanged");
   }
 
   get description() {

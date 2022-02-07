@@ -63,6 +63,7 @@
         <addons
           :addons="item"
           :allowChangeAddonTerm="allowChangeAddonTerm"
+           @termChanged="updateSubscription"
           @addUserConnector="onAddUserConnector"
           @planAddOnCancelled="updateSubscription"
         />

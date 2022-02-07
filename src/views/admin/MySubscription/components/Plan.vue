@@ -11,8 +11,9 @@
           class="badge fs-7 ms-2"
           :class="{
             'bg-success-alpha text-success':
-              plan.status != 'CANCELLED' ||
+              plan.status == 'CURRENT' ||
               (plan.status == 'CANCELLED' && plan.activeFlag),
+            'bg-warning-alpha text-warning': plan.status == 'UPCOMING',
             'bg-dander-alpha text-danger':
               plan.status == 'CANCELLED' && !plan.activeFlag,
           }"
@@ -57,13 +58,13 @@
             alt="Card Type"
             v-if="plan.cardNumber.split(' ')[0] == 'Discover'"
           />
-          {{
-            plan.cardNumber.split(" ")[0] == "American"
-              ? "American Express"
-              : plan.cardNumber.split(" ")[0]
-          }}
 
           <span :class="{ 'text-gray-secondary': plan.endDate }">
+            {{
+              plan.cardNumber.split(" ")[0] == "American"
+                ? "American Express"
+                : plan.cardNumber.split(" ")[0]
+            }}
             ****{{
               plan.cardNumber.split(" ")[0] == "American"
                 ? plan.cardNumber.split(" ")[2]
@@ -126,16 +127,43 @@
           'text-muted': plan.status != 'CANCELLED' && !plan.endDate,
         }"
       >
-        <div
-          v-if="
-            plan.status == 'CANCELLED' ||
-            (plan.status == 'CURRENT' && plan.endDate != null)
-          "
-        >
+        <div v-if="plan.status == 'CANCELLED'">
           {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(plan.endDate) }}
         </div>
+
         <div
+          v-if="
+            plan.commitmentTerm == 'MONTHLY' &&
+            plan.status == 'CURRENT' &&
+            plan.activeFlag
+          "
+        >
+          Subscribed since
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
+        </div>
+        <div
+          v-if="
+            plan.commitmentTerm == 'MONTHLY' &&
+            plan.status == 'UPCOMING' &&
+            !plan.activeFlag
+          "
+        >
+          Subscription starts
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
+        </div>
+
+        <div v-if="plan.commitmentTerm != 'MONTHLY' && plan.endDate == null">
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.renewDate) }}
+        </div>
+
+        <div v-if="plan.commitmentTerm == 'ANNUAL' && plan.endDate != null">
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.endDate) }}
+        </div>
+
+        <!--<div
           v-if="
             plan.commitmentTerm == 'ANNUAL' &&
             ((plan.status == 'UPCOMING' && plan.endDate == null) ||
@@ -166,7 +194,7 @@
         >
           {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(plan.renewDate) }}
-        </div>
+        </div>-->
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">

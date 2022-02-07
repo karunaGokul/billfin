@@ -34,7 +34,7 @@
                     </thead>
                     <tbody class="fs-5">
                       <tr>
-                        <td class="fw-bold ps-4 pe-4">{{ currentTerm }}</td>
+                        <td class="fw-bold ps-4 pe-4">{{ plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly'}}</td>
                         <td class="fw-bold ps-4 pe-4">
                           {{
                             $datehelper.changeDateFormatWithSlash(
@@ -81,7 +81,7 @@
                       </thead>
                       <tbody class="fs-5">
                         <tr>
-                          <td class="fw-bold ps-4 pe-4">{{ currentTerm }}</td>
+                          <td class="fw-bold ps-4 pe-4">{{ item.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly' }}</td>
                           <td class="fw-bold ps-4 pe-4">
                             {{
                               $datehelper.changeDateFormatWithSlash(
@@ -99,7 +99,7 @@
                             {{ $filters.currencyDisplay(item.paymentAmount) }}
                             <span
                               >/{{
-                                currentTerm == "Annual" ? "Yr" : "Mon"
+                                item.commitmentTerm == "Annual" ? "Yr" : "Mon"
                               }}</span
                             >
                           </td>
@@ -220,7 +220,8 @@
           </div>
 
           <p class="fs-5 p-4 mb-0">
-            All else will remain unchanged, except annual pricing and payment
+            <span v-if="currentTerm == 'Monthly'">Note that all your add-ons will automatically convert to monthly subscriptions along with your plan subscription. </span>
+            All else will remain unchanged, except {{currentTerm.toLowerCase()}} pricing and payment
             terms apply once your switch becomes effective, which will be
             {{ newTermStartDate }}.
           </p>
@@ -233,7 +234,7 @@
           >
             Cancel
           </button>
-          <button type="button" class="btn btn-primary" @click="changeTerm">
+          <button type="button" class="btn btn-primary" @click="changePlanTerm">
             Switch Plan
           </button>
         </div>
@@ -288,7 +289,7 @@ export default class ChangePlanCommitmentTerm extends Vue {
       });
   }
 
-  private changeTerm() {
+  public changePlanTerm() {
     let request: changePlanTermRequestModel = new changePlanTermRequestModel();
     request.eventType = "TERM_CHANGE";
     request.subscriptionPlanId = this.plan.subscriptionPlanId;
