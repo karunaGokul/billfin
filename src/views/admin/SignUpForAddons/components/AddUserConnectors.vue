@@ -1,30 +1,40 @@
 <template>
-  <div class="card" v-if="addOns">
+  <div class="card" v-if="currentAddOn">
     <h3 class="p-4 border-bottom">{{ page }}</h3>
     <div class="w-50 mx-auto m-12">
       <div class="w-75 d-flex m-4 p-8 justify-content-between">
         <div>
-          <div class="fs-3 fw-bolder text-dark-black-secondary">{{ addOns.addOnName }}</div>
+          <div class="fs-3 fw-bolder text-dark-black-secondary">
+            {{ currentAddOn.addOnName }}
+          </div>
           <div class="text-gray">
             Current
             {{
-              addOns.addOnName == "Admin User License" ? "Users" : "Connectors"
+              currentAddOn.addOnName == "Admin User License"
+                ? "Users"
+                : "Connectors"
             }}
-            - {{ addOns.quantity }}
+            - {{ currentAddOn.quantity }}
           </div>
         </div>
         <div>
           <div class="fw-bolder fa-2x text-dark-black-secondary">
             <span class="fs-7">$</span>
-            {{ $filters.currencyDisplayWithoutSymbol(addOns.paymentAmount) }}
+            {{
+              $filters.currencyDisplayWithoutSymbol(currentAddOn.paymentAmount)
+            }}
             <span class="fs-8 fw-light text-gray"
-              >/{{ addOns.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
+              >/{{
+                currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
+              }}</span
             >
           </div>
           <div class="fs-7 fw-light text-gray">
             (Per
             {{
-              addOns.addOnName == "Admin User License" ? "User" : "Connector"
+              currentAddOn.addOnName == "Admin User License"
+                ? "User"
+                : "Connector"
             }})
           </div>
         </div>
@@ -46,7 +56,7 @@
         <div>
           <div class="fs-3 fw-bolder text-dark-black-secondary">
             {{
-              addOns.addOnName == "Admin User License"
+              currentAddOn.addOnName == "Admin User License"
                 ? "Add more users"
                 : "Add more connectors"
             }}
@@ -55,7 +65,7 @@
             <select
               class="form-select form-select-solid"
               style="width: 100px"
-              v-model="addOns.quantity"
+              v-model="quantity"
             >
               <option selected value="1">1</option>
               <option value="2">2</option>
@@ -73,9 +83,13 @@
         <div>
           <div class="fw-bolder fa-2x text-dark-black-secondary">
             <span class="fs-7">$</span>
-            {{ $filters.currencyDisplayWithoutSymbol(addOns.paymentAmount) }}
+            {{
+              $filters.currencyDisplayWithoutSymbol(
+                currentAddOn.paymentAmount * quantity
+              )
+            }}
             <span class="fs-8 fw-light text-gray"
-              >/{{ addOns.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
+              >/{{ currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
             >
           </div>
         </div>
@@ -98,6 +112,8 @@ import { addonsResponseModel } from "@/model";
 export default class AddUserConnectors extends Vue {
   @Prop() page: string;
 
+  public quantity: string = "1";
+
   public store = useStore();
 
   created() {
@@ -105,14 +121,18 @@ export default class AddUserConnectors extends Vue {
   }
 
   public next() {
-    let addOns:any = null;
-    addOns = this.addOns;
-    addOns.planAddOnAmount = this.addOns.paymentAmount;
-    console.log(addOns);
+    this.currentAddOn.quantity = this.quantity;
+    this.currentAddOn.planAddOnAmount = this.currentAddOn.paymentAmount;
+
+    this.store.dispatch("updateAddons", {
+      product: this.products,
+      addons: this.currentAddOn,
+    });
+
     this.$emit("next");
   }
 
-  get addOns() {
+  get currentAddOn() {
     let addOnName: string =
         this.page == "Add Users"
           ? "Admin User License"
@@ -129,9 +149,6 @@ export default class AddUserConnectors extends Vue {
         return item.addOnName == addOnName;
       });
     }
-
-    console.log(value);
-
     return value;
   }
 

@@ -35,6 +35,7 @@ export class addonsResponseModel extends addOnsModel {
   paymentToken: string;
   commitmentTerm: string;
   paymentAmount: number;
+  planAddOnAmount: number;
   endDate: string;
   renewDate: string;
   status: string;

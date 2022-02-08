@@ -331,7 +331,7 @@
                           <select
                             class="form-select form-select-solid"
                             style="width: 100px"
-                            @change="updateAddons(item)"
+                            @change="updateAddons"
                             v-model="item.quantity"
                           >
                             <option selected value="1">1</option>
@@ -600,38 +600,45 @@ export default class PickAddons extends Vue {
         commitmentTerm: this.commitmentTerm,
       });
 
-    let data: Array<subscribeAddonsResponseModel> = [];
-    data = this.$vuehelper.clone(
-      this.addons.filter(
-        (item) =>
-          item.selected &&
-          (item.addOnName == "Admin User License" ||
-            item.addOnName == "Multi-Connector Integrations" ||
-            !item.isPreInclueded)
-      )
-    );
+    if (this.addOnType == "ChangePlan" || this.addOnType == "SignUpPlan") {
+      let data: Array<subscribeAddonsResponseModel> = [];
+      data = this.$vuehelper.clone(
+        this.addons.filter(
+          (item) =>
+            item.selected &&
+            (item.addOnName == "Admin User License" ||
+              item.addOnName == "Multi-Connector Integrations" ||
+              !item.isPreInclueded)
+        )
+      );
 
-    data.forEach((item: subscribeAddonsResponseModel) => {
-      this.addonsList.forEach((addOns) => {
-        if (
-          (item.addOnName == "Admin User License" &&
-            addOns.addOnName == "Admin User License") ||
-          (item.addOnName == "Multi-Connector Integrations" &&
-            addOns.addOnName == "Multi-Connector Integrations")
-        ) {
-          if (item.quantity != addOns.quantity) {
-            if (item.quantity > addOns.quantity)
-              item.quantity = item.quantity - addOns.quantity;
-            else item.quantity = addOns.quantity - item.quantity;
+      data.forEach((item: subscribeAddonsResponseModel) => {
+        this.addonsList.forEach((addOns) => {
+          if (
+            (item.addOnName == "Admin User License" &&
+              addOns.addOnName == "Admin User License") ||
+            (item.addOnName == "Multi-Connector Integrations" &&
+              addOns.addOnName == "Multi-Connector Integrations")
+          ) {
+            if (item.quantity != addOns.quantity) {
+              if (item.quantity > addOns.quantity)
+                item.quantity = item.quantity - addOns.quantity;
+              else item.quantity = addOns.quantity - item.quantity;
+            }
           }
-        }
+        });
       });
-    });
 
-    this.store.dispatch("updateAddons", {
-      product: this.product,
-      addons: data,
-    });
+      this.store.dispatch("updateAddons", {
+        product: this.product,
+        addons: data,
+      });
+    } else {
+      this.store.dispatch("updateAddons", {
+        product: this.product,
+        addons: this.addons.filter((item) => item.selected)
+      });
+    }
   }
 
   get aumBilling() {
