@@ -62,7 +62,6 @@ import { useStore } from "vuex";
 import {
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
-  billingAddressRequestModel,
   PaymentMethod,
   createCustomerRequestModel,
   paymentTokenRequestModel,
@@ -117,10 +116,8 @@ export default class PickPayment extends Vue {
   }
 
   private getBillingAddress() {
-    let request = new billingAddressRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
-      .getBillingAddress(request)
+      .getBillingAddress()
       .then((response) => {
         this.store.dispatch("updateAddress", response);
       })
@@ -134,7 +131,7 @@ export default class PickPayment extends Vue {
     let request = new cardDetailsRequestModel();
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
-    request.firmId = this.store.getters.selectedFirmId;
+      
     this.service
       .getCardDetails(request)
       .then((response) => {
@@ -246,7 +243,6 @@ export default class PickPayment extends Vue {
   private updateToken(token: string, cardType: string) {
     let request = new paymentTokenRequestModel();
     request.token = token;
-    request.firmId = this.firmId;
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
     request.reqType = CardPrimaryType[cardType as keyof typeof CardPrimaryType];

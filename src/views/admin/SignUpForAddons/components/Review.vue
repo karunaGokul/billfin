@@ -217,7 +217,6 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import {
-  billingAddressRequestModel,
   billingAddressResponseModel,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
@@ -241,10 +240,8 @@ export default class Review extends Vue {
   }
 
   private getBillingAddress() {
-    let request = new billingAddressRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
-      .getBillingAddress(request)
+      .getBillingAddress()
       .then((response) => {
         this.address = response;
       })
@@ -257,7 +254,6 @@ export default class Review extends Vue {
     let request = new cardDetailsRequestModel();
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getCardDetails(request)
       .then((response) => {

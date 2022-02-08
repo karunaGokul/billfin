@@ -6,7 +6,6 @@ export class feeTypes {
     selected?: boolean;
 }
 export class feeTypesRequestModel {
-    firmId: number;
     billingType: Array<string> = [];
     aumFeeTypes: aumFeeTypes = new aumFeeTypes();
     nonAUMFeeTypes: nonAUMFeeTypes = new nonAUMFeeTypes();

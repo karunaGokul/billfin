@@ -134,7 +134,6 @@ export default class AumSubscriptionBilling extends Vue {
     this.loading = true;
     let request = new manageSubscriptionRequestModel();
     request.productCode = this.bliingType;
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getSubscription(request)
       .then((response) => {

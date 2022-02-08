@@ -14,17 +14,17 @@ import {
 export interface IFirmService extends IBaseService<any, any> {
     getFirms(): Promise<Array<firmsResponseModel>>
 
-    getGeneralDetails(request: firmRequestModel): Promise<generalBoardRequestModel>;
+    getGeneralDetails(): Promise<generalBoardRequestModel>;
     saveGeneral(request: generalBoardRequestModel): Promise<generalBoardResponseModel>;
 
     getFeeType(): Promise<Array<feeTypes>>;
-    getFeeTypesSetup(request: firmRequestModel): Promise<feeTypesRequestModel>;
+    getFeeTypesSetup(): Promise<feeTypesRequestModel>;
     saveFeeTypesSetup(request: feeTypesRequestModel): Promise<frequencyResponseModel>;
 
     getFrequencyAndTiming(request: firmRequestModel): Promise<frequencyRequestModel>;
     saveFrequncyAndTiming(request: aumDetails): Promise<frequencyResponseModel>;
 
-    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel>;
+    getMethodologies(): Promise<frequencyRequestModel>;
     saveMethodologies(request: aumDetails): Promise<frequencyResponseModel>;
 
     getAdjustments(request: firmRequestModel): Promise<frequencyRequestModel>;
@@ -45,8 +45,8 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    getGeneralDetails(request: firmRequestModel): Promise<generalBoardRequestModel> {
-        return this.httpGet('private/api/v1/firm/general', request).then(response => {
+    getGeneralDetails(): Promise<generalBoardRequestModel> {
+        return this.httpGet('private/api/v1/firm/general', null).then(response => {
             return response.data;
         });
     }
@@ -63,8 +63,8 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    getFeeTypesSetup(request: firmRequestModel): Promise<feeTypesRequestModel> {
-        return this.httpGet('private/api/v1/firm/feeTypesSetup', request).then(response => {
+    getFeeTypesSetup(): Promise<feeTypesRequestModel> {
+        return this.httpGet('private/api/v1/firm/feeTypesSetup', null).then(response => {
             return response.data;
         });
     }
@@ -87,8 +87,8 @@ export class FirmService extends BaseService<any, any> implements IFirmService {
         });
     }
 
-    getMethodologies(request: firmRequestModel): Promise<frequencyRequestModel> {
-        return this.httpGet('private/api/v1/firm/methodologies', request).then(response => {
+    getMethodologies(): Promise<frequencyRequestModel> {
+        return this.httpGet('private/api/v1/firm/methodologies', null).then(response => {
             return response.data;
         });
     }

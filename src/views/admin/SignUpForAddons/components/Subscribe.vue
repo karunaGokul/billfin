@@ -93,7 +93,6 @@ export default class Subscribe extends Vue {
       new addMoreSubscriptionRequestModel();
 
     request.eventType = "SUBSCRIBE";
-    request.firmId = this.store.getters.selectedFirmId;
 
     if (this.showAumBilling) {
       request.term =

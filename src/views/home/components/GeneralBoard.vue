@@ -160,12 +160,8 @@ export default class GeneralBoard extends Vue {
   }
   
   public getGeneralDetails() {
-    const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
-    request.firmDomain = this.firms.domain;
-    request.firmName = this.firms.name;
     this.service
-      ?.getGeneralDetails(request)
+      .getGeneralDetails()
       .then((response) => {
         this.request = response;
       })
@@ -178,7 +174,6 @@ export default class GeneralBoard extends Vue {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-      this.request.firmId = this.firms.firmId;
       this.service
         ?.saveGeneral(this.request)
         .then((response: generalBoardResponseModel) => {

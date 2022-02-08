@@ -96,7 +96,6 @@ export default class FrequencyBoard extends Vue {
 
   private getFrequncyAndTiming() {
     const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
     this.service
       .getFrequencyAndTiming(request)
       .then((response) => {

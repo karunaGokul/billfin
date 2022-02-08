@@ -1,6 +1,5 @@
 import { IBaseService, BaseService } from "./base.service";
 import {
-  billsAndPaymentRequestModel,
   billsAndPaymentResponseModel,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
@@ -8,7 +7,6 @@ import {
 
 export interface IBillsAndPaymentService extends IBaseService<any, any> {
   geiBillAndPayment(
-    request: billsAndPaymentRequestModel
   ): Promise<Array<billsAndPaymentResponseModel>>;
   getCardDetails(
     request: cardDetailsRequestModel
@@ -21,9 +19,8 @@ export class BillsAndPaymentService extends BaseService<any, any>
   }
 
   geiBillAndPayment(
-    request: billsAndPaymentRequestModel
   ): Promise<Array<billsAndPaymentResponseModel>> {
-    return this.httpGet("private/api/v1/billAndPayments", request).then(
+    return this.httpGet("private/api/v1/billAndPayments", null).then(
       (response) => {
         return response.data;
       }

@@ -383,7 +383,6 @@ import moment from "moment";
 import { useStore } from "vuex";
 
 import {
-  billingAddressRequestModel,
   billingAddressResponseModel,
   subscribedAddonsReqeustModel,
   refundPlanResponseModel,
@@ -418,10 +417,8 @@ export default class Review extends Vue {
   }
 
   private getBillingAddress() {
-    let request = new billingAddressRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
-      .getBillingAddress(request)
+      .getBillingAddress()
       .then((response) => {
         this.address = response;
       })

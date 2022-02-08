@@ -1,6 +1,3 @@
-export class billsAndPaymentRequestModel {
-  firmId: number;
-}
 export class productsResponseModel {
   planName: string;
   planCode: string;

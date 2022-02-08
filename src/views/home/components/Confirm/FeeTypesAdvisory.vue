@@ -11,50 +11,20 @@
             What billing do you wish to setup?
           </div>
           <div class="col-lg-3">
-            {{$filters.filterArray(billingTypes).join(', ')}}
+            {{ $filters.filterArray(billingTypes).join(", ") }}
           </div>
         </div>
 
         <template v-if="showAUMAdvisory">
-          <div class="row pb-8 g-0">  
+          <div class="row pb-8 g-0">
             <div class="col-lg-9 fw-bolder">
               For your AUM-based advisory billing,which fees do you bill?
             </div>
             <div class="col-lg-3">
-              {{$filters.filterFeeTypes(aumFeeTypes).join(', ')}}
+              {{ $filters.filterFeeTypes(aumFeeTypes).join(", ") }}
             </div>
           </div>
         </template>
-
-        <!--<template v-if="showAUMAdvisoryFees.length > 1">
-          <div class="row pb-8 g-0">
-            <div class="col-lg-9 fw-bolder">
-              Do you bill your various AUM fees on different frequencies and/or
-              timing relative to each other?
-            </div>
-            <div class="col-lg-3 fw-bold">
-              {{
-                request.aumFeeTypes.commonFrequencyTimingFlag
-                  ? "Yes, my AUM-based fees can bill on different frequencies and/or timing relative to each other."
-                  : "No, my AUM-based fees cannot bill on different frequencies and/or timing relative to each other."
-              }}
-            </div>
-          </div>
-
-          <div class="row pb-8 g-0">
-            <div class="col-lg-9 fw-bolder">
-              Do you bill your various AUM fees based on different assest
-              methodologies relative to each other?
-            </div>
-            <div class="col-lg-3 fw-bold">
-              {{
-                request.aumFeeTypes.commonAssetMethodologyFlag
-                  ? "Yes, my AUM-based fees can bill based on different assest methodologies relative to each other."
-                  : "No, my AUM-based fees cannot bill based on different assest methodologies relative to each other."
-              }}
-            </div>
-          </div>
-        </template> -->
 
         <template v-if="showNonAUMAdvisory">
           <div class="row pb-8 g-0">
@@ -62,26 +32,10 @@
               For your non-AUM subscription billing,which fees do you bill?
             </div>
             <div class="col-lg-3">
-              {{$filters.filterFeeTypes(nonAUMFeeTypes).join(', ')}}
+              {{ $filters.filterFeeTypes(nonAUMFeeTypes).join(", ") }}
             </div>
           </div>
         </template>
-
-       <!-- <template v-if="showNonAUMAdvisoryFees.length > 1">
-          <div class="row pb-8 g-0">
-            <div class="col-lg-9 fw-bolder">
-              Do you bill your various non-AUM fees on different frequencies
-              and/or timing relative to each other?
-            </div>
-            <div class="col-lg-3 fw-bold">
-              {{
-                request.aumFeeTypes.commonFrequencyTimingFlag
-                  ? "Yes, my non-AUM fees can bill on different frequencies and/or timing relative to each other."
-                  : "No, my non-AUM fees cannot bill on different frequencies and/or timing relative to each other."
-              }}
-            </div>
-          </div>
-        </template> -->
       </div>
     </div>
   </div>
@@ -140,9 +94,7 @@ export default class FeeTypesAdvisory extends Vue {
   }
 
   private getFeeTypesSetup() {
-    const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
-    this.service.getFeeTypesSetup(request).then((response) => {
+    this.service.getFeeTypesSetup().then((response) => {
       this.request.billingType = response.billingType;
       this.bindValues(response);
     });
@@ -205,6 +157,5 @@ export default class FeeTypesAdvisory extends Vue {
   get firms() {
     return this.store.getters.firms;
   }
-
 }
 </script>

@@ -33,11 +33,18 @@
               @updateValue="updateAdvisor"
             />
           </div>
+          <add-advisor
+            pageType="RepCodes"
+            type="Add Advisor"
+            :selectedAdvisor="selectedAdvisor"
+            @close="showAdvisorModel = false"
+            v-if="showAdvisorModel"
+          />
         </div>
 
         <div class="modal-footer justify-content-between border-0">
           <div>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" @click="showAdvisorModel = true">
               Add New Advisor
             </button>
           </div>
@@ -72,6 +79,7 @@ import { required } from "@vuelidate/validators";
 
 import TextInput from "../controls/TextInput.vue";
 import SelectBox from "../controls/SelectBox.vue";
+import AddAdvisor from "../Models/AddAdvisor.vue";
 import SelectBoxWithDelete from "../controls/SelectBoxWithDelete.vue";
 
 import {
@@ -82,7 +90,7 @@ import {
 import { IRepCodesService } from "@/service";
 
 @Options({
-  components: { TextInput, SelectBox, SelectBoxWithDelete },
+  components: { TextInput, SelectBox, SelectBoxWithDelete, AddAdvisor },
   validations: {
     request: {
       repCode: { required },
@@ -100,6 +108,8 @@ export default class AddRepCode extends Vue {
 
   public advisors: Array<ListItem> = [];
   public branch: Array<string> = ["ABC", "XYZ"];
+
+  public showAdvisorModel: boolean = false;
 
   private validate() {
     return useVuelidate();

@@ -52,7 +52,6 @@ export class subscribeAddonsResponseModel {
 export class paymentTokenRequestModel {
   token: string;
   paymentMethod: string;
-  firmId: number;
   reqType: string;
 }
 export class addOnsModel {
@@ -74,7 +73,6 @@ export class productsModel {
   addOns: Array<addOnsModel> = [];
 }
 export class subscribeRequestModel {
-  firmId: number;
   products: Array<productsModel> = [];
 }
 export class subscribeResponseModel {

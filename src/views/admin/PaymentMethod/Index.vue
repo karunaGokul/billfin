@@ -120,7 +120,6 @@ export default class Payment extends Vue {
   private updateToken(token: string) {
     let request = new paymentTokenRequestModel();
     request.token = token;
-    request.firmId = this.firmId;
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
     this.paymentType.toUpperCase();

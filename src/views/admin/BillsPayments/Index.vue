@@ -123,7 +123,7 @@
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
         <div class="fs-5">
           <div class="fw-bolder mt-2 mb-2">
-            {{ planEndDate(item.transactionDate) }}
+            {{ $datehelper.changeDateFormatWithSlash(item.transactionDate) }}
           </div>
           <div class="fw-bolder mb-2 fs-5">
             <img
@@ -181,7 +181,6 @@ import {
 } from "@/service";
 
 import {
-  billsAndPaymentRequestModel,
   billsAndPaymentResponseModel,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
@@ -247,7 +246,6 @@ export default class Index extends Vue {
     let request = new paymentTokenRequestModel(),
       paymentType: string;
     request.token = details.token;
-    request.firmId = this.firmId;
 
     if (
       details.cardType == "Visa" ||
@@ -274,7 +272,6 @@ export default class Index extends Vue {
   private getCardDetails() {
     this.availableCards = [];
     let request = new cardDetailsRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
     this.service
       .getCardDetails(request)
       .then((response) => {
@@ -289,11 +286,8 @@ export default class Index extends Vue {
   }
 
   private getBillAndPayment() {
-    let request = new billsAndPaymentRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
-
     this.service
-      .geiBillAndPayment(request)
+      .geiBillAndPayment()
       .then((response) => {
         this.response = response;
       })
@@ -302,21 +296,5 @@ export default class Index extends Vue {
       });
   }
 
-  planEndDate(endDate: string) {
-    let value: string = "";
-    let date = new Date(
-      parseInt(endDate.split("-")[0]),
-      parseInt(endDate.split("-")[1]) - 1,
-      parseInt(endDate.split("-")[2])
-    );
-    let month = date.toLocaleString("default", { month: "long" });
-
-    value = `${endDate.split("-")[2]} ${month}, ${endDate.split("-")[0]}`;
-    return value;
-  }
-
-  get firmId() {
-    return this.store.getters.selectedFirmId;
-  }
 }
 </script>

@@ -6,7 +6,6 @@ export class generalBoardRequestModel {
     city: string | any;
     state: string | any;
     postalCode: number | any;
-    firmId: number;
 }
 
 export class generalBoardResponseModel {

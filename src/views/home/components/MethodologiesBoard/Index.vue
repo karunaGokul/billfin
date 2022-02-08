@@ -83,16 +83,12 @@ export default class MethodologiesBoard extends Vue {
   }
 
   private getMethodologies() {
-    const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
-
     this.service
-      ?.getMethodologies(request)
+      .getMethodologies()
       .then((response) => {
         response.aumFeeTypes.forEach((item) => {
           if (item.aumFlag) this.request.aumFeeTypes.push(item);
         });
-        this.request.firmId = response.firmId;
         this.request.aumCommonAssetMethodologyFlag =
           response.aumCommonAssetMethodologyFlag;
 
@@ -118,7 +114,9 @@ export default class MethodologiesBoard extends Vue {
             aumFlag: true,
             aumDetails: response.aumFeeTypes[i].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(
+            this.$vuehelper.clone(object)
+          );
           break;
         }
       }
@@ -155,7 +153,8 @@ export default class MethodologiesBoard extends Vue {
 
     if (index == this.request.aumFeeTypes.length - 1) this.$emit("next");
     else {
-      this.request.aumFeeTypes[index].aumDetails = this.$vuehelper.clone(response);
+      this.request.aumFeeTypes[index].aumDetails =
+        this.$vuehelper.clone(response);
       this.feeTypeName = this.request.aumFeeTypes[index + 1].feeTypeName;
       if (
         this.request.aumFeeTypes[index + 1].aumFlag &&
@@ -169,7 +168,9 @@ export default class MethodologiesBoard extends Vue {
             aumFlag: true,
             aumDetails: this.request.aumFeeTypes[0].aumDetails,
           };
-          this.selectedAumDetails.aumFeeTypes.push(this.$vuehelper.clone(object));
+          this.selectedAumDetails.aumFeeTypes.push(
+            this.$vuehelper.clone(object)
+          );
         }
         if (
           this.request.aumFeeTypes[index].feeTypeName ==
@@ -182,9 +183,10 @@ export default class MethodologiesBoard extends Vue {
         }
         if (this.request.aumFeeTypes[index + 1].aumDetails == null) {
           this.isCopied = true;
-          this.request.aumFeeTypes[index + 1].aumDetails = this.$vuehelper.clone(
-            this.selectedAumDetails.aumFeeTypes[0].aumDetails
-          );
+          this.request.aumFeeTypes[index + 1].aumDetails =
+            this.$vuehelper.clone(
+              this.selectedAumDetails.aumFeeTypes[0].aumDetails
+            );
         }
       }
     }

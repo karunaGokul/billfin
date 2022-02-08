@@ -73,7 +73,6 @@ export default class AdjustmentsBoard extends Vue {
 
   private getAdjustments() {
     const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
 
     this.service
       ?.getAdjustments(request)

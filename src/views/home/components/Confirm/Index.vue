@@ -183,12 +183,8 @@ export default class ConfirmBoard extends Vue {
   }
 
   public getGeneralDetails() {
-    const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
-    request.firmDomain = this.firms.domain;
-    request.firmName = this.firms.name;
     this.service
-      ?.getGeneralDetails(request)
+      .getGeneralDetails()
       .then((response) => {
         this.generalResponse = response;
       })
@@ -203,7 +199,6 @@ export default class ConfirmBoard extends Vue {
 
   private getFrequncyAndTiming() {
     const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
     this.service
       .getFrequencyAndTiming(request)
       .then((response) => {
@@ -215,11 +210,8 @@ export default class ConfirmBoard extends Vue {
   }
 
   private getMethodologies() {
-    const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
-
     this.service
-      ?.getMethodologies(request)
+      .getMethodologies()
       .then((response) => {
         response.aumFeeTypes.forEach((item) => {
           if (item.aumFlag) this.methodologiesRequest.aumFeeTypes.push(item);
@@ -232,7 +224,6 @@ export default class ConfirmBoard extends Vue {
 
   private getAdjustments() {
     const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
 
     this.service
       ?.getAdjustments(request)
@@ -248,7 +239,6 @@ export default class ConfirmBoard extends Vue {
 
   public confirm() {
     const request = new firmRequestModel();
-    request.firmId = this.firms.firmId;
     this.service
       .saveConfirm(request)
       .then((response) => {

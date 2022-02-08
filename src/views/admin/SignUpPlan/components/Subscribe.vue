@@ -86,7 +86,6 @@ export default class Subscribe extends Vue {
 
   public subscribe() {
     let request: subscribeRequestModel = new subscribeRequestModel();
-    request.firmId = this.store.getters.selectedFirmId;
 
     let products = new productsModel();
     if (this.showAumBilling) {

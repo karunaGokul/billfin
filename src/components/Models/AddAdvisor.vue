@@ -94,7 +94,7 @@
                 :validation="['required']"
               />
             </div>
-            <div>
+            <div v-if="pageType == 'Advisor'">
               <select-box-with-delete
                 label="Assign Rep Codes"
                 :response="repCodes"
@@ -325,7 +325,7 @@ export default class AddAdvisor extends Vue {
 
   public addAdvisor() {
     this.v$.$touch();
-    if (!this.v$.invalid) {
+    if (!this.v$.invalid && !this.emailErrorMessage) {
       this.request.middleName = this.valueCheck(this.request.middleName);
       this.request.id = this.valueCheck(this.request.id);
       this.request.repCodes =

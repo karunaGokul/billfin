@@ -91,7 +91,7 @@
                 border-bottom border-dashed border-light
                 p-4
               "
-              @click="addAdvisor('View Advisor', item)"
+              @click="showRepCodePreviewModel = true"
             >
               {{ item.displayName }}
             </td>
@@ -152,12 +152,17 @@
     @close="showAdvisorModel = false"
     v-if="showAdvisorModel"
   />
+  <rep-code-perview
+    @close="showRepCodePreviewModel = false"
+    v-if="showRepCodePreviewModel"
+  />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import AddAdvisor from "@/components/Models/AddAdvisor.vue";
+import RepCodePerview from "./components/RepCodePreview.vue";
 
 import { IAdvisorsService } from "@/service";
 import { advisorsResponseModel } from "@/model";
@@ -165,6 +170,7 @@ import { advisorsResponseModel } from "@/model";
 @Options({
   components: {
     AddAdvisor,
+    RepCodePerview,
   },
 })
 export default class Advisors extends Vue {
@@ -173,6 +179,8 @@ export default class Advisors extends Vue {
   public response: Array<advisorsResponseModel> = [];
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
   public showAdvisorModel: boolean = false;
+
+  public showRepCodePreviewModel: boolean = false;
 
   public type: string = "Add Advisor";
 

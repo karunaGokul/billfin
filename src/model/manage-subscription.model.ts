@@ -3,7 +3,6 @@ import { subscriptionsModel, addOnsModel } from "./subscribe.model";
 
 export class manageSubscriptionRequestModel extends BaseModel {
   productCode: string;
-  firmId: number;
 }
 export class availableCardsModel {
   cardType: string;
@@ -93,14 +92,12 @@ export class changeAddOnTermRequestModel {
   subscriptionAddOnId: number;
   term: string;
   termAddOnId: number;
-  firmId: number;
 }
 export class subscribedAddonsReqeustModel {
   planSubscriptionId: number;
 }
 export class cardDetailsRequestModel {
   paymentMethod: string;
-  firmId: number;
 }
 export class cardDetailsResponsetModel {
   cardHolderName: string;
@@ -117,9 +114,6 @@ export class cardDetailsResponsetModel {
   customerId: number;
   paymentFirmTokenId: number;
 }
-export class billingAddressRequestModel {
-  firmId: number;
-}
 export class billingAddressResponseModel {
   bill_addr1: string;
   bill_addr2: string;
@@ -133,7 +127,6 @@ export class addMoreSubscriptionRequestModel {
   term: string;
   termPlanId: number;
   eventType: string;
-  firmId: number;
   subscriptionPlanId: number;
   addOns: Array<addOnsModel>;
 }

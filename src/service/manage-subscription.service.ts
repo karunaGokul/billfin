@@ -11,7 +11,6 @@ import {
   changeAddOnTermRequestModel,
   cardDetailsRequestModel,
   cardDetailsResponsetModel,
-  billingAddressRequestModel,
   billingAddressResponseModel,
   addMoreSubscriptionRequestModel,
   addMoreSubscriptionResponseModel,
@@ -22,7 +21,7 @@ import {
   cancelPlanAddOnRequestModel,
   cancelPlanAddOnResponseModel,
   deleteCardRequestModel,
-  deleteCardResponseModel
+  deleteCardResponseModel,
 } from "@/model";
 
 export interface IManageSubscription
@@ -45,9 +44,7 @@ export interface IManageSubscription
   changeAddOnTerm(
     request: changeAddOnTermRequestModel
   ): Promise<changePlanTermResponseModel>;
-  getBillingAddress(
-    request: billingAddressRequestModel
-  ): Promise<billingAddressResponseModel>;
+  getBillingAddress(): Promise<billingAddressResponseModel>;
   subscribeAddOns(
     request: addMoreSubscriptionRequestModel
   ): Promise<addMoreSubscriptionResponseModel>;
@@ -59,9 +56,7 @@ export interface IManageSubscription
     request: cancelPlanAddOnRequestModel,
     path: string
   ): Promise<changePlanResponseModel>;
-  deleteCard(
-    request: deleteCardRequestModel
-  ): Promise<deleteCardResponseModel>
+  deleteCard(request: deleteCardRequestModel): Promise<deleteCardResponseModel>;
 }
 
 export class ManageSubscription extends BaseService<
@@ -132,10 +127,8 @@ export class ManageSubscription extends BaseService<
     );
   }
 
-  public getBillingAddress(
-    request: billingAddressRequestModel
-  ): Promise<billingAddressResponseModel> {
-    return this.httpGet("private/api/v1/billingAddress", request).then(
+  public getBillingAddress(): Promise<billingAddressResponseModel> {
+    return this.httpGet("private/api/v1/billingAddress", null).then(
       (response) => {
         return response.data;
       }
@@ -184,8 +177,10 @@ export class ManageSubscription extends BaseService<
   public deleteCard(
     request: deleteCardRequestModel
   ): Promise<deleteCardResponseModel> {
-    return this.httpPost("private/api/v1/deleteCard", request).then((response) => {
-      return response.data;
-    });
+    return this.httpPost("private/api/v1/deleteCard", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 }
