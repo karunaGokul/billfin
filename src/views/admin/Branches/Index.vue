@@ -4,12 +4,12 @@
       class="btn btn-primary position-absolute translate-middle"
       type="button"
       style="top: -40px; right: -58px"
-      @click="addRepCode"
+      @click="addBranch"
     >
-      Add Rep Code
+      Add Branch
     </button>
     <div class="d-flex justify-content-between p-4">
-      <div class="fs-4 fw-bolder">Rep Codes</div>
+      <div class="fs-4 fw-bolder">Branches</div>
       <div>
         <div class="input-group input-group-solid">
           <span class="input-group-text">
@@ -47,7 +47,7 @@
                 p-4
               "
             >
-              REP CODE
+              BRANCH CODE
             </th>
             <th
               class="
@@ -67,7 +67,7 @@
                 p-4
               "
             >
-              ASSIGNED ADVISORS
+              ASSIGNED REP CODES
             </th>
 
             <th></th>
@@ -84,7 +84,7 @@
               "
               @click="viewRepCodes('View RepCode', item)"
             >
-              {{ item.repCode }}
+              {{ item.branchCode }}
             </td>
             <td
               class="
@@ -104,85 +104,66 @@
                 p-4
               "
             >
-              <span v-for="(advisor, i) of item.advisors" :key="i">
-                {{ advisor.displayName }}
+              <span v-for="(repCode, i) of item.repCodes" :key="i">
+                {{ repCode.repCode }}
               </span>
             </td>
             <td class="border-bottom border-dashed border-light p-4">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
-                @click="viewRepCodes('Edit RepCodes', item)"
+                @click="viewBranches('Edit Branches', item)"
               ></i>
             </td>
           </tr>
         </tbody>
       </table>
+
+      <add-branch
+        @close="addBranchModel = false"
+        @branchAdded="updateBranch"
+        v-if="addBranchModel"
+      />
     </div>
   </div>
-  <add-rep-code
-    pageType="RepCodes"
-    @repCodeAdded="updateRepCodes"
-    @close="addRepCodeModel = false"
-    v-if="addRepCodeModel"
-  />
-  <rep-code-preview
-    pageType="RepCodes"
-    :type="type"
-    :selectedRepCode="selectedRepCode"
-    :selectedBranch="selectedRepCode.branchName"
-    @close="showRepCodePreviewModel = false"
-    v-if="showRepCodePreviewModel"
-  />
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+
 import { Inject } from "vue-property-decorator";
 
-import AddRepCode from "@/components/Models/AddRepCode.vue";
-import RepCodePreview from "@/components/Models/RepCodePreview.vue";
+import { IBranchesService } from "@/service";
+import { branchesResponseModel } from "@/model";
 
-import { IRepCodesService } from "@/service";
-import { repCodesResponseModel } from "@/model";
+import AddBranch from "./compontents/AddBranch.vue";
 
 @Options({
   components: {
-    AddRepCode,
-    RepCodePreview,
+    AddBranch,
   },
 })
-export default class RepCodes extends Vue {
-  @Inject("repCodesService") service: IRepCodesService;
+export default class Branches extends Vue {
+  @Inject("branchesService") service: IBranchesService;
 
-  public response: Array<repCodesResponseModel> = [];
-  public selectedRepCode: repCodesResponseModel = new repCodesResponseModel();
-  public addRepCodeModel: boolean = false;
-  public showRepCodePreviewModel: boolean = false;
-
-  public type: string = "";
+  public response: Array<branchesResponseModel> = [];
+  public addBranchModel: boolean = false;
 
   created() {
-    this.getRepCodes();
+    this.getBranches();
   }
 
-  private getRepCodes() {
-    this.service.getRepCodes().then((response) => {
+  private getBranches() {
+    this.service.getBranches().then((response) => {
       this.response = response;
     });
   }
 
-  public addRepCode() {
-    this.addRepCodeModel = true;
+  public addBranch() {
+    this.addBranchModel = true;
   }
 
-  public updateRepCodes() {
-    this.addRepCodeModel = false;
-    this.getRepCodes();
-  }
-
-  public viewRepCodes(type: string, item: repCodesResponseModel) {
-    this.type = type;
-    this.selectedRepCode = item;
-    this.showRepCodePreviewModel = true;
+  public updateBranch() {
+    this.addBranchModel = false;
+    this.getBranches();
   }
 }
 </script>

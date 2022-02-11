@@ -1,15 +1,17 @@
 import { IBaseService, BaseService } from "./base.service";
 import {
   repCodesResponseModel,
-  assginAdvisorsResponseModel,
   addRepCodeRequestModel,
   addRepCodeResponseModel,
+  unassignedRepCodesResponseModel,
+  viewRepCodesResponseModel
 } from "@/model";
 
 export interface IRepCodesService extends IBaseService<any, any> {
   getRepCodes(): Promise<Array<repCodesResponseModel>>;
-  listOfAdvisors(): Promise<Array<assginAdvisorsResponseModel>>;
   addRepCode(request: addRepCodeRequestModel): Promise<addRepCodeResponseModel>;
+  unassignedRepCodes(): Promise<Array<unassignedRepCodesResponseModel>>;
+  viewRepCode(advisorId: number): Promise<viewRepCodesResponseModel>;
 }
 
 export class RepCodesService extends BaseService<any, any>
@@ -19,58 +21,17 @@ export class RepCodesService extends BaseService<any, any>
   }
 
   public getRepCodes(): Promise<Array<repCodesResponseModel>> {
-    return new Promise((resolve, reject) => {
-      let response: Array<repCodesResponseModel> = [];
-      response.push({
-        repCode: "ABGX2",
-        branch: ["Burbank Office"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "ADSX1",
-        branch: ["New York City Office"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "ASG01",
-        branch: ["San Fran Region"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "CALX7",
-        branch: ["Boston Office", "New York City Office"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "CRDX9",
-        branch: ["Burbank Office", "New York City Office"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "DAR13",
-        branch: ["Texas & Southwest Region"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "ELB62",
-        branch: ["Chicago Branch"],
-        assignedAdvisors: [],
-      });
-      response.push({
-        repCode: "JPAX3",
-        branch: ["New York City Office", "San Fran Region"],
-        assignedAdvisors: [],
-      });
-      resolve(response);
+    return this.httpGet("private/api/v1/firmRepCode", null).then((response) => {
+      return response.data;
     });
   }
 
-  public listOfAdvisors(): Promise<Array<assginAdvisorsResponseModel>> {
-    return new Promise((resolve, reject) => {
-      let response: Array<assginAdvisorsResponseModel> = [];
-      response.push({ advisorId: 1, advisorName: "Abram" });
-      resolve(response);
-    });
+  public unassignedRepCodes(): Promise<Array<unassignedRepCodesResponseModel>> {
+    return this.httpGet("private/api/v1/unassignedRep", null).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 
   public addRepCode(
@@ -79,5 +40,13 @@ export class RepCodesService extends BaseService<any, any>
     return this.httpPost("private/api/v1/rep", request).then((response) => {
       return response.data;
     });
+  }
+
+  public viewRepCode(advisorId: number): Promise<viewRepCodesResponseModel> {
+    return this.httpGet("private/api/v1/rep/" + advisorId, null).then(
+      (response) => {
+        return response.data;
+      }
+    );
   }
 }

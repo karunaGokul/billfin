@@ -10,13 +10,23 @@ import { IBillsAndPaymentService, BillsAndPaymentService } from "@/service";
 import { IAdvisorsService, AdvisorsService } from "@/service";
 import { IRepCodesService, RepCodesService } from "@/service";
 
+import { IBranchesService, BranchesService } from "@/service";
+
 export class DIContainer extends Vue {
   @Provide("signUpService") signUpService: ISignUpService = new SignUpService();
   @Provide("firmService") onboardService: IFirmService = new FirmService();
-  @Provide("subscripeService") subscripeService: ISubscripeService = new SubscripeService();
-  @Provide("addressService") addressService: IAddressService = new AddressService();
-  @Provide("manageSubscripeService") manageSubscripeService: IManageSubscription = new ManageSubscription();
-  @Provide("billsAndPaymentService") billsAndPaymentService: IBillsAndPaymentService = new BillsAndPaymentService();
-  @Provide("advisorsService") advisorsService: IAdvisorsService = new AdvisorsService();
-  @Provide("repCodesService") repCodesService: IRepCodesService = new RepCodesService();
+  @Provide("subscripeService")
+  subscripeService: ISubscripeService = new SubscripeService();
+  @Provide("addressService")
+  addressService: IAddressService = new AddressService();
+  @Provide("manageSubscripeService")
+  manageSubscripeService: IManageSubscription = new ManageSubscription();
+  @Provide("billsAndPaymentService")
+  billsAndPaymentService: IBillsAndPaymentService = new BillsAndPaymentService();
+  @Provide("advisorsService")
+  advisorsService: IAdvisorsService = new AdvisorsService();
+  @Provide("repCodesService")
+  repCodesService: IRepCodesService = new RepCodesService();
+  @Provide("branchesService")
+  branchesService: IBranchesService = new BranchesService();
 }

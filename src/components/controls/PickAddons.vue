@@ -464,7 +464,6 @@ export default class PickAddons extends Vue {
 
   created() {
     this.addonsList = this.$vuehelper.clone(this.store.getters.addOnsList);
-    console.log(this.addonsList);
     this.commitmentTerm = this.termPlanType;
 
     if (this.addOnType == "AddMoreAddOns" || this.addOnType == "ChangePlan")
@@ -600,33 +599,29 @@ export default class PickAddons extends Vue {
         commitmentTerm: this.commitmentTerm,
       });
 
-    if (this.addOnType == "ChangePlan" || this.addOnType == "SignUpPlan") {
+    if (this.addOnType == "ChangePlan" || this.addOnType == "createAddon") {
       let data: Array<subscribeAddonsResponseModel> = [];
-      data = this.$vuehelper.clone(
-        this.addons.filter(
-          (item) =>
-            item.selected &&
-            (item.addOnName == "Admin User License" ||
-              item.addOnName == "Multi-Connector Integrations" ||
-              !item.isPreInclueded)
-        )
-      );
 
-      data.forEach((item: subscribeAddonsResponseModel) => {
-        this.addonsList.forEach((addOns) => {
-          if (
-            (item.addOnName == "Admin User License" &&
-              addOns.addOnName == "Admin User License") ||
-            (item.addOnName == "Multi-Connector Integrations" &&
-              addOns.addOnName == "Multi-Connector Integrations")
+      this.addons.forEach((item) => {
+        if (item.selected) {
+          if (!item.isPreInclueded) {
+            data.push(item);
+          } else if (
+            item.addOnName == "Admin User License" ||
+            item.addOnName == "Multi-Connector Integrations"
           ) {
+            let addOns: addOnsListResponseModel = this.addonsList.find(
+              (addons) => addons.addOnName == item.addOnName
+            );
             if (item.quantity != addOns.quantity) {
               if (item.quantity > addOns.quantity)
                 item.quantity = item.quantity - addOns.quantity;
               else item.quantity = addOns.quantity - item.quantity;
+
+              data.push(item);
             }
           }
-        });
+        }
       });
 
       this.store.dispatch("updateAddons", {
@@ -636,7 +631,7 @@ export default class PickAddons extends Vue {
     } else {
       this.store.dispatch("updateAddons", {
         product: this.product,
-        addons: this.addons.filter((item) => item.selected)
+        addons: this.addons.filter((item) => item.selected),
       });
     }
   }

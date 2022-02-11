@@ -182,10 +182,6 @@
           {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
         </div>
 
-        <div v-if="addons.commitmentTerm == 'ANNUAL' && addons.endDate != null">
-          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
-          {{ $datehelper.changeDateFormatWithSlash(addons.endDate) }}
-        </div>
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">

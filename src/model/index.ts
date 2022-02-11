@@ -14,3 +14,4 @@ export * from "./manage-subscription.model";
 export * from "./bills-and-payment.model";
 export * from "./advisors.model";
 export * from "./rep-codes.model";
+export * from "./branches.model";

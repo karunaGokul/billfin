@@ -231,6 +231,16 @@
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Rep Codes</span>
                 </router-link>
+                <router-link
+                  to="/branches"
+                  tag="li"
+                  class="d-flex align-items-center menu-link"
+                  active-class="menu-link-active"
+                  v-if="firmStatus == 'SUBSCRIBED'"
+                >
+                  <i class="fas fa-circle fs-10"></i>
+                  <span class="menu-link-title fs-7">Branches</span>
+                </router-link>
               </ul>
             </div>
           </div>

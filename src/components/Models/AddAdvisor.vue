@@ -90,7 +90,7 @@
               <text-input
                 formFieldType="inputBlock"
                 label="ID (Optional)"
-                :controls="v$.request.id"
+                :controls="v$.request.advisorIdentifier"
                 :validation="['required']"
               />
             </div>
@@ -200,7 +200,7 @@ import {
   assignRepCodesResponseModel,
   ListItem,
 } from "@/model";
-import { IAdvisorsService } from "@/service";
+import { IAdvisorsService, IRepCodesService } from "@/service";
 
 @Options({
   components: { TextInput, PhoneInput, EmailInput, SelectBoxWithDelete },
@@ -241,12 +241,13 @@ import { IAdvisorsService } from "@/service";
           return validation;
         },
       },
-      id: {},
+      advisorIdentifier: {},
     },
   },
 })
 export default class AddAdvisor extends Vue {
   @Inject("advisorsService") service: IAdvisorsService;
+  @Inject("repCodesService") repCodesService: IRepCodesService;
 
   @Prop() pageType: string;
   @Prop() type: string;
@@ -261,7 +262,7 @@ export default class AddAdvisor extends Vue {
 
   public repCodes: Array<ListItem> = [];
 
-  private validate() {
+  public validate() {
     return useVuelidate();
   }
 
@@ -269,7 +270,7 @@ export default class AddAdvisor extends Vue {
     this.modelType = this.type;
     if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")
       this.request = this.selectedAdvisor;
-    this.listOfRepCodes();
+    this.unassignedRepCodes();
   }
 
   public close(action: string) {
@@ -288,17 +289,16 @@ export default class AddAdvisor extends Vue {
         if (err.response.status == 400) {
           this.emailErrorMessage = err.response.data.message;
         } else if (err.response.status == 500) {
-          this.emailErrorMessage = err.response.data.message;
-          /*this.store.dispatch("showAlert", {
+          this.store.dispatch("showAlert", {
             message: "Something went wrong, Please try again!",
             title: "Oops, sorry!",
-          });*/
+          });
         }
       });
   }
 
-  private listOfRepCodes() {
-    this.service.listOfRepCodes().then((response) => {
+  private unassignedRepCodes() {
+    this.repCodesService.unassignedRepCodes().then((response) => {
       response.forEach((item) => {
         let repCode = new ListItem(item.repCode);
         repCode.data = item.repId;
@@ -325,9 +325,10 @@ export default class AddAdvisor extends Vue {
 
   public addAdvisor() {
     this.v$.$touch();
-    if (!this.v$.invalid && !this.emailErrorMessage) {
+    if (!this.v$.$invalid && !this.emailErrorMessage) {
       this.request.middleName = this.valueCheck(this.request.middleName);
-      this.request.id = this.valueCheck(this.request.id);
+      this.request.advisorIdentifier = this.valueCheck(this.request.advisorIdentifier);
+      this.request.advisorId = this.valueCheck(this.request.advisorId);
       this.request.repCodes =
         this.request.repCodes && this.request.repCodes.length > 0
           ? this.request.repCodes
@@ -336,7 +337,7 @@ export default class AddAdvisor extends Vue {
       this.service
         .addAdvisor(this.request)
         .then((response) => {
-          console.log(response);
+          this.$emit("advisorAdded");
         })
         .catch((err) => {
           console.log(err);

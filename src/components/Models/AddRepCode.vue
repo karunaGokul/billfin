@@ -17,12 +17,12 @@
               :validation="['required']"
             />
           </div>
-          <div>
+          <div v-if="pageType != 'Branch'">
             <select-box
               formFieldType="inputBlock"
               label="Branch"
               :data="branch"
-              :controls="v$.request.branch"
+              :controls="v$.request.branchName"
               :validation="['required']"
             />
           </div>
@@ -36,7 +36,7 @@
           <add-advisor
             pageType="RepCodes"
             type="Add Advisor"
-            :selectedAdvisor="selectedAdvisor"
+            @advisorAdded="updateUnassinedAdvisors"
             @close="showAdvisorModel = false"
             v-if="showAdvisorModel"
           />
@@ -44,7 +44,11 @@
 
         <div class="modal-footer justify-content-between border-0">
           <div>
-            <button type="button" class="btn btn-primary" @click="showAdvisorModel = true">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="showAdvisorModel = true"
+            >
               Add New Advisor
             </button>
           </div>
@@ -84,22 +88,29 @@ import SelectBoxWithDelete from "../controls/SelectBoxWithDelete.vue";
 
 import {
   addRepCodeRequestModel,
-  assginAdvisorsResponseModel,
+  advisorsResponseModel,
+  unassignedBranchResponseModel,
   ListItem,
 } from "@/model";
-import { IRepCodesService } from "@/service";
+import {
+  IAdvisorsService,
+  IBranchesService,
+  IRepCodesService,
+} from "@/service";
 
 @Options({
   components: { TextInput, SelectBox, SelectBoxWithDelete, AddAdvisor },
   validations: {
     request: {
       repCode: { required },
-      branch: {},
+      branchName: {},
     },
   },
 })
 export default class AddRepCode extends Vue {
   @Inject("repCodesService") service: IRepCodesService;
+  @Inject("advisorsService") advisorsService: IAdvisorsService;
+  @Inject("branchesService") branchesService: IBranchesService;
 
   @Prop() pageType: string;
 
@@ -107,7 +118,7 @@ export default class AddRepCode extends Vue {
   public request: addRepCodeRequestModel = new addRepCodeRequestModel();
 
   public advisors: Array<ListItem> = [];
-  public branch: Array<string> = ["ABC", "XYZ"];
+  public branch: Array<unassignedBranchResponseModel> = [];
 
   public showAdvisorModel: boolean = false;
 
@@ -116,43 +127,65 @@ export default class AddRepCode extends Vue {
   }
 
   created() {
-    this.listOfAdvisors();
+    this.getUnassignedAdvisors();
+    this.getUnassignedBranch();
   }
 
   public close(action: string) {
     this.$emit(action);
   }
 
-  private listOfAdvisors() {
-    this.service.listOfAdvisors().then((response) => {
-      response.forEach((item) => {
-        let advisors = new ListItem(item.advisorName);
-        advisors.data = item.advisorId;
+  private getUnassignedAdvisors() {
+    this.advisorsService
+      .unassignedAdvisors()
+      .then((response) => {
+        response.forEach((item) => {
+          let advisors = new ListItem(item.displayName);
+          advisors.data = item.advisorId;
 
-        this.advisors.push(advisors);
+          this.advisors.push(advisors);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
+  }
+
+  public updateUnassinedAdvisors() {
+    this.showAdvisorModel = false;
+    this.getUnassignedAdvisors();
+  }
+
+  private getUnassignedBranch() {
+    this.branchesService
+      .unassignedBranch()
+      .then((response) => {
+        this.branch = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public updateAdvisor(advisors: Array<ListItem>) {
     advisors.forEach((item: ListItem) => {
-      let advisors: assginAdvisorsResponseModel =
-        new assginAdvisorsResponseModel();
+      let advisors: advisorsResponseModel =
+        new advisorsResponseModel();
       advisors.advisorId = item.data;
-      advisors.advisorName = item.text;
+      advisors.displayName = item.text;
       this.request.advisors.push(advisors);
     });
   }
 
   public addRepCode() {
     this.v$.$touch();
-    if (!this.v$.invalid) {
+    if (!this.v$.$invalid) {
       this.request.advisors.length == 0 ? null : this.request.advisors;
 
       this.service
         .addRepCode(this.request)
         .then((response) => {
-          console.log(response);
+          this.$emit("repCodeAdded");
         })
         .catch((err) => {
           console.log(err);

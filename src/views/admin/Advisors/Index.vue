@@ -79,7 +79,14 @@
             >
               BRANCH
             </th>
-            <th></th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom border-dashed border-light
+                p-4
+              "
+            ></th>
           </tr>
         </thead>
         <tbody>
@@ -91,7 +98,7 @@
                 border-bottom border-dashed border-light
                 p-4
               "
-              @click="showRepCodePreviewModel = true"
+              @click="addAdvisor('View Advisor', item)"
             >
               {{ item.displayName }}
             </td>
@@ -117,10 +124,11 @@
               <a
                 href="#"
                 class="border-bottom border-primary me-2"
-                v-for="(code, index) of item.repCode"
+                v-for="(code, index) of item.repCodes"
                 :key="'advisor-rep-code' + index"
+                @click="openRepCodePreview(item, code)"
               >
-                {{ code }},
+                {{ code.repCode }},
               </a>
             </td>
             <td
@@ -148,11 +156,16 @@
   <add-advisor
     pageType="Advisor"
     :type="type"
+    @advisorAdded="onUpdateAdvisor"
     :selectedAdvisor="selectedAdvisor"
     @close="showAdvisorModel = false"
     v-if="showAdvisorModel"
   />
-  <rep-code-perview
+  <rep-code-preview
+    pageType="Advisor"
+    type="View RepCode"
+    :selectedRepCode="selectedRepCode"
+    :selectedBranch="selectedAdvisor.branch"
     @close="showRepCodePreviewModel = false"
     v-if="showRepCodePreviewModel"
   />
@@ -162,7 +175,7 @@ import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import AddAdvisor from "@/components/Models/AddAdvisor.vue";
-import RepCodePerview from "./components/RepCodePreview.vue";
+import RepCodePreview from "@/components/Models/RepCodePreview.vue";
 
 import { IAdvisorsService } from "@/service";
 import { advisorsResponseModel } from "@/model";
@@ -170,7 +183,7 @@ import { advisorsResponseModel } from "@/model";
 @Options({
   components: {
     AddAdvisor,
-    RepCodePerview,
+    RepCodePreview,
   },
 })
 export default class Advisors extends Vue {
@@ -178,6 +191,7 @@ export default class Advisors extends Vue {
 
   public response: Array<advisorsResponseModel> = [];
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
+  public selectedRepCode: advisorsResponseModel = new advisorsResponseModel();
   public showAdvisorModel: boolean = false;
 
   public showRepCodePreviewModel: boolean = false;
@@ -198,6 +212,18 @@ export default class Advisors extends Vue {
     this.type = type;
     if (advisor) this.selectedAdvisor = advisor;
     this.showAdvisorModel = true;
+  }
+
+  public onUpdateAdvisor() {
+    this.showAdvisorModel = false;
+    this.selectedAdvisor = new advisorsResponseModel();
+    this.getAdvisors();
+  }
+
+  public openRepCodePreview(advisor: advisorsResponseModel, repCodes: advisorsResponseModel) {
+    this.selectedRepCode = repCodes;
+    this.selectedAdvisor = advisor;
+    this.showRepCodePreviewModel = true;
   }
 }
 </script>

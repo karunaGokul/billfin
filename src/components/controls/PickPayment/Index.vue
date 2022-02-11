@@ -127,7 +127,6 @@ export default class PickPayment extends Vue {
   }
 
   public getCardDetails() {
-    this.cards = [];
     let request = new cardDetailsRequestModel();
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
@@ -138,13 +137,9 @@ export default class PickPayment extends Vue {
         if (this.paymentType == "Credit Card") this.cards = response;
         else this.ach = response;
 
-        console.log(this.cards);
-
         this.cards = this.cards.sort((a) => {
           return a.default ? -1 : 1;
         });
-
-        console.log(this.cards);
 
         this.redirectPayment();
       })
