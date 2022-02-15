@@ -76,11 +76,16 @@
                 label="Email ID"
                 :controls="v$.request.emailAddress"
                 :validation="['required', 'email']"
+                :readonly="modelType == 'Edit Advisors'"
+                :customInputError="emailErrorMessage ? true : false"
                 @validateEmail="
-                  !v$.request.emailAddress.$invalid ? validateEmail() : ''
+                  !v$.request.emailAddress.$invalid &&
+                  modelType != 'Edit Advisors'
+                    ? validateEmail()
+                    : ''
                 "
               />
-              <div class="position-absolute bottom-0 m-4 ms-0">
+              <div class="position-absolute bottom-0 m-2 ms-0">
                 <div class="invalid-feedback" v-if="emailErrorMessage">
                   {{ emailErrorMessage }}
                 </div>
@@ -97,6 +102,7 @@
             <div v-if="pageType == 'Advisor'">
               <select-box-with-delete
                 label="Assign Rep Codes"
+                :preData="assignedRepCodes"
                 :response="repCodes"
                 @updateValue="updateRepCodes"
               />
@@ -135,7 +141,7 @@
               </div>
               <div class="col-4">
                 <div class="text-gray-secondary p-2">ID (Optional)</div>
-                <div class="text-dark-gray p-2">{{ request.id }}</div>
+                <div class="text-dark-gray p-2">{{ request.id ? request.id : '-' }}</div>
               </div>
             </div>
             <div class="mt-2 mb-2">
@@ -143,10 +149,10 @@
               <a
                 href="#"
                 class="border-bottom border-primary me-2 ms-2 pt-2"
-                v-for="(code, index) of request.repCode"
+                v-for="(code, index) of request.repCodes"
                 :key="'advisor-rep-code' + index"
               >
-                {{ code }},
+                {{ code.repCode }},
               </a>
             </div>
           </template>
@@ -261,6 +267,7 @@ export default class AddAdvisor extends Vue {
   public emailErrorMessage: string = null;
 
   public repCodes: Array<ListItem> = [];
+  public assignedRepCodes: Array<ListItem> = [];
 
   public validate() {
     return useVuelidate();
@@ -268,9 +275,12 @@ export default class AddAdvisor extends Vue {
 
   created() {
     this.modelType = this.type;
+
     if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")
       this.request = this.selectedAdvisor;
-    this.unassignedRepCodes();
+
+    if (this.modelType == "Edit Advisors") this.editAdvisor();
+    else if (this.modelType == "Add Advisor") this.unassignedRepCodes();
   }
 
   public close(action: string) {
@@ -309,6 +319,7 @@ export default class AddAdvisor extends Vue {
   }
 
   public updateRepCodes(repCodes: Array<ListItem>) {
+    this.request.repCodes = [];
     repCodes.forEach((item: ListItem) => {
       let repCode: assignRepCodesResponseModel =
         new assignRepCodesResponseModel();
@@ -319,15 +330,29 @@ export default class AddAdvisor extends Vue {
   }
 
   public editAdvisor() {
-    this.request = this.selectedAdvisor;
     this.modelType = "Edit Advisors";
+    this.updateAssignedRepCodes();
+    this.unassignedRepCodes();
+  }
+
+  public updateAssignedRepCodes() {
+    this.assignedRepCodes = [];
+
+    this.request.repCodes.forEach((rep) => {
+      let item = new ListItem(rep.repCode);
+      item.data = rep.repId;
+
+      this.assignedRepCodes.push(item);
+    });
   }
 
   public addAdvisor() {
     this.v$.$touch();
     if (!this.v$.$invalid && !this.emailErrorMessage) {
       this.request.middleName = this.valueCheck(this.request.middleName);
-      this.request.advisorIdentifier = this.valueCheck(this.request.advisorIdentifier);
+      this.request.advisorIdentifier = this.valueCheck(
+        this.request.advisorIdentifier
+      );
       this.request.advisorId = this.valueCheck(this.request.advisorId);
       this.request.repCodes =
         this.request.repCodes && this.request.repCodes.length > 0

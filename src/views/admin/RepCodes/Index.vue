@@ -70,7 +70,14 @@
               ASSIGNED ADVISORS
             </th>
 
-            <th></th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom border-dashed border-light
+                p-4
+              "
+            ></th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +87,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
               @click="viewRepCodes('View RepCode', item)"
             >
@@ -91,7 +98,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
             >
               {{ item.branchName }}
@@ -101,14 +108,14 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
             >
               <span v-for="(advisor, i) of item.advisors" :key="i">
-                {{ advisor.displayName }}
+                {{ advisor.displayName }},
               </span>
             </td>
-            <td class="border-bottom border-dashed border-light p-4">
+            <td class="border-bottom border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
                 @click="viewRepCodes('Edit RepCodes', item)"
@@ -129,7 +136,7 @@
     pageType="RepCodes"
     :type="type"
     :selectedRepCode="selectedRepCode"
-    :selectedBranch="selectedRepCode.branchName"
+    @repCodeUpdated="updateRepCodes"
     @close="showRepCodePreviewModel = false"
     v-if="showRepCodePreviewModel"
   />
@@ -176,6 +183,7 @@ export default class RepCodes extends Vue {
 
   public updateRepCodes() {
     this.addRepCodeModel = false;
+    this.showRepCodePreviewModel = false;
     this.getRepCodes();
   }
 

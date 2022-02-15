@@ -18,17 +18,15 @@ export class unassignedRepCodesResponseModel {
   repId: number;
 }
 export class addRepCodeRequestModel {
+  repId: number;
   repCode: string;
   branchName: string;
-  advisors: Array<assignedAdvisorsResponseModel> = [];
-}
-export class assignedAdvisorsResponseModel {
-  advisorId: number;
-  displayName: string;
+  branchCode: number;
+  branchId: number;
+  advisors: Array<addRepCodeResponseModel> = [];
 }
 export class addRepCodeResponseModel {
-  status: string;
-  edit: boolean;
+  advisorId: number;
   firstName: string;
   lastName: string;
   middleName: string;

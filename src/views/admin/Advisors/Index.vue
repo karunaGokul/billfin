@@ -96,7 +96,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
               @click="addAdvisor('View Advisor', item)"
             >
@@ -107,7 +107,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
               @click="addAdvisor('View Advisor', item)"
             >
@@ -118,7 +118,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
             >
               <a
@@ -136,13 +136,13 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
               @click="addAdvisor('View Advisor', item)"
             >
               {{ item.branch }}
             </td>
-            <td class="border-bottom border-dashed border-light p-4">
+            <td class="border-bottom border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
                 @click="addAdvisor('Edit Advisors', item)"
@@ -165,7 +165,6 @@
     pageType="Advisor"
     type="View RepCode"
     :selectedRepCode="selectedRepCode"
-    :selectedBranch="selectedAdvisor.branch"
     @close="showRepCodePreviewModel = false"
     v-if="showRepCodePreviewModel"
   />
@@ -190,6 +189,7 @@ export default class Advisors extends Vue {
   @Inject("advisorsService") service: IAdvisorsService;
 
   public response: Array<advisorsResponseModel> = [];
+
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
   public selectedRepCode: advisorsResponseModel = new advisorsResponseModel();
   public showAdvisorModel: boolean = false;
@@ -210,6 +210,7 @@ export default class Advisors extends Vue {
 
   public addAdvisor(type: string, advisor?: advisorsResponseModel) {
     this.type = type;
+    this.selectedAdvisor = new advisorsResponseModel();
     if (advisor) this.selectedAdvisor = advisor;
     this.showAdvisorModel = true;
   }
@@ -220,7 +221,10 @@ export default class Advisors extends Vue {
     this.getAdvisors();
   }
 
-  public openRepCodePreview(advisor: advisorsResponseModel, repCodes: advisorsResponseModel) {
+  public openRepCodePreview(
+    advisor: advisorsResponseModel,
+    repCodes: advisorsResponseModel
+  ) {
     this.selectedRepCode = repCodes;
     this.selectedAdvisor = advisor;
     this.showRepCodePreviewModel = true;

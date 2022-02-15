@@ -49,10 +49,15 @@ import { ListItem } from "@/model";
 
 export default class SelectBoxWithDelete extends Vue {
   @Prop() label: string;
+  @Prop() preData: Array<ListItem>;
   @Prop() response: Array<ListItem>;
 
   public selectedItem: ListItem = null;
   public item: Array<ListItem> = [];
+
+  created() {
+    if(this.preData) this.item = this.preData;
+  }
 
   mounted() {
     setTimeout(() => {

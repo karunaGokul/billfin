@@ -70,7 +70,14 @@
               ASSIGNED REP CODES
             </th>
 
-            <th></th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom border-dashed border-light
+                p-4
+              "
+            ></th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +87,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
               @click="viewRepCodes('View RepCode', item)"
             >
@@ -91,7 +98,7 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
             >
               {{ item.branchName }}
@@ -101,14 +108,14 @@
                 fw-bold
                 text-dark-gray
                 border-bottom border-dashed border-light
-                p-4
+                p-6
               "
             >
               <span v-for="(repCode, i) of item.repCodes" :key="i">
                 {{ repCode.repCode }}
               </span>
             </td>
-            <td class="border-bottom border-dashed border-light p-4">
+            <td class="border-bottom border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
                 @click="viewBranches('Edit Branches', item)"
@@ -135,10 +142,12 @@ import { IBranchesService } from "@/service";
 import { branchesResponseModel } from "@/model";
 
 import AddBranch from "./compontents/AddBranch.vue";
+import ViewBranches from "./compontents/ViewBranches.vue";
 
 @Options({
   components: {
     AddBranch,
+    ViewBranches,
   },
 })
 export default class Branches extends Vue {

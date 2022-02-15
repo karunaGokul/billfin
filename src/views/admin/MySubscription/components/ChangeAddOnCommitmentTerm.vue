@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade show d-block">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 850px">
       <div class="modal-content rounded-3">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
@@ -84,7 +84,9 @@
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
                       New Term End On
                     </td>
-                    <td class="pt-3 pb-3 fw-bolder text-end">Auto-renews</td>
+                    <td class="pt-3 pb-3 fw-bolder text-end">
+                      Auto-renews {{ newEndDate }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
@@ -206,7 +208,16 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
     let date = new Date(this.addons.renewDate);
 
     if (this.newTerm == "Monthly") date.setDate(date.getDate() + 1);
-    else date.setDate(date.getDate() + 1);
+    else date.setFullYear(date.getFullYear() + 1);
+
+    return moment(String(date)).format("MM/DD/YYYY");
+  }
+
+  get newEndDate() {
+    let date = new Date(this.newTermStartDate);
+
+    if (this.newTerm == "Monthly") date.setMonth(date.getMonth() + 1);
+    else date.setFullYear(date.getFullYear() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }

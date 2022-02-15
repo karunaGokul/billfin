@@ -41,12 +41,12 @@
           <div class="d-flex align-items-center p-4">
             <button
               class="btn me-3"
-              :disabled="!item.default"
+              :title="item.default ? 'This card cannot allowed to delete' : ''"
               :class="{
-                'btn-light': !item.default,
-                'btn-primary': item.default,
+                'btn-light': item.default,
+                'btn-primary': !item.default,
               }"
-              @click="confirmation(item)"
+              @click="!item.default ? confirmation(item) : ''"
             >
               Delete
             </button>

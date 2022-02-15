@@ -1,11 +1,10 @@
 import {
-  assignedAdvisorsResponseModel,
   assignRepCodesResponseModel,
 } from "@/model";
 
 export class branchesResponseModel {
   branchCode: string;
-  branch: string;
+  branchName: string;
   repCodes: Array<assignRepCodesResponseModel> = [];
 }
 export class unassignedBranchResponseModel {
@@ -18,3 +17,5 @@ export class addBranchRequestModel {
   repCodes: Array<assignRepCodesResponseModel> = [];
 }
 export class addBranchResponseModel {}
+export class viewBranchsResponseModel {
+}

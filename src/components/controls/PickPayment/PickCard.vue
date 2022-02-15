@@ -69,12 +69,12 @@
           <div class="d-flex align-items-center p-4">
             <button
               class="btn me-3"
-              :disabled="!item.default"
+              :title="item.default ? 'This card cannot allow to delete' : ''"
               :class="{
-                'btn-light': !item.default,
-                'btn-primary': item.default,
+                'btn-light': item.default,
+                'btn-primary': !item.default,
               }"
-              @click="confirmation(item)"
+              @click="!item.default ? confirmation(item) : ''"
             >
               Delete
             </button>
@@ -123,7 +123,7 @@ import { cardDetailsResponsetModel } from "@/model";
 @Options({
   components: {
     CreditCard,
-    AppDelete
+    AppDelete,
   },
 })
 export default class PickCard extends Vue {

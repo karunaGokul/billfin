@@ -4,7 +4,7 @@ import {
   addRepCodeRequestModel,
   addRepCodeResponseModel,
   unassignedRepCodesResponseModel,
-  viewRepCodesResponseModel
+  viewRepCodesResponseModel,
 } from "@/model";
 
 export interface IRepCodesService extends IBaseService<any, any> {
@@ -49,4 +49,5 @@ export class RepCodesService extends BaseService<any, any>
       }
     );
   }
+
 }

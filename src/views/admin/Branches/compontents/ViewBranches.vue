@@ -4,16 +4,16 @@
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
-            <span v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
+            <span v-if="modelType == 'Edit Branch'"
               >Edit</span
             >
-            {{ selectedRepCode.repCode }} <span v-if="selectedRepCode.branchName">-</span> {{ selectedRepCode.branchName }}
+            {{ request.repCode }} - {{ request.branch }}
 
             <i
               class="fa fa-pen text-gray ms-4"
               style="cursor: pointer"
-              v-if="pageType == 'RepCodes' && modelType == 'View RepCode'"
-              @click="editRepCodes"
+              v-if="modelType == 'View Branch'"
+              @click="editBranch"
             ></i>
           </h5>
           <button type="button" class="btn-close" @click="close">
@@ -23,13 +23,13 @@
         <div class="modal-body m-4 p-4">
           <h5
             class="modal-title fs-4 fw-bolder"
-            v-if="pageType == 'RepCodes' && modelType == 'View RepCode'"
+            v-if="modelType == 'View Branch'"
           >
-            {{ selectedRepCode.repCode }} <span v-if="selectedRepCode.branchName">-</span> {{ selectedRepCode.branchName }}
+            {{ request.repCode }} - {{ request.branch }}
           </h5>
           <div
             class="d-flex align-items-center"
-            v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
+            v-if="modelType == 'Edit Branch'"
           >
             <text-input
               formFieldType="inputBlock"
@@ -40,10 +40,10 @@
             <div class="ms-8">
               <select
                 class="form-select form-select-solid mb-4"
-                v-model="selectedBranch"
+                v-model="v$.request.branchName"
               >
                 <option
-                  v-for="(item, i) in branchs"
+                  v-for="(item, i) in unassignedBranchs"
                   :key="i"
                   :value="item"
                 >
@@ -60,7 +60,7 @@
                 type="button"
                 class="btn btn-primary btn-sm p-2 ps-3 ms-4"
                 :disabled="!allowAdvisor"
-                v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
+                v-if="modelType == 'Edit Branch'"
                 @click="addNewRow"
               >
                 <i class="fa fa-plus"></i>
@@ -104,7 +104,7 @@
                       p-4
                     "
                   >
-                    DISPLAY AS
+                    REP CODE
                   </th>
 
                   <th
@@ -115,7 +115,7 @@
                       p-4
                     "
                   >
-                    LAST
+                    ADVISOR
                   </th>
                   <th
                     class="
@@ -124,36 +124,14 @@
                       border-bottom border-dashed border-light
                       p-4
                     "
-                  >
-                    FIRST
-                  </th>
-                  <th
-                    class="
-                      fw-bold
-                      text-gray-secondary
-                      border-bottom border-dashed border-light
-                      p-4
-                    "
-                  >
-                    MIDDLE
-                  </th>
-                  <th
-                    class="
-                      fw-bold
-                      text-gray-secondary
-                      border-bottom border-dashed border-light
-                      p-4
-                    "
-                    v-if="
-                      pageType == 'RepCodes' && modelType == 'Edit RepCodes'
-                    "
+                    v-if="modelType == 'Edit Branch'"
                   ></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
                   v-for="(item, index) of request.advisors"
-                  :key="'advisors-table' + index"
+                  :key="'repcode-table' + index"
                 >
                   <td
                     class="
@@ -173,8 +151,8 @@
                         @change="updateRow(item)"
                       >
                         <option
-                          v-for="(advisor, i) in unassignedAdvisors"
-                          :key="i"
+                          v-for="(advisor, index) in unassignedAdvisors"
+                          :key="index"
                           :value="advisor"
                         >
                           {{ advisor.displayName }}
@@ -204,56 +182,10 @@
                       </div>
                     </div>
                   </td>
-                  <td
-                    class="
-                      fw-bold
-                      text-dark-gray
-                      border-bottom border-dashed border-light
-                      p-6
-                    "
-                  >
-                    <div v-if="item.status == 'view' && !item.edit">
-                      {{ item.firstName }}
-                    </div>
-                    <div v-else>
-                      <div class="input-group input-group-solid mb-2">
-                        <input
-                          type="text"
-                          class="form-control text-start"
-                          v-model="item.firstName"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                  </td>
-                  <td
-                    class="
-                      fw-bold
-                      text-dark-gray
-                      border-bottom border-dashed border-light
-                      p-6
-                    "
-                  >
-                    <div v-if="item.status == 'view' && !item.edit">
-                      {{ item.middleName }}
-                    </div>
-                    <div v-else>
-                      <div class="input-group input-group-solid mb-2">
-                        <input
-                          type="text"
-                          class="form-control text-start"
-                          v-model="item.middleName"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                  </td>
 
                   <td
                     class="border-bottom border-dashed border-light p-4"
-                    v-if="
-                      pageType == 'RepCodes' && modelType == 'Edit RepCodes'
-                    "
+                    v-if="modelType == 'Edit Branch'"
                   >
                     <button
                       type="button"
@@ -268,13 +200,13 @@
             </table>
           </div>
 
-          <add-advisor
+          <!-- <add-advisor
             pageType="RepCodes"
             type="Add Advisor"
-            @advisorAdded="getUnassignedAdvisors"
+            @advisorAdded="getAdvisors"
             @close="showAdvisorModel = false"
             v-if="showAdvisorModel"
-          />
+          /> -->
         </div>
 
         <div
@@ -293,15 +225,15 @@
             Close
           </button>
           <template
-            v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
+            v-if="modelType == 'Edit RepCodes'"
           >
             <div>
               <button
                 type="button"
                 class="btn btn-primary"
-                @click="showAdvisorModel = true"
+                @click="showRepCodeModel = true"
               >
-                Add New Advisor
+                Add New Rep Code
               </button>
             </div>
             <div>
@@ -315,7 +247,7 @@
               <button
                 type="button"
                 class="btn btn-primary ms-4"
-                @click="saveRepCodes"
+                @click="saveBranch"
               >
                 Save
               </button>
@@ -333,18 +265,17 @@ import { Inject, Prop } from "vue-property-decorator";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
-import AddAdvisor from "../Models/AddAdvisor.vue";
+import AddRepCode from "@/components/Models/AddRepCode.vue";
 
-import TextInput from "../controls/TextInput.vue";
-import SelectBox from "../controls/SelectBox.vue";
+import TextInput from "@/components/controls/TextInput.vue";
+import SelectBox from "@/components/controls/SelectBox.vue";
 
 import {
-  addRepCodeRequestModel,
   advisorsodel,
   advisorsResponseModel,
-  branchesResponseModel,
-  repCodesResponseModel,
-  viewRepCodesResponseModel,
+  assignRepCodesResponseModel,
+  unassignedRepCodesResponseModel,
+  viewBranchsResponseModel,
 } from "@/model";
 import {
   IAdvisorsService,
@@ -354,7 +285,7 @@ import {
 
 @Options({
   components: {
-    AddAdvisor,
+    AddRepCode,
     TextInput,
     SelectBox,
   },
@@ -365,12 +296,13 @@ import {
     },
   },
 })
-export default class RepCodePreview extends Vue {
+export default class ViewBranches extends Vue {
   @Inject("repCodesService") repCodesService: IRepCodesService;
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
 
-  @Prop() selectedRepCode: repCodesResponseModel;
+  @Prop() selectedRepCode: assignRepCodesResponseModel;
+  @Prop() selectedBranch: string;
 
   @Prop() pageType: string;
   @Prop() type: string;
@@ -378,15 +310,14 @@ export default class RepCodePreview extends Vue {
   public modelType: string = "";
   public showAdvisorModel: boolean = false;
 
-  public request: viewRepCodesResponseModel = new viewRepCodesResponseModel();
+  public request: viewBranchsResponseModel = new viewBranchsResponseModel();
 
   public unassignedAdvisors: Array<advisorsResponseModel> = [];
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
 
-  public branchs: Array<branchesResponseModel> = [];
+  public unassignedRepCodes: Array<unassignedRepCodesResponseModel> = [];
 
   public allowAdvisor: boolean = true;
-  public selectedBranch: repCodesResponseModel = new repCodesResponseModel();
 
   public v$: any = setup(() => this.validate());
 
@@ -396,48 +327,34 @@ export default class RepCodePreview extends Vue {
 
   created() {
     this.modelType = this.type;
-    this.request.repCode = this.selectedRepCode.repCode;
-    this.request.branchName = this.selectedRepCode.branchName;
 
-    this.selectedBranch = this.selectedRepCode;
+   /* this.request.repCode = this.selectedRepCode.repCode;
+    this.request.branchName = this.selectedBranch;*/
 
-    this.viewRepCode();
+    this.viewBranch();
 
-    if (this.modelType == "Edit RepCodes") {
-      this.getBranch();
-      this.getUnassignedAdvisors();
+    if (this.modelType == "Edit Branch") {
+      this.getUnassignedRepCodes();
     }
   }
 
-  private viewRepCode() {
+  private viewBranch() {
     this.repCodesService
       .viewRepCode(this.selectedRepCode.repId)
       .then((response) => {
-        this.request = response;
+       /* this.request = response;
         this.request.advisors.forEach((advisor) => {
           advisor.status = "view";
           advisor.edit = false;
-        });
+        });*/
       });
   }
 
-  private getBranch() {
-    this.branchesService
-      .getBranches()
+  private getUnassignedRepCodes() {
+    this.repCodesService
+      .unassignedRepCodes()
       .then((response) => {
-        this.branchs = response;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  private getUnassignedAdvisors() {
-    this.service
-      .unassignedAdvisors()
-      .then((response) => {
-        this.showAdvisorModel = false;
-        this.unassignedAdvisors = response;
+        this.unassignedRepCodes = response;
       })
       .catch((err) => {
         console.log(err);
@@ -449,22 +366,14 @@ export default class RepCodePreview extends Vue {
   }
 
   public editRepCodes() {
-    this.modelType = "Edit RepCodes";
-    this.getUnassignedAdvisors();
-    this.getBranch();
+    this.modelType = "Edit Branch";
+    this.getUnassignedRepCodes();
   }
 
   public addNewRow() {
-    for (let i = 0; i < this.request.advisors.length; i++) {
+   /* for (let i = 0; i < this.request.advisors.length; i++) {
       this.request.advisors[i].status = "view";
       this.request.advisors[i].edit = false;
-    }
-
-    if (this.allowAdvisor) {
-      let index = this.unassignedAdvisors.findIndex(
-        (item) => item == this.selectedAdvisor
-      );
-      this.unassignedAdvisors.splice(index, 1);
     }
 
     this.allowAdvisor = false;
@@ -473,7 +382,7 @@ export default class RepCodePreview extends Vue {
       firstName: "",
       lastName: "",
       middleName: "",
-      displayName: "",
+      displayName: "Jaxson Arcand",
       status: "edit",
       edit: true,
       emailAddress: "",
@@ -482,63 +391,24 @@ export default class RepCodePreview extends Vue {
       branch: "",
       advisorIdentifier: "",
       advisorId: 0,
-    });
+    });*/
   }
 
   public updateRow(item: advisorsodel) {
-    item.status = "view";
+    /*item.status = "view";
     this.allowAdvisor = true;
-
     item.firstName = this.selectedAdvisor.firstName;
     item.lastName = this.selectedAdvisor.lastName;
-    item.middleName = this.selectedAdvisor.middleName;
-    item.displayName = this.selectedAdvisor.displayName;
-    item.advisorId = this.selectedAdvisor.advisorId;
+    item.middleName = this.selectedAdvisor.middleName;*/
   }
 
   public removeRow(index: number) {
-    this.request.advisors.splice(index, 1);
+    //this.request.advisors.splice(index, 1);
   }
 
   public saveRepCodes() {
-    let request: addRepCodeRequestModel = new addRepCodeRequestModel();
-    request.repId = this.request.repId;
-    request.repCode = this.request.repCode;
-    request.branchName = this.selectedBranch.branchName;
-    request.branchCode = this.selectedBranch.branchCode;
-    request.branchId = this.selectedBranch.branchId;
-
-    request.advisors = this.request.advisors
-      .filter((item) => item.status == "view")
-      .map(
-        ({
-          advisorId,
-          advisorIdentifier,
-          contactPhone,
-          firstName,
-          lastName,
-          middleName,
-          displayName,
-        }) => ({
-          advisorId,
-          advisorIdentifier,
-          contactPhone,
-          firstName,
-          lastName,
-          middleName,
-          displayName,
-        })
-      );
-
-    this.repCodesService
-      .addRepCode(request)
-      .then((response) => {
-        console.log(response);
-        this.$emit("repCodeUpdated");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(this.request);
+    //console.log(this.request.advisors.filter((item) => item.status == "view"));
   }
 }
 </script>

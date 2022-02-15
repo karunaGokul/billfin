@@ -8,8 +8,12 @@
       <input
         type="text"
         class="form-control text-start"
+        :class="{
+          'border-danger': customInputError
+        }"
         :id="label"
         v-model="controls.$model"
+        :readonly="readonly"
         @blur="emitEvent()"
       />
     </div>
@@ -42,6 +46,8 @@ export default class EmailInput extends Vue {
   @Prop() label: string | any;
   @Prop() controls: any;
   @Prop() validation: Array<string> | any;
+  @Prop() customInputError?: boolean;
+  @Prop() readonly?: boolean;
 
   public emitEvent() {
     this.$emit("validateEmail");
