@@ -360,7 +360,8 @@ export default class Home extends Vue {
       this.page == "Setup" ||
       this.page == "Bills & Payments" ||
       this.page == "Advisors" ||
-      this.page == "RepCodes"
+      this.page == "RepCodes" ||
+      this.page == "Branches"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
         this.page == "Manage Subscription" ? "My Subscription" : this.page
