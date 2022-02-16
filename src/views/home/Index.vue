@@ -264,22 +264,6 @@ export default class Home extends Vue {
   private getFirms() {
     this.firms = this.store.getters.firms;
 
-    /*if (
-      this.dataEntitlements.length == 1 &&
-      this.firms.trialOnboardingStatus != "COMPLETED"
-    ) {
-      if (this.firms.firmStatus == "IN_TRIAL" && this.trailExpireDays < 0) {
-        this.trailExpired = true;
-        this.$router.push("./account-expired");
-      } else {
-        this.showOnBoard = true;
-        this.trailExpired = false;
-        if (this.firms.trialOnboardingStatus == "NOT_STARTED")
-          this.lastOnboardingStep = 1;
-        else this.lastOnboardingStep = this.firms.lastOnboardingStepCompleted;
-      }
-    }*/
-
     if (this.dataEntitlements.length == 1) {
       if (this.firms.firmStatus == "IN_TRIAL" && this.trailExpireDays < 0) {
         this.trailExpired = true;
