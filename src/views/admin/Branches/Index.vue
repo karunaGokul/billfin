@@ -89,7 +89,7 @@
                 border-bottom border-dashed border-light
                 p-6
               "
-              @click="viewRepCodes('View RepCode', item)"
+              @click="viewBranch('View Branch', item)"
             >
               {{ item.branchCode }}
             </td>
@@ -118,7 +118,7 @@
             <td class="border-bottom border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
-                @click="viewBranches('Edit Branches', item)"
+                @click="viewBranch('Edit Branchs', item)"
               ></i>
             </td>
           </tr>
@@ -129,6 +129,13 @@
         @close="addBranchModel = false"
         @branchAdded="updateBranch"
         v-if="addBranchModel"
+      />
+      <view-branches
+        :type="type"
+        :branch="selectedBranch"
+        @branchUpdated="updateBranch"
+        @close="showBranchModel = false"
+        v-if="showBranchModel"
       />
     </div>
   </div>
@@ -154,7 +161,11 @@ export default class Branches extends Vue {
   @Inject("branchesService") service: IBranchesService;
 
   public response: Array<branchesResponseModel> = [];
+  public selectedBranch: branchesResponseModel = new branchesResponseModel();
   public addBranchModel: boolean = false;
+  public showBranchModel: boolean = false;
+
+  public type: string = "";
 
   created() {
     this.getBranches();
@@ -170,8 +181,15 @@ export default class Branches extends Vue {
     this.addBranchModel = true;
   }
 
+  public viewBranch(type: string, item: branchesResponseModel) {
+    this.type = type;
+    this.selectedBranch = item;
+    this.showBranchModel = true;
+  }
+
   public updateBranch() {
     this.addBranchModel = false;
+    this.showBranchModel = false;
     this.getBranches();
   }
 }

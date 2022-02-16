@@ -9,7 +9,7 @@ export class repCodesResponseModel {
   advisors: Array<string>;
 }
 export class unassignedRepCodesResponseModel {
-  advisors: string;
+  advisors: Array<addRepCodeResponseModel> = [];
   branchCode: number;
   branchId: number;
   branchName: string;

@@ -43,7 +43,7 @@
             class="p-5 fw-bolder text-dark-gray border-bottom border-light-gray"
           >
             {{ item.product == "AUM" ? "AUM" : "Subscription" }} Billing
-            {{ item.type == "PLAN" ? "Plan" : "Add-on" }}
+            {{ item.type == "Plan" ? "Plan" : "Add-on" }}
           </td>
           <td
             class="p-5 fw-bolder text-dark-gray border-bottom border-light-gray"

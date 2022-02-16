@@ -120,20 +120,19 @@
         </div>
       </template>
 
-      <div
-        class="
-          fw-bolder
-          fs-4
-          mt-6
-          mb-4
-          border-top border-dashed border-start-0 border-end-0 border-bottom-0
-          pt-4
-        "
-      >
-        Refund Amount
-      </div>
-
       <template v-if="planAction == 'UPGRADE'">
+        <div
+          class="
+            fw-bolder
+            fs-4
+            mt-6
+            mb-4
+            border-top border-dashed border-start-0 border-end-0 border-bottom-0
+            pt-4
+          "
+        >
+          Refund Amount
+        </div>
         <div>
           <div class="mt-8 d-flex justify-content-between">
             <div class="text-dark-black fs-4" @click="togglePlan = !togglePlan">
@@ -245,8 +244,15 @@
                     {{ $filters.currencyDisplay(item.paymentAmount) }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
-                    {{ $datehelper.changeDateFormatWithSlash(item.refundStartDate) }} -
-                    {{ $datehelper.changeDateFormatWithSlash(item.refundEndDate) }}
+                    {{
+                      $datehelper.changeDateFormatWithSlash(
+                        item.refundStartDate
+                      )
+                    }}
+                    -
+                    {{
+                      $datehelper.changeDateFormatWithSlash(item.refundEndDate)
+                    }}
                   </td>
                   <td class="pt-0 p-4 fw-bold">
                     {{ $filters.currencyDisplay(item.refundAmount) }}

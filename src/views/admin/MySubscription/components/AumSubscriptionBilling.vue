@@ -145,7 +145,7 @@ export default class AumSubscriptionBilling extends Vue {
         this.loading = false;
         if (err.response.status == 500)
           this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please try again",
+            message: "Somthing went wrong, Please contact administration",
             title: "Oops, sorry!",
           });
         else if (err.response.status == 400)

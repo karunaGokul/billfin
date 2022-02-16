@@ -3,6 +3,7 @@
     :product="products"
     @update="updatePlan($event, options)"
     planType="Change Plan"
+    v-if="products"
   />
   <div class="text-center m-4">
     <button class="btn btn-light me-5" @click="back">Cancel</button>

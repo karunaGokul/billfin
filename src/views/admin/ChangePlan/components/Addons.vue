@@ -53,14 +53,15 @@ export default class Addons extends Vue {
       this.plans.push({
         product: this.products,
         planId: this.subscriptionBilling.plan.planId,
-        planSubscriptionId: this.subscriptionBilling.currentPlan.subscriptionPlanId,
+        planSubscriptionId:
+          this.subscriptionBilling.currentPlan.subscriptionPlanId,
         preAddons: this.addons(
           this.subscriptionBilling.plan.preIncludedAddons,
           this.subscriptionBilling.addons
         ),
         termPlanType: this.subscriptionBilling.commitmentTerm,
       });
-      console.log(this.plans);
+    console.log(this.plans);
   }
 
   mounted() {
@@ -68,11 +69,7 @@ export default class Addons extends Vue {
   }
 
   public next() {
-    if (this.products == "AUM") {
-      if (this.aumBilling.addons.length) this.$emit("next");
-    } else if (this.products == "SUBSCRIPTION") {
-      if (this.subscriptionBilling.addons.length) this.$emit("next");
-    }
+    this.$emit("next");
   }
 
   public back() {

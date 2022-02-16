@@ -19,7 +19,8 @@
                 >Primary</span
               >
               <span
-                class="badge text-orange ms-2 fs-6 bg-orange"
+                class="badge text-orange ms-2 fs-6 bg-orange border-1 border-orange border-dashed"
+                style="cursor: pointer"
                 v-if="!item.default"
                 @click="makePrimary(item, 'primary')"
                 >Make Primary</span
@@ -80,12 +81,12 @@
           <div class="d-flex align-items-center p-4">
             <button
               class="btn me-3"
+              :title="item.default ? 'This card cannot allowed to delete' : ''"
               :class="{
-                'btn-light': !item.default,
-                'btn-primary': item.default,
+                'btn-light': item.default,
+                'btn-primary': !item.default,
               }"
-              :disabled="!item.default"
-              @click="confirmation(item)"
+              @click="!item.default ? confirmation(item) : ''"
             >
               Delete
             </button>
@@ -123,7 +124,7 @@
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
         <div class="fs-5">
           <div class="fw-bolder mt-2 mb-2">
-            {{ $datehelper.changeDateFormatWithSlash(item.transactionDate) }}
+            {{ $datehelper.changeMonthFormat(item.transactionDate) }}
           </div>
           <div class="fw-bolder mb-2 fs-5">
             <img

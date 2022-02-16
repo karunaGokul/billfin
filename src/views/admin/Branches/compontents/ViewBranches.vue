@@ -4,10 +4,8 @@
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
-            <span v-if="modelType == 'Edit Branch'"
-              >Edit</span
-            >
-            {{ request.repCode }} - {{ request.branch }}
+            <span v-if="modelType == 'Edit Branchs'">Edit</span>
+            {{ branch.branchCode }} - {{ branch.branchName }}
 
             <i
               class="fa fa-pen text-gray ms-4"
@@ -25,42 +23,37 @@
             class="modal-title fs-4 fw-bolder"
             v-if="modelType == 'View Branch'"
           >
-            {{ request.repCode }} - {{ request.branch }}
+            {{ branch.branchCode }} - {{ branch.branchName }}
           </h5>
           <div
             class="d-flex align-items-center"
-            v-if="modelType == 'Edit Branch'"
+            v-if="modelType == 'Edit Branchs'"
           >
             <text-input
               formFieldType="inputBlock"
               label=""
-              :controls="v$.request.repCode"
+              :controls="v$.request.branchCode"
               :validation="['required']"
+              readonly
             />
             <div class="ms-8">
-              <select
-                class="form-select form-select-solid mb-4"
-                v-model="v$.request.branchName"
-              >
-                <option
-                  v-for="(item, i) in unassignedBranchs"
-                  :key="i"
-                  :value="item"
-                >
-                  {{ item.branchName }}
-                </option>
-              </select>
+              <text-input
+                formFieldType="inputBlock"
+                label=""
+                :controls="v$.request.branchName"
+                :validation="['required']"
+              />
             </div>
           </div>
           <div class="d-flex justify-content-between p-4">
             <div class="fs-4 fw-bolder">
-              Advisors({{ request.advisors.length }})
+              Rep Codes({{ request.repCodes.length }})
 
               <button
                 type="button"
                 class="btn btn-primary btn-sm p-2 ps-3 ms-4"
-                :disabled="!allowAdvisor"
-                v-if="modelType == 'Edit Branch'"
+                :disabled="!allowRepCode"
+                v-if="modelType == 'Edit Branchs'"
                 @click="addNewRow"
               >
                 <i class="fa fa-plus"></i>
@@ -124,13 +117,13 @@
                       border-bottom border-dashed border-light
                       p-4
                     "
-                    v-if="modelType == 'Edit Branch'"
+                    v-if="modelType == 'Edit Branchs'"
                   ></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(item, index) of request.advisors"
+                  v-for="(item, index) of request.repCodes"
                   :key="'repcode-table' + index"
                 >
                   <td
@@ -142,20 +135,20 @@
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
-                      {{ item.displayName }}
+                      {{ item.repCode }}
                     </div>
                     <div v-else>
                       <select
                         class="form-select form-select-solid mb-2"
-                        v-model="selectedAdvisor"
+                        v-model="selectedRepCode"
                         @change="updateRow(item)"
                       >
                         <option
-                          v-for="(advisor, index) in unassignedAdvisors"
+                          v-for="(rep, index) in unassignedRepCode"
                           :key="index"
-                          :value="advisor"
+                          :value="rep"
                         >
-                          {{ advisor.displayName }}
+                          {{ rep.repCode }}
                         </option>
                       </select>
                     </div>
@@ -169,14 +162,16 @@
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
-                      {{ item.lastName }}
+                      <span v-for="(data, i) in item.advisors" :key="i"
+                        >{{ data.displayName }},</span
+                      >
                     </div>
                     <div v-else>
                       <div class="input-group input-group-solid mb-2">
                         <input
                           type="text"
                           class="form-control text-start"
-                          v-model="item.lastName"
+                          :value="displayName(item.advisors)"
                           readonly
                         />
                       </div>
@@ -185,7 +180,7 @@
 
                   <td
                     class="border-bottom border-dashed border-light p-4"
-                    v-if="modelType == 'Edit Branch'"
+                    v-if="modelType == 'Edit Branchs'"
                   >
                     <button
                       type="button"
@@ -212,21 +207,19 @@
         <div
           class="modal-footer border-0 p-4"
           :class="{
-            'justify-content-center': modelType == 'View RepCode',
-            'justify-content-between': modelType != 'View RepCode',
+            'justify-content-center': modelType == 'View Branch',
+            'justify-content-between': modelType != 'View Branch',
           }"
         >
           <button
             type="button"
             class="btn btn-primary ms-4"
             @click="close"
-            v-if="modelType == 'View RepCode'"
+            v-if="modelType == 'View Branch'"
           >
             Close
           </button>
-          <template
-            v-if="modelType == 'Edit RepCodes'"
-          >
+          <template v-if="modelType == 'Edit Branchs'">
             <div>
               <button
                 type="button"
@@ -271,9 +264,10 @@ import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
 import {
-  advisorsodel,
-  advisorsResponseModel,
-  assignRepCodesResponseModel,
+  addBranchRequestModel,
+  addRepCodeResponseModel,
+  branchesResponseModel,
+  repCodesModel,
   unassignedRepCodesResponseModel,
   viewBranchsResponseModel,
 } from "@/model";
@@ -291,8 +285,8 @@ import {
   },
   validations: {
     request: {
-      repCode: { required },
-      branchName: {},
+      branchCode: { required },
+      branchName: { required },
     },
   },
 })
@@ -301,10 +295,7 @@ export default class ViewBranches extends Vue {
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
 
-  @Prop() selectedRepCode: assignRepCodesResponseModel;
-  @Prop() selectedBranch: string;
-
-  @Prop() pageType: string;
+  @Prop() branch: branchesResponseModel;
   @Prop() type: string;
 
   public modelType: string = "";
@@ -312,12 +303,11 @@ export default class ViewBranches extends Vue {
 
   public request: viewBranchsResponseModel = new viewBranchsResponseModel();
 
-  public unassignedAdvisors: Array<advisorsResponseModel> = [];
-  public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
+  public selectedRepCode: unassignedRepCodesResponseModel =
+    new unassignedRepCodesResponseModel();
+  public unassignedRepCode: Array<unassignedRepCodesResponseModel> = [];
 
-  public unassignedRepCodes: Array<unassignedRepCodesResponseModel> = [];
-
-  public allowAdvisor: boolean = true;
+  public allowRepCode: boolean = true;
 
   public v$: any = setup(() => this.validate());
 
@@ -327,88 +317,115 @@ export default class ViewBranches extends Vue {
 
   created() {
     this.modelType = this.type;
-
-   /* this.request.repCode = this.selectedRepCode.repCode;
-    this.request.branchName = this.selectedBranch;*/
-
     this.viewBranch();
 
-    if (this.modelType == "Edit Branch") {
-      this.getUnassignedRepCodes();
+    /* this.request.repCode = this.selectedRepCode.repCode;
+    this.request.branchName = this.selectedBranch;*/
+
+    if (this.modelType == "Edit Branchs") {
+      this.unassignedRepCodes();
     }
   }
 
   private viewBranch() {
-    this.repCodesService
-      .viewRepCode(this.selectedRepCode.repId)
-      .then((response) => {
-       /* this.request = response;
-        this.request.advisors.forEach((advisor) => {
-          advisor.status = "view";
-          advisor.edit = false;
-        });*/
+    this.branchesService.viewBranch(this.branch.branchId).then((response) => {
+      this.request = response;
+      this.request.repCodes.forEach((rep) => {
+        rep.status = "view";
+        rep.edit = false;
       });
+    });
   }
 
-  private getUnassignedRepCodes() {
-    this.repCodesService
-      .unassignedRepCodes()
-      .then((response) => {
-        this.unassignedRepCodes = response;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  public unassignedRepCodes() {
+    this.repCodesService.unassignedRepCodes().then((response) => {
+      this.unassignedRepCode = response;
+    });
   }
 
   public close() {
     this.$emit("close");
   }
 
-  public editRepCodes() {
-    this.modelType = "Edit Branch";
-    this.getUnassignedRepCodes();
+  public editBranch() {
+    this.modelType = "Edit Branchs";
+    this.unassignedRepCodes();
   }
 
   public addNewRow() {
-   /* for (let i = 0; i < this.request.advisors.length; i++) {
-      this.request.advisors[i].status = "view";
-      this.request.advisors[i].edit = false;
+    for (let i = 0; i < this.request.repCodes.length; i++) {
+      this.request.repCodes[i].status = "view";
+      this.request.repCodes[i].edit = false;
     }
 
-    this.allowAdvisor = false;
+    if (this.allowRepCode) {
+      let index = this.unassignedRepCode.findIndex(
+        (item) => item.repId == this.selectedRepCode.repId
+      );
+      this.unassignedRepCode.splice(index, 1);
+    }
 
-    this.request.advisors.unshift({
-      firstName: "",
-      lastName: "",
-      middleName: "",
-      displayName: "Jaxson Arcand",
+    this.allowRepCode = false;
+
+    this.request.repCodes.unshift({
+      repId: 0,
+      repCode: "",
+      branchName: "",
+      branchCode: 0,
+      branchId: 0,
+      advisors: [],
       status: "edit",
       edit: true,
-      emailAddress: "",
-      contactPhone: "",
-      repCodes: null,
-      branch: "",
-      advisorIdentifier: "",
-      advisorId: 0,
-    });*/
+    });
   }
 
-  public updateRow(item: advisorsodel) {
-    /*item.status = "view";
-    this.allowAdvisor = true;
-    item.firstName = this.selectedAdvisor.firstName;
-    item.lastName = this.selectedAdvisor.lastName;
-    item.middleName = this.selectedAdvisor.middleName;*/
+  public updateRow(item: repCodesModel) {
+    item.status = "view";
+    this.allowRepCode = true;
+    item.repId = this.selectedRepCode.repId;
+    item.repCode = this.selectedRepCode.repCode;
+    item.advisors = this.selectedRepCode.advisors;
   }
 
   public removeRow(index: number) {
-    //this.request.advisors.splice(index, 1);
+    this.request.repCodes.splice(index, 1);
   }
 
-  public saveRepCodes() {
+  displayName(advisors: Array<addRepCodeResponseModel>) {
+    let displayName = advisors.map((item) => item.displayName);
+    return displayName.join(" ,");
+  }
+
+  public saveBranch() {
     console.log(this.request);
     //console.log(this.request.advisors.filter((item) => item.status == "view"));
+
+    let request: addBranchRequestModel = new addBranchRequestModel();
+    request.branchName = this.request.branchName;
+    request.branchCode = this.request.branchCode;
+    request.branchId = this.request.branchId;
+
+    request.repCodes = this.request.repCodes
+      .filter((item) => item.status == "view")
+      .map(
+        ({ repId, repCode, branchName, branchCode, branchId, advisors }) => ({
+          repId,
+          repCode,
+          branchName,
+          branchCode,
+          branchId,
+          advisors,
+        })
+      );
+
+    this.branchesService
+      .addBranch(this.request)
+      .then((response) => {
+        this.$emit("branchUpdated");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 </script>

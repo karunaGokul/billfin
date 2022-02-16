@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="d-flex align-items-center p-4">
-            <button
+           <!-- <button
               class="btn me-3"
               :title="item.default ? 'This card cannot allowed to delete' : ''"
               :class="{
@@ -49,7 +49,7 @@
               @click="!item.default ? confirmation(item) : ''"
             >
               Delete
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
