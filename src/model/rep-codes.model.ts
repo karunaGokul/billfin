@@ -3,7 +3,7 @@ import { advisorsResponseModel } from "./advisors.model";
 export class repCodesResponseModel {
   repCode: string;
   repId: number;
-  branchCode: number;
+  branchCode: string;
   branchId: number;
   branchName: string;
   advisors: Array<string>;
@@ -21,7 +21,7 @@ export class addRepCodeRequestModel {
   repId: number;
   repCode: string;
   branchName: string;
-  branchCode: number;
+  branchCode: string;
   branchId: number;
   advisors: Array<addRepCodeResponseModel> = [];
 }

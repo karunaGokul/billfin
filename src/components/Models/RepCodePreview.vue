@@ -52,6 +52,7 @@
               </select>
             </div>
           </div>
+          {{selectedBranch}}
           <div class="d-flex justify-content-between p-4">
             <div class="fs-4 fw-bolder">
               Advisors({{ request.advisors.length }})
@@ -360,8 +361,7 @@ import {
   },
   validations: {
     request: {
-      repCode: { required },
-      branchName: {},
+      repCode: { required }
     },
   },
 })
@@ -399,7 +399,13 @@ export default class RepCodePreview extends Vue {
     this.request.repCode = this.selectedRepCode.repCode;
     this.request.branchName = this.selectedRepCode.branchName;
 
-    this.selectedBranch = this.selectedRepCode;
+    this.selectedBranch.branchId = this.selectedRepCode.branchId;
+    this.selectedBranch.branchCode = this.selectedRepCode.branchCode;
+
+    this.selectedBranch.branchName = this.selectedRepCode.branchName;
+    //this.selectedBranch.repCodes = this.selectedRepCode.repCodes;
+
+    //console.log(this.selectedBranch);
 
     this.viewRepCode();
 

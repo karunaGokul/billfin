@@ -371,7 +371,7 @@ export default class ViewBranches extends Vue {
       repId: 0,
       repCode: "",
       branchName: "",
-      branchCode: 0,
+      branchCode: "",
       branchId: 0,
       advisors: [],
       status: "edit",
