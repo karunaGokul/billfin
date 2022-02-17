@@ -20,6 +20,7 @@
             type="search"
             placeholder="Search"
             aria-label="Search"
+            @input="applyFilter($event.target.value)"
           />
         </div>
       </div>
@@ -112,7 +113,7 @@
               "
             >
               <span v-for="(repCode, i) of item.repCodes" :key="i">
-                {{ repCode.repCode }}, 
+                {{ repCode.repCode }},
               </span>
             </td>
             <td class="border-bottom border-dashed border-light p-6">
@@ -161,6 +162,7 @@ export default class Branches extends Vue {
   @Inject("branchesService") service: IBranchesService;
 
   public response: Array<branchesResponseModel> = [];
+  public dataResource: Array<branchesResponseModel> = [];
   public selectedBranch: branchesResponseModel = new branchesResponseModel();
   public addBranchModel: boolean = false;
   public showBranchModel: boolean = false;
@@ -174,6 +176,7 @@ export default class Branches extends Vue {
   private getBranches() {
     this.service.getBranches().then((response) => {
       this.response = response;
+      this.dataResource = response;
     });
   }
 
@@ -191,6 +194,21 @@ export default class Branches extends Vue {
     this.addBranchModel = false;
     this.showBranchModel = false;
     this.getBranches();
+  }
+
+  public applyFilter(searchValue: string) {
+    this.response = this.dataResource.filter(
+      (item) =>
+        (item.branchCode &&
+          item.branchCode.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.branchName &&
+          item.branchName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        item.repCodes.some(
+          (code) =>
+            code.repCode &&
+            code.repCode.toLowerCase().includes(searchValue.toLowerCase())
+        )
+    );
   }
 }
 </script>

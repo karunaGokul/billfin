@@ -262,7 +262,6 @@ export default class Home extends Vue {
   }
 
   private getFirms() {
-    console.log(this.trailExpired);
     this.firms = this.store.getters.firms;
 
     if (this.dataEntitlements.length == 1) {
@@ -280,7 +279,6 @@ export default class Home extends Vue {
         }
       }
     }
-
   }
 
   public updateFirm(firm: firmRequestModel) {

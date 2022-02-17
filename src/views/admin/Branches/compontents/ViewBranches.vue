@@ -69,6 +69,7 @@
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
+                  @input="applyFilter($event.target.value)"
                 />
               </div>
             </div>
@@ -300,6 +301,7 @@ export default class ViewBranches extends Vue {
   public modelType: string = "";
 
   public request: viewBranchsResponseModel = new viewBranchsResponseModel();
+  public dataResource: Array<repCodesModel> = [];
 
   public selectedRepCode: unassignedRepCodesResponseModel =
     new unassignedRepCodesResponseModel();
@@ -318,9 +320,6 @@ export default class ViewBranches extends Vue {
     this.modelType = this.type;
     this.viewBranch();
 
-    /* this.request.repCode = this.selectedRepCode.repCode;
-    this.request.branchName = this.selectedBranch;*/
-
     if (this.modelType == "Edit Branchs") {
       this.unassignedRepCodes();
     }
@@ -333,6 +332,8 @@ export default class ViewBranches extends Vue {
         rep.status = "view";
         rep.edit = false;
       });
+
+      this.dataResource = this.request.repCodes;
     });
   }
 
@@ -363,10 +364,11 @@ export default class ViewBranches extends Vue {
     }
 
     if (this.allowRepCode) {
-      let index = this.unassignedRepCode.findIndex(
+      let index: number = this.unassignedRepCode.findIndex(
         (item) => item.repId == this.selectedRepCode.repId
       );
-      this.unassignedRepCode.splice(index, 1);
+
+      if (index >= 0) this.unassignedRepCode.splice(index, 1);
     }
 
     this.allowRepCode = false;
@@ -381,6 +383,8 @@ export default class ViewBranches extends Vue {
       status: "edit",
       edit: true,
     });
+
+    this.dataResource = this.request.repCodes;
   }
 
   public updateRow(item: repCodesModel) {
@@ -389,21 +393,37 @@ export default class ViewBranches extends Vue {
     item.repId = this.selectedRepCode.repId;
     item.repCode = this.selectedRepCode.repCode;
     item.advisors = this.selectedRepCode.advisors;
+
+    this.dataResource = this.request.repCodes;
   }
 
   public removeRow(index: number) {
     this.request.repCodes.splice(index, 1);
+    this.allowRepCode = true;
+    this.dataResource = this.request.repCodes;
   }
 
-  displayName(advisors: Array<addRepCodeResponseModel>) {
+  private displayName(advisors: Array<addRepCodeResponseModel>) {
     let displayName = advisors.map((item) => item.displayName);
     return displayName.join(" ,");
   }
 
-  public saveBranch() {
-    console.log(this.request);
-    //console.log(this.request.advisors.filter((item) => item.status == "view"));
+  public applyFilter(searchValue: string) {
+    this.request.repCodes = this.dataResource.filter(
+      (item) =>
+        (item.repCode &&
+          item.repCode.toLowerCase().includes(searchValue.toLowerCase())) ||
+        item.advisors.some(
+          (advisor) =>
+            advisor.displayName &&
+            advisor.displayName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+        )
+    );
+  }
 
+  public saveBranch() {
     let request: addBranchRequestModel = new addBranchRequestModel();
     request.branchName = this.request.branchName;
     request.branchCode = this.request.branchCode;
