@@ -153,7 +153,6 @@ export default class SignUpPlan extends Vue {
     this.firmStatus = "SUBSCRIBED";
 
     if (this.pageType == "Reactivate") {
-      console.log('if');
       this.store.dispatch("clearFirm");
       this.store.dispatch("loadEntitlements");
     }
@@ -161,9 +160,11 @@ export default class SignUpPlan extends Vue {
 
   onBack() {
     this.store.dispatch("clearSubscription");
+
     let redirectPage = this.$route.params.redirectPage
       ? this.$route.params.redirectPage.toString()
       : "/dashboard";
+      
     this.$router.push(redirectPage);
   }
 }

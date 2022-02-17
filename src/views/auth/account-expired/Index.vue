@@ -2,22 +2,22 @@
   <div class="card text-center m-8 p-8">
     <div class="d-flex justify-content-center align-items-center p-8">
       <img src="@/assets/billfin.svg" alt="Logo" />
-      <span class="text-primary fa-3x ms-2"> BillFin </span>
+      <span class="text-primary fa-3x ms-2"> BILLFIN </span>
     </div>
     <h3 class="fs-1">Your account is deactivated</h3>
 
-    <div class="mt-4 fs-3 text-muted">
-      Apologies, expired trials disable access to BillFin.
+    <div class="mt-4 fs-3 text-muted fw-bold">
+      We are sorry your trial expired please click here to
     </div>
 
-    <div class="mb-4 fs-3 text-muted">
-      You’ll need to subscribe to regain access.
+    <div class="mb-4 fs-3 text-muted fw-bold">
+      sign up or contact support team.
     </div>
 
     <div class="m-4">
       <router-link
         :to="{
-          name: 'Reactivate Account',
+          name: 'Sign Up',
           params: { type: 'Reactivate', redirectPage: '/account-expired' },
         }"
         tag="button"
