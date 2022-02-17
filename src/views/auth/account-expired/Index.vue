@@ -1,7 +1,8 @@
 <template>
   <div class="card text-center m-8 p-8">
-    <div class="p-8">
+    <div class="d-flex justify-content-center align-items-center p-8">
       <img src="@/assets/billfin.svg" alt="Logo" />
+      <span class="text-primary fa-3x ms-2"> BillFin </span>
     </div>
     <h3 class="fs-1">Your account is deactivated</h3>
 
@@ -15,7 +16,10 @@
 
     <div class="m-4">
       <router-link
-        :to="{ name: 'Reactivate Account', params: { type: 'Reactivate', redirectPage: '/account-expired' }}"
+        :to="{
+          name: 'Reactivate Account',
+          params: { type: 'Reactivate', redirectPage: '/account-expired' },
+        }"
         tag="button"
         class="btn btn-primary"
       >
