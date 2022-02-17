@@ -132,11 +132,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/account-expired",
         name: 'Account Expired',
         component: () => import("@/views/auth/account-expired/Index.vue")
-      },
-      {
-        path: '/account-expired/signup',
-        name: 'Reactivate Account',
-        component: () => import("@/views/admin/SignUpPlan/Index.vue"),
       }
     ],
   },
