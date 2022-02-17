@@ -195,13 +195,12 @@
             </table>
           </div>
 
-          <!-- <add-advisor
-            pageType="RepCodes"
-            type="Add Advisor"
-            @advisorAdded="getAdvisors"
-            @close="showAdvisorModel = false"
-            v-if="showAdvisorModel"
-          /> -->
+          <add-rep-code
+            pageType="Branch"
+            @repCodeAdded="onUpdateRepCode"
+            @close="addRepCodeModel = false"
+            v-if="addRepCodeModel"
+          />
         </div>
 
         <div
@@ -224,7 +223,7 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                @click="showRepCodeModel = true"
+                @click="addRepCodeModel = true"
               >
                 Add New Rep Code
               </button>
@@ -299,7 +298,6 @@ export default class ViewBranches extends Vue {
   @Prop() type: string;
 
   public modelType: string = "";
-  public showAdvisorModel: boolean = false;
 
   public request: viewBranchsResponseModel = new viewBranchsResponseModel();
 
@@ -308,6 +306,7 @@ export default class ViewBranches extends Vue {
   public unassignedRepCode: Array<unassignedRepCodesResponseModel> = [];
 
   public allowRepCode: boolean = true;
+  public addRepCodeModel: boolean = false;
 
   public v$: any = setup(() => this.validate());
 
@@ -350,6 +349,11 @@ export default class ViewBranches extends Vue {
   public editBranch() {
     this.modelType = "Edit Branchs";
     this.unassignedRepCodes();
+  }
+
+  public onUpdateRepCode() {
+    this.unassignedRepCodes();
+    this.addRepCodeModel = false;
   }
 
   public addNewRow() {

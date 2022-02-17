@@ -20,6 +20,7 @@
             type="search"
             placeholder="Search"
             aria-label="Search"
+            @input="applyFilter($event.target.value)"
           />
         </div>
       </div>
@@ -161,6 +162,7 @@ export default class RepCodes extends Vue {
   @Inject("repCodesService") service: IRepCodesService;
 
   public response: Array<repCodesResponseModel> = [];
+  public dataResource: Array<repCodesResponseModel> = [];
   public selectedRepCode: repCodesResponseModel = new repCodesResponseModel();
   public addRepCodeModel: boolean = false;
   public showRepCodePreviewModel: boolean = false;
@@ -174,6 +176,7 @@ export default class RepCodes extends Vue {
   private getRepCodes() {
     this.service.getRepCodes().then((response) => {
       this.response = response;
+      this.dataResource = response;
     });
   }
 
@@ -191,6 +194,23 @@ export default class RepCodes extends Vue {
     this.type = type;
     this.selectedRepCode = item;
     this.showRepCodePreviewModel = true;
+  }
+
+  public applyFilter(searchValue: string) {
+    this.response = this.dataResource.filter(
+      (item) =>
+        (item.repCode &&
+          item.repCode.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.branchName &&
+          item.branchName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        item.advisors.some(
+          (advisor) =>
+            advisor.displayName &&
+            advisor.displayName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+        )
+    );
   }
 }
 </script>

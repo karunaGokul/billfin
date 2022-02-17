@@ -81,7 +81,7 @@
           <div class="d-flex align-items-center p-4">
             <button
               class="btn me-3"
-              :title="item.default ? 'This card cannot allowed to delete' : ''"
+              :title="item.default ? 'Please make another card primary before deleting the existing one' : ''"
               :class="{
                 'btn-light': item.default,
                 'btn-primary': !item.default,

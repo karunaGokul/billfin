@@ -112,7 +112,7 @@
               "
             >
               <span v-for="(repCode, i) of item.repCodes" :key="i">
-                {{ repCode.repCode }}
+                {{ repCode.repCode }}, 
               </span>
             </td>
             <td class="border-bottom border-dashed border-light p-6">

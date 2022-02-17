@@ -6,7 +6,7 @@ export class repCodesResponseModel {
   branchCode: string;
   branchId: number;
   branchName: string;
-  advisors: Array<string>;
+  advisors: Array<advisorsResponseModel>;
 }
 export class unassignedRepCodesResponseModel {
   advisors: Array<addRepCodeResponseModel> = [];
@@ -37,9 +37,9 @@ export class viewRepCodesResponseModel {
   repId: number;
   branchName: string;
   branchCode: number;
-  advisors: Array<advisorsodel> = [];
+  advisors: Array<advisorsModel> = [];
 }
-export class advisorsodel extends advisorsResponseModel {
+export class advisorsModel extends advisorsResponseModel {
   status: string;
   edit: boolean;
 }

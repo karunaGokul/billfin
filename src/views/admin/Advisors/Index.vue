@@ -20,6 +20,7 @@
             type="search"
             placeholder="Search"
             aria-label="Search"
+            @input="applyFilter($event.target.value)"
           />
         </div>
       </div>
@@ -90,7 +91,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) of response" :key="'advisors-table' + index">
+          <tr v-for="(item, index) in response" :key="'advisors-table' + index">
             <td
               class="
                 fw-bold
@@ -177,7 +178,7 @@ import AddAdvisor from "@/components/Models/AddAdvisor.vue";
 import RepCodePreview from "@/components/Models/RepCodePreview.vue";
 
 import { IAdvisorsService } from "@/service";
-import { advisorsResponseModel } from "@/model";
+import { advisorsResponseModel, assignRepCodesResponseModel } from "@/model";
 
 @Options({
   components: {
@@ -189,9 +190,11 @@ export default class Advisors extends Vue {
   @Inject("advisorsService") service: IAdvisorsService;
 
   public response: Array<advisorsResponseModel> = [];
+  public dataResource: Array<advisorsResponseModel> = [];
 
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
-  public selectedRepCode: advisorsResponseModel = new advisorsResponseModel();
+  public selectedRepCode: assignRepCodesResponseModel =
+    new assignRepCodesResponseModel();
   public showAdvisorModel: boolean = false;
 
   public showRepCodePreviewModel: boolean = false;
@@ -205,6 +208,7 @@ export default class Advisors extends Vue {
   private getAdvisors() {
     this.service.getAdvisors().then((response) => {
       this.response = response;
+      this.dataResource = response;
     });
   }
 
@@ -223,11 +227,28 @@ export default class Advisors extends Vue {
 
   public openRepCodePreview(
     advisor: advisorsResponseModel,
-    repCodes: advisorsResponseModel
+    repCodes: assignRepCodesResponseModel
   ) {
     this.selectedRepCode = repCodes;
     this.selectedAdvisor = advisor;
     this.showRepCodePreviewModel = true;
+  }
+
+  public applyFilter(searchValue: string) {
+    this.response = this.dataResource.filter(
+      (item) =>
+        (item.displayName &&
+          item.displayName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.emailAddress &&
+          item.emailAddress
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())) ||
+        item.repCodes.some(
+          (code) =>
+            code.repCode &&
+            code.repCode.toLowerCase().includes(searchValue.toLowerCase())
+        )
+    );
   }
 }
 </script>

@@ -27,6 +27,9 @@ export class addAdvisorResponseModel {
 export class assignRepCodesResponseModel {
   repId: number;
   repCode: string;
+  branchName: string;
+  branchId: number;
+  branchCode: string;
 }
 export class validateAdvisorRequestModel {
   emailAddress: string;

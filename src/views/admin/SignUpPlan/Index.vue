@@ -143,8 +143,9 @@ export default class SignUpPlan extends Vue {
   public pageType: string = "";
 
   created() {
-    if (this.$route.params.pageType)
-      this.pageType = this.$route.params.pageType.toString();
+    if (this.$route.params.type)
+      this.pageType = this.$route.params.type.toString();
+
   }
 
   public updateFirmStatus() {
@@ -152,6 +153,7 @@ export default class SignUpPlan extends Vue {
     this.firmStatus = "SUBSCRIBED";
 
     if (this.pageType == "Reactivate") {
+      console.log('if');
       this.store.dispatch("clearFirm");
       this.store.dispatch("loadEntitlements");
     }

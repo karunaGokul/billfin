@@ -7,7 +7,9 @@
             <span v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
               >Edit</span
             >
-            {{ selectedRepCode.repCode }} <span v-if="selectedRepCode.branchName">-</span> {{ selectedRepCode.branchName }}
+            {{ selectedRepCode.repCode }}
+            <span v-if="selectedRepCode.branchName">-</span>
+            {{ selectedRepCode.branchName }}
 
             <i
               class="fa fa-pen text-gray ms-4"
@@ -25,7 +27,9 @@
             class="modal-title fs-4 fw-bolder"
             v-if="pageType == 'RepCodes' && modelType == 'View RepCode'"
           >
-            {{ selectedRepCode.repCode }} <span v-if="selectedRepCode.branchName">-</span> {{ selectedRepCode.branchName }}
+            {{ selectedRepCode.repCode }}
+            <span v-if="selectedRepCode.branchName">-</span>
+            {{ selectedRepCode.branchName }}
           </h5>
           <div
             class="d-flex align-items-center"
@@ -42,20 +46,15 @@
                 class="form-select form-select-solid mb-4"
                 v-model="selectedBranch"
               >
-                <option
-                  v-for="(item, i) in branchs"
-                  :key="i"
-                  :value="item"
-                >
+                <option v-for="(item, i) in branchs" :key="i" :value="item">
                   {{ item.branchName }}
                 </option>
               </select>
             </div>
           </div>
-          {{selectedBranch}}
           <div class="d-flex justify-content-between p-4">
             <div class="fs-4 fw-bolder">
-              Advisors({{ request.advisors.length }})
+              Advisors({{ totalAdvisors }})
 
               <button
                 type="button"
@@ -77,6 +76,7 @@
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
+                  @input="applyFilter($event.target.value)"
                 />
               </div>
             </div>
@@ -341,8 +341,9 @@ import SelectBox from "../controls/SelectBox.vue";
 
 import {
   addRepCodeRequestModel,
-  advisorsodel,
+  advisorsModel,
   advisorsResponseModel,
+  assignRepCodesResponseModel,
   branchesResponseModel,
   repCodesResponseModel,
   viewRepCodesResponseModel,
@@ -361,7 +362,7 @@ import {
   },
   validations: {
     request: {
-      repCode: { required }
+      repCode: { required },
     },
   },
 })
@@ -370,7 +371,7 @@ export default class RepCodePreview extends Vue {
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
 
-  @Prop() selectedRepCode: repCodesResponseModel;
+  @Prop() selectedRepCode: assignRepCodesResponseModel;
 
   @Prop() pageType: string;
   @Prop() type: string;
@@ -379,6 +380,7 @@ export default class RepCodePreview extends Vue {
   public showAdvisorModel: boolean = false;
 
   public request: viewRepCodesResponseModel = new viewRepCodesResponseModel();
+  public dataResource: Array<advisorsModel> = [];
 
   public unassignedAdvisors: Array<advisorsResponseModel> = [];
   public selectedAdvisor: advisorsResponseModel = new advisorsResponseModel();
@@ -403,9 +405,6 @@ export default class RepCodePreview extends Vue {
     this.selectedBranch.branchCode = this.selectedRepCode.branchCode;
 
     this.selectedBranch.branchName = this.selectedRepCode.branchName;
-    //this.selectedBranch.repCodes = this.selectedRepCode.repCodes;
-
-    //console.log(this.selectedBranch);
 
     this.viewRepCode();
 
@@ -424,6 +423,7 @@ export default class RepCodePreview extends Vue {
           advisor.status = "view";
           advisor.edit = false;
         });
+        this.dataResource = this.request.advisors;
       });
   }
 
@@ -439,6 +439,7 @@ export default class RepCodePreview extends Vue {
   }
 
   private getUnassignedAdvisors() {
+    console.log('update');
     this.service
       .unassignedAdvisors()
       .then((response) => {
@@ -489,9 +490,11 @@ export default class RepCodePreview extends Vue {
       advisorIdentifier: "",
       advisorId: 0,
     });
+
+    this.dataResource = this.request.advisors;
   }
 
-  public updateRow(item: advisorsodel) {
+  public updateRow(item: advisorsModel) {
     item.status = "view";
     this.allowAdvisor = true;
 
@@ -500,10 +503,14 @@ export default class RepCodePreview extends Vue {
     item.middleName = this.selectedAdvisor.middleName;
     item.displayName = this.selectedAdvisor.displayName;
     item.advisorId = this.selectedAdvisor.advisorId;
+
+    this.dataResource = this.request.advisors;
   }
 
   public removeRow(index: number) {
     this.request.advisors.splice(index, 1);
+    this.allowAdvisor = true;
+    this.dataResource = this.request.advisors;
   }
 
   public saveRepCodes() {
@@ -545,6 +552,24 @@ export default class RepCodePreview extends Vue {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  public applyFilter(searchValue: string) {
+    this.request.advisors = this.dataResource.filter(
+      (item) =>
+        (item.displayName &&
+          item.displayName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.firstName &&
+          item.firstName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.middleName &&
+          item.middleName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.lastName &&
+          item.lastName.toLowerCase().includes(searchValue.toLowerCase()))
+    );
+  }
+
+  get totalAdvisors() {
+    return this.request.advisors.filter((item) => item.status == "view").length;
   }
 }
 </script>
