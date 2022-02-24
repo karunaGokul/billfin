@@ -89,7 +89,9 @@
               )
             }}
             <span class="fs-8 fw-light text-gray"
-              >/{{ currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
+              >/{{
+                currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
+              }}</span
             >
           </div>
         </div>
@@ -124,9 +126,12 @@ export default class AddUserConnectors extends Vue {
     this.currentAddOn.quantity = this.quantity;
     this.currentAddOn.planAddOnAmount = this.currentAddOn.paymentAmount;
 
+    let addons: Array<any> = [];
+    addons.push(this.currentAddOn);
+
     this.store.dispatch("updateAddons", {
       product: this.products,
-      addons: this.currentAddOn,
+      addons: addons,
     });
 
     this.$emit("next");

@@ -55,6 +55,14 @@
                       <span>/{{ currentTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
+                  <tr v-if="currentTerm == 'Annual'">
+                    <td class="text-end" colspan="2">
+                      <span
+                        class="badge fs-7 ms-2 bg-success-alpha text-success"
+                        >Save 20%</span
+                      >
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -85,7 +93,7 @@
                       New Term Ends On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      Auto-renews on {{ newEndDate }}
+                      Auto-renews on {{ newTermEndDate }}
                     </td>
                   </tr>
                   <tr>
@@ -95,6 +103,14 @@
                     <td class="pt-3 pb-3 fw-bolder text-end">
                       {{ $filters.currencyDisplay(response.planAddOnAmount) }}
                       <span>/{{ newTerm == "Annual" ? "Yr" : "Mon" }}</span>
+                    </td>
+                  </tr>
+                  <tr  v-if="currentTerm != 'Annual'">
+                    <td class="text-end" colspan="2">
+                      <span
+                        class="badge fs-7 ms-2 bg-success-alpha text-success"
+                        >Save 20%</span
+                      >
                     </td>
                   </tr>
                 </tbody>
@@ -224,18 +240,16 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
 
   get newTermStartDate() {
     let date = new Date(this.addons.renewDate);
-
-    if (this.newTerm == "Monthly") date.setDate(date.getDate() + 1);
-    else date.setFullYear(date.getFullYear() + 1);
+    date.setDate(date.getDate() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }
 
-  get newEndDate() {
-    let date = new Date(this.newTermStartDate);
+  get newTermEndDate() {
+    let date = new Date(this.addons.renewDate);
 
     if (this.newTerm == "Monthly") date.setMonth(date.getMonth() + 1);
-    else date.setFullYear(date.getFullYear() + 1);
+    date.setFullYear(date.getFullYear() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }
