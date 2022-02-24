@@ -34,7 +34,13 @@
                     </thead>
                     <tbody class="fs-5">
                       <tr>
-                        <td class="fw-bold ps-4 pe-4">{{ plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly'}}</td>
+                        <td class="fw-bold ps-4 pe-4">
+                          {{
+                            plan.commitmentTerm == "ANNUAL"
+                              ? "Annual"
+                              : "Monthly"
+                          }}
+                        </td>
                         <td class="fw-bold ps-4 pe-4">
                           {{
                             $datehelper.changeDateFormatWithSlash(
@@ -81,7 +87,13 @@
                       </thead>
                       <tbody class="fs-5">
                         <tr>
-                          <td class="fw-bold ps-4 pe-4">{{ item.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly' }}</td>
+                          <td class="fw-bold ps-4 pe-4">
+                            {{
+                              item.commitmentTerm == "ANNUAL"
+                                ? "Annual"
+                                : "Monthly"
+                            }}
+                          </td>
                           <td class="fw-bold ps-4 pe-4">
                             {{
                               $datehelper.changeDateFormatWithSlash(
@@ -220,10 +232,13 @@
           </div>
 
           <p class="fs-5 p-4 mb-0">
-            <span v-if="currentTerm == 'Monthly'">Note that all your add-ons will automatically convert to monthly subscriptions along with your plan subscription. </span>
-            All else will remain unchanged, except {{currentTerm.toLowerCase()}} pricing and payment
-            terms apply once your switch becomes effective, which will be
-            {{ newTermStartDate }}.
+            <span v-if="currentTerm == 'Monthly'"
+              >Note that all your add-ons will automatically convert to monthly
+              subscriptions along with your plan subscription.
+            </span>
+            All else will remain unchanged, except
+            {{ currentTerm.toLowerCase() }} pricing and payment terms apply once
+            your switch becomes effective, which will be {{ newTermStartDate }}.
           </p>
         </div>
         <div class="modal-footer p-4 border-0">
@@ -248,6 +263,8 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import moment from "moment";
 
+import { useStore } from "vuex";
+
 import {
   subscriptionResponseModel,
   addonsResponseModel,
@@ -267,6 +284,8 @@ export default class ChangePlanCommitmentTerm extends Vue {
   @Prop() currentTerm: string;
 
   public response: termPlanDetailsResponseModel = null;
+
+  public store = useStore();
 
   created() {
     this.getTermPlanDetails();
@@ -302,7 +321,16 @@ export default class ChangePlanCommitmentTerm extends Vue {
         this.$emit("done");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 

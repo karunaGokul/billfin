@@ -9,8 +9,10 @@ import { IManageSubscription, ManageSubscription } from "@/service";
 import { IBillsAndPaymentService, BillsAndPaymentService } from "@/service";
 import { IAdvisorsService, AdvisorsService } from "@/service";
 import { IRepCodesService, RepCodesService } from "@/service";
-
 import { IBranchesService, BranchesService } from "@/service";
+
+import { IUserListService, UserListService } from "@/service";
+import { IFeeSchedulesService, FeeSchedulesService } from "@/service";
 
 export class DIContainer extends Vue {
   @Provide("signUpService") signUpService: ISignUpService = new SignUpService();
@@ -29,4 +31,9 @@ export class DIContainer extends Vue {
   repCodesService: IRepCodesService = new RepCodesService();
   @Provide("branchesService")
   branchesService: IBranchesService = new BranchesService();
+  @Provide("userService")
+  userService: IUserListService = new UserListService();
+
+  @Provide("feeSchedulesService")
+  feeSchedulesService: IFeeSchedulesService = new FeeSchedulesService();
 }

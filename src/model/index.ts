@@ -15,3 +15,5 @@ export * from "./bills-and-payment.model";
 export * from "./advisors.model";
 export * from "./rep-codes.model";
 export * from "./branches.model";
+export * from "./user-list.model";
+export * from "./fee-schedules.model";

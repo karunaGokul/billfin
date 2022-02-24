@@ -146,6 +146,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import { useStore } from "vuex";
+
 import AddRepCode from "@/components/Models/AddRepCode.vue";
 import RepCodePreview from "@/components/Models/RepCodePreview.vue";
 
@@ -160,6 +162,8 @@ import { repCodesResponseModel } from "@/model";
 })
 export default class RepCodes extends Vue {
   @Inject("repCodesService") service: IRepCodesService;
+
+  public store = useStore();
 
   public response: Array<repCodesResponseModel> = [];
   public dataResource: Array<repCodesResponseModel> = [];
@@ -177,7 +181,18 @@ export default class RepCodes extends Vue {
     this.service.getRepCodes().then((response) => {
       this.response = response;
       this.dataResource = response;
-    });
+    }).catch((err) => {
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
+      });
   }
 
   public addRepCode() {

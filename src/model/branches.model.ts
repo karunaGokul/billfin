@@ -1,4 +1,8 @@
-import { assignRepCodesResponseModel, addRepCodeRequestModel, repCodesResponseModel } from "@/model";
+import { assignRepCodesResponseModel } from "./advisors.model";
+import {
+  addRepCodeRequestModel,
+  repCodesResponseModel,
+} from "./rep-codes.model";
 
 export class branchesResponseModel {
   branchCode: string;

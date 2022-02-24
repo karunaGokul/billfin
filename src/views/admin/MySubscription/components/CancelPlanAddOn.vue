@@ -42,10 +42,9 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import { IManageSubscription } from "@/service";
 
-import {
-  cancelPlanAddOnRequestModel,
-  cancelPlanAddOnResponseModel,
-} from "@/model";
+import { cancelPlanAddOnRequestModel } from "@/model";
+
+import { useStore } from "vuex";
 
 export default class CancelPlanAddOn extends Vue {
   @Inject("manageSubscripeService") service: IManageSubscription;
@@ -59,6 +58,8 @@ export default class CancelPlanAddOn extends Vue {
   @Prop() subscriptionPlanId?: number;
   @Prop() subscriptionAddOnId?: number;
 
+  public store = useStore();
+
   public close(option: string) {
     this.$emit(option);
   }
@@ -70,10 +71,19 @@ export default class CancelPlanAddOn extends Vue {
     this.service
       .cancelPlanAddOn(request, "cancelPlan")
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("cancelled");
+        this.$emit("cancelled");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -85,10 +95,19 @@ export default class CancelPlanAddOn extends Vue {
     this.service
       .cancelPlanAddOn(request, "cancelAddOn")
       .then((response) => {
-        if (response.status == "SUCCESS") this.$emit("cancelled");
+        this.$emit("cancelled");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 

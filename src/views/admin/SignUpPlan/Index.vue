@@ -1,9 +1,9 @@
 <template>
+  <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4">
+    Reactivate Account
+  </h3>
   <confirm v-if="firmStatus == 'SUBSCRIBED'" :pageType="pageType" />
   <div class="signup-plan-container" v-else>
-    <h3 v-if="pageType == 'Reactivate'" class="p-4 ps-5 fs-4">
-      Reactivate Account
-    </h3>
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -145,7 +145,6 @@ export default class SignUpPlan extends Vue {
   created() {
     if (this.$route.params.type)
       this.pageType = this.$route.params.type.toString();
-
   }
 
   public updateFirmStatus() {
@@ -164,7 +163,7 @@ export default class SignUpPlan extends Vue {
     let redirectPage = this.$route.params.redirectPage
       ? this.$route.params.redirectPage.toString()
       : "/dashboard";
-      
+
     this.$router.push(redirectPage);
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade show d-block">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 850px">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 940px">
       <div class="modal-content rounded-3">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">
@@ -28,7 +28,7 @@
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
-                      Current Term Start On
+                      Current Term Started On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
                       {{
@@ -38,7 +38,7 @@
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
-                      Current Term End On
+                      Current Term Ends On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
                       {{
@@ -74,7 +74,7 @@
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
-                      New Term Start On
+                      New Term Starts On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
                       {{ newTermStartDate }}
@@ -82,10 +82,10 @@
                   </tr>
                   <tr>
                     <td class="pt-3 pb-3 text-gray-tertiary fw-bold">
-                      New Term End On
+                      New Term Ends On
                     </td>
                     <td class="pt-3 pb-3 fw-bolder text-end">
-                      Auto-renews {{ newEndDate }}
+                      Auto-renews on {{ newEndDate }}
                     </td>
                   </tr>
                   <tr>
@@ -174,7 +174,16 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -192,7 +201,16 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
         this.$emit("done");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 

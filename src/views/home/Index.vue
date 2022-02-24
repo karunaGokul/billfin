@@ -356,9 +356,8 @@ export default class Home extends Vue {
 
   get currentPage() {
     let value: string = "";
-    if (this.page == "Dashboard") {
-      value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
-    } else if (
+
+    if (
       this.page == "Manage Subscription" ||
       this.page == "Sign Up" ||
       this.page == "Setup" ||
@@ -378,6 +377,8 @@ export default class Home extends Vue {
       this.page == "Add Payment Method"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
+    } else if (this.page == "Dashbdoard") {
+      value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
     }
 
     return value;

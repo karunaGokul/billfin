@@ -7,3 +7,5 @@ export * from './bills-and-payment.service';
 export * from './advisors.service';
 export * from './rep-codes.service';
 export * from './branches.service';
+export * from './user-list.service';
+export * from './fee-schedules.service';

@@ -174,6 +174,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import { useStore } from "vuex";
+
 import AddAdvisor from "@/components/Models/AddAdvisor.vue";
 import RepCodePreview from "@/components/Models/RepCodePreview.vue";
 
@@ -188,6 +190,8 @@ import { advisorsResponseModel, assignRepCodesResponseModel } from "@/model";
 })
 export default class Advisors extends Vue {
   @Inject("advisorsService") service: IAdvisorsService;
+
+  public store = useStore();
 
   public response: Array<advisorsResponseModel> = [];
   public dataResource: Array<advisorsResponseModel> = [];
@@ -206,10 +210,24 @@ export default class Advisors extends Vue {
   }
 
   private getAdvisors() {
-    this.service.getAdvisors().then((response) => {
-      this.response = response;
-      this.dataResource = response;
-    });
+    this.service
+      .getAdvisors()
+      .then((response) => {
+        this.response = response;
+        this.dataResource = response;
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
+      });
   }
 
   public addAdvisor(type: string, advisor?: advisorsResponseModel) {

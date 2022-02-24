@@ -143,8 +143,9 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-
 import { Inject } from "vue-property-decorator";
+
+import { useStore } from "vuex";
 
 import { IBranchesService } from "@/service";
 import { branchesResponseModel } from "@/model";
@@ -161,6 +162,8 @@ import ViewBranches from "./compontents/ViewBranches.vue";
 export default class Branches extends Vue {
   @Inject("branchesService") service: IBranchesService;
 
+  public store = useStore();
+
   public response: Array<branchesResponseModel> = [];
   public dataResource: Array<branchesResponseModel> = [];
   public selectedBranch: branchesResponseModel = new branchesResponseModel();
@@ -174,10 +177,24 @@ export default class Branches extends Vue {
   }
 
   private getBranches() {
-    this.service.getBranches().then((response) => {
-      this.response = response;
-      this.dataResource = response;
-    });
+    this.service
+      .getBranches()
+      .then((response) => {
+        this.response = response;
+        this.dataResource = response;
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
+      });
   }
 
   public addBranch() {

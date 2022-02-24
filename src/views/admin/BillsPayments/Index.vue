@@ -19,7 +19,14 @@
                 >Primary</span
               >
               <span
-                class="badge text-orange ms-2 fs-6 bg-orange border-1 border-orange border-dashed"
+                class="
+                  badge
+                  text-orange
+                  ms-2
+                  fs-6
+                  bg-orange
+                  border-1 border-orange border-dashed
+                "
                 style="cursor: pointer"
                 v-if="!item.default"
                 @click="makePrimary(item, 'primary')"
@@ -81,7 +88,11 @@
           <div class="d-flex align-items-center p-4">
             <button
               class="btn me-3"
-              :title="item.default ? 'Please make another card primary before deleting the existing one' : ''"
+              :title="
+                item.default
+                  ? 'Please make another card primary before deleting the existing one'
+                  : ''
+              "
               :class="{
                 'btn-light': item.default,
                 'btn-primary': !item.default,
@@ -114,6 +125,11 @@
     @cancel="cancelDelete"
     @delete="deleteCard"
     v-if="showDeleteModel"
+  />
+  <app-confirmation
+    message="Your card has been deleted successfully"
+    @done="showConfirmationModel = false"
+    v-if="showConfirmationModel"
   />
 
   <div class="p-4" v-if="response">
@@ -174,6 +190,7 @@ import { useStore } from "vuex";
 
 import Billng from "./component/Billing.vue";
 import AppDelete from "@/components/Models/AppDelete.vue";
+import AppConfirmation from "@/components/Models/AppConfirmation.vue";
 
 import {
   IBillsAndPaymentService,
@@ -195,6 +212,7 @@ import {
   components: {
     Billng,
     AppDelete,
+    AppConfirmation,
   },
 })
 export default class Index extends Vue {
@@ -208,6 +226,7 @@ export default class Index extends Vue {
   public availableCards: Array<cardDetailsResponsetModel> = [];
 
   public showDeleteModel: boolean = false;
+  public showConfirmationModel: boolean = false;
 
   private selectedCard: cardDetailsResponsetModel =
     new cardDetailsResponsetModel();
@@ -236,10 +255,20 @@ export default class Index extends Vue {
     this.manageSubscripeService
       .deleteCard(request)
       .then((response) => {
-        if (response.status == "SUCCESS") this.getCardDetails();
+        this.showConfirmationModel = true;
+        this.getCardDetails();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -266,7 +295,16 @@ export default class Index extends Vue {
         this.getCardDetails();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -282,7 +320,16 @@ export default class Index extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
@@ -293,9 +340,17 @@ export default class Index extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
-
 }
 </script>

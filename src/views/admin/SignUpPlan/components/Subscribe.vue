@@ -113,7 +113,6 @@ export default class Subscribe extends Vue {
       .then((response) => {
         if (response.status == "SUCCESS") {
           this.$emit("next");
-          //this.store.dispatch("clearSubscription");
         }
       })
       .catch((err) => {
