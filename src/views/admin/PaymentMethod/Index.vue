@@ -45,7 +45,7 @@ import { useStore } from "vuex";
 
 declare let ChargeOver: any;
 
-import { paymentTokenRequestModel, PaymentMethod } from "@/model";
+import { paymentTokenRequestModel, PaymentMethod, CardPrimaryType } from "@/model";
 import { ISubscripeService } from "@/service";
 
 import ACH from "@/components/controls/ACH.vue";
@@ -88,7 +88,7 @@ export default class Payment extends Vue {
       (code: any, message: any, response: any) => {
         console.log(message, response);
         if (code == 200) {
-          this.updateToken(response.creditcard.token);
+          this.updateToken(response.creditcard.token, "new");
         } else if (code == 400) {
           console.log(message);
         } else {
@@ -107,7 +107,7 @@ export default class Payment extends Vue {
       request,
       (code: any, message: any, response: any) => {
         if (code == 200) {
-          this.updateToken(response.ach.token);
+          this.updateToken(response.ach.token, "new");
         } else if (code == 400) {
           console.log(message);
         } else {
@@ -117,11 +117,12 @@ export default class Payment extends Vue {
     );
   }
 
-  private updateToken(token: string) {
+  private updateToken(token: string, cardType: string) {
     let request = new paymentTokenRequestModel();
     request.token = token;
     request.paymentMethod =
       PaymentMethod[this.paymentType as keyof typeof PaymentMethod];
+    request.reqType = CardPrimaryType[cardType as keyof typeof CardPrimaryType];
     this.paymentType.toUpperCase();
     this.service
       .updatePaymentToken(request)
