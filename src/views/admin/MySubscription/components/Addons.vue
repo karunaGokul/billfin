@@ -311,7 +311,7 @@ export default class Addons extends Vue {
   get addOnStatus() {
     let status: string = "";
     if (this.addons.status == "CANCELLED")
-      status = `Cancelled on ${this.$datehelper.changeMonthFormat(
+      status = `Canceled on ${this.$datehelper.changeMonthFormat(
         this.addons.cancelDate,
         3
       )}`;

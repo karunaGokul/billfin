@@ -1,11 +1,33 @@
 <template>
   <div class="card p-4 mt-4 position-relative">
     <button
-      class="btn btn-primary position-absolute translate-middle"
+      class="
+        btn btn-primary
+        position-absolute
+        translate-middle
+        dropdown dropdown-primary
+      "
       type="button"
       style="top: -40px; right: -85px"
+      v-click-outside="clickOutSideFee"
+      @click="toggleAddFeeSchdule = !toggleAddFeeSchdule"
     >
       Add Fee Schedules
+      <i
+        class="fa fa-solid ms-2"
+        :class="{
+          'fa-chevron-up': toggleAddFeeSchdule,
+          'fa-chevron-down': !toggleAddFeeSchdule,
+        }"
+      ></i>
+      <ul
+        class="dropdown-menu overflow-auto p-2"
+        :class="{ show: toggleAddFeeSchdule }"
+        style="right: 0; top: 50px"
+      >
+        <li class="dropdown-item pt-2 pb-2">Single fee schedule</li>
+        <li class="dropdown-item pt-2 pb-2">Bulk load fee schedules</li>
+      </ul>
     </button>
     <div class="card-body pt-0">
       <table
@@ -175,6 +197,8 @@ export default class FeeSchedules extends Vue {
   public request: FeeSchedulesRequestModel = new FeeSchedulesRequestModel();
   public response: DataResponse<FeeSchedulesResponseModel> = new DataResponse();
 
+  public toggleAddFeeSchdule: boolean = false;
+
   created() {
     this.getFeeSchedules();
   }
@@ -197,6 +221,10 @@ export default class FeeSchedules extends Vue {
 
   public feesStatus(status: string) {
     return status == "active" ? "Active" : "In Active";
+  }
+
+  public clickOutSideFee() {
+    this.toggleAddFeeSchdule = false;
   }
 }
 </script>

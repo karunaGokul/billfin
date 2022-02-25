@@ -118,7 +118,7 @@
             </div>
           </div>
           <p class="fs-5 pt-4">
-            All else will remain unchanged, except annual pricing and payment
+            All else will remain unchanged, except {{ newTerm.toLowerCase() }} pricing and payment
             terms apply once your switch becomes effective, which will be
             {{ newTermStartDate }}.
           </p>
@@ -247,9 +247,8 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
 
   get newTermEndDate() {
     let date = new Date(this.addons.renewDate);
-
     if (this.newTerm == "Monthly") date.setMonth(date.getMonth() + 1);
-    date.setFullYear(date.getFullYear() + 1);
+    else date.setFullYear(date.getFullYear() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }

@@ -327,7 +327,7 @@ export default class Plan extends Vue {
   get planStatus() {
     let status: string = "";
     if (this.plan.status == "CANCELLED")
-      status = `Cancelled on ${this.$datehelper.changeMonthFormat(
+      status = `Canceled on ${this.$datehelper.changeMonthFormat(
         this.plan.cancelDate,
         3
       )}`;

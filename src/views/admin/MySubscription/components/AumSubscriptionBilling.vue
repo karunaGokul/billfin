@@ -54,6 +54,7 @@
         type="button"
         class="btn btn-primary"
         @click="addMoreAddons('Sign Up For Add-Ons')"
+        v-if="addons.length > 0"
       >
         Add More
       </button>

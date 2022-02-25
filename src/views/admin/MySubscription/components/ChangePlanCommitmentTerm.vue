@@ -361,7 +361,7 @@ export default class ChangePlanCommitmentTerm extends Vue {
     let date = new Date(this.plan.renewDate);
 
     if (this.newTerm == "Monthly") date.setMonth(date.getMonth() + 1);
-    date.setFullYear(date.getFullYear() + 1);
+    else date.setFullYear(date.getFullYear() + 1);
 
     return moment(String(date)).format("MM/DD/YYYY");
   }
