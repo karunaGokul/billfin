@@ -111,7 +111,7 @@
                             {{ $filters.currencyDisplay(item.paymentAmount) }}
                             <span
                               >/{{
-                                item.commitmentTerm == "Annual" ? "Yr" : "Mon"
+                                item.commitmentTerm == "ANNUAL" ? "Yr" : "Mon"
                               }}</span
                             >
                           </td>
@@ -232,12 +232,12 @@
           </div>
 
           <p class="fs-5 p-4 mb-0">
-            <span v-if="currentTerm == 'Monthly'"
+            <span v-if="newTerm == 'Monthly'"
               >Note that all your add-ons will automatically convert to monthly
               subscriptions along with your plan subscription.
             </span>
             All else will remain unchanged, except
-            {{ currentTerm.toLowerCase() }} pricing and payment terms apply once
+            {{ newTerm.toLowerCase() }} pricing and payment terms apply once
             your switch becomes effective, which will be {{ newTermStartDate }}.
           </p>
         </div>

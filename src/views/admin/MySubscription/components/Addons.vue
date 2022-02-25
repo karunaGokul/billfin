@@ -175,13 +175,20 @@
           {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }}
         </div>
 
+        <div v-if="addons.commitmentTerm == 'ANNUAL' && addons.endDate == null">
+          {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
+        </div>
         <div
-          v-if="addons.commitmentTerm != 'MONTHLY' && addons.endDate == null"
+          v-if="
+            addons.status != 'CANCELLED' &&
+            addons.commitmentTerm == 'ANNUAL' &&
+            addons.endDate != null
+          "
         >
           {{ $datehelper.changeDateFormatWithSlash(addons.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(addons.renewDate) }}
         </div>
-
       </div>
     </div>
     <div class="col-2 d-flex align-items-center justify-content-end">
@@ -224,7 +231,6 @@
           >
             Add Connectors
           </li>
-          <li class="dropdown-item pt-2 pb-2">View Invoice</li>
           <li class="dropdown-item" @click="showCancelModel = true">
             Cancel Add-On
           </li>

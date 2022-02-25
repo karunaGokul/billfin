@@ -18,13 +18,17 @@
             />
           </div>
           <div v-if="pageType != 'Branch'">
-            <select-box
-              formFieldType="inputBlock"
-              label="Branch"
-              :data="branch"
-              :controls="v$.request.branchName"
-              :validation="['required']"
-            />
+            <label for="Branch" class="form-label fw-bolder">
+              Branch
+            </label>
+            <select
+              class="form-select form-select-solid mb-2"
+              v-model="v$.request.branchName"
+            >
+              <option v-for="(item, i) in branch" :key="i" :value="item">
+                {{ item.branchName }}
+              </option>
+            </select>
           </div>
           <div>
             <select-box-with-delete
@@ -169,8 +173,7 @@ export default class AddRepCode extends Vue {
 
   public updateAdvisor(advisors: Array<ListItem>) {
     advisors.forEach((item: ListItem) => {
-      let advisors: advisorsResponseModel =
-        new advisorsResponseModel();
+      let advisors: advisorsResponseModel = new advisorsResponseModel();
       advisors.advisorId = item.data;
       advisors.displayName = item.text;
       this.request.advisors.push(advisors);

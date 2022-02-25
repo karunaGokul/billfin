@@ -85,7 +85,7 @@
             <span class="fs-7">$</span>
             {{
               $filters.currencyDisplayWithoutSymbol(
-                currentAddOn.paymentAmount * quantity
+                amount * quantity
               )
             }}
             <span class="fs-8 fw-light text-gray"
@@ -115,16 +115,19 @@ export default class AddUserConnectors extends Vue {
   @Prop() page: string;
 
   public quantity: string = "1";
+  public amount: number = 0;
 
   public store = useStore();
 
   created() {
     if (!this.products) this.$router.push("/my-subscription");
+    this.amount = this.currentAddOn.paymentAmount;
+    this.amount = this.amount / +this.currentAddOn.quantity;
   }
 
   public next() {
     this.currentAddOn.quantity = this.quantity;
-    this.currentAddOn.planAddOnAmount = this.currentAddOn.paymentAmount;
+    this.currentAddOn.planAddOnAmount = this.amount;
 
     let addons: Array<any> = [];
     addons.push(this.currentAddOn);

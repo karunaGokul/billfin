@@ -153,9 +153,19 @@
           {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }}
         </div>
 
-        <div v-if="plan.commitmentTerm != 'MONTHLY' && plan.endDate == null">
+        <div v-if="plan.commitmentTerm == 'ANNUAL' && plan.endDate == null">
           {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
           {{ $datehelper.changeDateFormatWithSlash(plan.renewDate) }}
+        </div>
+        <div
+          v-if="
+            plan.status != 'CANCELLED' &&
+            plan.commitmentTerm == 'ANNUAL' &&
+            plan.endDate != null
+          "
+        >
+          {{ $datehelper.changeDateFormatWithSlash(plan.startDate) }} -
+          {{ $datehelper.changeDateFormatWithSlash(plan.endDate) }}
         </div>
       </div>
     </div>
@@ -188,7 +198,6 @@
           <li class="dropdown-item pt-2 pb-2" @click="changePlan">
             Change Plan
           </li>
-          <li class="dropdown-item pt-2 pb-2">View Invoice</li>
           <li class="dropdown-item pt-2 pb-2" @click="toggleCancelModel = true">
             Cancel Plan
           </li>
