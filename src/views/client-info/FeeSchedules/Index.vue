@@ -25,7 +25,12 @@
         :class="{ show: toggleAddFeeSchdule }"
         style="right: 0; top: 50px"
       >
-        <li class="dropdown-item pt-2 pb-2">Single fee schedule</li>
+        <li
+          class="dropdown-item pt-2 pb-2"
+          @click="showAddFeeScheduleModel = true"
+        >
+          Single fee schedule
+        </li>
         <li class="dropdown-item pt-2 pb-2">Bulk load fee schedules</li>
       </ul>
     </button>
@@ -169,6 +174,10 @@
         v-if="response"
         @applyPagination="controlWithPagination"
       />
+      <add-fee-schedule
+        @close="showAddFeeScheduleModel = false"
+        v-if="showAddFeeScheduleModel"
+      />
     </div>
   </div>
 </template>
@@ -186,9 +195,12 @@ import {
 
 import Pagination from "@/components/controls/Pagination.vue";
 
+import AddFeeSchedule from "./components/AddFeeSchedule.vue";
+
 @Options({
   components: {
     Pagination,
+    AddFeeSchedule,
   },
 })
 export default class FeeSchedules extends Vue {
@@ -198,6 +210,8 @@ export default class FeeSchedules extends Vue {
   public response: DataResponse<FeeSchedulesResponseModel> = new DataResponse();
 
   public toggleAddFeeSchdule: boolean = false;
+
+  public showAddFeeScheduleModel: boolean = false;
 
   created() {
     this.getFeeSchedules();

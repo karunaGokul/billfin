@@ -33,7 +33,7 @@
           border-top-0
           border-start-0
           border-end-0
-          border-bottom
+          border-bottom-2
           border-dashed
           border-light
         "
@@ -44,8 +44,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               REP CODE
@@ -54,8 +54,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               BRANCH NAME
@@ -64,8 +64,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               ASSIGNED ADVISORS
@@ -75,8 +75,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             ></th>
           </tr>
@@ -87,7 +87,7 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
               @click="viewRepCodes('View RepCode', item)"
@@ -98,7 +98,7 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
             >
@@ -108,15 +108,15 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
             >
               <span v-for="(advisor, i) of item.advisors" :key="i">
-                {{ advisor.displayName }},
+                {{ advisor.displayName }}<span v-if="i+1 < item.advisors.length">, </span>
               </span>
             </td>
-            <td class="border-bottom border-dashed border-light p-6">
+            <td class="border-bottom-2 border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
                 @click="viewRepCodes('Edit RepCodes', item)"
@@ -178,10 +178,13 @@ export default class RepCodes extends Vue {
   }
 
   private getRepCodes() {
-    this.service.getRepCodes().then((response) => {
-      this.response = response;
-      this.dataResource = response;
-    }).catch((err) => {
+    this.service
+      .getRepCodes()
+      .then((response) => {
+        this.response = response;
+        this.dataResource = response;
+      })
+      .catch((err) => {
         if (err.response.status == 500)
           this.store.dispatch("showAlert", {
             message: "Somthing went wrong, Please contact administration",

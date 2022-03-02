@@ -59,7 +59,7 @@
                 text-center
                 lh-lg
               "
-              v-if="request.imgUrl"
+              v-if="profilePhoto"
             >
               <i
                 class="fa fa-solid fa-times fs-7"
@@ -68,11 +68,11 @@
               ></i>
             </div>
             <img
-              :src="request.imgUrl"
+              :src="profilePhoto"
               alt="Profile image"
               width="120"
               height="130"
-              v-if="request.imgUrl"
+              v-if="profilePhoto"
             />
             <div
               class="
@@ -82,7 +82,7 @@
                 justify-content-center
                 bg-gray-secondary
               "
-              v-if="!request.imgUrl"
+              v-if="!profilePhoto"
             >
               <i class="fa fa-solid fa-user fa-7x"></i>
             </div>
@@ -111,13 +111,16 @@
             :controls="v$.request.email"
             :validation="['required', 'email']"
           />
-          <select-box
-            label="Role"
-            :data="avaliableRoles"
-            :controls="v$.request.roleName"
-            formFieldType="inputBlock"
-            :validation="['required']"
-          />
+
+          <select
+            class="form-select form-select-solid mb-8"
+            v-model="v$.request.roleId.$model"
+          >
+            <option v-for="(item, i) in roles" :key="i" :value="item.roleId">
+              {{ item.roleName }}
+            </option>
+          </select>
+
           <div class="form-check form-switch">
             <input
               class="form-check-input"
@@ -148,7 +151,7 @@ import { Prop, Inject } from "vue-property-decorator";
 import useVuelidate from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 
-import { AddUserRequestModel } from "@/model";
+import { AddUserRequestModel, RolesResponseModel } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
@@ -173,7 +176,7 @@ import { IUserListService } from "@/service";
           return validation;
         },
       },
-      roleName: { required },
+      roleId: { required },
       isActive: {},
     },
   },
@@ -184,16 +187,27 @@ export default class AddUser extends Vue {
   public v$: any = setup(() => this.validate());
   public request: AddUserRequestModel = new AddUserRequestModel();
 
-  public avaliableRoles: Array<string> = [
-    "Advisor",
-    "Billing Associate",
-    "Compliance Officer",
-    "Billing Associate",
-    "Billing Administrator",
-  ];
+  public profilePhoto: any = null;
+
+  public roles: Array<RolesResponseModel> = [];
 
   public validate() {
     return useVuelidate();
+  }
+
+  created() {
+    this.getRoles();
+  }
+
+  public getRoles() {
+    this.service
+      .getRoles()
+      .then((response) => {
+        this.roles = response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public openProfileUpload() {
@@ -208,13 +222,13 @@ export default class AddUser extends Vue {
     if (!file) return;
 
     reader.onload = (e) => {
-      this.request.imgUrl = e.target.result;
+      this.profilePhoto = e.target.result;
     };
     reader.readAsDataURL(event.target.files[0]);
   }
 
   public removeProfile() {
-    this.request.imgUrl = null;
+    this.profilePhoto = null;
   }
 
   public addUser() {
@@ -225,11 +239,23 @@ export default class AddUser extends Vue {
         .addUser(this.request)
         .then((response) => {
           console.log(response);
+          this.processAvatar(response.uuid);
         })
         .catch((err) => {
           console.log(err);
         });
     }
+  }
+
+  private processAvatar(uuid: string) {
+    this.service
+      .uploadPhoto(this.profilePhoto, uuid)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public close() {

@@ -18,7 +18,10 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="modal-body ms-8 me-8 mt-4 mb-4 p-4">
+        <div
+          class="modal-body ms-8 me-8 mt-4 mb-4 p-4 overflow-auto"
+          style="max-height: 450px"
+        >
           <template
             v-if="modelType == 'Add Advisor' || modelType == 'Edit Advisors'"
           >
@@ -28,7 +31,7 @@
                   formFieldType="inputBlock"
                   label="First Name"
                   :controls="v$.request.firstName"
-                  :validation="['required']"
+                  :validation="['required', 'maxLength']"
                 />
               </div>
               <div class="col-4">
@@ -36,7 +39,7 @@
                   formFieldType="inputBlock"
                   label="Middle Name"
                   :controls="v$.request.middleName"
-                  :validation="[]"
+                  :validation="['maxLength']"
                 />
               </div>
               <div class="col-4">
@@ -44,7 +47,7 @@
                   formFieldType="inputBlock"
                   label="Last Name"
                   :controls="v$.request.lastName"
-                  :validation="['required']"
+                  :validation="['required', 'maxLength']"
                 />
               </div>
             </div>
@@ -54,7 +57,7 @@
                   formFieldType="inputBlock"
                   label="Display Name"
                   :controls="v$.request.displayName"
-                  :validation="['required']"
+                  :validation="['required', 'maxLength']"
                 />
               </div>
               <div class="col-6">
@@ -62,12 +65,7 @@
                   label="Phone number"
                   :controls="v$.request.contactPhone"
                   formFieldType="inputBlock"
-                  :validation="[
-                    'required',
-                    'phone',
-                    'minLength',
-                    'phoneLength',
-                  ]"
+                  :validation="['phone', 'minLength', 'phoneLength']"
                 />
               </div>
             </div>
@@ -102,7 +100,7 @@
             <div v-if="pageType == 'Advisor'">
               <select-box-with-delete
                 label="Assign Rep Codes"
-                :preData="assignedRepCodes"
+                :preSelected="assignedRepCodes"
                 :response="repCodes"
                 @updateValue="updateRepCodes"
               />
@@ -141,7 +139,9 @@
               </div>
               <div class="col-4">
                 <div class="text-gray-secondary p-2">ID (Optional)</div>
-                <div class="text-dark-gray p-2">{{ request.id ? request.id : '-' }}</div>
+                <div class="text-dark-gray p-2">
+                  {{ request.id ? request.id : "-" }}
+                </div>
               </div>
             </div>
             <div class="mt-2 mb-2">
@@ -193,7 +193,7 @@ import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
-import { required, minLength } from "@vuelidate/validators";
+import { required, minLength, maxLength } from "@vuelidate/validators";
 
 import TextInput from "../controls/TextInput.vue";
 import PhoneInput from "@/components/controls/PhoneInput.vue";
@@ -203,8 +203,8 @@ import SelectBoxWithDelete from "@/components/controls/SelectBoxWithDelete.vue";
 import {
   addAdvisorRequestModel,
   validateAdvisorRequestModel,
-  assignRepCodesResponseModel,
   ListItem,
+  repCodesResponseModel,
 } from "@/model";
 import { IAdvisorsService, IRepCodesService } from "@/service";
 
@@ -212,12 +212,11 @@ import { IAdvisorsService, IRepCodesService } from "@/service";
   components: { TextInput, PhoneInput, EmailInput, SelectBoxWithDelete },
   validations: {
     request: {
-      firstName: { required },
-      middleName: {},
-      lastName: { required },
-      displayName: { required },
+      firstName: { required, maxLength: maxLength(255) },
+      middleName: { maxLength: maxLength(255) },
+      lastName: { required, maxLength: maxLength(255) },
+      displayName: { required, maxLength: maxLength(255) },
       contactPhone: {
-        required,
         phone: (value: any) => {
           let validation = false;
           if (
@@ -247,7 +246,7 @@ import { IAdvisorsService, IRepCodesService } from "@/service";
           return validation;
         },
       },
-      advisorIdentifier: {},
+      advisorIdentifier: { maxLength: maxLength(255) },
     },
   },
 })
@@ -258,6 +257,7 @@ export default class AddAdvisor extends Vue {
   @Prop() pageType: string;
   @Prop() type: string;
   @Prop() selectedAdvisor?: addAdvisorRequestModel;
+  @Prop() selectedRepCode?: repCodesResponseModel;
 
   public v$: any = setup(() => this.validate());
   public store = useStore();
@@ -281,6 +281,8 @@ export default class AddAdvisor extends Vue {
 
     if (this.modelType == "Edit Advisors") this.editAdvisor();
     else if (this.modelType == "Add Advisor") this.unassignedRepCodes();
+
+    if (this.selectedRepCode) this.request.repCodes.push(this.selectedRepCode);
   }
 
   public close(action: string) {
@@ -321,8 +323,7 @@ export default class AddAdvisor extends Vue {
   public updateRepCodes(repCodes: Array<ListItem>) {
     this.request.repCodes = [];
     repCodes.forEach((item: ListItem) => {
-      let repCode: assignRepCodesResponseModel =
-        new assignRepCodesResponseModel();
+      let repCode: repCodesResponseModel = new repCodesResponseModel();
       repCode.repId = item.data;
       repCode.repCode = item.text;
       this.request.repCodes.push(repCode);
@@ -358,6 +359,8 @@ export default class AddAdvisor extends Vue {
         this.request.repCodes && this.request.repCodes.length > 0
           ? this.request.repCodes
           : null;
+
+      console.log(this.request.repCodes);
 
       this.service
         .addAdvisor(this.request)

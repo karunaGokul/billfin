@@ -147,38 +147,13 @@
                 class="badge fs-7 ms-2"
                 :class="{
                   'bg-success-alpha text-success': item.status == 'active',
-                  'bg-warning-alpha text-warning':
-                    item.status == 'not-registered',
                   'bg-dander-alpha text-danger': item.status == 'in-active',
                 }"
               >
-                {{ userStatus(item.status) }}
+                {{ item.status == "active" ? "Active" : "In Active" }}
               </span>
             </td>
             <td class="border-bottom-2 border-dashed border-light p-6">
-              <template v-if="item.status == 'not-registered'">
-                <div class="d-flex justify-content-between">
-                  <i class="fa fa-solid fa-paper-plane edit-row"></i>
-                  <i class="fa fa-solid fa-ban edit-row"></i>
-                  <div
-                    class="dropdown dropdown-primary"
-                    @mouseleave="clickOutSideUser"
-                    v-click-outside="clickOutSideUser"
-                  >
-                    <i
-                      class="fa fa-solid fa-ellipsis-v fs-4 edit-row"
-                      @click="toggleUser = true"
-                    ></i>
-                    <ul
-                      class="dropdown-menu overflow-auto p-2"
-                      :class="{ show: toggleUser }"
-                      style="right: 0"
-                    >
-                      <li class="dropdown-item pt-2 pb-2">Delete</li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
               <template v-if="item.status == 'active'">
                 <div class="d-flex justify-content-between">
                   <i class="fa fa-solid fa-ban fs-4 edit-row"></i>
@@ -293,14 +268,5 @@ export default class UserList extends Vue {
     console.log("pagination");
   }
 
-  public userStatus(status: string) {
-    return status == "active"
-      ? "Active"
-      : status == "in-active"
-      ? "In Active"
-      : status == "not-registered"
-      ? "Not Registered"
-      : status;
-  }
 }
 </script> 

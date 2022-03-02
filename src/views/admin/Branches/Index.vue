@@ -33,7 +33,7 @@
           border-top-0
           border-start-0
           border-end-0
-          border-bottom
+          border-bottom-2
           border-dashed
           border-light
         "
@@ -44,8 +44,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               BRANCH CODE
@@ -54,8 +54,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               BRANCH NAME
@@ -64,8 +64,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             >
               ASSIGNED REP CODES
@@ -75,8 +75,8 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
+                border-bottom-2 border-dashed border-light
+                p-6
               "
             ></th>
           </tr>
@@ -87,7 +87,7 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
               @click="viewBranch('View Branch', item)"
@@ -98,7 +98,7 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
             >
@@ -108,15 +108,15 @@
               class="
                 fw-bold
                 text-dark-gray
-                border-bottom border-dashed border-light
+                border-bottom-2 border-dashed border-light
                 p-6
               "
             >
-              <span v-for="(repCode, i) of item.repCodes" :key="i">
-                {{ repCode.repCode }},
+              <span v-for="(code, i) of item.repCodes" :key="i">
+                {{ code.repCode }}<span v-if="i+1 < item.repCodes.length">, </span>
               </span>
             </td>
-            <td class="border-bottom border-dashed border-light p-6">
+            <td class="border-bottom-2 border-dashed border-light p-6">
               <i
                 class="fa fa-pen text-dark-gray edit-row"
                 @click="viewBranch('Edit Branchs', item)"

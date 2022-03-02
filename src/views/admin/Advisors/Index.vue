@@ -26,132 +26,145 @@
       </div>
     </div>
     <div class="card-body pt-0">
-      <table
-        class="
-          table table-hover
-          fs-6
-          border-top-0
-          border-start-0
-          border-end-0
-          border-bottom
-          border-dashed
-          border-light
-        "
-      >
-        <thead>
-          <tr>
-            <th
-              class="
-                fw-bold
-                text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
-              "
-            >
-              DISPLAY NAME
-            </th>
-            <th
-              class="
-                fw-bold
-                text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
-              "
-            >
-              EMAIL
-            </th>
-            <th
-              class="
-                fw-bold
-                text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
-              "
-            >
-              REP CODE
-            </th>
-            <th
-              class="
-                fw-bold
-                text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
-              "
-            >
-              BRANCH
-            </th>
-            <th
-              class="
-                fw-bold
-                text-gray-secondary
-                border-bottom border-dashed border-light
-                p-4
-              "
-            ></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in response" :key="'advisors-table' + index">
-            <td
-              class="
-                fw-bold
-                text-dark-gray
-                border-bottom border-dashed border-light
-                p-6
-              "
-              @click="addAdvisor('View Advisor', item)"
-            >
-              {{ item.displayName }}
-            </td>
-            <td
-              class="
-                fw-bold
-                text-dark-gray
-                border-bottom border-dashed border-light
-                p-6
-              "
-              @click="addAdvisor('View Advisor', item)"
-            >
-              {{ item.emailAddress }}
-            </td>
-            <td
-              class="
-                fw-bold
-                text-dark-gray
-                border-bottom border-dashed border-light
-                p-6
-              "
-            >
-              <a
-                href="#"
-                class="border-bottom border-primary me-2"
-                v-for="(code, index) of item.repCodes"
-                :key="'advisor-rep-code' + index"
-                @click="openRepCodePreview(item, code)"
+      <div class="table-responsive">
+        <table
+          class="
+            table table-hover
+            fs-6
+            border-top-0
+            border-start-0
+            border-end-0
+            border-bottom-2
+            border-dashed
+            border-light
+          "
+        >
+          <thead>
+            <tr>
+              <th
+                class="
+                  fw-bold
+                  text-gray-secondary
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
               >
-                {{ code.repCode }},
-              </a>
-            </td>
-            <td
-              class="
-                fw-bold
-                text-dark-gray
-                border-bottom border-dashed border-light
-                p-6
-              "
-              @click="addAdvisor('View Advisor', item)"
+                DISPLAY NAME
+              </th>
+              <th
+                class="
+                  fw-bold
+                  text-gray-secondary
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              >
+                EMAIL
+              </th>
+              <th
+                class="
+                  fw-bold
+                  text-gray-secondary
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              >
+                REP CODE
+              </th>
+              <th
+                class="
+                  fw-bold
+                  text-gray-secondary
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              >
+                BRANCH
+              </th>
+              <th
+                class="
+                  fw-bold
+                  text-gray-secondary
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              ></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) in response"
+              :key="'advisors-table' + index"
             >
-              {{ item.branch }}
-            </td>
-            <td class="border-bottom border-dashed border-light p-6">
-              <i
-                class="fa fa-pen text-dark-gray edit-row"
-                @click="addAdvisor('Edit Advisors', item)"
-              ></i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <td
+                class="
+                  fw-bold
+                  text-dark-gray
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+                @click="addAdvisor('View Advisor', item)"
+              >
+                {{ item.displayName }}
+              </td>
+              <td
+                class="
+                  fw-bold
+                  text-dark-gray
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+                @click="addAdvisor('View Advisor', item)"
+              >
+                {{ item.emailAddress }}
+              </td>
+              <td
+                class="
+                  fw-bold
+                  text-dark-gray
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              >
+                <a
+                  href="#"
+                  class="border-bottom border-primary me-2"
+                  v-for="(code, index) of item.repCodes"
+                  :key="'advisor-rep-code' + index"
+                  @click="openRepCodePreview(item, code)"
+                >
+                  {{ code.repCode
+                  }}<span v-if="index + 1 < item.repCodes.length">, </span>
+                </a>
+              </td>
+              <td
+                class="
+                  fw-bold
+                  text-dark-gray
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+                @click="addAdvisor('View Advisor', item)"
+              >
+                {{ item.branch }}
+              </td>
+              <td
+                class="
+                  fw-bold
+                  text-dark-gray
+                  border-bottom-2 border-dashed border-light
+                  p-6
+                "
+              >
+                <i
+                  class="fa fa-pen text-dark-gray edit-row"
+                  @click="addAdvisor('Edit Advisors', item)"
+                ></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <add-advisor
@@ -261,6 +274,8 @@ export default class Advisors extends Vue {
           item.emailAddress
             .toLowerCase()
             .includes(searchValue.toLowerCase())) ||
+        (item.branch &&
+          item.branch.toLowerCase().includes(searchValue.toLowerCase())) ||
         item.repCodes.some(
           (code) =>
             code.repCode &&

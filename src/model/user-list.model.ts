@@ -14,7 +14,16 @@ export class AddUserRequestModel {
   firstName: string;
   lastName: string;
   email: string;
-  roleName: string;
+  roleId: string;
   isActive: boolean;
-  imgUrl: any;
+}
+export class AddUserResponseModel {
+  domain: string;
+  email: string;
+  status: string;
+  uuid: string;
+}
+export class RolesResponseModel {
+  roleId: number;
+  roleName: string;
 }

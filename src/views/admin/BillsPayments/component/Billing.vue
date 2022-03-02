@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) of products" :key="index">
+        <tr v-for="(item, index) of invoices" :key="index">
           <td class="p-5 border-bottom border-light-gray">
             <div class="fw-bolder text-dark-gray">{{ item.planName }}</div>
             <div
@@ -79,10 +79,10 @@ import { Prop } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import { productsResponseModel } from "@/model";
+import { invoicesResponseModel } from "@/model";
 
 export default class Billng extends Vue {
-  @Prop() products: Array<productsResponseModel>;
+  @Prop() products: Array<invoicesResponseModel>;
 
   public store = useStore();
 

@@ -1,3 +1,5 @@
+import { repCodesResponseModel } from "./rep-codes.model";
+
 export class advisorsResponseModel {
   firstName: string;
   lastName: string;
@@ -5,7 +7,7 @@ export class advisorsResponseModel {
   displayName: string;
   emailAddress: string;
   contactPhone: string;
-  repCodes: Array<assignRepCodesResponseModel>;
+  repCodes: Array<repCodesResponseModel>;
   branch: string;
   advisorIdentifier: string;
   advisorId: number;
@@ -19,7 +21,7 @@ export class addAdvisorRequestModel {
   contactPhone: number;
   emailAddress: string;
   advisorIdentifier: string;
-  repCodes: Array<assignRepCodesResponseModel> = [];
+  repCodes: Array<repCodesResponseModel> = [];
 }
 export class addAdvisorResponseModel {
   status: string;

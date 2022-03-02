@@ -40,6 +40,7 @@
               label=""
               :controls="v$.request.repCode"
               :validation="['required']"
+              readonly
             />
             <div class="ms-8">
               <select
@@ -90,7 +91,7 @@
                 border-top-0
                 border-start-0
                 border-end-0
-                border-bottom
+                border-bottom-2
                 border-dashed
                 border-light
               "
@@ -101,7 +102,7 @@
                     class="
                       fw-bold
                       text-gray-secondary
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-4
                     "
                   >
@@ -112,7 +113,7 @@
                     class="
                       fw-bold
                       text-gray-secondary
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-4
                     "
                   >
@@ -122,7 +123,7 @@
                     class="
                       fw-bold
                       text-gray-secondary
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-4
                     "
                   >
@@ -132,7 +133,7 @@
                     class="
                       fw-bold
                       text-gray-secondary
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-4
                     "
                   >
@@ -142,7 +143,7 @@
                     class="
                       fw-bold
                       text-gray-secondary
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-4
                     "
                     v-if="
@@ -160,7 +161,7 @@
                     class="
                       fw-bold
                       text-dark-gray
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-6
                     "
                   >
@@ -187,7 +188,7 @@
                     class="
                       fw-bold
                       text-dark-gray
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-6
                     "
                   >
@@ -209,7 +210,7 @@
                     class="
                       fw-bold
                       text-dark-gray
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-6
                     "
                   >
@@ -231,7 +232,7 @@
                     class="
                       fw-bold
                       text-dark-gray
-                      border-bottom border-dashed border-light
+                      border-bottom-2 border-dashed border-light
                       p-6
                     "
                   >
@@ -251,7 +252,7 @@
                   </td>
 
                   <td
-                    class="border-bottom border-dashed border-light p-4"
+                    class="border-bottom-2 border-dashed border-light p-4"
                     v-if="
                       pageType == 'RepCodes' && modelType == 'Edit RepCodes'
                     "
@@ -272,7 +273,8 @@
           <add-advisor
             pageType="RepCodes"
             type="Add Advisor"
-            @advisorAdded="getUnassignedAdvisors"
+            :selectedRepCode="selectedRepCode"
+            @advisorAdded="viewRepCode"
             @close="showAdvisorModel = false"
             v-if="showAdvisorModel"
           />
@@ -371,7 +373,7 @@ export default class RepCodePreview extends Vue {
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
 
-  @Prop() selectedRepCode: assignRepCodesResponseModel;
+  @Prop() selectedRepCode: repCodesResponseModel;
 
   @Prop() pageType: string;
   @Prop() type: string;
@@ -418,6 +420,7 @@ export default class RepCodePreview extends Vue {
     this.repCodesService
       .viewRepCode(this.selectedRepCode.repId)
       .then((response) => {
+        this.showAdvisorModel = false;
         this.request = response;
         this.request.advisors.forEach((advisor) => {
           advisor.status = "view";
@@ -439,7 +442,6 @@ export default class RepCodePreview extends Vue {
   }
 
   private getUnassignedAdvisors() {
-    console.log('update');
     this.service
       .unassignedAdvisors()
       .then((response) => {

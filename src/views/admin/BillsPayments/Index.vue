@@ -136,49 +136,142 @@
     <div class="p-4 fw-bolder fs-4 border-bottom border-gray-secondary">
       Bills
     </div>
-    <div v-for="(item, index) of response" :key="index">
+    <div v-for="(bills, index) of response" :key="index">
       <div class="d-flex align-items-center justify-content-between mt-4 p-4">
         <div class="fs-5">
           <div class="fw-bolder mt-2 mb-2">
-            {{ $datehelper.changeMonthFormat(item.transactionDate) }}
+            {{ $datehelper.changeMonthFormat(bills.transactionDate) }}
           </div>
           <div class="fw-bolder mb-2 fs-5">
             <img
               src="@/assets/mastercard.png"
               alt="Card Type"
-              v-if="item.transactionCardType == 'MasterCard'"
+              v-if="bills.transactionCardType == 'MasterCard'"
             />
             <img
               src="@/assets/visa.png"
               alt="Card Type"
-              v-if="item.transactionCardType == 'Visa'"
+              v-if="bills.transactionCardType == 'Visa'"
             />
             <img
               src="@/assets/amex.png"
               alt="Card Type"
-              v-if="item.transactionCardType == 'American'"
+              v-if="bills.transactionCardType == 'American'"
             />
             <img
               src="@/assets/discover.png"
               alt="Card Type"
-              v-if="item.transactionCardType == 'Discover'"
+              v-if="bills.transactionCardType == 'Discover'"
             />
             {{
-              item.transactionCardType == "American"
+              bills.transactionCardType == "American"
                 ? "American Express"
-                : item.transactionCardType
+                : bills.transactionCardType
             }}
             ****{{
-              item.transactionCardDetail.split(" ")[0] == "American"
-                ? item.transactionCardDetail.split(" ")[2]
-                : item.transactionCardDetail.split(" ")[1]
+              bills.transactionCardDetail.split(" ")[0] == "American"
+                ? bills.transactionCardDetail.split(" ")[2]
+                : bills.transactionCardDetail.split(" ")[1]
             }}
           </div>
         </div>
         <a class="btn btn-link">Download Invoice</a>
       </div>
 
-      <billng :products="item.products" />
+      <div class="card mt-2 mb-4 rounded" v-for="(invoice, index) of bills.invoices" :key="index">
+        <table class="w-100 fs-5">
+          <thead>
+            <tr>
+              <th class="p-5 text-dark-gray border-bottom border-light-gray">
+                Item
+              </th>
+              <th class="p-5 text-dark-gray border-bottom border-light-gray">
+                Product
+              </th>
+              <th class="p-5 text-dark-gray border-bottom border-light-gray">
+                Term
+              </th>
+              <th
+                class="
+                  p-5
+                  text-dark-gray
+                  border-bottom border-light-gray
+                  text-end
+                "
+              >
+                Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, i) of invoice.planDetails" :key="'plan-details'+i">
+              <td class="p-5 border-bottom border-light-gray">
+                <div class="fw-bolder text-dark-gray">{{ item.planName }}</div>
+                <div
+                  class="text-gray pt-2 pb-2"
+                  v-if="
+                    item.planName != 'Admin User License' &&
+                    item.planName != 'Multi-Connector Integrations'
+                  "
+                >
+                  {{ description(item.type, item.planName) }}
+                </div>
+                <div
+                  class="text-gray pt-2 pb-2"
+                  v-if="item.planName == 'Admin User License'"
+                >
+                  Number of users: {{ item.quantity }}
+                </div>
+                <div
+                  class="text-gray pt-2 pb-2"
+                  v-if="item.planName == 'Multi-Connector Integrations'"
+                >
+                  Number of connectors: {{ item.quantity }}
+                </div>
+              </td>
+              <td
+                class="
+                  p-5
+                  fw-bolder
+                  text-dark-gray
+                  border-bottom border-light-gray
+                "
+              >
+                {{ item.product == "AUM" ? "AUM" : "Subscription" }} Billing
+                {{ item.type == "Plan" ? "Plan" : "Add-on" }}
+              </td>
+              <td
+                class="
+                  p-5
+                  fw-bolder
+                  text-dark-gray
+                  border-bottom border-light-gray
+                "
+              >
+                {{ item.planTerm == "ANNUAL" ? "Annual" : "Monthly" }}
+              </td>
+              <td
+                class="
+                  fw-bolder
+                  fa-2x
+                  p-5
+                  fw-bolder
+                  text-dark-gray
+                  border-bottom
+                  text-end
+                  border-light-gray
+                "
+              >
+                <span class="fs-7">$</span>
+                {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
+                <span class="fs-8 fw-light"
+                  >/{{ item.planTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -351,6 +444,22 @@ export default class Index extends Vue {
             title: "Oops, sorry!",
           });
       });
+  }
+
+  public description(type: string, planName: string) {
+    if (type == "Plan")
+      return this.planList.find((e: any) => e.planName == planName).description;
+    else
+      return this.addOnsList.find((e: any) => e.addOnName == planName)
+        .description;
+  }
+
+  get planList() {
+    return this.store.getters.planList;
+  }
+
+  get addOnsList() {
+    return this.store.getters.addOnsList;
   }
 }
 </script>

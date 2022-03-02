@@ -120,7 +120,13 @@
         </div>
       </template>
 
-      <template v-if="planAction == 'UPGRADE'">
+      <template
+        v-if="
+          (planAction == 'UPGRADE' &&
+            activatePlan == 'Effective Immediately') ||
+          (planAction == 'DOWNGRADE' && activatePlan == 'Next Billing Term')
+        "
+      >
         <div
           class="
             fw-bolder
@@ -291,7 +297,7 @@
       >
         <div>Total Due Today</div>
         <div>
-          {{ totalFees }}
+          {{ $filters.currencyDisplay(totalFees, 2, 2, "$", true) }}
         </div>
       </div>
 
@@ -516,7 +522,12 @@ export default class Review extends Vue {
     }
     amount = aumAmount + subAmount;
 
-    if (this.planAction == "UPGRADE") {
+    if (
+      (this.planAction == "UPGRADE" &&
+        this.activatePlan == "Effective Immediately") ||
+      (this.planAction == "DOWNGRADE" &&
+        this.activatePlan == "Next Billing Term")
+    ) {
       amount = amount - this.refundAmount;
     }
 
@@ -549,6 +560,10 @@ export default class Review extends Vue {
 
   get planAction() {
     return this.store.getters.planAction;
+  }
+
+  get activatePlan() {
+    return this.store.getters.activatePlan;
   }
 }
 </script>

@@ -53,7 +53,8 @@ app.config.globalProperties.$filters = {
     value: any,
     numberOfDigits: number = 2,
     minDigits: number = 2,
-    symbol: string = "$"
+    symbol: string = "$",
+    allowNegative?: boolean 
   ) {
     if (!value) return `${symbol}0`;
 
@@ -61,7 +62,7 @@ app.config.globalProperties.$filters = {
 
     value = parseFloat(value);
 
-    if (value >= 0)
+    if (value >= 0 || allowNegative)
       return `${symbol}${value.toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,

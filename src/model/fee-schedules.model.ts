@@ -8,3 +8,9 @@ export class FeeSchedulesResponseModel extends BaseModel {
   assignments: number;
   status: string;
 }
+export class AddFeeScheduleRequestModel {
+  name: string;
+  currency: string;
+  type: string;
+  isActive: boolean;
+}

@@ -1,3 +1,19 @@
+export class invoicesResponseModel {
+  invoiceDate: string;
+  invoiceId: string;
+  invoiceDueAmount: number;
+  invoicePaidAmount: number;
+  invoiceStatus: string;
+  invoiceTotalAmount: number;
+  planDetails: Array<productsResponseModel>;
+}
+export class billsAndPaymentResponseModel {
+  transactionDate: string;
+  transactionId: string;
+  transactionCardDetail: string;
+  transactionCardType: string;
+  invoices: Array<invoicesResponseModel>;
+}
 export class productsResponseModel {
   planName: string;
   planCode: string;
@@ -10,11 +26,4 @@ export class productsResponseModel {
   product: string;
   quantity: number;
   type: string;
-}
-export class billsAndPaymentResponseModel {
-  transactionDate: string;
-  transactionId: string;
-  transactionCardDetail: string;
-  transactionCardType: string;
-  products: Array<productsResponseModel>;
 }

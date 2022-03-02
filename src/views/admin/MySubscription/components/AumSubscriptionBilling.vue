@@ -64,7 +64,7 @@
         <addons
           :addons="item"
           :allowChangeAddonTerm="allowChangeAddonTerm"
-           @termChanged="updateSubscription"
+          @termChanged="updateSubscription"
           @addUserConnector="onAddUserConnector"
           @planAddOnCancelled="updateSubscription"
         />
@@ -139,8 +139,19 @@ export default class AumSubscriptionBilling extends Vue {
       .getSubscription(request)
       .then((response) => {
         this.loading = false;
+        
+        let status = ["CURRENT", "UPCOMING", "CANCELLED"];
+
         this.plans = response.subscriptions;
         this.addons = response.addOns;
+
+        this.plans.sort((a, b) => {
+          return status.indexOf(a.status) - status.indexOf(b.status);
+        });
+
+        this.addons.sort((a, b) => {
+          return status.indexOf(a.status) - status.indexOf(b.status);
+        });
       })
       .catch((err) => {
         this.loading = false;
