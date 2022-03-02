@@ -209,7 +209,7 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
     request.eventType = "TERM_CHANGE";
     request.subscriptionAddOnId = this.addons.subscriptionAddOnId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termAddOnId = this.addons.termAddOnId;
+    request.termAddOnId = this.response.termPlanAddOnId;
 
     this.service
       .changeAddOnTerm(request)

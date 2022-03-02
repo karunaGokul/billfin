@@ -313,7 +313,7 @@ export default class ChangePlanCommitmentTerm extends Vue {
     request.eventType = "TERM_CHANGE";
     request.subscriptionPlanId = this.plan.subscriptionPlanId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termPlanId = this.plan.termPlanId;
+    request.termPlanId = this.response.plan.termPlanId;
 
     this.service
       .changePlanTerm(request)
