@@ -417,7 +417,13 @@ export default class Review extends Vue {
 
   created() {
     this.getBillingAddress();
-    this.getRefundDetails();
+    if (
+      (this.planAction == "UPGRADE" &&
+        this.activatePlan == "Effective Immediately") ||
+      (this.planAction == "DOWNGRADE" &&
+        this.activatePlan == "Next Billing Term")
+    )
+      this.getRefundDetails();
   }
 
   expandRow(index: number) {
@@ -504,6 +510,7 @@ export default class Review extends Vue {
     let subAmount: number = 0,
       aumAmount: number = 0,
       amount: any = 0;
+
     if (this.showAumBilling) {
       aumAmount = this.aumBilling.addons.reduce((prev: number, cur: any) => {
         return prev + parseInt(cur.planAddOnAmount) * parseInt(cur.quantity);
@@ -531,10 +538,7 @@ export default class Review extends Vue {
       amount = amount - this.refundAmount;
     }
 
-    return amount.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    return amount;
   }
 
   get refundAmount() {
