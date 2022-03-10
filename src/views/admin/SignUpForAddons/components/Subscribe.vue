@@ -114,7 +114,9 @@ export default class Subscribe extends Vue {
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
-    this.service
+    console.log(request);
+
+   /* this.service
       .subscribeAddOns(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
@@ -123,15 +125,15 @@ export default class Subscribe extends Vue {
       })
       .catch((err) => {
         console.log(err);
-      });
+      });*/
   }
 
   getAddons(value: any) {
     let addons: Array<addOnsModel> = [];
 
-    value.forEach((item: { termPlanAddOnId: number; quantity: string }) => {
+    value.forEach((item: { termAddOnId: number; quantity: string }) => {
       addons.push({
-        termAddOnId: item.termPlanAddOnId,
+        termAddOnId: item.termAddOnId,
         quantity: item.quantity,
         startDate: this.startDate,
       });

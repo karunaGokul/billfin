@@ -9,3 +9,4 @@ export * from './rep-codes.service';
 export * from './branches.service';
 export * from './user-list.service';
 export * from './fee-schedules.service';
+export * from './custodians.service';

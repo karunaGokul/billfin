@@ -4,19 +4,32 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
 import { DIContainer } from "./dicontainer";
 
 import { useStore } from "vuex";
 
 import axios, { AxiosError, AxiosResponse } from "axios";
 
+import AppSuccess from "@/components/layout/AppSuccess.vue";
+
+@Options({
+  components: {
+    AppSuccess,
+  },
+})
 export default class App extends DIContainer {
   public store = useStore();
 
   created() {
     if (this.store.getters.isLoggedIn) this.store.dispatch("validateKeyCloak");
     //this.tokenInterceptor();
+  }
+
+  mounted() {
+    /*let root: any = this.$root;
+    let success:any = this.$refs.alert as AppSuccess;
+    root.$success = success.show;*/
   }
 
   tokenInterceptor() {

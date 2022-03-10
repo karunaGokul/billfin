@@ -136,6 +136,7 @@ const actions: ActionTree<any, any> = {
     context.commit("onUpdateProducts", payload);
   },
   updateTerm(context, payload) {
+    console.log(payload);
     context.commit("onUpdateTerm", payload);
   },
   updatePlan(context, payload) {

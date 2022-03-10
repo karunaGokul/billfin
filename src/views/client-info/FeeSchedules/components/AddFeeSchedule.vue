@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade show d-block">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
           <h5 class="modal-title fs-4 fw-bolder">Add Fee Schedule</h5>
@@ -21,7 +21,7 @@
             <div class="col-6">
               <select-box
                 label="Currency"
-                :data="['USD']"
+                :data="['USD', 'CAD']"
                 :controls="v$.request.currency"
                 formFieldType="inputBlock"
                 :validation="['required']"
@@ -64,7 +64,11 @@
                 v-click-outside="clickOutSideBlended"
                 v-if="request.type == 'Tiered'"
               >
-                <input class="form-check-input" type="checkbox" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="request.tierType"
+                />
                 <label class="form-check-label" for="Activate User"
                   >Blended
 
@@ -228,21 +232,31 @@
             </div>
           </div>
 
-          <div class="m-8 ms-0" v-if="request.type == 'Flat'">
-            <div class="form-label fw-bolder mb-4">BPS</div>
-
-            <div class="d-flex align-items-center">
-              <div class="input-group input-group-solid mb-2 w-25 me-8">
-                <input type="text" class="form-control text-start" id="bps" />
+          <div class="m-8 ms-0 position-relative" v-if="request.type == 'Flat'">
+            <div class="row">
+              <div class="col-8">
+                <div class="d-flex align-items-center">
+                  <text-input
+                    formFieldType="inputBlock"
+                    label="BPS"
+                    :controls="v$.request.bps"
+                    :validation="['numeric']"
+                  />
+                  <div class="mt-0 ms-6 me-6">+</div>
+                  <text-input
+                    formFieldType="inputBlock"
+                    label="Amount"
+                    :controls="v$.request.amount"
+                    :validation="['numeric']"
+                  />
+                </div>
               </div>
-              <div>+</div>
-              <div class="input-group input-group-solid mb-2 w-25 ms-8">
-                <input
-                  type="text"
-                  class="form-control text-start"
-                  id="amount"
-                />
-              </div>
+            </div>
+            <div
+              class="position-absolute bottom-0 text-danger"
+              v-if="showBPSError"
+            >
+              BPS or Amount is required
             </div>
           </div>
 
@@ -306,12 +320,20 @@
                     <th
                       class="
                         fw-bold
+                        text-gray-secondary
                         border-bottom-2 border-dashed border-light
                         p-2
                       "
                     >
                       Amount
                     </th>
+                    <th
+                      class="
+                        fw-bold
+                        border-bottom-2 border-dashed border-light
+                        p-2
+                      "
+                    ></th>
                     <th
                       class="
                         fw-bold
@@ -333,22 +355,9 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
-                      <div v-if="item.status == 'firstRow'">
-                        ${{ item.fromValue }}
-                      </div>
-                      <div v-else>
-                        <div class="d-flex align-items-center">
-                          <span class="me-4">$</span>
-                          <div class="input-group input-group-solid">
-                            <input
-                              type="text"
-                              class="form-control text-start"
-                              v-model="item.fromValue"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      {{ $filters.currencyDisplay(item.fromValue) }}
                     </td>
                     <td
                       class="
@@ -360,19 +369,21 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
-                      <div v-if="item.status == 'lastRow'">
-                        {{ item.toValue }}
+                      <div v-if="index + 1 == tiers.length">
+                        and above
                       </div>
                       <div v-else>
                         <div class="d-flex align-items-center">
-                          <span class="me-4">$</span>
+                          <span class="me-2">$</span>
                           <div class="input-group input-group-solid">
                             <input
                               type="text"
                               class="form-control text-start"
                               v-model="item.toValue"
                               @input="updateInput(item, index)"
+                              @blur="convertDollar(item, 'toValue')"
                             />
                           </div>
                         </div>
@@ -388,6 +399,7 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
                       =
                     </td>
@@ -401,6 +413,7 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
                       <div class="d-flex align-items-center">
                         <div class="input-group input-group-solid">
@@ -422,6 +435,7 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
                       +
                     </td>
@@ -435,14 +449,16 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
                       <div class="d-flex align-items-center">
-                        <span class="me-4">$</span>
+                        <span class="me-2">$</span>
                         <div class="input-group input-group-solid">
                           <input
                             type="text"
                             class="form-control text-start"
                             v-model="item.amount"
+                            @blur="convertDollar(item, 'amount')"
                           />
                         </div>
                       </div>
@@ -457,22 +473,34 @@
                         ps-2
                         pe-2
                       "
+                      style="line-height: 3"
                     >
                       <button
                         type="button"
                         class="btn btn-primary btn-sm p-2 ps-3"
-                        @click="addItem(index)"
-                        v-if="item.status != 'lastRow'"
+                        @click="addItem(item, index)"
+                        v-if="index + 1 != tiers.length"
                       >
                         <i class="fa fa-plus"></i>
                       </button>
+                    </td>
+                    <td
+                      class="
+                        fw-bold
+                        text-dark-gray
+                        border-bottom-2 border-dashed border-light
+                        pt-6
+                        pb-6
+                        ps-2
+                        pe-2
+                      "
+                      style="line-height: 3"
+                    >
                       <button
                         type="button"
-                        class="btn btn-secondary text-gray btn-sm p-2 ps-3 ms-4"
+                        class="btn btn-secondary text-gray btn-sm p-2 ps-3"
                         @click="removeItem(index)"
-                        v-if="
-                          item.status != 'firstRow' && item.status != 'lastRow'
-                        "
+                        v-if="index != 0 && index + 1 != tiers.length"
                       >
                         <i class="fa fa-trash"></i>
                       </button>
@@ -498,7 +526,7 @@
           </button>
           <button
             type="button"
-            class="btn btn-primary ms-8"
+            class="btn ms-8 btn-primary"
             @click="addFeeSchedule"
           >
             Save
@@ -513,12 +541,20 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+//import { ValidateEach } from '@vuelidate/components';
 
-import { AddFeeScheduleRequestModel } from "@/model";
+import { required, numeric } from "@vuelidate/validators";
+
+import {
+  AddFeeScheduleRequestModel,
+  tierModel,
+  CurrencyCode,
+  TierType,
+} from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
+
 import { IFeeSchedulesService } from "@/service";
 
 @Options({
@@ -530,6 +566,8 @@ import { IFeeSchedulesService } from "@/service";
     request: {
       name: { required },
       currency: { required },
+      bps: { numeric },
+      amount: { numeric },
       isActive: {},
     },
   },
@@ -540,27 +578,28 @@ export default class AddFeeSchedule extends Vue {
   public v$: any = setup(() => this.validate());
   public request: AddFeeScheduleRequestModel = new AddFeeScheduleRequestModel();
 
+  public showBPSError: boolean = false;
   public showBlenedModel: boolean = false;
 
-  public tiers: Array<any> = [
-    {
-      fromValue: "0.00",
-      toValue: "50000",
-      bps: "",
-      amount: "",
-      status: "firstRow",
-    },
-    {
-      fromValue: "50000",
-      toValue: "and above",
-      bps: "",
-      amount: "",
-      status: "lastRow",
-    },
-  ];
+  public tiers: Array<tierModel> = [];
 
   public validate() {
     return useVuelidate();
+  }
+
+  created() {
+    let tier = new tierModel();
+    tier.fromValue = 0;
+    tier.toValue = this.updateCurrency(50000);
+
+    this.tiers.push(tier);
+
+    tier = new tierModel();
+
+    tier.fromValue = 50000;
+    tier.toValue = 0;
+
+    this.tiers.push(tier);
   }
 
   mounted() {
@@ -571,37 +610,132 @@ export default class AddFeeSchedule extends Vue {
     this.showBlenedModel = false;
   }
 
-  public addItem(index: number) {
-    let tiers = {
-      fromValue: "",
-      toValue: "",
-      bps: "",
-      amount: "",
-      status: "new",
-    };
-    console.log(index);
-    this.tiers.splice(1, index, tiers);
+  public addItem(item: tierModel, index: number) {
+    let tiers = new tierModel();
+
+    tiers.fromValue = this.$currencyToNumber(item.toValue);
+
+    tiers.toValue = this.updateCurrency(
+      this.$currencyToNumber(item.toValue) * 2
+    );
+
+    this.tiers.splice(index + 1, 0, tiers);
+
+    this.tiers[index + 2].fromValue = this.$currencyToNumber(tiers.toValue);
+  }
+
+  public convertDollar(item: any, type: string) {
+    item[type] = this.updateCurrency(item[type]);
   }
 
   public removeItem(index: number) {
     this.tiers.splice(index, 1);
+    this.tiers[index].fromValue = this.$currencyToNumber(this.tiers[index - 1].toValue);
+
+    /*if (index + 1 != this.tiers.length)
+      this.tiers[index].toValue = this.updateCurrency(
+        this.$currencyToNumber(this.tiers[index - 1].toValue) * 2
+      );*/
   }
 
-  public updateInput(item: any, index: number) {
-    console.log("index", index);
-    this.tiers[index + 1].fromValue = item.toValue;
+  public updateInput(item: tierModel, index: number) {
+    this.tiers[index + 1].fromValue = this.$currencyToNumber(item.toValue);
+
+    /*if (index + 1 != this.tiers.length)
+      this.tiers[index + 1].toValue = this.updateCurrency(
+        this.$currencyToNumber(item.toValue) * 2
+      );*/
   }
 
   public addFeeSchedule() {
-    this.v$.$touch();
+    this.v$.request.$touch();
 
-    if (!this.v$.$invalid) {
-      console.log(this.request);
+    let valid: boolean = false;
+
+    if (!this.v$.request.$invalid) {
+      if (this.request.type == "Flat") {
+        if (this.request.bps || this.request.amount) {
+          valid = true;
+          this.showBPSError = false;
+        } else this.showBPSError = true;
+      } else {
+        console.log(this.request);
+      }
+
+      if (valid) {
+        let request = new AddFeeScheduleRequestModel();
+
+        request.name = this.request.name;
+        request.currency =
+          CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
+
+        if (this.request.type == "Flat") {
+          request.tierType =
+            TierType[this.request.type as keyof typeof TierType];
+          request.bps = this.request.bps;
+          request.amount = this.request.amount;
+        } else {
+          request.tierType = TierType[this.tierType as keyof typeof TierType];
+          request.tier = this.tiers;
+        }
+
+        this.service
+          .addFeeSchedule(request)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
   }
 
   public close() {
     this.$emit("close");
+  }
+
+  private updateCurrency(value: any) {
+    value = this.$currencyToNumber(value);
+    const numberOfDigits: number = 2,
+      minDigits: number = 2;
+
+    if (!value) return ``;
+
+    if (isNaN(parseFloat(value))) return value;
+
+    value = parseFloat(value);
+
+    if (value >= 0)
+      value = `${value.toLocaleString("en-US", {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })}`;
+    else
+      value = `(${Math.abs(value).toLocaleString("en-US", {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: numberOfDigits,
+      })})`;
+
+    return value;
+  }
+
+  get tierType() {
+    return this.request.tierType ? "Tierd Blended" : "Tierd Unblended";
+  }
+
+  get formValidation() {
+    let valid: boolean = false;
+
+    /*console.log(this.v$.request.bps);
+
+    if (this.request.type == "Flat") {
+      if (!this.v$.request.bps.$invalid || !this.v$.request.amount.$invalid)
+        valid = false;
+      else valid = true;
+    }*/
+
+    return valid;
   }
 }
 </script>

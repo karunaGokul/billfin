@@ -13,6 +13,7 @@ import { IBranchesService, BranchesService } from "@/service";
 
 import { IUserListService, UserListService } from "@/service";
 import { IFeeSchedulesService, FeeSchedulesService } from "@/service";
+import { ICustodiansService, CustodiansService } from "@/service";
 
 export class DIContainer extends Vue {
   @Provide("signUpService") signUpService: ISignUpService = new SignUpService();
@@ -36,4 +37,7 @@ export class DIContainer extends Vue {
 
   @Provide("feeSchedulesService")
   feeSchedulesService: IFeeSchedulesService = new FeeSchedulesService();
+
+  @Provide("custodiansService")
+  custodiansService: ICustodiansService = new CustodiansService();
 }

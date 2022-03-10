@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
-          <h5 class="modal-title fs-4 fw-bolder">Add User</h5>
+          <h5 class="modal-title fs-4 fw-bolder">{{ modelType }}</h5>
           <button type="button" class="btn-close" @click="close">
             <i class="fas fa-times"></i>
           </button>
@@ -68,7 +68,7 @@
               ></i>
             </div>
             <img
-              :src="profilePhoto"
+              :src="viewImage"
               alt="Profile image"
               width="120"
               height="130"
@@ -110,8 +110,10 @@
             label="Email ID"
             :controls="v$.request.email"
             :validation="['required', 'email']"
+            :readonly="modelType == 'Edit User'"
           />
 
+          <label for="Role" class="form-label fw-bolder"> Role </label>
           <select
             class="form-select form-select-solid mb-8"
             v-model="v$.request.roleId.$model"
@@ -149,14 +151,19 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
-import { required, sameAs } from "@vuelidate/validators";
+import { required } from "@vuelidate/validators";
 
-import { AddUserRequestModel, RolesResponseModel } from "@/model";
+import {
+  AddUserRequestModel,
+  RolesResponseModel,
+  UserResponseModel,
+} from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 import EmailInput from "@/components/controls/EmailInput.vue";
 import { IUserListService } from "@/service";
+import { useStore } from "vuex";
 
 @Options({
   components: {
@@ -184,10 +191,15 @@ import { IUserListService } from "@/service";
 export default class AddUser extends Vue {
   @Inject("userService") service: IUserListService;
 
+  @Prop() modelType: string;
+  @Prop() response: UserResponseModel;
+
   public v$: any = setup(() => this.validate());
   public request: AddUserRequestModel = new AddUserRequestModel();
 
   public profilePhoto: any = null;
+
+  public store = useStore();
 
   public roles: Array<RolesResponseModel> = [];
 
@@ -197,6 +209,16 @@ export default class AddUser extends Vue {
 
   created() {
     this.getRoles();
+    if (this.modelType == "Edit User") {
+      this.request.firstName = this.response.firstName;
+      this.request.lastName = this.response.lastName;
+      this.request.email = this.response.email;
+      this.request.roleId = this.response.roleId;
+      this.request.isActive = this.response.isActive;
+      this.request.uuid = this.response.uuid;
+
+      //this.profilePhoto = this.response.profilePhoto;
+    }
   }
 
   public getRoles() {
@@ -217,14 +239,11 @@ export default class AddUser extends Vue {
   }
 
   public uploadProfile(event: any) {
-    let reader = new FileReader();
     let file: File = event.target.files[0];
     if (!file) return;
 
-    reader.onload = (e) => {
-      this.profilePhoto = e.target.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
+    this.profilePhoto = file;
+    console.log(this.profilePhoto);
   }
 
   public removeProfile() {
@@ -234,15 +253,23 @@ export default class AddUser extends Vue {
   public addUser() {
     this.v$.$touch();
 
-    if (!this.v$.$invalid) {
+    if (!this.v$.$invalid && this.profilePhoto) {
       this.service
         .addUser(this.request)
         .then((response) => {
-          console.log(response);
-          this.processAvatar(response.uuid);
+          if (response.status == "SUCCESS") this.processAvatar(response.uuid);
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 500)
+            this.store.dispatch("showAlert", {
+              message: "Somthing went wrong, Please contact administration",
+              title: "Oops, sorry!",
+            });
+          else if (err.response.status == 400)
+            this.store.dispatch("showAlert", {
+              message: err.response.message,
+              title: "Oops, sorry!",
+            });
         });
     }
   }
@@ -251,15 +278,30 @@ export default class AddUser extends Vue {
     this.service
       .uploadPhoto(this.profilePhoto, uuid)
       .then((response) => {
-        console.log(response);
+        this.$emit("userAdd");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.store.dispatch("showAlert", {
+            message: "Somthing went wrong, Please contact administration",
+            title: "Oops, sorry!",
+          });
+        else if (err.response.status == 400)
+          this.store.dispatch("showAlert", {
+            message: err.response.message,
+            title: "Oops, sorry!",
+          });
       });
   }
 
   public close() {
     this.$emit("close");
+  }
+
+  get viewImage() {
+    return this.profilePhoto
+      ? window.URL.createObjectURL(this.profilePhoto)
+      : null;
   }
 }
 </script>

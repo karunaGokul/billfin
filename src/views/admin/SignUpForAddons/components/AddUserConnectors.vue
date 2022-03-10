@@ -83,11 +83,7 @@
         <div>
           <div class="fw-bolder fa-2x text-dark-black-secondary">
             <span class="fs-7">$</span>
-            {{
-              $filters.currencyDisplayWithoutSymbol(
-                amount * quantity
-              )
-            }}
+            {{ $filters.currencyDisplayWithoutSymbol(amount * quantity) }}
             <span class="fs-8 fw-light text-gray"
               >/{{
                 currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
@@ -119,10 +115,12 @@ export default class AddUserConnectors extends Vue {
 
   public store = useStore();
 
-  created() {
-    if (!this.products) this.$router.push("/my-subscription");
-    this.amount = this.currentAddOn.paymentAmount;
-    this.amount = this.amount / +this.currentAddOn.quantity;
+  mounted() {
+    if (this.products != "") {
+      // this.amount = this.currentAddOn.paymentAmount;
+      this.amount =
+        this.currentAddOn.paymentAmount / +this.currentAddOn.quantity;
+    } else this.$router.push("/my-subscription");
   }
 
   public next() {
@@ -131,6 +129,11 @@ export default class AddUserConnectors extends Vue {
 
     let addons: Array<any> = [];
     addons.push(this.currentAddOn);
+
+    /*this.store.dispatch("updateTerm", {
+      product: this.products,
+      commitmentTerm: this.currentAddOn.commitmentTerm,
+    });*/
 
     this.store.dispatch("updateAddons", {
       product: this.products,

@@ -235,15 +235,10 @@ export default class Review extends Vue {
   public card: cardDetailsResponsetModel = null;
 
   created() {
-    console.log(this.aumBilling.addons);
+    console.log(this.aumBilling);
     
     this.getBillingAddress();
     this.getCardDetails();
-  }
-
-  mounted() {
-    console.log(this.products);
-    console.log(this.aumBilling);
   }
 
   private getBillingAddress() {

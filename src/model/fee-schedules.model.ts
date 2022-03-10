@@ -12,5 +12,19 @@ export class AddFeeScheduleRequestModel {
   name: string;
   currency: string;
   type: string;
+  tierType: string;
   isActive: boolean;
+  bps: number;
+  amount: number;
+  tier: Array<tierModel> = [];
+}
+export class FlatModel {
+  bps: number;
+  amount: number;
+}
+export class tierModel {
+  fromValue: number;
+  toValue: number;
+  bps: number;
+  amount: number;
 }

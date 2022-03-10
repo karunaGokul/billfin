@@ -59,7 +59,7 @@
             v-if="plan.cardNumber.split(' ')[0] == 'Discover'"
           />
 
-          <span :class="{ 'text-gray-secondary': plan.endDate }">
+          <span :class="{ 'text-gray-secondary': plan.endDate  && !plan.activeFlag}">
             {{
               plan.cardNumber.split(" ")[0] == "American"
                 ? "American Express"

@@ -68,11 +68,20 @@ export enum PaymentMethod {
   "Credit Card" = "CREDIT_CARD",
   ACH = "ACH",
 }
-export enum  CardPrimaryType {
+export enum CardPrimaryType {
   new = "NEW",
-  primary = "PRIMARY"
+  primary = "PRIMARY",
 }
 export enum PlanActivate {
   "Effective Immediately" = "EFFECTIVE_NOW",
   "Next Billing Term" = "NEXT_TERM",
+}
+export enum TierType {
+  Flat = "FLAT",
+  "Tierd Blended" = "TIERED_BLENDED",
+  "Tierd Unblended" = "TIERED_UNBLENDED",
+}
+export enum CurrencyCode {
+  USD = "USD",
+  CAD = "CAD",
 }
