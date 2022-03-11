@@ -17,6 +17,7 @@ export class AddFeeScheduleRequestModel {
   bps: number;
   amount: number;
   tier: Array<tierModel> = [];
+  formValid: boolean = false;
 }
 export class FlatModel {
   bps: number;
@@ -27,4 +28,8 @@ export class tierModel {
   toValue: number;
   bps: number;
   amount: number;
+  touched: boolean;
+  invalid: boolean = true;
+  field: string;
+  message: string;
 }

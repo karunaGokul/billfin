@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade show d-block" v-if="dialog">
+  <div class="modal fade show d-block" v-if="dialog" style="z-index: 99999">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body">
@@ -19,7 +19,9 @@
           >
             {{ title }}
           </p>
-          <p class="fs-5 fw-bold text-center mb-0 text-gray p-4">{{ message }}</p>
+          <p class="fs-5 fw-bold text-center mb-0 text-gray p-4">
+            {{ message }}
+          </p>
         </div>
         <div class="modal-footer justify-content-center border-0">
           <button type="button" class="btn btn-primary" @click="close">

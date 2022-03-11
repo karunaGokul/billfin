@@ -371,9 +371,7 @@
                       "
                       style="line-height: 3"
                     >
-                      <div v-if="index + 1 == tiers.length">
-                        and above
-                      </div>
+                      <div v-if="index + 1 == tiers.length">and above</div>
                       <div v-else>
                         <div class="d-flex align-items-center">
                           <span class="me-2">$</span>
@@ -381,6 +379,15 @@
                             <input
                               type="text"
                               class="form-control text-start"
+                              :class="{
+                                'border-danger':
+                                  item.touched &&
+                                  item.invalid &&
+                                  item.field == 'toValue',
+                              }"
+                              :title="
+                                item.touched && item.invalid ? item.message : ''
+                              "
                               v-model="item.toValue"
                               @input="updateInput(item, index)"
                               @blur="convertDollar(item, 'toValue')"
@@ -420,7 +427,17 @@
                           <input
                             type="text"
                             class="form-control text-start"
+                            :class="{
+                              'border-danger':
+                                item.touched &&
+                                item.invalid &&
+                                item.field == 'bps',
+                            }"
+                            :title="
+                              item.touched && item.invalid ? item.message : ''
+                            "
                             v-model="item.bps"
+                            @input="validation(item, index)"
                           />
                         </div>
                       </div>
@@ -457,7 +474,17 @@
                           <input
                             type="text"
                             class="form-control text-start"
+                            :class="{
+                              'border-danger':
+                                item.touched &&
+                                item.invalid &&
+                                item.field == 'amount',
+                            }"
                             v-model="item.amount"
+                            :title="
+                              item.touched && item.invalid ? item.message : ''
+                            "
+                            @input="validation(item, index)"
                             @blur="convertDollar(item, 'amount')"
                           />
                         </div>
@@ -527,7 +554,7 @@
           <button
             type="button"
             class="btn ms-8 btn-primary"
-            @click="addFeeSchedule"
+            @click="formValidation"
           >
             Save
           </button>
@@ -554,6 +581,7 @@ import {
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
+
 
 import { IFeeSchedulesService } from "@/service";
 
@@ -591,6 +619,10 @@ export default class AddFeeSchedule extends Vue {
     let tier = new tierModel();
     tier.fromValue = 0;
     tier.toValue = this.updateCurrency(50000);
+    tier.touched = false;
+    tier.invalid = true;
+    tier.field = "bps";
+    tier.message = "This rate point cannot be blank!";
 
     this.tiers.push(tier);
 
@@ -598,6 +630,10 @@ export default class AddFeeSchedule extends Vue {
 
     tier.fromValue = 50000;
     tier.toValue = 0;
+    tier.touched = false;
+    tier.invalid = true;
+    tier.field = "bps";
+    tier.message = "This rate point cannot be blank!";
 
     this.tiers.push(tier);
   }
@@ -611,6 +647,8 @@ export default class AddFeeSchedule extends Vue {
   }
 
   public addItem(item: tierModel, index: number) {
+    this.validation(item, index);
+
     let tiers = new tierModel();
 
     tiers.fromValue = this.$currencyToNumber(item.toValue);
@@ -618,6 +656,11 @@ export default class AddFeeSchedule extends Vue {
     tiers.toValue = this.updateCurrency(
       this.$currencyToNumber(item.toValue) * 2
     );
+
+    tiers.invalid = true;
+    tiers.touched = false;
+    tiers.message = "bps";
+    this.request.formValid = false;
 
     this.tiers.splice(index + 1, 0, tiers);
 
@@ -630,7 +673,9 @@ export default class AddFeeSchedule extends Vue {
 
   public removeItem(index: number) {
     this.tiers.splice(index, 1);
-    this.tiers[index].fromValue = this.$currencyToNumber(this.tiers[index - 1].toValue);
+    this.tiers[index].fromValue = this.$currencyToNumber(
+      this.tiers[index - 1].toValue
+    );
 
     /*if (index + 1 != this.tiers.length)
       this.tiers[index].toValue = this.updateCurrency(
@@ -640,11 +685,111 @@ export default class AddFeeSchedule extends Vue {
 
   public updateInput(item: tierModel, index: number) {
     this.tiers[index + 1].fromValue = this.$currencyToNumber(item.toValue);
+    this.validation(item, index);
 
     /*if (index + 1 != this.tiers.length)
       this.tiers[index + 1].toValue = this.updateCurrency(
         this.$currencyToNumber(item.toValue) * 2
       );*/
+  }
+
+  public validation(item: tierModel, index: number) {
+    item.touched = true;
+    if (item.bps || item.amount) {
+      if (index + 1 != this.tiers.length) {
+        if (item.toValue) {
+          item.invalid = false;
+          item.field = null;
+          item.message = null;
+          this.request.formValid = true;
+        } else {
+          item.invalid = true;
+          item.field = "toValue";
+          item.message = "This break point cannot be blank!";
+          this.request.formValid = false;
+        }
+        if (item.fromValue <= this.$currencyToNumber(item.toValue)) {
+          item.invalid = false;
+          item.field = null;
+          item.message = null;
+          this.request.formValid = true;
+        } else {
+          item.invalid = true;
+          item.field = "toValue";
+          item.message =
+            "This break point cannot be less than the break point of the tier below!";
+          this.request.formValid = false;
+        }
+      } else {
+        item.invalid = false;
+        item.field = null;
+        this.request.formValid = true;
+      }
+    } else {
+      if (index + 1 != this.tiers.length && !item.toValue) {
+        item.invalid = true;
+        item.field = "toValue";
+        item.message = "This break point cannot be blank!";
+        this.request.formValid = false;
+      } else if (!item.bps) {
+        item.invalid = true;
+        item.field = "bps";
+        item.message = "This rate point cannot be blank!";
+        this.request.formValid = false;
+      } else if (!item.amount) {
+        item.invalid = true;
+        item.field = "amount";
+        item.message = "This amount point cannot be blank!";
+        this.request.formValid = false;
+      }
+    }
+  }
+
+  public formValidation() {
+    this.v$.request.$touch();
+    if (!this.v$.request.$invalid) {
+      if (this.request.type == "Flat") {
+        if (this.request.bps || this.request.amount) {
+          //this.addFeeSchedule();
+          console.log(this.request);
+          this.showBPSError = false;
+        } else this.showBPSError = true;
+      } else {
+        //console.log(this.request);
+        /*for (var i in this.tiers) {
+          if (
+            this.tiers[i].toValue &&
+            this.tiers[i].fromValue <= this.tiers[i].toValue &&
+            (this.tiers[i].bps || this.tiers[i].amount)
+          ) {
+            this.tiers[i].invalid = false;
+            this.tiers[i].message = null;
+            this.request.formValid = true;
+          } else {
+            if (!this.tiers[i].toValue) {
+              this.tiers[i].invalid = true;
+              this.tiers[i].message = "toValue";
+              this.request.formValid = false;
+              break;
+            }
+            if (!this.tiers[i].bps) {
+              this.tiers[i].invalid = true;
+              this.tiers[i].message = "bps";
+              this.request.formValid = false;
+              break;
+            }
+            if (!this.tiers[i].amount) {
+              this.tiers[i].invalid = true;
+              this.tiers[i].message = "amount";
+              this.request.formValid = false;
+              break;
+            }
+          }
+        }*/
+        console.log(this.tiers);
+        console.log(this.request.formValid);
+      }
+    }
   }
 
   public addFeeSchedule() {
@@ -724,18 +869,18 @@ export default class AddFeeSchedule extends Vue {
     return this.request.tierType ? "Tierd Blended" : "Tierd Unblended";
   }
 
-  get formValidation() {
+  /*get formValidation() {
     let valid: boolean = false;
 
-    /*console.log(this.v$.request.bps);
+    console.log(this.v$.request.bps);
 
     if (this.request.type == "Flat") {
       if (!this.v$.request.bps.$invalid || !this.v$.request.amount.$invalid)
         valid = false;
       else valid = true;
-    }*/
+    }
 
     return valid;
-  }
+  }*/
 }
 </script>

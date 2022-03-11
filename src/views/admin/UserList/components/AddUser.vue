@@ -265,11 +265,12 @@ export default class AddUser extends Vue {
               message: "Somthing went wrong, Please contact administration",
               title: "Oops, sorry!",
             });
-          else if (err.response.status == 400)
+          else if (err.response.status == 400) {
             this.store.dispatch("showAlert", {
-              message: err.response.message,
+              message: err.response.data.message,
               title: "Oops, sorry!",
             });
+          }
         });
     }
   }
