@@ -8,6 +8,23 @@
     >
       Add Custodian
     </button>
+    <div class="d-flex justify-content-between p-4">
+      <div class="fs-4 fw-bolder">Custodians</div>
+      <div>
+        <div class="input-group input-group-solid">
+          <span class="input-group-text">
+            <img src="@/assets/search.svg" alt="Search Icon" />
+          </span>
+          <input
+            class="form-control"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            @input="applyFilter($event.target.value)"
+          />
+        </div>
+      </div>
+    </div>
     <div class="card-body pt-0">
       <table
         class="
@@ -123,7 +140,10 @@
             </td>
             <td class="border-bottom-2 border-dashed border-light p-6">
               <div class="d-flex justify-content-around align-items-center">
-                <i class="fa fa-solid fa-pen fs-4 edit-row"></i>
+                <i
+                  class="fa fa-solid fa-pen fs-4 edit-row"
+                  @click="addCustodian('Edit Custodian', item)"
+                ></i>
                 <button
                   class="btn btn-sm btn-secondary p-2 rounded-circle edit-row"
                 >
@@ -137,6 +157,7 @@
       </table>
       <add-custodian
         :modelType="modelType"
+        :custodian="selectedCustodian"
         @close="showAddCustodianModel = false"
         @custodianAdded="updateCustodian"
         v-if="showAddCustodianModel"
@@ -163,6 +184,7 @@ export default class Custodians extends Vue {
   @Inject("custodiansService") service: ICustodiansService;
 
   public response: Array<CustodiansResponseModel> = [];
+  public dataResource: Array<CustodiansResponseModel> = [];
 
   public selectedCustodian: CustodiansResponseModel =
     new CustodiansResponseModel();
@@ -179,6 +201,7 @@ export default class Custodians extends Vue {
       .getCustodians()
       .then((response) => {
         this.response = response;
+        this.dataResource = response;
       })
       .catch((err) => {
         console.log(err);
@@ -194,6 +217,16 @@ export default class Custodians extends Vue {
   public updateCustodian() {
     this.showAddCustodianModel = false;
     this.getCustodians();
+  }
+
+  public applyFilter(searchValue: string) {
+    this.response = this.dataResource.filter((item) => {
+      console.log(item.custodianIdentifier.toLowerCase(), searchValue.toLowerCase());
+      (item.custodianIdentifier &&
+        item.custodianIdentifier.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.custodianName &&
+          item.custodianName.toLowerCase().includes(searchValue.toLowerCase()));
+    });
   }
 }
 </script> 

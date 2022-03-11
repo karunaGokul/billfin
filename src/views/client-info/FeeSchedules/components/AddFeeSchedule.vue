@@ -39,6 +39,7 @@
                   name="Flat"
                   value="Flat"
                   v-model="request.type"
+                  @change="resetForm"
                 />
                 <label class="form-check-label" for="Flat">Flat</label>
               </div>
@@ -49,6 +50,7 @@
                   name="Tiered"
                   value="Tiered"
                   v-model="request.type"
+                  @change="resetForm"
                 />
                 <label class="form-check-label" for="Tiered">Tiered</label>
               </div>
@@ -248,6 +250,7 @@
                     label="Amount"
                     :controls="v$.request.amount"
                     :validation="['numeric']"
+                    @updateInput="updateFlatAmount"
                   />
                 </div>
               </div>
@@ -568,20 +571,19 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
-//import { ValidateEach } from '@vuelidate/components';
 
 import { required, numeric } from "@vuelidate/validators";
 
 import {
   AddFeeScheduleRequestModel,
   tierModel,
+  tierFormModel,
   CurrencyCode,
   TierType,
 } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
-
 
 import { IFeeSchedulesService } from "@/service";
 
@@ -609,14 +611,14 @@ export default class AddFeeSchedule extends Vue {
   public showBPSError: boolean = false;
   public showBlenedModel: boolean = false;
 
-  public tiers: Array<tierModel> = [];
+  public tiers: Array<tierFormModel> = [];
 
   public validate() {
     return useVuelidate();
   }
 
   created() {
-    let tier = new tierModel();
+    let tier = new tierFormModel();
     tier.fromValue = 0;
     tier.toValue = this.updateCurrency(50000);
     tier.touched = false;
@@ -626,7 +628,7 @@ export default class AddFeeSchedule extends Vue {
 
     this.tiers.push(tier);
 
-    tier = new tierModel();
+    tier = new tierFormModel();
 
     tier.fromValue = 50000;
     tier.toValue = 0;
@@ -639,17 +641,17 @@ export default class AddFeeSchedule extends Vue {
   }
 
   mounted() {
-    this.request.type = "Tiered";
+    this.request.type = "Flat";
   }
 
   public clickOutSideBlended() {
     this.showBlenedModel = false;
   }
 
-  public addItem(item: tierModel, index: number) {
+  public addItem(item: tierFormModel, index: number) {
     this.validation(item, index);
 
-    let tiers = new tierModel();
+    let tiers = new tierFormModel();
 
     tiers.fromValue = this.$currencyToNumber(item.toValue);
 
@@ -676,26 +678,19 @@ export default class AddFeeSchedule extends Vue {
     this.tiers[index].fromValue = this.$currencyToNumber(
       this.tiers[index - 1].toValue
     );
-
-    /*if (index + 1 != this.tiers.length)
-      this.tiers[index].toValue = this.updateCurrency(
-        this.$currencyToNumber(this.tiers[index - 1].toValue) * 2
-      );*/
   }
 
-  public updateInput(item: tierModel, index: number) {
+  public updateInput(item: tierFormModel, index: number) {
     this.tiers[index + 1].fromValue = this.$currencyToNumber(item.toValue);
     this.validation(item, index);
-
-    /*if (index + 1 != this.tiers.length)
-      this.tiers[index + 1].toValue = this.updateCurrency(
-        this.$currencyToNumber(item.toValue) * 2
-      );*/
   }
 
-  public validation(item: tierModel, index: number) {
+  public validation(item: tierFormModel, index: number) {
     item.touched = true;
-    if (item.bps || item.amount) {
+    if (
+      (item.bps && !isNaN(item.bps)) ||
+      (item.amount && !isNaN(item.amount))
+    ) {
       if (index + 1 != this.tiers.length) {
         if (item.toValue) {
           item.invalid = false;
@@ -736,108 +731,98 @@ export default class AddFeeSchedule extends Vue {
         item.field = "bps";
         item.message = "This rate point cannot be blank!";
         this.request.formValid = false;
+      } else if (isNaN(item.bps)) {
+        item.invalid = true;
+        item.field = "bps";
+        item.message = "Please enter value rate";
+        this.request.formValid = false;
       } else if (!item.amount) {
         item.invalid = true;
         item.field = "amount";
         item.message = "This amount point cannot be blank!";
+        this.request.formValid = false;
+      } else if (isNaN(item.amount)) {
+        item.invalid = true;
+        item.field = "amount";
+        item.message = "Please enter value amount";
         this.request.formValid = false;
       }
     }
   }
 
   public formValidation() {
-    this.v$.request.$touch();
-    if (!this.v$.request.$invalid) {
-      if (this.request.type == "Flat") {
-        if (this.request.bps || this.request.amount) {
-          //this.addFeeSchedule();
-          console.log(this.request);
-          this.showBPSError = false;
-        } else this.showBPSError = true;
-      } else {
-        //console.log(this.request);
-        /*for (var i in this.tiers) {
-          if (
-            this.tiers[i].toValue &&
-            this.tiers[i].fromValue <= this.tiers[i].toValue &&
-            (this.tiers[i].bps || this.tiers[i].amount)
-          ) {
-            this.tiers[i].invalid = false;
-            this.tiers[i].message = null;
-            this.request.formValid = true;
-          } else {
-            if (!this.tiers[i].toValue) {
-              this.tiers[i].invalid = true;
-              this.tiers[i].message = "toValue";
-              this.request.formValid = false;
-              break;
-            }
-            if (!this.tiers[i].bps) {
-              this.tiers[i].invalid = true;
-              this.tiers[i].message = "bps";
-              this.request.formValid = false;
-              break;
-            }
-            if (!this.tiers[i].amount) {
-              this.tiers[i].invalid = true;
-              this.tiers[i].message = "amount";
-              this.request.formValid = false;
-              break;
-            }
-          }
-        }*/
-        console.log(this.tiers);
-        console.log(this.request.formValid);
+    if (this.request.type == "Flat") {
+      if (
+        (this.request.bps && !isNaN(this.request.bps)) ||
+        (this.request.amount && !isNaN(this.request.amount))
+      ) {
+        this.request.formValid = true;
+        this.addFeeSchedule();
+        this.showBPSError = false;
+      } else this.showBPSError = true;
+    } else if (this.request.type == "Tiered") {
+      if (this.request.formValid) this.addFeeSchedule();
+      else this.validRow();
+    }
+  }
+
+  public resetForm() {
+    this.request.formValid = false;
+    if (this.request.type == "Flat") this.showBPSError = false;
+    else if (this.request.type == "Tiered") {
+      for (let i = 0; i < this.tiers.length; i++) {
+        this.tiers[i].touched = false;
       }
+    }
+  }
+
+  public validRow() {
+    for (let i = 0; i < this.tiers.length; i++) {
+      this.tiers[i].touched = true;
     }
   }
 
   public addFeeSchedule() {
     this.v$.request.$touch();
-
-    let valid: boolean = false;
-
     if (!this.v$.request.$invalid) {
+      let request = new AddFeeScheduleRequestModel();
+
+      request.name = this.request.name;
+      request.currency =
+        CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
+
       if (this.request.type == "Flat") {
-        if (this.request.bps || this.request.amount) {
-          valid = true;
-          this.showBPSError = false;
-        } else this.showBPSError = true;
+        request.tierType = TierType[this.request.type as keyof typeof TierType];
+        request.bps = this.request.bps;
+        request.amount = this.request.amount;
       } else {
-        console.log(this.request);
-      }
-
-      if (valid) {
-        let request = new AddFeeScheduleRequestModel();
-
-        request.name = this.request.name;
-        request.currency =
-          CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
-
-        if (this.request.type == "Flat") {
-          request.tierType =
-            TierType[this.request.type as keyof typeof TierType];
-          request.bps = this.request.bps;
-          request.amount = this.request.amount;
-        } else {
-          request.tierType = TierType[this.tierType as keyof typeof TierType];
-          request.tier = this.tiers;
-        }
-
-        this.service
-          .addFeeSchedule(request)
-          .then((response) => {
-            console.log(response);
+        request.tierType = TierType[this.tierType as keyof typeof TierType];
+        request.tier = this.tiers.map(
+          ({ fromValue, toValue, bps, amount }) => ({
+            fromValue, toValue, bps, amount
           })
-          .catch((err) => {
-            console.log(err);
-          });
+        );
       }
+
+      console.log(request);
+
+      /*this.service
+        .addFeeSchedule(request)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });*/
     }
   }
 
   public close() {
     this.$emit("close");
+  }
+
+  public updateFlatAmount() {
+    this.request.amount = this.updateCurrency(this.request.amount);
   }
 
   private updateCurrency(value: any) {
@@ -868,19 +853,5 @@ export default class AddFeeSchedule extends Vue {
   get tierType() {
     return this.request.tierType ? "Tierd Blended" : "Tierd Unblended";
   }
-
-  /*get formValidation() {
-    let valid: boolean = false;
-
-    console.log(this.v$.request.bps);
-
-    if (this.request.type == "Flat") {
-      if (!this.v$.request.bps.$invalid || !this.v$.request.amount.$invalid)
-        valid = false;
-      else valid = true;
-    }
-
-    return valid;
-  }*/
 }
 </script>

@@ -133,6 +133,11 @@
               >Activate User</label
             >
           </div>
+          <app-confirmation
+            :message="`We've sent an invitation email to ${request.firstName} ${request.lastName}. ${request.firstName} will be asked to create a secure password before getting start.`"
+            @done="updateUser"
+            v-if="showConfirmationModel"
+          />
         </div>
         <div class="modal-footer justify-content-center border-0 p-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
@@ -162,6 +167,9 @@ import {
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 import EmailInput from "@/components/controls/EmailInput.vue";
+
+import AppConfirmation from "@/components/Models/AppConfirmation.vue";
+
 import { IUserListService } from "@/service";
 import { useStore } from "vuex";
 
@@ -170,6 +178,7 @@ import { useStore } from "vuex";
     TextInput,
     EmailInput,
     SelectBox,
+    AppConfirmation,
   },
   validations: {
     request: {
@@ -202,6 +211,8 @@ export default class AddUser extends Vue {
   public store = useStore();
 
   public roles: Array<RolesResponseModel> = [];
+
+  public showConfirmationModel: boolean = false;
 
   public validate() {
     return useVuelidate();
@@ -279,7 +290,7 @@ export default class AddUser extends Vue {
     this.service
       .uploadPhoto(this.profilePhoto, uuid)
       .then((response) => {
-        this.$emit("userAdd");
+        this.showConfirmationModel = true;
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -293,6 +304,10 @@ export default class AddUser extends Vue {
             title: "Oops, sorry!",
           });
       });
+  }
+
+  public updateUser() {
+    this.$emit("userAdd");
   }
 
   public close() {

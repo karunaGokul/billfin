@@ -116,6 +116,15 @@
                 width="30"
                 height="30"
                 class="rounded-circle"
+                v-if="item.profilePhoto"
+              />
+              <img
+                src="@/assets/user-profile.jpg"
+                alt="Profile image"
+                width="30"
+                height="30"
+                class="rounded-circle"
+                v-if="!item.profilePhoto"
               />
               <span class="ms-4">{{ item.firstName }} {{ item.lastName }}</span>
             </td>
@@ -171,9 +180,7 @@
                     class="fa fa-solid fa-pen fs-4 edit-row"
                     @click="addUser('Edit User', item)"
                   ></i>
-                  <div
-                    class="dropdown dropdown-primary"
-                  >
+                  <div class="dropdown dropdown-primary">
                     <i
                       class="fa fa-solid fa-ellipsis-v fs-4 edit-row"
                       @click="expandRow(index)"
@@ -182,6 +189,7 @@
                       class="dropdown-menu overflow-auto p-2"
                       :class="{ show: toggle[index] }"
                       style="right: 0"
+                      v-click-outside="collapseRow"
                     >
                       <li class="dropdown-item pt-2 pb-2">Delete</li>
                     </ul>
@@ -195,9 +203,7 @@
                     class="fa fa-solid fa-pen edit-row"
                     @click="addUser('Edit User', item)"
                   ></i>
-                  <div
-                    class="dropdown dropdown-primary"
-                  >
+                  <div class="dropdown dropdown-primary">
                     <i
                       class="fa fa-solid fa-ellipsis-v fs-4 edit-row"
                       @click="expandRow(index)"
@@ -247,13 +253,9 @@ export default class UserList extends Vue {
   @Inject("userService") service: IUserListService;
 
   public response: Array<UserResponseModel> = [];
-
   public selectedUser: UserResponseModel = new UserResponseModel();
   public modelType: string = "Add User";
-
   public showAddUserModel: boolean = false;
-  public toggleUser: boolean = false;
-
   public toggle: Array<boolean> = [];
 
   created() {
@@ -284,10 +286,6 @@ export default class UserList extends Vue {
     for (let i = 0; i < this.toggle.length; i++) {
       this.toggle[i] = false;
     }
-  }
-
-  public clickOutSideUser() {
-    this.toggleUser = false;
   }
 
   public addUser(modelType: string, response?: UserResponseModel) {

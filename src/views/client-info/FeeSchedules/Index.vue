@@ -103,7 +103,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(item, index) in response.data"
+            v-for="(item, index) in response"
             :key="'user-table' + index"
           >
             <td
@@ -167,13 +167,6 @@
           </tr>
         </tbody>
       </table>
-      <Pagination
-        :totalResults="response.pageInfo.totalResults"
-        :totalPages="response.pageInfo.totalPages"
-        :showPage="response.data.length"
-        v-if="response"
-        @applyPagination="controlWithPagination"
-      />
       <add-fee-schedule
         @close="showAddFeeScheduleModel = false"
         v-if="showAddFeeScheduleModel"
@@ -188,26 +181,20 @@ import { Inject } from "vue-property-decorator";
 import { IFeeSchedulesService } from "@/service";
 
 import {
-  DataResponse,
-  FeeSchedulesRequestModel,
   FeeSchedulesResponseModel,
 } from "@/model";
-
-import Pagination from "@/components/controls/Pagination.vue";
 
 import AddFeeSchedule from "./components/AddFeeSchedule.vue";
 
 @Options({
   components: {
-    Pagination,
     AddFeeSchedule,
   },
 })
 export default class FeeSchedules extends Vue {
   @Inject("feeSchedulesService") service: IFeeSchedulesService;
 
-  public request: FeeSchedulesRequestModel = new FeeSchedulesRequestModel();
-  public response: DataResponse<FeeSchedulesResponseModel> = new DataResponse();
+  public response: Array<FeeSchedulesResponseModel> = [];
 
   public toggleAddFeeSchdule: boolean = false;
 
@@ -219,7 +206,7 @@ export default class FeeSchedules extends Vue {
 
   public getFeeSchedules() {
     this.service
-      .getFeeSchedules(this.request)
+      .getFeeSchedules()
       .then((response) => {
         this.response = response;
         console.log(response);

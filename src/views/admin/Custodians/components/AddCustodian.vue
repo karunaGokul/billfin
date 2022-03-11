@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
-          <h5 class="modal-title fs-4 fw-bolder">Add Custodian</h5>
+          <h5 class="modal-title fs-4 fw-bolder">{{modelType}}</h5>
           <button type="button" class="btn-close" @click="close">
             <i class="fas fa-times"></i>
           </button>
@@ -52,7 +52,7 @@ import { Prop, Inject } from "vue-property-decorator";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
-import { AddCustodianRequestModel } from "@/model";
+import { AddCustodianRequestModel, CustodiansResponseModel } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 
@@ -75,6 +75,7 @@ export default class AddCustodian extends Vue {
   @Inject("custodiansService") service: ICustodiansService;
 
   @Prop() modelType: string;
+  @Prop() custodian: CustodiansResponseModel;
 
   public v$: any = setup(() => this.validate());
   public request: AddCustodianRequestModel = new AddCustodianRequestModel();
@@ -83,6 +84,12 @@ export default class AddCustodian extends Vue {
 
   public validate() {
     return useVuelidate();
+  }
+
+  created() {
+    if(this.modelType == 'Edit Custodian') {
+      this.request = this.custodian;
+    }
   }
 
   public addCustodian() {
