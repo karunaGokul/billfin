@@ -261,6 +261,8 @@
 import { Vue } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import moment from "moment";
 
 import { useStore } from "vuex";
@@ -276,7 +278,7 @@ import {
 
 import { IManageSubscription } from "@/service";
 
-export default class ChangePlanCommitmentTerm extends Vue {
+export default class ChangePlanCommitmentTerm extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   @Prop() plan: subscriptionResponseModel;
@@ -304,7 +306,13 @@ export default class ChangePlanCommitmentTerm extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -322,15 +330,12 @@ export default class ChangePlanCommitmentTerm extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

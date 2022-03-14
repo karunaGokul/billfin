@@ -59,6 +59,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
@@ -78,7 +80,7 @@ import NonAumAdvisory from "./NonAumAdvisory.vue";
     NonAumAdvisory,
   },
 })
-export default class FrequencyBoard extends Vue {
+export default class FrequencyBoard extends BaseComponent {
   @Inject("firmService") service: IFirmService;
 
   public store = useStore();
@@ -105,7 +107,13 @@ export default class FrequencyBoard extends Vue {
         this.showMethodolgiesAndAdjustments();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

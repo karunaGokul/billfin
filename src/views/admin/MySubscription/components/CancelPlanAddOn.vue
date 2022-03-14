@@ -37,16 +37,23 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import { IManageSubscription } from "@/service";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import { cancelPlanAddOnRequestModel } from "@/model";
 
 import { useStore } from "vuex";
 
-export default class CancelPlanAddOn extends Vue {
+@Options({
+  components: {
+    BaseComponent,
+  },
+})
+export default class CancelPlanAddOn extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   @Prop() product?: string;
@@ -75,15 +82,12 @@ export default class CancelPlanAddOn extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -99,15 +103,12 @@ export default class CancelPlanAddOn extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

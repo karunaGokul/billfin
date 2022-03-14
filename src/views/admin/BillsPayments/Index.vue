@@ -97,7 +97,7 @@
                 'btn-light': item.default,
                 'btn-primary': !item.default,
               }"
-              @click="!item.default ? confirmation(item) : ''"
+              @click="!item.default ? deleteConfirmation(item) : ''"
             >
               Delete
             </button>
@@ -125,11 +125,6 @@
     @cancel="cancelDelete"
     @delete="deleteCard"
     v-if="showDeleteModel"
-  />
-  <app-confirmation
-    message="Your card has been deleted successfully"
-    @done="showConfirmationModel = false"
-    v-if="showConfirmationModel"
   />
 
   <div class="p-4" v-if="response">
@@ -178,7 +173,11 @@
         <a class="btn btn-link">Download Invoice</a>
       </div>
 
-      <div class="card mt-2 mb-4 rounded" v-for="(invoice, index) of bills.invoices" :key="index">
+      <div
+        class="card mt-2 mb-4 rounded"
+        v-for="(invoice, index) of bills.invoices"
+        :key="index"
+      >
         <table class="w-100 fs-5">
           <thead>
             <tr>
@@ -204,7 +203,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, i) of invoice.planDetails" :key="'plan-details'+i">
+            <tr
+              v-for="(item, i) of invoice.planDetails"
+              :key="'plan-details' + i"
+            >
               <td class="p-5 border-bottom border-light-gray">
                 <div class="fw-bolder text-dark-gray">{{ item.planName }}</div>
                 <div
@@ -281,9 +283,9 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
-import Billng from "./component/Billing.vue";
-import AppDelete from "@/components/Models/AppDelete.vue";
-import AppConfirmation from "@/components/Models/AppConfirmation.vue";
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
+import AppDelete from "@/components/layout/AppDelete.vue";
 
 import {
   IBillsAndPaymentService,
@@ -303,12 +305,10 @@ import {
 
 @Options({
   components: {
-    Billng,
     AppDelete,
-    AppConfirmation,
   },
 })
-export default class Index extends Vue {
+export default class Index extends BaseComponent {
   @Inject("billsAndPaymentService") service: IBillsAndPaymentService;
   @Inject("manageSubscripeService") manageSubscripeService: IManageSubscription;
   @Inject("subscripeService") subscripeService: ISubscripeService;
@@ -319,7 +319,6 @@ export default class Index extends Vue {
   public availableCards: Array<cardDetailsResponsetModel> = [];
 
   public showDeleteModel: boolean = false;
-  public showConfirmationModel: boolean = false;
 
   private selectedCard: cardDetailsResponsetModel =
     new cardDetailsResponsetModel();
@@ -329,7 +328,7 @@ export default class Index extends Vue {
     this.getCardDetails();
   }
 
-  public confirmation(card: cardDetailsResponsetModel) {
+  public deleteConfirmation(card: cardDetailsResponsetModel) {
     this.selectedCard = card;
     this.showDeleteModel = true;
   }
@@ -348,20 +347,17 @@ export default class Index extends Vue {
     this.manageSubscripeService
       .deleteCard(request)
       .then((response) => {
-        this.showConfirmationModel = true;
+        this.confirmation("", "Your card has been deleted successfully");
         this.getCardDetails();
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -385,19 +381,17 @@ export default class Index extends Vue {
     this.subscripeService
       .updatePaymentToken(request)
       .then((response) => {
+        this.confirmation("", `${details.cardHolderName} card changed to primary card`);
         this.getCardDetails();
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -414,15 +408,12 @@ export default class Index extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -433,16 +424,13 @@ export default class Index extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+       if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

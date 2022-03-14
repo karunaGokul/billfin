@@ -105,7 +105,7 @@
                       <span>/{{ newTerm == "Annual" ? "Yr" : "Mon" }}</span>
                     </td>
                   </tr>
-                  <tr  v-if="currentTerm != 'Annual'">
+                  <tr v-if="currentTerm != 'Annual'">
                     <td class="text-end" colspan="2">
                       <span
                         class="badge fs-7 ms-2 bg-success-alpha text-success"
@@ -118,9 +118,9 @@
             </div>
           </div>
           <p class="fs-5 pt-4">
-            All else will remain unchanged, except {{ newTerm.toLowerCase() }} pricing and payment
-            terms apply once your switch becomes effective, which will be
-            {{ newTermStartDate }}.
+            All else will remain unchanged, except
+            {{ newTerm.toLowerCase() }} pricing and payment terms apply once
+            your switch becomes effective, which will be {{ newTermStartDate }}.
           </p>
         </div>
         <div class="modal-footer p-4">
@@ -144,8 +144,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import moment from "moment";
 
@@ -161,7 +163,12 @@ import {
 
 import { IManageSubscription } from "@/service";
 
-export default class ChangeAddOnCommitmentTerm extends Vue {
+@Options({
+  components: {
+    BaseComponent,
+  },
+})
+export default class ChangeAddOnCommitmentTerm extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   @Prop() addons: addonsResponseModel;
@@ -218,15 +225,12 @@ export default class ChangeAddOnCommitmentTerm extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

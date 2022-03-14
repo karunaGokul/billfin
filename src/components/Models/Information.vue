@@ -25,8 +25,8 @@ import { Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 export default class Information extends Vue {
-  @Prop() status: string | any;
-  @Prop() message: string | any;
+  @Prop() status: string;
+  @Prop() message: string;
 
   public close() {
     this.$emit("closeInformationModel");

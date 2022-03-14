@@ -130,6 +130,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop, Inject, Watch } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
@@ -153,7 +155,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class AumAdvisory extends Vue {
+export default class AumAdvisory extends BaseComponent {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
   @Prop() prevNext: number;
@@ -240,7 +242,13 @@ export default class AumAdvisory extends Vue {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -416,7 +424,7 @@ export default class AumAdvisory extends Vue {
       });
     }
   }
-  
+
   get isQuarterlySelected() {
     return this.request.billingFrequency.includes("QUARTERLY");
   }

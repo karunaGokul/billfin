@@ -169,6 +169,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { CustodiansResponseModel } from "@/model";
 
 import { ICustodiansService } from "@/service";
@@ -180,7 +182,7 @@ import AddCustodian from "./components/AddCustodian.vue";
     AddCustodian,
   },
 })
-export default class Custodians extends Vue {
+export default class Custodians extends BaseComponent {
   @Inject("custodiansService") service: ICustodiansService;
 
   public response: Array<CustodiansResponseModel> = [];
@@ -204,7 +206,13 @@ export default class Custodians extends Vue {
         this.dataResource = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

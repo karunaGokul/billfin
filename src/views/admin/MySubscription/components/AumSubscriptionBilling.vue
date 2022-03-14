@@ -88,6 +88,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import {
   manageSubscriptionRequestModel,
   subscriptionResponseModel,
@@ -104,10 +106,10 @@ import Addons from "./Addons.vue";
 @Options({
   components: {
     Plan,
-    Addons,
+    Addons
   },
 })
-export default class AumSubscriptionBilling extends Vue {
+export default class AumSubscriptionBilling extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
   @Prop() bliingType: string;
 
@@ -139,7 +141,7 @@ export default class AumSubscriptionBilling extends Vue {
       .getSubscription(request)
       .then((response) => {
         this.loading = false;
-        
+
         let status = ["CURRENT", "UPCOMING", "CANCELLED"];
 
         this.plans = response.subscriptions;
@@ -156,15 +158,12 @@ export default class AumSubscriptionBilling extends Vue {
       .catch((err) => {
         this.loading = false;
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

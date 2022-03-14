@@ -48,6 +48,8 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { firmRequestModel, aumFeeTypes, frequencyRequestModel, aumDetails } from "@/model";
 import { IFirmService } from "@/service";
 
@@ -58,7 +60,7 @@ import Advisory from "./Advisory.vue";
     Advisory,
   },
 })
-export default class AdjustmentsBoard extends Vue {
+export default class AdjustmentsBoard extends BaseComponent {
   @Inject("firmService") service: IFirmService;
 
   public store = useStore();
@@ -83,7 +85,13 @@ export default class AdjustmentsBoard extends Vue {
         this.response = this.request.aumFeeTypes[this.step];
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

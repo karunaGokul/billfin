@@ -66,8 +66,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -94,7 +96,7 @@ import SelectBoxWithDelete from "@/components/controls/SelectBoxWithDelete.vue";
     },
   },
 })
-export default class AddBranch extends Vue {
+export default class AddBranch extends BaseComponent {
   @Inject("branchesService") service: IBranchesService;
   @Inject("repCodesService") repCodesService: IRepCodesService;
 
@@ -149,10 +151,17 @@ export default class AddBranch extends Vue {
       this.service
         .addBranch(this.request)
         .then((response) => {
-          this.$emit("branchAdded");
+          this.confirmation("", "New branch added successfully");
+          this.$emit("newBranch");
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

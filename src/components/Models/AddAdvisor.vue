@@ -192,6 +192,8 @@ import { Vue, Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import useVuelidate from "@vuelidate/core";
 import { required, minLength, maxLength } from "@vuelidate/validators";
 
@@ -250,7 +252,7 @@ import { IAdvisorsService, IRepCodesService } from "@/service";
     },
   },
 })
-export default class AddAdvisor extends Vue {
+export default class AddAdvisor extends BaseComponent {
   @Inject("advisorsService") service: IAdvisorsService;
   @Inject("repCodesService") repCodesService: IRepCodesService;
 
@@ -298,26 +300,36 @@ export default class AddAdvisor extends Vue {
         this.emailErrorMessage = null;
       })
       .catch((err) => {
-        if (err.response.status == 400) {
-          this.emailErrorMessage = err.response.data.message;
-        } else if (err.response.status == 500) {
-          this.store.dispatch("showAlert", {
-            message: "Something went wrong, Please try again!",
-            title: "Oops, sorry!",
-          });
-        }
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
   private unassignedRepCodes() {
-    this.repCodesService.unassignedRepCodes().then((response) => {
-      response.forEach((item) => {
-        let repCode = new ListItem(item.repCode);
-        repCode.data = item.repId;
+    this.repCodesService
+      .unassignedRepCodes()
+      .then((response) => {
+        response.forEach((item) => {
+          let repCode = new ListItem(item.repCode);
+          repCode.data = item.repId;
 
-        this.repCodes.push(repCode);
+          this.repCodes.push(repCode);
+        });
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
-    });
   }
 
   public updateRepCodes(repCodes: Array<ListItem>) {
@@ -360,15 +372,19 @@ export default class AddAdvisor extends Vue {
           ? this.request.repCodes
           : null;
 
-      console.log(this.request.repCodes);
-
       this.service
         .addAdvisor(this.request)
         .then((response) => {
           this.$emit("advisorAdded");
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

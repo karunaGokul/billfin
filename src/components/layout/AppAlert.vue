@@ -35,30 +35,21 @@
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { useStore } from "vuex";
 
 export default class AppAlert extends Vue {
-  public store = useStore();
   public dialog: boolean = false;
 
-  mounted() {
-    this.store.subscribe((mutation, type) => {
-      if (mutation.type == "onShowAlert") {
-        this.dialog = true;
-      }
-    });
+  public message: string = "";
+  public title: string = "";
+
+  show(title: string, message: string) {
+    this.dialog = true;
+    this.title = title;
+    this.message = message;
   }
 
   public close() {
     this.dialog = false;
-  }
-
-  get message() {
-    return this.store.getters.message;
-  }
-
-  get title() {
-    return this.store.getters.title;
   }
 }
 </script>

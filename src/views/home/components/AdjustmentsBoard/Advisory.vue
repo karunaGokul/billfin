@@ -221,6 +221,8 @@ import { Prop, Inject, Watch } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { IFirmService } from "@/service";
 import { ListItem, FlowThresholdType, aumFeeTypes, aumDetails } from "@/model";
 
@@ -231,7 +233,7 @@ import SingleCheckBox from "@/components/controls/SingleCheckBox.vue";
     SingleCheckBox,
   },
 })
-export default class Advisory extends Vue {
+export default class Advisory extends BaseComponent {
   @Inject("firmService") service: IFirmService;
   @Prop() response: aumFeeTypes;
 
@@ -290,7 +292,13 @@ export default class Advisory extends Vue {
         if (response.status == "SUCCESS") this.$emit("next", response);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

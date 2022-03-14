@@ -69,12 +69,13 @@ import { useStore } from "vuex";
 import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import { subscribeRequestModel, productsModel, addOnsModel } from "@/model";
 
 import { ISubscripeService } from "@/service";
 
-export default class Subscribe extends Vue {
+export default class Subscribe extends BaseComponent {
   @Inject("subscripeService") service: ISubscripeService;
 
   public store = useStore();
@@ -117,10 +118,12 @@ export default class Subscribe extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "An error occured while attempting to subscribe. Please verify your payment information and try again.",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "An error occured while attempting to subscribe. Please verify your payment information and try again."
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

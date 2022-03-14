@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade show d-block">
+  <div class="modal fade show d-block" v-if="dialog">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header justify-content-end border-0">

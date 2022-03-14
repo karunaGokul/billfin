@@ -49,14 +49,11 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { useStore } from "vuex";
 
-import {
-  firmRequestModel,
-  frequencyRequestModel,
-  aumFeeTypes,
-  aumDetails,
-} from "@/model";
+import { frequencyRequestModel, aumFeeTypes, aumDetails } from "@/model";
 import { IFirmService } from "@/service";
 
 import Advisory from "./Advisory.vue";
@@ -66,7 +63,7 @@ import Advisory from "./Advisory.vue";
     Advisory,
   },
 })
-export default class MethodologiesBoard extends Vue {
+export default class MethodologiesBoard extends BaseComponent {
   @Inject("firmService") service: IFirmService;
 
   public store = useStore();
@@ -96,7 +93,13 @@ export default class MethodologiesBoard extends Vue {
         this.bindFees(response);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

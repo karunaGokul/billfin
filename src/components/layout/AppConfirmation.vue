@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade show d-block">
+  <div class="modal fade show d-block" v-if="dialog" style="z-index: 99999">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header justify-content-end border-0">
@@ -27,10 +27,19 @@ import { Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
 export default class AppConfirmation extends Vue {
-  @Prop() message: string;
+  public dialog: boolean = false;
+
+  public message: string = "";
+  public title: string = "";
+
+  show(title: string, message: string) {
+    this.dialog = true;
+    this.title = title;
+    this.message = message;
+  }
 
   public close() {
-    this.$emit("done");
+    this.dialog = false;
   }
 }
 </script>

@@ -1,6 +1,8 @@
 <template>
   <div>
     <router-view></router-view>
+    <app-confirmation ref="confirmation"></app-confirmation>
+    <app-alert ref="alert"></app-alert>
   </div>
 </template>
 <script lang="ts">
@@ -11,11 +13,13 @@ import { useStore } from "vuex";
 
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-import AppSuccess from "@/components/layout/AppSuccess.vue";
+import AppConfirmation from "@/components/layout/AppConfirmation.vue";
+import AppAlert from "@/components/layout/AppAlert.vue";
 
 @Options({
   components: {
-    AppSuccess,
+    AppConfirmation,
+    AppAlert
   },
 })
 export default class App extends DIContainer {
@@ -27,9 +31,13 @@ export default class App extends DIContainer {
   }
 
   mounted() {
-    /*let root: any = this.$root;
-    let success:any = this.$refs.alert as AppSuccess;
-    root.$success = success.show;*/
+    let root: any = this.$root;
+    let confirmation:any = this.$refs.confirmation as AppConfirmation;
+    let alert:any = this.$refs.alert as AppAlert;
+
+    root.$confirmation = confirmation.show;
+    root.$alert = alert.show;
+
   }
 
   tokenInterceptor() {

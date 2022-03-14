@@ -177,6 +177,8 @@ import { Inject, Prop } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { ISubscripeService } from "@/service";
 import {
   plansListResponseModel,
@@ -185,7 +187,7 @@ import {
   CommitmentTerm,
 } from "@/model";
 
-export default class PickPlan extends Vue {
+export default class PickPlan extends BaseComponent {
   @Inject("subscripeService") service: ISubscripeService;
 
   @Prop() product: string;
@@ -234,7 +236,13 @@ export default class PickPlan extends Vue {
         this.bindPlans(response);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

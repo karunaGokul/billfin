@@ -70,6 +70,8 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import {
   addOnsModel,
   CommitmentTerm,
@@ -78,7 +80,7 @@ import {
 
 import { IManageSubscription } from "@/service";
 
-export default class Subscribe extends Vue {
+export default class Subscribe extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   public store = useStore();
@@ -124,7 +126,13 @@ export default class Subscribe extends Vue {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });*/
   }
 

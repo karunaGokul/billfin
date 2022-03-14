@@ -430,6 +430,8 @@ import { Prop, Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { ISubscripeService } from "@/service";
 import {
   addOnsListResponseModel,
@@ -438,7 +440,7 @@ import {
   subscribedAddonsReqeustModel,
   CommitmentTerm,
 } from "@/model";
-export default class PickAddons extends Vue {
+export default class PickAddons extends BaseComponent {
   @Prop() addOnType: string;
   @Prop() product: string;
   @Prop() termPlanType: string;
@@ -489,7 +491,13 @@ export default class PickAddons extends Vue {
         this.removeAddons();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -544,7 +552,13 @@ export default class PickAddons extends Vue {
         this.bindAddons(response);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

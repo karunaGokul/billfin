@@ -105,8 +105,8 @@
 
       <template v-if="showNonAUMAdvisory">
         <div class="fw-bolder mt-10">
-          For your non-AUM subscription billing,which fees do you bill? Feel free to edit
-          descriptions as needed
+          For your non-AUM subscription billing,which fees do you bill? Feel
+          free to edit descriptions as needed
           <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>
 
@@ -135,8 +135,8 @@
 
       <template v-if="showNonAUMAdvisoryFees.length > 1">
         <div class="fw-bolder mt-10">
-          Do you bill your various non-AUM subscription fees on different frequencies and/or
-          timing relative to each other?
+          Do you bill your various non-AUM subscription fees on different
+          frequencies and/or timing relative to each other?
           <i class="fa fa-question-circle fs-4 text-dark ms-4"></i>
         </div>
         <div class="form-check form-check-solid form-switch mt-6">
@@ -173,10 +173,12 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { useStore } from "vuex";
 
 import { IFirmService } from "@/service";
-import { firmRequestModel, feeTypes, feeTypesRequestModel } from "@/model";
+import { feeTypes, feeTypesRequestModel } from "@/model";
 
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
@@ -187,7 +189,7 @@ import SelectBox from "@/components/controls/SelectBox.vue";
     SelectBox,
   },
 })
-export default class FeeTypesBoard extends Vue {
+export default class FeeTypesBoard extends BaseComponent {
   @Inject("firmService") service: IFirmService;
 
   public request = new feeTypesRequestModel();
@@ -202,22 +204,44 @@ export default class FeeTypesBoard extends Vue {
   }
 
   private getFeeType() {
-    this.service.getFeeType().then((response) => {
-      response.map((item) => {
-        if (item.aumFlag) this.aumFeeTypes.push(item);
-        else this.nonAUMFeeTypes.push(item);
+    this.service
+      .getFeeType()
+      .then((response) => {
+        response.map((item) => {
+          if (item.aumFlag) this.aumFeeTypes.push(item);
+          else this.nonAUMFeeTypes.push(item);
+        });
+        this.getFeeTypesSetup();
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
-      this.getFeeTypesSetup();
-    });
   }
 
   private getFeeTypesSetup() {
-    this.service.getFeeTypesSetup().then((response) => {
-      if(response.billingType)
-        this.request.billingType = response.billingType;
-        
-      this.bindValues(response);
-    });
+    this.service
+      .getFeeTypesSetup()
+      .then((response) => {
+        if (response.billingType)
+          this.request.billingType = response.billingType;
+
+        this.bindValues(response);
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
   }
 
   public saveFeeTypes() {
@@ -244,9 +268,20 @@ export default class FeeTypesBoard extends Vue {
         });
     });
 
-    this.service.saveFeeTypesSetup(this.request).then((response) => {
-      if (response.status == "SUCCESS") this.$emit("next");
-    });
+    this.service
+      .saveFeeTypesSetup(this.request)
+      .then((response) => {
+        if (response.status == "SUCCESS") this.$emit("next");
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
   }
 
   public updateBillingTypes() {
@@ -297,11 +332,16 @@ export default class FeeTypesBoard extends Vue {
   }
 
   get showAUMAdvisory() {
-    return this.request.billingType && this.request.billingType.includes("AUM") ? true : false;
+    return this.request.billingType && this.request.billingType.includes("AUM")
+      ? true
+      : false;
   }
 
   get showNonAUMAdvisory() {
-    return this.request.billingType && this.request.billingType.includes("NON-AUM") ? true : false;
+    return this.request.billingType &&
+      this.request.billingType.includes("NON-AUM")
+      ? true
+      : false;
   }
 
   get showAUMAdvisoryFees() {

@@ -113,7 +113,8 @@
               "
             >
               <span v-for="(advisor, i) of item.advisors" :key="i">
-                {{ advisor.displayName }}<span v-if="i+1 < item.advisors.length">, </span>
+                {{ advisor.displayName
+                }}<span v-if="i + 1 < item.advisors.length">, </span>
               </span>
             </td>
             <td class="border-bottom-2 border-dashed border-light p-6">
@@ -148,6 +149,8 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import AddRepCode from "@/components/Models/AddRepCode.vue";
 import RepCodePreview from "@/components/Models/RepCodePreview.vue";
 
@@ -160,7 +163,7 @@ import { repCodesResponseModel } from "@/model";
     RepCodePreview,
   },
 })
-export default class RepCodes extends Vue {
+export default class RepCodes extends BaseComponent {
   @Inject("repCodesService") service: IRepCodesService;
 
   public store = useStore();
@@ -186,15 +189,12 @@ export default class RepCodes extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

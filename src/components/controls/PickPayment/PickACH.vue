@@ -88,7 +88,7 @@ import { Prop, Watch } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import ACH from "@/components/controls/ACH.vue";
-import AppDelete from "@/components/Models/AppDelete.vue";
+import AppDelete from "@/components/layout/AppDelete.vue";
 
 import { cardDetailsResponsetModel } from "@/model";
 

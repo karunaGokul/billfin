@@ -18,9 +18,7 @@
             />
           </div>
           <div v-if="pageType != 'Branch'">
-            <label for="Branch" class="form-label fw-bolder">
-              Branch
-            </label>
+            <label for="Branch" class="form-label fw-bolder"> Branch </label>
             <select
               class="form-select form-select-solid mb-2"
               v-model="v$.request.branchName"
@@ -102,6 +100,8 @@ import {
   IRepCodesService,
 } from "@/service";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 @Options({
   components: { TextInput, SelectBox, SelectBoxWithDelete, AddAdvisor },
   validations: {
@@ -111,7 +111,7 @@ import {
     },
   },
 })
-export default class AddRepCode extends Vue {
+export default class AddRepCode extends BaseComponent {
   @Inject("repCodesService") service: IRepCodesService;
   @Inject("advisorsService") advisorsService: IAdvisorsService;
   @Inject("branchesService") branchesService: IBranchesService;
@@ -151,7 +151,13 @@ export default class AddRepCode extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -167,7 +173,13 @@ export default class AddRepCode extends Vue {
         this.branch = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -191,7 +203,13 @@ export default class AddRepCode extends Vue {
           this.$emit("repCodeAdded");
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

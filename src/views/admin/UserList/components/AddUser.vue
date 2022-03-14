@@ -133,11 +133,6 @@
               >Activate User</label
             >
           </div>
-          <app-confirmation
-            :message="`We've sent an invitation email to ${request.firstName} ${request.lastName}. ${request.firstName} will be asked to create a secure password before getting start.`"
-            @done="updateUser"
-            v-if="showConfirmationModel"
-          />
         </div>
         <div class="modal-footer justify-content-center border-0 p-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
@@ -152,8 +147,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -168,8 +165,6 @@ import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 import EmailInput from "@/components/controls/EmailInput.vue";
 
-import AppConfirmation from "@/components/Models/AppConfirmation.vue";
-
 import { IUserListService } from "@/service";
 import { useStore } from "vuex";
 
@@ -178,7 +173,6 @@ import { useStore } from "vuex";
     TextInput,
     EmailInput,
     SelectBox,
-    AppConfirmation,
   },
   validations: {
     request: {
@@ -197,7 +191,7 @@ import { useStore } from "vuex";
     },
   },
 })
-export default class AddUser extends Vue {
+export default class AddUser extends BaseComponent {
   @Inject("userService") service: IUserListService;
 
   @Prop() modelType: string;
@@ -211,8 +205,6 @@ export default class AddUser extends Vue {
   public store = useStore();
 
   public roles: Array<RolesResponseModel> = [];
-
-  public showConfirmationModel: boolean = false;
 
   public validate() {
     return useVuelidate();
@@ -239,7 +231,13 @@ export default class AddUser extends Vue {
         this.roles = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -259,6 +257,8 @@ export default class AddUser extends Vue {
 
   public removeProfile() {
     this.profilePhoto = null;
+    let upload: any = this.$refs.profileUpload;
+    upload.value = null;
   }
 
   public addUser() {
@@ -290,24 +290,21 @@ export default class AddUser extends Vue {
     this.service
       .uploadPhoto(this.profilePhoto, uuid)
       .then((response) => {
-        this.showConfirmationModel = true;
+        this.$emit("newUser");
+        this.confirmation(
+          "",
+          `We've sent an invitation email to ${this.request.firstName} ${this.request.lastName}. ${this.request.firstName} will be asked to create a secure password before getting start.`
+        );
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
-  }
-
-  public updateUser() {
-    this.$emit("userAdd");
   }
 
   public close() {

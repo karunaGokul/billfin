@@ -333,6 +333,8 @@
 import { Vue, Options, setup } from "vue-class-component";
 import { Inject, Prop } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
@@ -368,7 +370,7 @@ import {
     },
   },
 })
-export default class RepCodePreview extends Vue {
+export default class RepCodePreview extends BaseComponent {
   @Inject("repCodesService") repCodesService: IRepCodesService;
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
@@ -437,7 +439,13 @@ export default class RepCodePreview extends Vue {
         this.branchs = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -449,7 +457,13 @@ export default class RepCodePreview extends Vue {
         this.unassignedAdvisors = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -552,7 +566,13 @@ export default class RepCodePreview extends Vue {
         this.$emit("repCodeUpdated");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

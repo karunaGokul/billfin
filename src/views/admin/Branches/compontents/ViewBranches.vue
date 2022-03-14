@@ -255,6 +255,8 @@
 import { Vue, Options, setup } from "vue-class-component";
 import { Inject, Prop } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
@@ -290,7 +292,7 @@ import {
     },
   },
 })
-export default class ViewBranches extends Vue {
+export default class ViewBranches extends BaseComponent {
   @Inject("repCodesService") repCodesService: IRepCodesService;
   @Inject("branchesService") branchesService: IBranchesService;
   @Inject("advisorsService") service: IAdvisorsService;
@@ -326,21 +328,43 @@ export default class ViewBranches extends Vue {
   }
 
   private viewBranch() {
-    this.branchesService.viewBranch(this.branch.branchId).then((response) => {
-      this.request = response;
-      this.request.repCodes.forEach((rep) => {
-        rep.status = "view";
-        rep.edit = false;
-      });
+    this.branchesService
+      .viewBranch(this.branch.branchId)
+      .then((response) => {
+        this.request = response;
+        this.request.repCodes.forEach((rep) => {
+          rep.status = "view";
+          rep.edit = false;
+        });
 
-      this.dataResource = this.request.repCodes;
-    });
+        this.dataResource = this.request.repCodes;
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
   }
 
   public unassignedRepCodes() {
-    this.repCodesService.unassignedRepCodes().then((response) => {
-      this.unassignedRepCode = response;
-    });
+    this.repCodesService
+      .unassignedRepCodes()
+      .then((response) => {
+        this.unassignedRepCode = response;
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
   }
 
   public close() {
@@ -448,7 +472,13 @@ export default class ViewBranches extends Vue {
         this.$emit("branchUpdated");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 }

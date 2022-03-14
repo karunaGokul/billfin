@@ -146,6 +146,8 @@ import {
   frequencyRequestModel,
 } from "@/model";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import MultiCheckBox from "@/components/controls/MultiCheckBox.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
@@ -164,7 +166,7 @@ import AdjustmentsAdvisory from "./AdjustmentsAdvisory.vue";
     AdjustmentsAdvisory,
   },
 })
-export default class ConfirmBoard extends Vue {
+export default class ConfirmBoard extends BaseComponent {
   @Inject("firmService") service: IFirmService;
   public store = useStore();
   public generalResponse = new generalBoardRequestModel();
@@ -189,7 +191,13 @@ export default class ConfirmBoard extends Vue {
         this.generalResponse = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -205,7 +213,13 @@ export default class ConfirmBoard extends Vue {
         this.frequencyRequest = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -218,7 +232,13 @@ export default class ConfirmBoard extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -233,7 +253,13 @@ export default class ConfirmBoard extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -242,11 +268,16 @@ export default class ConfirmBoard extends Vue {
     this.service
       .saveConfirm(request)
       .then((response) => {
-        console.log(response);
         this.$emit("close");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

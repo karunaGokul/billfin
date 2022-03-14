@@ -113,7 +113,8 @@
               "
             >
               <span v-for="(code, i) of item.repCodes" :key="i">
-                {{ code.repCode }}<span v-if="i+1 < item.repCodes.length">, </span>
+                {{ code.repCode
+                }}<span v-if="i + 1 < item.repCodes.length">, </span>
               </span>
             </td>
             <td class="border-bottom-2 border-dashed border-light p-6">
@@ -128,7 +129,7 @@
 
       <add-branch
         @close="addBranchModel = false"
-        @branchAdded="updateBranch"
+        @newBranch="updateBranch"
         v-if="addBranchModel"
       />
       <view-branches
@@ -142,8 +143,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import { useStore } from "vuex";
 
@@ -159,7 +162,7 @@ import ViewBranches from "./compontents/ViewBranches.vue";
     ViewBranches,
   },
 })
-export default class Branches extends Vue {
+export default class Branches extends BaseComponent {
   @Inject("branchesService") service: IBranchesService;
 
   public store = useStore();
@@ -185,15 +188,12 @@ export default class Branches extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

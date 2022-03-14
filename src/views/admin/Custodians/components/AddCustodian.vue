@@ -49,6 +49,8 @@
 import { Vue, Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
@@ -71,7 +73,7 @@ import { useStore } from "vuex";
     },
   },
 })
-export default class AddCustodian extends Vue {
+export default class AddCustodian extends BaseComponent {
   @Inject("custodiansService") service: ICustodiansService;
 
   @Prop() modelType: string;
@@ -99,19 +101,17 @@ export default class AddCustodian extends Vue {
       this.service
         .addCustodian(this.request)
         .then((response) => {
+          this.confirmation("", "New custodian added successfully");
           this.$emit("custodianAdded");
         })
         .catch((err) => {
           if (err.response.status == 500)
-            this.store.dispatch("showAlert", {
-              message: "Somthing went wrong, Please contact administration",
-              title: "Oops, sorry!",
-            });
-          else if (err.response.status == 400)
-            this.store.dispatch("showAlert", {
-              message: err.response.message,
-              title: "Oops, sorry!",
-            });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

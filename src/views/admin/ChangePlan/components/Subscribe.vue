@@ -70,16 +70,18 @@ import moment from "moment";
 
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import {
   addOnsModel,
   PlanActivate,
   changePlanRequestModel,
-  changePlanResponseModel
+  changePlanResponseModel,
 } from "@/model";
 
 import { IManageSubscription } from "@/service";
 
-export default class Subscribe extends Vue {
+export default class Subscribe extends BaseComponent {
   @Inject("manageSubscripeService") service: IManageSubscription;
 
   public store = useStore();
@@ -90,21 +92,23 @@ export default class Subscribe extends Vue {
   }
 
   public subscribe() {
-    let request: changePlanRequestModel =
-      new changePlanRequestModel();
+    let request: changePlanRequestModel = new changePlanRequestModel();
 
     request.eventType = "CHANGE_PLAN";
     request.action = this.planAction;
-    request.planActivate = PlanActivate[this.activatePlan as keyof typeof PlanActivate];
+    request.planActivate =
+      PlanActivate[this.activatePlan as keyof typeof PlanActivate];
 
     if (this.showAumBilling) {
       request.termPlanId = this.aumBilling.plan.termPlanId;
-      request.subscriptionPlanId = this.aumBilling.currentPlan.subscriptionPlanId;
+      request.subscriptionPlanId =
+        this.aumBilling.currentPlan.subscriptionPlanId;
       request.addOns = this.getAddons(this.aumBilling.addons);
     }
     if (this.showSubscription) {
       request.termPlanId = this.subscriptionBilling.plan.termPlanId;
-      request.subscriptionPlanId = this.subscriptionBilling.currentPlan.subscriptionPlanId;
+      request.subscriptionPlanId =
+        this.subscriptionBilling.currentPlan.subscriptionPlanId;
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
@@ -114,7 +118,13 @@ export default class Subscribe extends Vue {
         this.$emit("next");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

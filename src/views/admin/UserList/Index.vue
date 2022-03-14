@@ -225,7 +225,7 @@
       <add-user
         :modelType="modelType"
         :response="selectedUser"
-        @userAdd="updateUser"
+        @newUser="updateUser"
         @close="showAddUserModel = false"
         v-if="showAddUserModel"
       />
@@ -240,7 +240,7 @@ import { UserResponseModel } from "@/model";
 
 import { IUserListService } from "@/service";
 
-import BaseDialogComponent from "@/components/base/BaseDialogComponent.vue";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import AddUser from "./components/AddUser.vue";
 
@@ -249,7 +249,7 @@ import AddUser from "./components/AddUser.vue";
     AddUser,
   },
 })
-export default class UserList extends Vue {
+export default class UserList extends BaseComponent {
   @Inject("userService") service: IUserListService;
 
   public response: Array<UserResponseModel> = [];
@@ -270,7 +270,13 @@ export default class UserList extends Vue {
         this.toggle = [];
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
