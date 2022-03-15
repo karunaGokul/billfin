@@ -146,6 +146,7 @@
                 ></i>
                 <button
                   class="btn btn-sm btn-secondary p-2 rounded-circle edit-row"
+                  @click="redirectTC(item)"
                 >
                   TC
                 </button>
@@ -225,6 +226,10 @@ export default class Custodians extends BaseComponent {
   public updateCustodian() {
     this.showAddCustodianModel = false;
     this.getCustodians();
+  }
+
+  public redirectTC(custodian: CustodiansResponseModel) {
+    this.$router.push({path: `/custodians/${custodian.custodianIdentifier}`, query: {firmCustodianId: custodian.firmCustodianId}});
   }
 
   public applyFilter(searchValue: string) {

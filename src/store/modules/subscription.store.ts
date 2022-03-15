@@ -4,12 +4,19 @@ import { AddressService } from "@/service";
 
 const state: SubscribeModel = {
   products: [],
-  aumBilling: { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} },
+  aumBilling: {
+    plan: {},
+    addons: [],
+    commitmentTerm: "",
+    currentPlan: {},
+    addMoreAddOns: [],
+  },
   subscriptionBilling: {
     plan: {},
     addons: [],
     commitmentTerm: "",
     currentPlan: {},
+    addMoreAddOns: [],
   },
   paymentType: "",
   creditCard: {},
@@ -17,7 +24,7 @@ const state: SubscribeModel = {
   address: {},
   states: [],
   planAction: "",
-  activatePlan: ""
+  activatePlan: "",
 };
 const getters: GetterTree<any, any> = {
   products: (state) => {
@@ -52,7 +59,7 @@ const getters: GetterTree<any, any> = {
   },
   activatePlan: (state) => {
     return state.activatePlan;
-  }
+  },
 };
 const mutations: MutationTree<any> = {
   onUpdateState(state, response) {
@@ -72,11 +79,13 @@ const mutations: MutationTree<any> = {
       state.aumBilling.addons = response.addons;
       state.aumBilling.commitmentTerm = response.commitmentTerm;
       state.aumBilling.currentPlan = response.currentPlan;
+      state.aumBilling.addMoreAddOns = response.addMoreAddOns;
     } else {
       state.subscriptionBilling.plan = response.plan;
       state.subscriptionBilling.addons = response.addons;
       state.subscriptionBilling.commitmentTerm = response.commitmentTerm;
       state.subscriptionBilling.currentPlan = response.currentPlan;
+      state.subscriptionBilling.addMoreAddOns = response.addMoreAddOns;
     }
   },
   onUpdateAddons(state, response) {
@@ -98,8 +107,18 @@ const mutations: MutationTree<any> = {
   onClearSubscription(state) {
     state.products = [];
     state.commitmentTerm = "";
-    state.aumBilling = { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} };
-    state.subscriptionBilling = { plan: {}, addons: [], commitmentTerm: "", currentPlan: {} };
+    state.aumBilling = {
+      plan: {},
+      addons: [],
+      commitmentTerm: "",
+      currentPlan: {},
+    };
+    state.subscriptionBilling = {
+      plan: {},
+      addons: [],
+      commitmentTerm: "",
+      currentPlan: {},
+    };
     state.paymentType = "";
     state.creditCard = {};
     state.ach = {};
@@ -110,7 +129,7 @@ const mutations: MutationTree<any> = {
   },
   onUpdateActivatePlan(state, activatePlan) {
     state.activatePlan = activatePlan;
-  }
+  },
 };
 const actions: ActionTree<any, any> = {
   updateState(context) {
@@ -161,11 +180,11 @@ const actions: ActionTree<any, any> = {
     context.commit("onClearSubscription");
   },
   updatePlanAction(context, action) {
-    context.commit('onUpdatePlanAction', action);
+    context.commit("onUpdatePlanAction", action);
   },
   updateActivatePlan(context, activatePlan) {
-    context.commit('onUpdateActivatePlan', activatePlan);
-  }
+    context.commit("onUpdateActivatePlan", activatePlan);
+  },
 };
 export const SubscriptionModule = {
   state,

@@ -221,6 +221,14 @@ export default class AddUser extends BaseComponent {
       this.request.uuid = this.response.uuid;
 
       //this.profilePhoto = this.response.profilePhoto;
+
+      if (this.response.profilePhoto) {
+        fetch(this.$vuehelper.getImageUrl(this.response.profilePhoto))
+          .then((res) => res.blob())
+          .then((blob) => {
+            this.profilePhoto = new File([blob], "File name", { type: "image/png" });
+          });
+      }
     }
   }
 
@@ -272,16 +280,12 @@ export default class AddUser extends BaseComponent {
         })
         .catch((err) => {
           if (err.response.status == 500)
-            this.store.dispatch("showAlert", {
-              message: "Somthing went wrong, Please contact administration",
-              title: "Oops, sorry!",
-            });
-          else if (err.response.status == 400) {
-            this.store.dispatch("showAlert", {
-              message: err.response.data.message,
-              title: "Oops, sorry!",
-            });
-          }
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

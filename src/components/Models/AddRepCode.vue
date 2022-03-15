@@ -93,6 +93,7 @@ import {
   advisorsResponseModel,
   unassignedBranchResponseModel,
   ListItem,
+  branchesResponseModel,
 } from "@/model";
 import {
   IAdvisorsService,
@@ -117,6 +118,7 @@ export default class AddRepCode extends BaseComponent {
   @Inject("branchesService") branchesService: IBranchesService;
 
   @Prop() pageType: string;
+  @Prop() selectedBranch: branchesResponseModel;
 
   public v$: any = setup(() => this.validate());
   public request: addRepCodeRequestModel = new addRepCodeRequestModel();
@@ -133,6 +135,12 @@ export default class AddRepCode extends BaseComponent {
   created() {
     this.getUnassignedAdvisors();
     this.getUnassignedBranch();
+
+    if(this.pageType == 'Branch') {
+      this.request.branchName = this.selectedBranch.branchName;
+      this.request.branchCode = this.selectedBranch.branchCode;
+      this.request.branchId = this.selectedBranch.branchId;
+    }
   }
 
   public close(action: string) {

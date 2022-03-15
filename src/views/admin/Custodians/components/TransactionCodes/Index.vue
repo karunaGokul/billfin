@@ -1,0 +1,231 @@
+<template>
+  <div class="card p-4 mt-4 position-relative">
+    <div
+      class="
+        d-flex
+        align-items-center
+        justify-content-between
+        position-absolute
+        translate-middle
+      "
+      style="top: -38px; right: -137px"
+    >
+      <button
+        class="btn btn-outline-primary me-2"
+        type="button"
+        @click="redirect"
+      >
+        Back
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        @click="addTransactionCode('Add Transaction Code')"
+      >
+        Add Transaction Code
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-between p-4">
+      <div class="fs-4 fw-bolder">{{ custodianCode }} - Transaction Code</div>
+      <div>
+        <div class="input-group input-group-solid">
+          <span class="input-group-text">
+            <img src="@/assets/search.svg" alt="Search Icon" />
+          </span>
+          <input
+            class="form-control"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            @input="applyFilter($event.target.value)"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="card-body pt-0">
+      <table
+        class="
+          table table-hover
+          fs-6
+          border-top-0 border-start-0 border-end-0 border-dashed border-light
+        "
+      >
+        <thead>
+          <tr>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              TRANSACTION CODE
+            </th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              TREAT AS
+            </th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              DESCRIPTION
+            </th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            ></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in response"
+            :key="'transaction-table' + index"
+          >
+            <td
+              class="
+                fw-bold
+                text-dark-gray
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              {{ item.transactionTypeId }}
+            </td>
+            <td
+              class="
+                fw-bold
+                text-dark-gray
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              {{ item.transactionType }}
+            </td>
+            <td
+              class="
+                fw-bold
+                text-dark-gray
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            >
+              {{ item.transactionDescription }}
+            </td>
+            <td class="border-bottom-2 border-dashed border-light p-6">
+              <div class="d-flex justify-content-around align-items-center">
+                <i class="fa fa-solid fa-pen fs-4 edit-row" @click="addTransactionCode('Edit Transaction Code')"></i>
+                <i class="fa fa-solid fa-trash fs-4 edit-row"></i>
+              </div>
+            </td>
+          </tr>
+          <tr key="transaction-no-data-row" v-if="!response.length">
+            <td colspan="4" class="text-center">
+              <p class="fs-4 fw-bold m-4">
+                You currently do not have any transaction codes defined for
+                {{ custodianCode }}
+              </p>
+
+              <button type="button" class="btn btn-primary mt-4 mb-4">
+                Add Transaction Code
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <add-transaction-code
+        :modelType="modelType"
+        :transaction="selectedTransaction"
+        @newTransaction="updateTransaction"
+        @close="showTransactionModel = false"
+        v-if="showTransactionModel"
+      />
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
+
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
+import { TransactionCodeResponseModel } from "@/model";
+
+import { ICustodiansService } from "@/service";
+
+import AddTransactionCode from "./AddTransactionCode.vue";
+
+@Options({
+  components: {
+    AddTransactionCode,
+  },
+})
+export default class TransactionCodes extends BaseComponent {
+  @Inject("custodiansService") service: ICustodiansService;
+
+  public custodianCode: any = "";
+  public firmCustodianId: any = 0;
+
+  public response: Array<TransactionCodeResponseModel> = [];
+  public selectedTransaction: TransactionCodeResponseModel =
+    new TransactionCodeResponseModel();
+
+  public showTransactionModel: boolean = false;
+  public modelType: string = "Add Transaction Code";
+
+  mounted() {
+    this.custodianCode = this.$route.params.custodianCode;
+    this.firmCustodianId = this.$route.query.firmCustodianId;
+    this.getTransactionCode();
+  }
+
+  public getTransactionCode() {
+    this.service
+      .getTransactionCode(this.firmCustodianId)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  public addTransactionCode(
+    modelType: string,
+    transaction: TransactionCodeResponseModel
+  ) {
+    this.modelType = modelType;
+    if (transaction) this.selectedTransaction = transaction;
+    this.showTransactionModel = true;
+  }
+
+  public updateTransaction() {
+    this.showTransactionModel = false;
+    this.getTransactionCode();
+  }
+
+  public redirect() {
+    this.$router.go(-1);
+  }
+
+  public applyFilter(searchValue: string) {
+    console.log(searchValue);
+  }
+}
+</script>

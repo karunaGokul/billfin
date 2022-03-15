@@ -198,6 +198,7 @@
 
           <add-rep-code
             pageType="Branch"
+            :selectedBranch="branch"
             @repCodeAdded="onUpdateRepCode"
             @close="addRepCodeModel = false"
             v-if="addRepCodeModel"
@@ -322,9 +323,7 @@ export default class ViewBranches extends BaseComponent {
     this.modelType = this.type;
     this.viewBranch();
 
-    if (this.modelType == "Edit Branchs") {
-      this.unassignedRepCodes();
-    }
+    if (this.modelType == "Edit Branchs") this.unassignedRepCodes();
   }
 
   private viewBranch() {
@@ -377,7 +376,7 @@ export default class ViewBranches extends BaseComponent {
   }
 
   public onUpdateRepCode() {
-    this.unassignedRepCodes();
+    this.viewBranch();
     this.addRepCodeModel = false;
   }
 

@@ -1,38 +1,40 @@
 <template>
-  <div class="card" v-if="currentAddOn">
+  <div class="card" v-if="preAddedAddOns">
     <h3 class="p-4 border-bottom">{{ page }}</h3>
     <div class="w-50 mx-auto m-12">
       <div class="w-75 d-flex m-4 p-8 justify-content-between">
         <div>
           <div class="fs-3 fw-bolder text-dark-black-secondary">
-            {{ currentAddOn.addOnName }}
+            {{ preAddedAddOns.addOnName }}
           </div>
           <div class="text-gray">
             Current
             {{
-              currentAddOn.addOnName == "Admin User License"
+              preAddedAddOns.addOnName == "Admin User License"
                 ? "Users"
                 : "Connectors"
             }}
-            - {{ currentAddOn.quantity }}
+            - {{ preAddedAddOns.quantity }}
           </div>
         </div>
         <div>
           <div class="fw-bolder fa-2x text-dark-black-secondary">
             <span class="fs-7">$</span>
             {{
-              $filters.currencyDisplayWithoutSymbol(currentAddOn.paymentAmount)
+              $filters.currencyDisplayWithoutSymbol(
+                preAddedAddOns.paymentAmount
+              )
             }}
             <span class="fs-8 fw-light text-gray"
               >/{{
-                currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
+                preAddedAddOns.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
               }}</span
             >
           </div>
           <div class="fs-7 fw-light text-gray">
             (Per
             {{
-              currentAddOn.addOnName == "Admin User License"
+              preAddedAddOns.addOnName == "Admin User License"
                 ? "User"
                 : "Connector"
             }})
@@ -52,11 +54,13 @@
           rounded
           border-dashed
         "
+        v-for="(item, index) in addOns"
+        :key="index"
       >
         <div>
           <div class="fs-3 fw-bolder text-dark-black-secondary">
             {{
-              currentAddOn.addOnName == "Admin User License"
+              item.addOnName == "Admin User License"
                 ? "Add more users"
                 : "Add more connectors"
             }}
@@ -65,7 +69,7 @@
             <select
               class="form-select form-select-solid"
               style="width: 100px"
-              v-model="quantity"
+              v-model="item.quantity"
             >
               <option selected value="1">1</option>
               <option value="2">2</option>
@@ -83,10 +87,10 @@
         <div>
           <div class="fw-bolder fa-2x text-dark-black-secondary">
             <span class="fs-7">$</span>
-            {{ $filters.currencyDisplayWithoutSymbol(amount * quantity) }}
+            {{ $filters.currencyDisplayWithoutSymbol(item.planAddOnAmount * item.quantity) }}
             <span class="fs-8 fw-light text-gray"
               >/{{
-                currentAddOn.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
+                item.commitmentTerm == "ANNUAL" ? "Yr" : "Mo"
               }}</span
             >
           </div>
@@ -113,54 +117,39 @@ export default class AddUserConnectors extends Vue {
   public quantity: string = "1";
   public amount: number = 0;
 
+  public addOns:Array<addonsResponseModel> = [];
+
   public store = useStore();
 
   mounted() {
     if (this.products != "") {
-      // this.amount = this.currentAddOn.paymentAmount;
-      this.amount =
-        this.currentAddOn.paymentAmount / +this.currentAddOn.quantity;
+      if (this.products == "AUM") this.addOns = this.aumBilling.addons;
+      else this.addOns = this.subscriptionBilling.addons;
+      this.addOns.forEach((item) => {
+        item.planAddOnAmount = item.paymentAmount / +item.quantity;
+      })
     } else this.$router.push("/my-subscription");
   }
 
   public next() {
-    this.currentAddOn.quantity = this.quantity;
-    this.currentAddOn.planAddOnAmount = this.amount;
-
-    let addons: Array<any> = [];
-    addons.push(this.currentAddOn);
-
-    /*this.store.dispatch("updateTerm", {
-      product: this.products,
-      commitmentTerm: this.currentAddOn.commitmentTerm,
-    });*/
 
     this.store.dispatch("updateAddons", {
       product: this.products,
-      addons: addons,
+      addons: this.addOns,
     });
+
+    console.log(this.addOns);
 
     this.$emit("next");
   }
 
-  get currentAddOn() {
-    let addOnName: string =
-        this.page == "Add Users"
-          ? "Admin User License"
-          : "Multi-Connector Integrations",
-      addOns: Array<addonsResponseModel> = null,
-      value: addonsResponseModel = null;
-
+  get preAddedAddOns() {
+    let addOns: addonsResponseModel = new addonsResponseModel();
     if (this.products) {
-      if (this.products == "AUM") addOns = this.aumBilling.addons;
-      else if (this.products == "SUBSCRIPTION")
-        addOns = this.subscriptionBilling.addons;
-
-      value = addOns.find((item) => {
-        return item.addOnName == addOnName;
-      });
+      if (this.products == "AUM") addOns = this.aumBilling.addMoreAddOns;
+      else addOns = this.subscriptionBilling.addMoreAddOns;
     }
-    return value;
+    return addOns;
   }
 
   public back() {

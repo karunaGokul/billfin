@@ -187,6 +187,8 @@
 import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
+import BaseComponent from "@/components/base/BaseComponent.vue";
+
 import { useStore } from "vuex";
 
 import AddAdvisor from "@/components/Models/AddAdvisor.vue";
@@ -201,7 +203,7 @@ import { advisorsResponseModel, assignRepCodesResponseModel } from "@/model";
     RepCodePreview,
   },
 })
-export default class Advisors extends Vue {
+export default class Advisors extends BaseComponent {
   @Inject("advisorsService") service: IAdvisorsService;
 
   public store = useStore();
@@ -231,15 +233,12 @@ export default class Advisors extends Vue {
       })
       .catch((err) => {
         if (err.response.status == 500)
-          this.store.dispatch("showAlert", {
-            message: "Somthing went wrong, Please contact administration",
-            title: "Oops, sorry!",
-          });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
         else if (err.response.status == 400)
-          this.store.dispatch("showAlert", {
-            message: err.response.message,
-            title: "Oops, sorry!",
-          });
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

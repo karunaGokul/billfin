@@ -242,6 +242,7 @@
                     formFieldType="inputBlock"
                     label="BPS"
                     :controls="v$.request.bps"
+                    @updateEvent="flatInputValidation"
                     :validation="['numeric']"
                   />
                   <div class="mt-0 ms-6 me-6">+</div>
@@ -250,14 +251,14 @@
                     label="Amount"
                     :controls="v$.request.amount"
                     :validation="['numeric']"
-                    @updateInput="updateFlatAmount"
+                    @updateInput="flatInputValidation"
                   />
                 </div>
               </div>
             </div>
             <div
               class="position-absolute bottom-0 text-danger"
-              v-if="showBPSError"
+              v-if="request.touched && !request.formValid"
             >
               BPS or Amount is required
             </div>
@@ -576,7 +577,6 @@ import { required, numeric } from "@vuelidate/validators";
 
 import {
   AddFeeScheduleRequestModel,
-  tierModel,
   tierFormModel,
   CurrencyCode,
   TierType,
@@ -696,29 +696,24 @@ export default class AddFeeSchedule extends Vue {
           item.invalid = false;
           item.field = null;
           item.message = null;
-          this.request.formValid = true;
         } else {
           item.invalid = true;
           item.field = "toValue";
           item.message = "This break point cannot be blank!";
-          this.request.formValid = false;
         }
         if (item.fromValue <= this.$currencyToNumber(item.toValue)) {
           item.invalid = false;
           item.field = null;
           item.message = null;
-          this.request.formValid = true;
         } else {
           item.invalid = true;
           item.field = "toValue";
           item.message =
             "This break point cannot be less than the break point of the tier below!";
-          this.request.formValid = false;
         }
       } else {
         item.invalid = false;
         item.field = null;
-        this.request.formValid = true;
       }
     } else {
       if (index + 1 != this.tiers.length && !item.toValue) {
@@ -748,31 +743,29 @@ export default class AddFeeSchedule extends Vue {
         this.request.formValid = false;
       }
     }
+
+    let formValid = this.tiers.filter((item) => item.invalid);
+    if (formValid.length == 0) this.request.formValid = true;
+    else this.request.formValid = false;
+  }
+
+  public flatInputValidation() {
+    this.request.touched = true;
+    if (
+      (this.request.bps && !this.v$.request.bps.numeric.$invalid) ||
+      (this.request.amount && !this.v$.request.amount.numeric.$invalid)
+    ) {
+      this.request.formValid = true;
+    } else this.request.formValid = false;
   }
 
   public formValidation() {
-    if (this.request.type == "Flat") {
-      if (
-        (this.request.bps && !isNaN(this.request.bps)) ||
-        (this.request.amount && !isNaN(this.request.amount))
-      ) {
-        this.request.formValid = true;
-        this.addFeeSchedule();
-        this.showBPSError = false;
-      } else this.showBPSError = true;
-    } else if (this.request.type == "Tiered") {
-      if (this.request.formValid) this.addFeeSchedule();
-      else this.validRow();
-    }
-  }
-
-  public resetForm() {
-    this.request.formValid = false;
-    if (this.request.type == "Flat") this.showBPSError = false;
-    else if (this.request.type == "Tiered") {
-      for (let i = 0; i < this.tiers.length; i++) {
-        this.tiers[i].touched = false;
-      }
+    this.v$.request.$touch();
+    if (this.request.formValid) {
+      if (!this.v$.request.$invalid) this.addFeeSchedule();
+    } else {
+      if (this.request.type == "Tiered") this.validRow();
+      else this.request.touched = true;
     }
   }
 
@@ -782,31 +775,42 @@ export default class AddFeeSchedule extends Vue {
     }
   }
 
-  public addFeeSchedule() {
-    this.v$.request.$touch();
-    if (!this.v$.request.$invalid) {
-      let request = new AddFeeScheduleRequestModel();
+  public resetForm() {
+    this.request.formValid = false;
 
-      request.name = this.request.name;
-      request.currency =
-        CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
-
-      if (this.request.type == "Flat") {
-        request.tierType = TierType[this.request.type as keyof typeof TierType];
-        request.bps = this.request.bps;
-        request.amount = this.request.amount;
-      } else {
-        request.tierType = TierType[this.tierType as keyof typeof TierType];
-        request.tier = this.tiers.map(
-          ({ fromValue, toValue, bps, amount }) => ({
-            fromValue, toValue, bps, amount
-          })
-        );
+    if (this.request.type == "Flat") {
+      this.request.touched = false;
+    } else if (this.request.type == "Tiered") {
+      for (let i = 0; i < this.tiers.length; i++) {
+        this.tiers[i].touched = false;
       }
+    }
+  }
 
-      console.log(request);
+  public addFeeSchedule() {
+    let request = new AddFeeScheduleRequestModel();
 
-      /*this.service
+    request.name = this.request.name;
+    request.currency =
+      CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
+
+    if (this.request.type == "Flat") {
+      request.tierType = TierType[this.request.type as keyof typeof TierType];
+      request.bps = this.request.bps;
+      request.amount = this.request.amount;
+    } else {
+      request.tierType = TierType[this.tierType as keyof typeof TierType];
+      request.tier = this.tiers.map(({ fromValue, toValue, bps, amount }) => ({
+        fromValue,
+        toValue,
+        bps,
+        amount,
+      }));
+    }
+
+    //console.log(request);
+
+    /*this.service
         .addFeeSchedule(request)
         .then((response) => {
           console.log(response);
@@ -814,7 +818,6 @@ export default class AddFeeSchedule extends Vue {
         .catch((err) => {
           console.log(err);
         });*/
-    }
   }
 
   public close() {
