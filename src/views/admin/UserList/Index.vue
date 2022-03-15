@@ -8,11 +8,8 @@
         position-absolute
         translate-middle
       "
-      style="top: -50px; right: -218px"
+      style="top: -50px; right: -178px"
     >
-      <button class="btn text-primary bg-white" type="button">
-        <i class="fa fa-solid fa-filter text-primary"></i> Filter
-      </button>
       <button
         class="btn btn-primary"
         type="button"
@@ -29,6 +26,7 @@
           type="search"
           placeholder="Search"
           aria-label="Search"
+          @input="applyFilter($event.target.value)"
         />
       </div>
     </div>
@@ -118,14 +116,20 @@
                 class="rounded-circle"
                 v-if="item.profilePhoto"
               />
-              <img
-                src="@/assets/user-profile.jpg"
-                alt="Profile image"
-                width="30"
-                height="30"
-                class="rounded-circle"
+              <span
+                class="
+                  w-25
+                  h-25
+                  p-3
+                  ps-5
+                  pe-5
+                  bg-primary
+                  rounded-circle
+                  text-white
+                "
                 v-if="!item.profilePhoto"
-              />
+                >{{ item.firstName.charAt(0).toUpperCase() }}</span
+              >
               <span class="ms-4">{{ item.firstName }} {{ item.lastName }}</span>
             </td>
             <td
@@ -173,51 +177,10 @@
               class="border-bottom-2 border-dashed border-light p-6"
               style="width: 10%"
             >
-              <template v-if="item.status == 'ACTIVE'">
-                <div class="d-flex justify-content-between align-items-center">
-                  <i class="fa fa-solid fa-ban fs-4 edit-row"></i>
-                  <i
-                    class="fa fa-solid fa-pen fs-4 edit-row"
-                    @click="addUser('Edit User', item)"
-                  ></i>
-                  <div class="dropdown dropdown-primary">
-                    <i
-                      class="fa fa-solid fa-ellipsis-v fs-4 edit-row"
-                      @click="expandRow(index)"
-                    ></i>
-                    <ul
-                      class="dropdown-menu overflow-auto p-2"
-                      :class="{ show: toggle[index] }"
-                      style="right: 0"
-                      v-click-outside="collapseRow"
-                    >
-                      <li class="dropdown-item pt-2 pb-2">Delete</li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
-              <template v-if="item.status != 'ACTIVE'">
-                <div class="d-flex justify-content-between align-items-center">
-                  <i class="fa fa-solid fa-check-circle edit-row"></i>
-                  <i
-                    class="fa fa-solid fa-pen edit-row"
-                    @click="addUser('Edit User', item)"
-                  ></i>
-                  <div class="dropdown dropdown-primary">
-                    <i
-                      class="fa fa-solid fa-ellipsis-v fs-4 edit-row"
-                      @click="expandRow(index)"
-                    ></i>
-                    <ul
-                      class="dropdown-menu overflow-auto p-2"
-                      :class="{ show: toggle[index] }"
-                      style="right: 0"
-                    >
-                      <li class="dropdown-item pt-2 pb-2">Delete</li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
+              <i
+                class="fa fa-solid fa-pen fs-4 edit-row"
+                @click="addUser('Edit User', item)"
+              ></i>
             </td>
           </tr>
         </tbody>
@@ -253,6 +216,7 @@ export default class UserList extends BaseComponent {
   @Inject("userService") service: IUserListService;
 
   public response: Array<UserResponseModel> = [];
+  public dataResource: Array<UserResponseModel> = [];
   public selectedUser: UserResponseModel = new UserResponseModel();
   public modelType: string = "Add User";
   public showAddUserModel: boolean = false;
@@ -267,6 +231,7 @@ export default class UserList extends BaseComponent {
       .getUserList()
       .then((response) => {
         this.response = response;
+        this.dataResource = response;
         this.toggle = [];
       })
       .catch((err) => {
@@ -280,20 +245,6 @@ export default class UserList extends BaseComponent {
       });
   }
 
-  public expandRow(index: number) {
-    this.toggle[index] = !this.toggle[index];
-
-    for (let i = 0; i < this.toggle.length; i++) {
-      if (i != index) this.toggle[i] = false;
-    }
-  }
-
-  public collapseRow() {
-    for (let i = 0; i < this.toggle.length; i++) {
-      this.toggle[i] = false;
-    }
-  }
-
   public addUser(modelType: string, response?: UserResponseModel) {
     if (response) this.selectedUser = response;
 
@@ -305,6 +256,16 @@ export default class UserList extends BaseComponent {
     this.showAddUserModel = false;
     this.selectedUser = new UserResponseModel();
     this.getUserList();
+  }
+
+  public applyFilter(searchValue: string) {
+    this.response = this.dataResource.filter(
+      (item) =>
+        (item.firstName &&
+        item.firstName.toLowerCase().includes(searchValue.toLowerCase())) || 
+        (item.roleName && item.roleName.toLocaleLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.email && item.email.toLowerCase().includes(searchValue.toLowerCase()))
+    );
   }
 }
 </script> 

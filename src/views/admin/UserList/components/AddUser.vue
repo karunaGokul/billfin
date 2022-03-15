@@ -220,13 +220,13 @@ export default class AddUser extends BaseComponent {
       this.request.isActive = this.response.isActive;
       this.request.uuid = this.response.uuid;
 
-      //this.profilePhoto = this.response.profilePhoto;
-
       if (this.response.profilePhoto) {
         fetch(this.$vuehelper.getImageUrl(this.response.profilePhoto))
           .then((res) => res.blob())
           .then((blob) => {
-            this.profilePhoto = new File([blob], "File name", { type: "image/png" });
+            this.profilePhoto = new File([blob], this.response.firstName, {
+              type: "image/png",
+            });
           });
       }
     }
@@ -260,7 +260,6 @@ export default class AddUser extends BaseComponent {
     if (!file) return;
 
     this.profilePhoto = file;
-    console.log(this.profilePhoto);
   }
 
   public removeProfile() {
@@ -276,7 +275,7 @@ export default class AddUser extends BaseComponent {
       this.service
         .addUser(this.request)
         .then((response) => {
-          if (response.status == "SUCCESS") this.processAvatar(response.uuid);
+          this.processAvatar(response.uuid);
         })
         .catch((err) => {
           if (err.response.status == 500)

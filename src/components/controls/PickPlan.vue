@@ -58,112 +58,207 @@
             }}
           </div>
 
-          <div class="d-flex m-2" v-if="planType == 'Change Plan'">
+          <!--<div class="d-flex m-2" v-if="planType == 'Change Plan'">
             <div class="ms-4 me-4 fs-4 fw-bolder" style="width: 260px">
               Current Plan
             </div>
             <div class="ms-4 me-4 fs-4 fw-bolder" style="width: 260px">
               Select Plan
             </div>
-          </div>
+          </div> -->
 
           <div class="d-flex justify-content-evenly mt-4 mb-4 m-2">
-            <div
-              class="ms-4 me-4 p-4 pt-12 pb-12 rounded position-relative"
-              :class="{
-                'border border-primary bg-primary-alpha':
-                  item.planName == selectedPlan.planName &&
-                  item.planName != 'Enterprise',
-                'bg-light':
-                  item.planName == 'Enterprise' ||
-                  item.planName != selectedPlan.planName,
-                'border border-danger bg-danger-light-alpha':
-                  item.planName == currentPlan.planName &&
-                  item.termPlanId == currentPlan.termPlanId,
-              }"
-              style="width: 260px"
-              @click="updatePlan(item)"
-              v-for="(item, index) in plans"
-              :key="index"
-            >
-              <span
+            <div class="m-2" v-if="planType == 'Change Plan'">
+              <div class="ms-4 mt-4 mb-4 fs-4 fw-bolder">Current Plan</div>
+              <div
                 class="
-                  badge
-                  bg-danger
-                  position-absolute
-                  start-50
-                  translate-middle
-                  p-3
+                  ms-4
+                  me-4
+                  p-4
+                  pt-12
+                  pb-12
+                  rounded
+                  position-relative
+                  border border-danger
+                  bg-danger-light-alpha
                 "
-                v-if="
-                  item.planName == currentPlan.planName &&
-                  item.termPlanId == currentPlan.termPlanId
-                "
-                >Current Plan</span
               >
-              <span
-                class="
-                  badge
-                  bg-primary
-                  position-absolute
-                  start-50
-                  translate-middle
-                  p-3
-                "
-                v-if="
-                  item.planName == selectedPlan.planName &&
-                  item.planName != 'Enterprise'
-                "
-                >Selected Plan</span
-              >
-              <div class="fw-bolder p-3 fs-3 text-center mt-4">
-                {{ item.planName }}
-              </div>
-              <div class="p-3 text-center" v-if="item.planName == 'Enterprise'">
-                <button type="button" class="btn btn-primary ps-20 pe-20">
-                  Contact Us
-                </button>
-              </div>
-              <div class="fa-2x fw-bolder text-center p-3" v-else>
-                <span class="fs-7">$</span>
-                {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
-                <span class="fs-8 fw-light text-gray"
-                  >/ {{ item.planType }}</span
+                <span
+                  class="
+                    badge
+                    bg-danger
+                    position-absolute
+                    start-50
+                    translate-middle
+                    p-3
+                  "
+                  >Current Plan</span
                 >
-              </div>
+                <div class="fw-bolder p-3 fs-3 text-center mt-4">
+                  {{ currentPlan.planName }}
+                </div>
+                <div class="fa-2x fw-bolder text-center p-3">
+                  <span class="fs-7">$</span>
+                  {{
+                    $filters.currencyDisplayWithoutSymbol(
+                      currentPlan.termPlanAmount
+                    )
+                  }}
+                  <span class="fs-8 fw-light text-gray"
+                    >/ {{ currentPlan.planType }}</span
+                  >
+                </div>
 
-              <div class="w-100 mx-auto text-center text-gray p-3">
-                {{ item.description }}
+                <div class="w-100 mx-auto text-center text-gray p-3">
+                  {{ currentPlan.description }}
+                </div>
+                <div class="fs-4 text-center fw-bolder pt-4">
+                  {{ currentPlan.aumLevel }}
+                </div>
+                <div class="fs-4 text-center text-light-gray pb-4">
+                  AUM Level
+                </div>
+                <div class="fs-4 text-center fw-bolder pt-4">
+                  {{ currentPlan.adminUsers }}
+                </div>
+                <div class="fs-4 text-center text-light-gray pb-4">
+                  Admin Users
+                </div>
+                <div class="fs-4 text-center fw-bolder pt-4">
+                  {{ currentPlan.clients }}
+                </div>
+                <div class="fs-4 text-center text-light-gray pb-4">Clients</div>
+                <div class="fs-4 text-center fw-bolder pt-4">
+                  {{ currentPlan.connector }}
+                </div>
+                <div class="fs-4 text-center text-light-gray pb-4">
+                  {{
+                    currentPlan.planName == "Launch"
+                      ? "Connector"
+                      : "Connectors"
+                  }}
+                </div>
+                <ul class="mt-6">
+                  <li
+                    v-for="(addOnName, i) in currentPlan.planDetails"
+                    :key="i"
+                    class="fw-bolder text-light-gray pt-2 pb-2"
+                  >
+                    {{ addOnName }}
+                  </li>
+                </ul>
               </div>
-              <div class="fs-4 text-center fw-bolder pt-4">
-                {{ item.aumLevel }}
-              </div>
-              <div class="fs-4 text-center text-light-gray pb-4">AUM Level</div>
-              <div class="fs-4 text-center fw-bolder pt-4">
-                {{ item.adminUsers }}
-              </div>
-              <div class="fs-4 text-center text-light-gray pb-4">
-                Admin Users
-              </div>
-              <div class="fs-4 text-center fw-bolder pt-4">
-                {{ item.clients }}
-              </div>
-              <div class="fs-4 text-center text-light-gray pb-4">Clients</div>
-              <div class="fs-4 text-center fw-bolder pt-4">
-                {{ item.connector }}
-              </div>
-              <div class="fs-4 text-center text-light-gray pb-4">
-                {{ item.planName == "Launch" ? "Connector" : "Connectors" }}
-              </div>
-              <ul class="mt-6">
-                <li
-                  v-for="(addOnName, i) in item.planDetails"
-                  :key="i"
-                  class="fw-bolder text-light-gray pt-2 pb-2"
+            </div>
+
+            <div class="m-2">
+              <div class="ms-4 mt-4 mb-4 fs-4 fw-bolder">Select Plan</div>
+              <div class="d-flex justify-content-evenly">
+                <div
+                  class="ms-4 me-4 p-4 pt-12 pb-12 rounded position-relative"
+                  :class="{
+                    'border border-primary bg-primary-alpha':
+                      item.planName == selectedPlan.planName &&
+                      item.planName != 'Enterprise',
+                    'bg-light':
+                      item.planName == 'Enterprise' ||
+                      item.planName != selectedPlan.planName,
+                    'border border-danger bg-danger-light-alpha':
+                      item.planName == currentPlan.planName &&
+                      item.termPlanId == currentPlan.termPlanId,
+                  }"
+                  @click="updatePlan(item)"
+                  v-for="(item, index) in plans"
+                  :key="index"
                 >
-                  {{ addOnName }}
-                </li>
-              </ul>
+                  <span
+                    class="
+                      badge
+                      bg-danger
+                      position-absolute
+                      start-50
+                      translate-middle
+                      p-3
+                    "
+                    v-if="
+                      item.planName == currentPlan.planName &&
+                      item.termPlanId == currentPlan.termPlanId
+                    "
+                    >Current Plan</span
+                  >
+                  <span
+                    class="
+                      badge
+                      bg-primary
+                      position-absolute
+                      start-50
+                      translate-middle
+                      p-3
+                    "
+                    v-if="
+                      item.planName == selectedPlan.planName &&
+                      item.planName != 'Enterprise'
+                    "
+                    >Selected Plan</span
+                  >
+                  <div class="fw-bolder p-3 fs-3 text-center mt-4">
+                    {{ item.planName }}
+                  </div>
+                  <div
+                    class="p-3 text-center"
+                    v-if="item.planName == 'Enterprise'"
+                  >
+                    <button type="button" class="btn btn-primary ps-20 pe-20">
+                      Contact Us
+                    </button>
+                  </div>
+                  <div class="fa-2x fw-bolder text-center p-3" v-else>
+                    <span class="fs-7">$</span>
+                    {{
+                      $filters.currencyDisplayWithoutSymbol(item.termPlanAmount)
+                    }}
+                    <span class="fs-8 fw-light text-gray"
+                      >/ {{ item.planType }}</span
+                    >
+                  </div>
+
+                  <div class="w-100 mx-auto text-center text-gray p-3">
+                    {{ item.description }}
+                  </div>
+                  <div class="fs-4 text-center fw-bolder pt-4">
+                    {{ item.aumLevel }}
+                  </div>
+                  <div class="fs-4 text-center text-light-gray pb-4">
+                    AUM Level
+                  </div>
+                  <div class="fs-4 text-center fw-bolder pt-4">
+                    {{ item.adminUsers }}
+                  </div>
+                  <div class="fs-4 text-center text-light-gray pb-4">
+                    Admin Users
+                  </div>
+                  <div class="fs-4 text-center fw-bolder pt-4">
+                    {{ item.clients }}
+                  </div>
+                  <div class="fs-4 text-center text-light-gray pb-4">
+                    Clients
+                  </div>
+                  <div class="fs-4 text-center fw-bolder pt-4">
+                    {{ item.connector }}
+                  </div>
+                  <div class="fs-4 text-center text-light-gray pb-4">
+                    {{ item.planName == "Launch" ? "Connector" : "Connectors" }}
+                  </div>
+                  <ul class="mt-6">
+                    <li
+                      v-for="(addOnName, i) in item.planDetails"
+                      :key="i"
+                      class="fw-bolder text-light-gray pt-2 pb-2"
+                    >
+                      {{ addOnName }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -261,53 +356,48 @@ export default class PickPlan extends BaseComponent {
           preIncludedAddons: Array<any>;
         }) => {
           if (item.planName == plan.planName) {
-            this.plans.push({
-              termPlanId: item.termPlanId,
-              planId: item.planId,
-              planName: item.planName,
-              termPlanAmount: item.termPlanAmount,
-              description: plan.description,
-              planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
-              aumLevel: plan.aumLevel,
-              adminUsers: plan.adminUsers,
-              clients: plan.clients,
-              connector: plan.connector,
-              planDetails: plan.planDetails,
-              preIncludedAddons: plan.preIncludedAddons,
-            });
+            if (
+              this.planType == "Change Plan" &&
+              item.planName == this.currentPlan.planName &&
+              item.termPlanId == this.currentPlan.termPlanId
+            ) {
+              this.currentPlan.description = item.description;
+              this.currentPlan.planId = item.planId;
+              this.currentPlan.termPlanAmount = item.termPlanAmount;
+              this.currentPlan.planType =
+                this.commitmentTerm == "Annual" ? "Yr" : "Mon";
+              this.currentPlan.aumLevel = plan.aumLevel;
+              this.currentPlan.adminUsers = plan.adminUsers;
+              this.currentPlan.clients = plan.clients;
+              this.currentPlan.connector = plan.connector;
+              this.currentPlan.planDetails = plan.planDetails;
+              this.currentPlan.preIncludedAddons = plan.preIncludedAddons;
+            } else {
+              this.plans.push({
+                termPlanId: item.termPlanId,
+                planId: item.planId,
+                planName: item.planName,
+                termPlanAmount: item.termPlanAmount,
+                description: plan.description,
+                planType: this.commitmentTerm == "Annual" ? "Yr" : "Mon",
+                aumLevel: plan.aumLevel,
+                adminUsers: plan.adminUsers,
+                clients: plan.clients,
+                connector: plan.connector,
+                planDetails: plan.planDetails,
+                preIncludedAddons: plan.preIncludedAddons,
+              });
+            }
           }
         }
       );
     });
+
     if (
       Object.keys(this.selectedPlan).length == 0 &&
-      Object.keys(this.currentPlan).length == 0
+      this.planType != "Change Plan"
     )
       this.updatePlan(this.plans[0]);
-    else this.sortPlan();
-  }
-
-  private sortPlan() {
-    let plans: Array<subscribePlanResponseModel> = [];
-
-    this.plans.forEach((plan: subscribePlanResponseModel) => {
-      if (
-        plan.planName == this.currentPlan.planName &&
-        plan.termPlanId == this.currentPlan.termPlanId
-      ) {
-        plans[0] = plan;
-      }
-    });
-
-    if (plans.length > 0) {
-      this.plans.forEach((plan: subscribePlanResponseModel) => {
-        if (plan.planName != this.currentPlan.planName) {
-          plans.push(plan);
-        }
-      });
-
-      this.plans = plans;
-    }
   }
 
   public updateCommitmentTerm(commitmentTerm: string) {
@@ -318,13 +408,15 @@ export default class PickPlan extends BaseComponent {
 
   public updatePlan(plan: subscribePlanResponseModel) {
     if (plan.termPlanId != this.currentPlan.termPlanId) {
-      if (this.planType == "Change Plan")
+      if (this.planType == "Change Plan") {
         this.store.dispatch(
           "updatePlanAction",
           plan.termPlanAmount > this.currentPlan.paymentAmount
             ? "UPGRADE"
             : "DOWNGRADE"
         );
+      }
+
       this.selectedPlan = plan;
       this.$emit("update", {
         product: this.product,
