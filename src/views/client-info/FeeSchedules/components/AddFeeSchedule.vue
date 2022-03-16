@@ -22,7 +22,7 @@
               <select-box
                 label="Currency"
                 :data="['USD', 'CAD']"
-                :controls="v$.request.currency"
+                :controls="v$.request.currencyCode"
                 formFieldType="inputBlock"
                 :validation="['required']"
               />
@@ -595,7 +595,7 @@ import { IFeeSchedulesService } from "@/service";
   validations: {
     request: {
       name: { required },
-      currency: { required },
+      currencyCode: { required },
       bps: { numeric },
       amount: { numeric },
       isActive: {},
@@ -791,8 +791,8 @@ export default class AddFeeSchedule extends Vue {
     let request = new AddFeeScheduleRequestModel();
 
     request.name = this.request.name;
-    request.currency =
-      CurrencyCode[this.request.currency as keyof typeof CurrencyCode];
+    request.currencyCode =
+      CurrencyCode[this.request.currencyCode as keyof typeof CurrencyCode];
 
     if (this.request.type == "Flat") {
       request.tierType = TierType[this.request.type as keyof typeof TierType];

@@ -122,9 +122,7 @@
 
       <template
         v-if="
-          (planAction == 'UPGRADE' &&
-            activatePlan == 'Effective Immediately') ||
-          (planAction == 'DOWNGRADE' && activatePlan == 'Next Billing Term')
+          planAction == 'UPGRADE' && activatePlan == 'Effective Immediately'
         "
       >
         <div
@@ -530,10 +528,8 @@ export default class Review extends Vue {
     amount = aumAmount + subAmount;
 
     if (
-      (this.planAction == "UPGRADE" &&
-        this.activatePlan == "Effective Immediately") ||
-      (this.planAction == "DOWNGRADE" &&
-        this.activatePlan == "Next Billing Term")
+      this.planAction == "UPGRADE" &&
+      this.activatePlan == "Effective Immediately"
     ) {
       amount = amount - this.refundAmount;
     }

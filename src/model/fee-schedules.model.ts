@@ -10,7 +10,7 @@ export class FeeSchedulesResponseModel extends BaseModel {
 }
 export class AddFeeScheduleRequestModel {
   name: string;
-  currency: string;
+  currencyCode: string;
   type: string;
   tierType: string;
   isActive: boolean;
