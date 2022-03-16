@@ -120,7 +120,7 @@
                 p-6
               "
             >
-              {{ item.noOfAccountsLinked }}
+              {{ item.noOfAccountsLinked ? item.noOfAccountsLinked : "-" }}
             </td>
             <td
               class="
@@ -135,22 +135,35 @@
                   class="form-check-input"
                   type="checkbox"
                   :value="item.enabled"
+                  disabled
                 />
               </div>
             </td>
-            <td class="border-bottom-2 border-dashed border-light p-6">
+            <td
+              class="border-bottom-2 border-dashed border-light p-6"
+              style="width: 15%"
+            >
               <div class="d-flex justify-content-around align-items-center">
-                <i
-                  class="fa fa-solid fa-pen fs-4 edit-row"
-                  @click="addCustodian('Edit Custodian', item)"
-                ></i>
+                <span data-tooltip="Edit Custodian">
+                  <i
+                    class="fa fa-solid fa-pen fs-4 edit-row"
+                    @click="addCustodian('Edit Custodian', item)"
+                  ></i>
+                </span>
                 <button
                   class="btn btn-sm btn-secondary p-2 rounded-circle edit-row"
+                  data-tooltip="Transaction Codes"
                   @click="redirectTC(item)"
                 >
                   TC
                 </button>
-                <i class="fa fa-solid fa-key fs-4 edit-row"></i>
+
+                <span data-tooltip="Keys">
+                  <i
+                    class="fa fa-solid fa-key fs-4 edit-row"
+                    @click="addKeys(item)"
+                  ></i>
+                </span>
               </div>
             </td>
           </tr>
@@ -162,6 +175,12 @@
         @close="showAddCustodianModel = false"
         @custodianAdded="updateCustodian"
         v-if="showAddCustodianModel"
+      />
+      <keys
+        :custodian="selectedCustodian"
+        @keysAdded="updateKeys"
+        @close="showKeysModel = false"
+        v-if="showKeysModel"
       />
     </div>
   </div>
@@ -177,10 +196,12 @@ import { CustodiansResponseModel } from "@/model";
 import { ICustodiansService } from "@/service";
 
 import AddCustodian from "./components/AddCustodian.vue";
+import Keys from "./components/Keys.vue";
 
 @Options({
   components: {
     AddCustodian,
+    Keys,
   },
 })
 export default class Custodians extends BaseComponent {
@@ -194,6 +215,7 @@ export default class Custodians extends BaseComponent {
   public modelType: string = "Add Custodian";
 
   public showAddCustodianModel: boolean = false;
+  public showKeysModel: boolean = false;
 
   created() {
     this.getCustodians();
@@ -225,21 +247,40 @@ export default class Custodians extends BaseComponent {
 
   public updateCustodian() {
     this.showAddCustodianModel = false;
+    this.selectedCustodian = new CustodiansResponseModel();
+    this.getCustodians();
+  }
+
+  public addKeys(custodian: CustodiansResponseModel) {
+    this.showKeysModel = true;
+    this.selectedCustodian = custodian;
+  }
+
+  public updateKeys() {
+    this.showKeysModel = false;
+    this.selectedCustodian = new CustodiansResponseModel();
     this.getCustodians();
   }
 
   public redirectTC(custodian: CustodiansResponseModel) {
-    this.$router.push({path: `/custodians/${custodian.custodianIdentifier}`, query: {firmCustodianId: custodian.firmCustodianId}});
+    this.$router.push({
+      path: `/custodians/${custodian.custodianIdentifier}`,
+      query: { firmCustodianId: custodian.firmCustodianId },
+    });
   }
 
   public applyFilter(searchValue: string) {
-    this.response = this.dataResource.filter((item) => {
-      console.log(item.custodianIdentifier.toLowerCase(), searchValue.toLowerCase());
-      (item.custodianIdentifier &&
-        item.custodianIdentifier.toLowerCase().includes(searchValue.toLowerCase())) ||
+    this.response = this.dataResource.filter(
+      (item) =>
         (item.custodianName &&
-          item.custodianName.toLowerCase().includes(searchValue.toLowerCase()));
-    });
+          item.custodianName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())) ||
+        (item.custodianIdentifier &&
+          item.custodianIdentifier
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()))
+    );
   }
 }
 </script> 

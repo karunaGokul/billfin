@@ -3,7 +3,9 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
-          <h5 class="modal-title fs-4 fw-bolder">{{ modelType }}</h5>
+          <h5 class="modal-title fs-4 fw-bolder">
+            {{ custodian.custodianIdentifier }} {{ custodian.custodianName }}
+          </h5>
           <button type="button" class="btn-close" @click="close">
             <i class="fas fa-times"></i>
           </button>
@@ -11,22 +13,37 @@
         <div class="modal-body ms-8 me-8 mt-4 mb-4 p-4">
           <text-input
             formFieldType="inputBlock"
-            label="Transaction Code"
-            :controls="v$.request.transactionType"
+            label="Keys"
+            :controls="v$.request.keys"
             :validation="['required']"
-            :readonly="modelType == 'Edit Transaction Code'"
           />
+
+          <div class="d-flex align-items-center justify-content-between mt-4 mb-8">
+            <label class="fw-bolder fs-6">Bill only settled trades</label>
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="v$.request.settledTrades.$model"
+              />
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between mt-4 mb-8">
+            <label class="fw-bolder fs-6">Bill accrued interest</label>
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="v$.request.accuredInterest.$model"
+              />
+            </div>
+          </div>
+
           <text-input
             formFieldType="inputBlock"
-            label="Transaction Description"
-            :controls="v$.request.transactionDescription"
-            :validation="[]"
-          />
-          <select-box
-            label="Treat As"
-            :data="['Contribution', 'Withdrawal']"
-            :controls="v$.request.externalTransactionValue"
-            formFieldType="inputBlock"
+            label="Account Display Format"
+            :controls="v$.request.displayFormat"
             :validation="['required']"
           />
         </div>
@@ -37,7 +54,7 @@
           <button
             type="button"
             class="btn btn-primary ms-8"
-            @click="addTransactionCode"
+            @click="addCustodian"
           >
             Save
           </button>
@@ -55,36 +72,33 @@ import BaseComponent from "@/components/base/BaseComponent.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
-import { AddTransactionCodeRequestModel, TransactionCodeResponseModel } from "@/model";
+import { AddKeysRequestModel, CustodiansResponseModel } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
-import SelectBox from "@/components/controls/SelectBox.vue";
 
 import { ICustodiansService } from "@/service";
-
 import { useStore } from "vuex";
 
 @Options({
   components: {
     TextInput,
-    SelectBox,
   },
   validations: {
     request: {
-      transactionType: { required },
-      transactionDescription: { },
-      externalTransactionValue: { required },
+      keys: { required },
+      settledTrades: {},
+      accuredInterest: {},
+      displayFormat: { required },
     },
   },
 })
-export default class AddTransactionCode extends BaseComponent {
+export default class Keys extends BaseComponent {
   @Inject("custodiansService") service: ICustodiansService;
 
-  @Prop() modelType: string;
-  @Prop() transaction: TransactionCodeResponseModel;
+  @Prop() custodian: CustodiansResponseModel;
 
   public v$: any = setup(() => this.validate());
-  public request: AddTransactionCodeRequestModel = new AddTransactionCodeRequestModel();
+  public request: AddKeysRequestModel = new AddKeysRequestModel();
 
   public store = useStore();
 
@@ -92,32 +106,28 @@ export default class AddTransactionCode extends BaseComponent {
     return useVuelidate();
   }
 
-  created() {
-    if (this.modelType == "Edit Transaction Code") {
-      this.request = this.transaction;
-    }
-  }
+  created() {}
 
-  public addTransactionCode() {
+  public addKeyConfig() {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-          this.request.firmCustodianId = +this.$route.query.firmCustodianId;
-      this.service
-        .addTransactionCode(this.request)
+      console.log(this.request);
+      /*this.service
+        .addCustodian(this.request)
         .then((response) => {
-          this.confirmation("", "New transaction added successfully");
+          this.confirmation("", "New custodian added successfully");
           this.$emit("custodianAdded");
         })
         .catch((err) => {
           if (err.response.status == 500)
-            this.alert(
-              "Oops, sorry!",
-              "Somthing went wrong, Please contact administration"
-            );
-          else if (err.response.status == 400)
-            this.alert("Oops, sorry!", err.response.data.message);
-        });
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+        });*/
     }
   }
 

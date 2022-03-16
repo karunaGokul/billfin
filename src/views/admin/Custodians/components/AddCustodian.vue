@@ -14,6 +14,7 @@
             label="Custodian Code"
             :controls="v$.request.custodianIdentifier"
             :validation="['required']"
+            :readonly="modelType == 'Edit Custodian'"
           />
           <text-input
             formFieldType="inputBlock"
@@ -22,7 +23,7 @@
             :validation="['required']"
           />
 
-          <div class="form-check form-switch">
+          <div class="form-check form-switch" v-if="modelType == 'Edit Custodian'">
             <input
               class="form-check-input"
               type="checkbox"
@@ -90,8 +91,9 @@ export default class AddCustodian extends BaseComponent {
 
   created() {
     if(this.modelType == 'Edit Custodian') {
+      console.log(this.custodian);
       this.request = this.custodian;
-    }
+    } else this.request.enabled = true;
   }
 
   public addCustodian() {

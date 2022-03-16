@@ -8,8 +8,6 @@ export class UserResponseModel extends BaseModel {
   roleName: string;
   roleId: number;
   status: string;
-  imgUrl: string;
-  isActive: boolean;
   profilePhoto: string;
   uuid: string;
 }

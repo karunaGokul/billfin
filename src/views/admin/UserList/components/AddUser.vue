@@ -123,7 +123,7 @@
             </option>
           </select>
 
-          <div class="form-check form-switch">
+          <div class="form-check form-switch" v-if="modelType == 'Edit User'">
             <input
               class="form-check-input"
               type="checkbox"
@@ -217,7 +217,7 @@ export default class AddUser extends BaseComponent {
       this.request.lastName = this.response.lastName;
       this.request.email = this.response.email;
       this.request.roleId = this.response.roleId;
-      this.request.isActive = this.response.isActive;
+      this.request.isActive = this.response.status == "ACTIVE" ? true : false;
       this.request.uuid = this.response.uuid;
 
       if (this.response.profilePhoto) {
@@ -229,6 +229,8 @@ export default class AddUser extends BaseComponent {
             });
           });
       }
+    } else {
+      this.request.isActive = true;
     }
   }
 

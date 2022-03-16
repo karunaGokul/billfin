@@ -4,14 +4,15 @@
       class="
         d-flex
         align-items-center
-        justify-content-between
+        justify-content-end
         position-absolute
         translate-middle
+        w-50
       "
-      style="top: -50px; right: -178px"
+      style="top: -50px; right: -308px"
     >
       <button
-        class="btn btn-primary"
+        class="btn btn-primary me-4"
         type="button"
         @click="addUser('Add User')"
       >
@@ -167,10 +168,10 @@
                 class="badge fs-7 ms-2"
                 :class="{
                   'bg-success-alpha text-success': item.status == 'ACTIVE',
-                  'bg-dander-alpha text-danger': item.status != 'ACTIVE',
+                  'bg-dander-alpha text-danger': item.status == 'INACTIVE',
                 }"
               >
-                {{ item.status == "ACTIVE" ? "Active" : "In Active" }}
+                {{ item.status == "ACTIVE" ? "Active" : "Inactive" }}
               </span>
             </td>
             <td

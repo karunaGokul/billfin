@@ -796,8 +796,8 @@ export default class AddFeeSchedule extends Vue {
 
     if (this.request.type == "Flat") {
       request.tierType = TierType[this.request.type as keyof typeof TierType];
-      request.bps = this.request.bps;
-      request.amount = this.request.amount;
+      request.bps = +this.request.bps;
+      request.amount = this.$currencyToNumber(this.request.amount);
     } else {
       request.tierType = TierType[this.tierType as keyof typeof TierType];
       request.tier = this.tiers.map(({ fromValue, toValue, bps, amount }) => ({
@@ -806,18 +806,24 @@ export default class AddFeeSchedule extends Vue {
         bps,
         amount,
       }));
+
+      request.tier.forEach((item) => {
+        item.fromValue = this.$currencyToNumber(item.fromValue);
+        item.toValue = this.$currencyToNumber(item.toValue);
+        item.bps = +item.bps;
+        item.amount = +item.amount;
+      });
+
     }
 
-    //console.log(request);
-
-    /*this.service
-        .addFeeSchedule(request)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => {
-          console.log(err);
-        });*/
+    this.service
+      .addFeeSchedule(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public close() {
