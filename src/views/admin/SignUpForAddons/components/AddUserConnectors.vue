@@ -125,10 +125,6 @@ export default class AddUserConnectors extends Vue {
     if (this.products != "") {
       if (this.products == "AUM") this.addOns = this.$vuehelper.clone(this.aumBilling.addons);
       else this.addOns = this.$vuehelper.clone(this.subscriptionBilling.addons);
-      this.addOns.forEach((item) => {
-        item.planAddOnAmount = item.paymentAmount
-      })
-      console.log(this.addOns);
     } else this.$router.push("/my-subscription");
   }
 

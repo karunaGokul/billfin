@@ -201,7 +201,11 @@ export default class AumSubscriptionBilling extends BaseComponent {
     );
 
     let data: Array<addonsResponseModel> = [];
-    data.push(addons);
+    let selectedAddon: addonsResponseModel = this.$vuehelper.clone(addons);
+    selectedAddon.planAddOnAmount = selectedAddon.paymentAmount / +selectedAddon.quantity;
+
+    selectedAddon.quantity = '1';
+    data.push(selectedAddon);
 
     let options = {
       product: this.bliingType,

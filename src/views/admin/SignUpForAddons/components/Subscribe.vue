@@ -63,7 +63,6 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
 import { useStore } from "vuex";
 
 import moment from "moment";
