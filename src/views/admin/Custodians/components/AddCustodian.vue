@@ -14,12 +14,14 @@
             label="Custodian Code"
             :controls="v$.request.custodianIdentifier"
             :validation="['required']"
+            :maxLength="255"
             :readonly="modelType == 'Edit Custodian'"
           />
           <text-input
             formFieldType="inputBlock"
             label="Custodian Name"
             :controls="v$.request.custodianName"
+            :maxLength="255"
             :validation="['required']"
           />
 
@@ -91,8 +93,7 @@ export default class AddCustodian extends BaseComponent {
 
   created() {
     if(this.modelType == 'Edit Custodian') {
-      console.log(this.custodian);
-      this.request = this.custodian;
+      this.request = this.$vuehelper.clone(this.custodian);
     } else this.request.enabled = true;
   }
 
@@ -100,6 +101,7 @@ export default class AddCustodian extends BaseComponent {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
+      console.log(this.request);
       this.service
         .addCustodian(this.request)
         .then((response) => {

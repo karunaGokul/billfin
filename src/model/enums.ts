@@ -85,3 +85,7 @@ export enum CurrencyCode {
   USD = "USD",
   CAD = "CAD",
 }
+export enum treatAs {
+  Contribution = "CONTRIBUTION",
+  Withdrawal = "WITHDRAWAL"
+}

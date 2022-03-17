@@ -44,7 +44,7 @@
             />
             <div class="ms-8">
               <select
-                class="form-select form-select-solid mb-4"
+                class="form-select form-select-solid mb-4 w-100"
                 v-model="selectedBranch"
               >
                 <option v-for="(item, i) in branchs" :key="i" :value="item">
@@ -60,7 +60,7 @@
               <button
                 type="button"
                 class="btn btn-primary btn-sm p-2 ps-3 ms-4"
-                :disabled="!allowAdvisor"
+                :disabled="!allowAddAdvisor"
                 v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
                 @click="addNewRow"
               >
@@ -344,13 +344,12 @@ import TextInput from "../controls/TextInput.vue";
 import SelectBox from "../controls/SelectBox.vue";
 
 import {
-  addRepCodeRequestModel,
   advisorsModel,
   advisorsResponseModel,
-  assignRepCodesResponseModel,
   branchesResponseModel,
   repCodesResponseModel,
   viewRepCodesResponseModel,
+  addRepCodeRequestModel
 } from "@/model";
 import {
   IAdvisorsService,
@@ -391,8 +390,8 @@ export default class RepCodePreview extends BaseComponent {
 
   public branchs: Array<branchesResponseModel> = [];
 
-  public allowAdvisor: boolean = true;
-  public selectedBranch: repCodesResponseModel = new repCodesResponseModel();
+  public allowAddAdvisor: boolean = true;
+  public selectedBranch: branchesResponseModel = new branchesResponseModel();
 
   public v$: any = setup(() => this.validate());
 
@@ -404,11 +403,6 @@ export default class RepCodePreview extends BaseComponent {
     this.modelType = this.type;
     this.request.repCode = this.selectedRepCode.repCode;
     this.request.branchName = this.selectedRepCode.branchName;
-
-    this.selectedBranch.branchId = this.selectedRepCode.branchId;
-    this.selectedBranch.branchCode = this.selectedRepCode.branchCode;
-
-    this.selectedBranch.branchName = this.selectedRepCode.branchName;
 
     this.viewRepCode();
 
@@ -437,6 +431,9 @@ export default class RepCodePreview extends BaseComponent {
       .getBranches()
       .then((response) => {
         this.branchs = response;
+        this.selectedBranch = this.branchs.find(
+          (item) => item.branchName == this.selectedRepCode.branchName
+        );
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -483,14 +480,14 @@ export default class RepCodePreview extends BaseComponent {
       this.request.advisors[i].edit = false;
     }
 
-    if (this.allowAdvisor) {
+    if (this.allowAddAdvisor) {
       let index = this.unassignedAdvisors.findIndex(
         (item) => item == this.selectedAdvisor
       );
       this.unassignedAdvisors.splice(index, 1);
     }
 
-    this.allowAdvisor = false;
+    this.allowAddAdvisor = false;
 
     this.request.advisors.unshift({
       firstName: "",
@@ -512,7 +509,7 @@ export default class RepCodePreview extends BaseComponent {
 
   public updateRow(item: advisorsModel) {
     item.status = "view";
-    this.allowAdvisor = true;
+    this.allowAddAdvisor = true;
 
     item.firstName = this.selectedAdvisor.firstName;
     item.lastName = this.selectedAdvisor.lastName;
@@ -525,7 +522,7 @@ export default class RepCodePreview extends BaseComponent {
 
   public removeRow(index: number) {
     this.request.advisors.splice(index, 1);
-    this.allowAdvisor = true;
+    this.allowAddAdvisor = true;
     this.dataResource = this.request.advisors;
   }
 
@@ -562,7 +559,6 @@ export default class RepCodePreview extends BaseComponent {
     this.repCodesService
       .addRepCode(request)
       .then((response) => {
-        console.log(response);
         this.$emit("repCodeUpdated");
       })
       .catch((err) => {

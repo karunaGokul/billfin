@@ -3,9 +3,13 @@ import { BaseModel, DataRequest } from "./base.model";
 export class FeeSchedulesRequestModel extends DataRequest {}
 export class FeeSchedulesResponseModel extends BaseModel {
   name: string;
-  type: string;
-  currencyType: string;
+  tierType: string;
+  currencyCode: string;
+  flatAmount: number;
+  flatRate: number;
+  scheduleType: string;
   assignments: number;
+  tier: Array<any>;
   status: string;
 }
 export class AddFeeScheduleRequestModel {

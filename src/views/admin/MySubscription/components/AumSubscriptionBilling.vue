@@ -154,6 +154,10 @@ export default class AumSubscriptionBilling extends BaseComponent {
         this.addons.sort((a, b) => {
           return status.indexOf(a.status) - status.indexOf(b.status);
         });
+        this.addons.sort((a, b) => {
+          return status.indexOf(a.startDate) - status.indexOf(b.startDate);
+        });
+        console.log(this.addons);
       })
       .catch((err) => {
         this.loading = false;

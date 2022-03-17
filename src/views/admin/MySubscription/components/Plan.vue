@@ -188,7 +188,7 @@
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="!plan.endDate ? (togglePlan = true) : ''"
+          @click="!plan.endDate && plan.activeFlag ? (togglePlan = true) : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"

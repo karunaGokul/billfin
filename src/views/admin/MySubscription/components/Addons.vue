@@ -210,7 +210,7 @@
         <i
           class="fas fa-ellipsis-v fs-1 ms-4 mt-2"
           style="cursor: pointer"
-          @click="!addons.endDate ? (togglePlan = true) : ''"
+          @click="!addons.endDate && addons.activeFlag ? (togglePlan = true) : ''"
         ></i>
         <ul
           class="dropdown-menu overflow-auto p-2"

@@ -13,6 +13,7 @@
         :readonly="readonly"
         @blur="updateInput"
         @input="updateEvent"
+        :maxlength="maxLength"
       />
     </div>
     <error-message
@@ -62,6 +63,7 @@ export default class TextInput extends Vue {
   @Prop() controls: any;
   @Prop() validation: Array<string>;
   @Prop() readonly: boolean;
+  @Prop() maxLength?: number = 255;
 
   updateInput() {
     this.$emit("updateInput");

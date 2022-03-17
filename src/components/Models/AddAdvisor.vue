@@ -31,6 +31,7 @@
                   formFieldType="inputBlock"
                   label="First Name"
                   :controls="v$.request.firstName"
+                  :maxLength="255"
                   :validation="['required', 'maxLength']"
                 />
               </div>
@@ -39,6 +40,7 @@
                   formFieldType="inputBlock"
                   label="Middle Name"
                   :controls="v$.request.middleName"
+                  :maxLength="255"
                   :validation="['maxLength']"
                 />
               </div>
@@ -47,6 +49,7 @@
                   formFieldType="inputBlock"
                   label="Last Name"
                   :controls="v$.request.lastName"
+                  :maxLength="255"
                   :validation="['required', 'maxLength']"
                 />
               </div>
@@ -57,6 +60,7 @@
                   formFieldType="inputBlock"
                   label="Display Name"
                   :controls="v$.request.displayName"
+                  :maxLength="255"
                   :validation="['required', 'maxLength']"
                 />
               </div>
@@ -94,6 +98,7 @@
                 formFieldType="inputBlock"
                 label="ID (Optional)"
                 :controls="v$.request.advisorIdentifier"
+                :maxLength="255"
                 :validation="['required']"
               />
             </div>

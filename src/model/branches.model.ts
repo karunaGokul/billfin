@@ -13,6 +13,7 @@ export class branchesResponseModel {
 export class unassignedBranchResponseModel {
   branchCode: string;
   branchName: string;
+  branchId: number;
 }
 export class addBranchRequestModel {
   branchId: number;

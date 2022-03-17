@@ -11,7 +11,7 @@
       style="top: -38px; right: -137px"
     >
       <button
-        class="btn btn-outline-primary me-2"
+        class="btn border border-primary text-primary me-2"
         type="button"
         @click="redirect"
       >
@@ -106,7 +106,7 @@
                 p-6
               "
             >
-              {{ item.transactionTypeId }}
+              {{ item.externalTransactionValue }}
             </td>
             <td
               class="
@@ -130,7 +130,10 @@
             </td>
             <td class="border-bottom-2 border-dashed border-light p-6">
               <div class="d-flex justify-content-around align-items-center">
-                <i class="fa fa-solid fa-pen fs-4 edit-row" @click="addTransactionCode('Edit Transaction Code')"></i>
+                <i
+                  class="fa fa-solid fa-pen fs-4 edit-row"
+                  @click="addTransactionCode('Edit Transaction Code', item)"
+                ></i>
                 <i class="fa fa-solid fa-trash fs-4 edit-row"></i>
               </div>
             </td>
@@ -183,6 +186,7 @@ export default class TransactionCodes extends BaseComponent {
   public firmCustodianId: any = 0;
 
   public response: Array<TransactionCodeResponseModel> = [];
+  public dataResource: Array<TransactionCodeResponseModel> = [];
   public selectedTransaction: TransactionCodeResponseModel =
     new TransactionCodeResponseModel();
 
@@ -199,7 +203,8 @@ export default class TransactionCodes extends BaseComponent {
     this.service
       .getTransactionCode(this.firmCustodianId)
       .then((response) => {
-        console.log(response);
+        this.response = response;
+        this.dataResource = response;
       })
       .catch((err) => {
         console.log(err);
@@ -225,7 +230,21 @@ export default class TransactionCodes extends BaseComponent {
   }
 
   public applyFilter(searchValue: string) {
-    console.log(searchValue);
+    this.response = this.dataResource.filter(
+      (item) =>
+        (item.transactionDescription &&
+          item.transactionDescription
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())) ||
+        (item.transactionType &&
+          item.transactionType
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())) ||
+        (item.externalTransactionValue &&
+          item.externalTransactionValue
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()))
+    );
   }
 }
 </script>

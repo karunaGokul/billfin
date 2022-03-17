@@ -153,6 +153,7 @@
                 <button
                   class="btn btn-sm btn-secondary p-2 rounded-circle edit-row"
                   data-tooltip="Transaction Codes"
+                  v-if="item.enabled"
                   @click="redirectTC(item)"
                 >
                   TC
@@ -161,6 +162,7 @@
                 <span data-tooltip="Keys">
                   <i
                     class="fa fa-solid fa-key fs-4 edit-row"
+                    v-if="item.enabled"
                     @click="addKeys(item)"
                   ></i>
                 </span>

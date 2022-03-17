@@ -12,7 +12,7 @@
           <text-input
             formFieldType="inputBlock"
             label="Transaction Code"
-            :controls="v$.request.transactionType"
+            :controls="v$.request.externalTransactionValue"
             :validation="['required']"
             :readonly="modelType == 'Edit Transaction Code'"
           />
@@ -25,7 +25,7 @@
           <select-box
             label="Treat As"
             :data="['Contribution', 'Withdrawal']"
-            :controls="v$.request.externalTransactionValue"
+            :controls="v$.request.transactionType"
             formFieldType="inputBlock"
             :validation="['required']"
           />
@@ -55,7 +55,7 @@ import BaseComponent from "@/components/base/BaseComponent.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
-import { AddTransactionCodeRequestModel, TransactionCodeResponseModel } from "@/model";
+import { AddTransactionCodeRequestModel, TransactionCodeResponseModel, treatAs } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
@@ -92,9 +92,11 @@ export default class AddTransactionCode extends BaseComponent {
     return useVuelidate();
   }
 
-  created() {
+  mounted() {
     if (this.modelType == "Edit Transaction Code") {
       this.request = this.transaction;
+      let transactionType:any = this.transaction.transactionType;
+      this.request.transactionType = Object.keys(treatAs)[Object.values(treatAs).indexOf(transactionType)];
     }
   }
 
@@ -103,11 +105,12 @@ export default class AddTransactionCode extends BaseComponent {
 
     if (!this.v$.$invalid) {
           this.request.firmCustodianId = +this.$route.query.firmCustodianId;
+          this.request.transactionType = treatAs[this.request.transactionType as keyof typeof treatAs];
       this.service
         .addTransactionCode(this.request)
         .then((response) => {
           this.confirmation("", "New transaction added successfully");
-          this.$emit("custodianAdded");
+          this.$emit("newTransaction");
         })
         .catch((err) => {
           if (err.response.status == 500)

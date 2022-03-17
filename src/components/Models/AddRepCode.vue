@@ -14,6 +14,7 @@
               formFieldType="inputBlock"
               label="Rep Code"
               :controls="v$.request.repCode"
+              :maxLength="60"
               :validation="['required']"
             />
           </div>

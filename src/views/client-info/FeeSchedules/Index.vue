@@ -124,7 +124,7 @@
                 p-6
               "
             >
-              {{ item.type }}
+              {{ item.tierType }}
             </td>
             <td
               class="
@@ -134,7 +134,7 @@
                 p-6
               "
             >
-              {{ item.currencyType }}
+              {{ item.currencyCode }}
             </td>
             <td
               class="
@@ -157,11 +157,11 @@
               <span
                 class="badge fs-7 ms-2"
                 :class="{
-                  'bg-success-alpha text-success': item.status == 'active',
-                  'bg-dander-alpha text-danger': item.status == 'in-active',
+                  'bg-success-alpha text-success': item.status == 'ACTIVE',
+                  'bg-dander-alpha text-danger': item.status == 'INACTIVE',
                 }"
               >
-                {{ feesStatus(item.status) }}
+                {{ item.status == "ACTIVE" ? "Active" : "Inactive" }}
               </span>
             </td>
           </tr>

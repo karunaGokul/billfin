@@ -116,9 +116,7 @@ export default class Subscribe extends BaseComponent {
       request.addOns = this.getAddons(this.subscriptionBilling.addons);
     }
 
-    console.log(request);
-
-   /* this.service
+    this.service
       .subscribeAddOns(request)
       .then((response) => {
         if (response.status == "SUCCESS") {
@@ -133,7 +131,7 @@ export default class Subscribe extends BaseComponent {
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
-      });*/
+      });
   }
 
   getAddons(value: any) {

@@ -14,12 +14,14 @@
             formFieldType="inputBlock"
             label="Branch Code"
             :controls="v$.request.branchCode"
+            :maxLength="60"
             :validation="['required']"
           />
           <text-input
             formFieldType="inputBlock"
             label="Branch Name"
             :controls="v$.request.branchName"
+            :maxLength="255"
             :validation="['required']"
           />
           <select-box-with-delete
@@ -147,7 +149,8 @@ export default class AddBranch extends BaseComponent {
 
   public addBranch() {
     this.v$.$touch();
-    if (!this.v$.invalid) {
+
+    if (!this.v$.$invalid) {
       this.service
         .addBranch(this.request)
         .then((response) => {
