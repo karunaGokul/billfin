@@ -41,7 +41,7 @@ export class subscribeAddonsRequestModel {
 export class subscribeAddonsResponseModel {
   addOnName: string;
   planAddOnAmount: number;
-  termPlanAddOnId: number;
+  termAddOnId: number;
   selected: boolean;
   description: string;
   planType: string;

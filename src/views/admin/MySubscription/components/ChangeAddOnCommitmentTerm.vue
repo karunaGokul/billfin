@@ -213,7 +213,7 @@ export default class ChangeAddOnCommitmentTerm extends BaseComponent {
     request.eventType = "TERM_CHANGE";
     request.subscriptionAddOnId = this.addons.subscriptionAddOnId;
     request.term = CommitmentTerm[this.newTerm as keyof typeof CommitmentTerm];
-    request.termAddOnId = this.response.termPlanAddOnId;
+    request.termAddOnId = this.response.termAddOnId;
 
     this.service
       .changeAddOnTerm(request)

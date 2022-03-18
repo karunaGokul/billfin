@@ -131,9 +131,9 @@ export default class Subscribe extends BaseComponent {
   getAddons(value: any) {
     let addons: Array<addOnsModel> = [];
 
-    value.forEach((item: { termPlanAddOnId: number; quantity: string }) => {
+    value.forEach((item: { termAddOnId: number; quantity: string }) => {
       addons.push({
-        termAddOnId: item.termPlanAddOnId,
+        termAddOnId: item.termAddOnId,
         quantity: item.quantity,
         startDate: this.startDate,
       });

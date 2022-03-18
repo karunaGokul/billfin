@@ -134,7 +134,7 @@
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  :value="item.enabled"
+                  v-model="item.enabled"
                   disabled
                 />
               </div>

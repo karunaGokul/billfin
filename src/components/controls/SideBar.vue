@@ -64,7 +64,7 @@
           active-class="menu-link-active"
         >
           <span class="menu-link-icon icon-products"></span>
-          <span class="menu-link-title fs-7 fw-bold ms-2">Products</span>
+          <span class="menu-link-title fs-7 fw-bold ms-2">Products & Plans</span>
         </router-link>
         <router-link
           to="/subscriptions"
@@ -216,7 +216,6 @@
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"
-                  v-if="firmStatus == 'SUBSCRIBED'"
                 >
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Advisors</span>
@@ -226,7 +225,6 @@
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"
-                  v-if="firmStatus == 'SUBSCRIBED'"
                 >
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Rep Codes</span>
@@ -236,7 +234,6 @@
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"
-                  v-if="firmStatus == 'SUBSCRIBED'"
                 >
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Branches</span>
@@ -246,7 +243,6 @@
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"
-                  v-if="firmStatus == 'SUBSCRIBED'"
                 >
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Users</span>
@@ -256,7 +252,6 @@
                   tag="li"
                   class="d-flex align-items-center menu-link"
                   active-class="menu-link-active"
-                  v-if="firmStatus == 'SUBSCRIBED'"
                 >
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Custodians</span>

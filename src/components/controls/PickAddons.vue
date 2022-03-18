@@ -576,7 +576,7 @@ export default class PickAddons extends BaseComponent {
         }) => {
           if (item.addOnName == addons.addOnName) {
             const addOns = {
-              termPlanAddOnId: item.termPlanAddOnId,
+              termAddOnId: item.termAddOnId,
               addOnName: item.addOnName,
               planAddOnAmount: item.planAddOnAmount,
               description: addons.description,
@@ -643,11 +643,13 @@ export default class PickAddons extends BaseComponent {
         addons: data,
       });
     } else {
+      console.log(this.addons.filter((item) => item.selected));
       this.store.dispatch("updateAddons", {
         product: this.product,
         addons: this.addons.filter((item) => item.selected),
       });
     }
+    console.log(this.addons);
   }
 
   get aumBilling() {

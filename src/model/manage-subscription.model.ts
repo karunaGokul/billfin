@@ -75,7 +75,7 @@ export class termAddOnDetailsResponseModel {
   addOnName: string;
   planAddOnAmount: number;
   planId: number;
-  termPlanAddOnId: number;
+  termAddOnId: number;
   termPlanId: number;
   termPlanType: string;
 }

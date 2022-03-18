@@ -135,6 +135,8 @@ export default class AddUserConnectors extends Vue {
       addons: this.addOns,
     });
 
+    console.log(this.addOns);
+
     this.$emit("next");
   }
 
