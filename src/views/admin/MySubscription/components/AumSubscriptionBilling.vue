@@ -212,7 +212,7 @@ export default class AumSubscriptionBilling extends BaseComponent {
       plan: plans,
       addons: data,
       addMoreAddOns: addons,
-      commitmentTerm: plans.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
+      commitmentTerm: addons.commitmentTerm == "ANNUAL" ? "Annual" : "Monthly",
     };
     this.store.dispatch("updatePlan", options);
     this.$router.push({ name: type });
