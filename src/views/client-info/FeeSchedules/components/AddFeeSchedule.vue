@@ -245,9 +245,9 @@
             <div class="row">
               <div class="col-10">
                 <div class="d-flex align-items-center">
-                  <div>
+                  <div class="w-25">
                     <label for="BPS" class="form-label fw-bolder"> BPS </label>
-                    <div class="input-group input-group-solid w-50">
+                    <div class="input-group input-group-solid">
                       <input
                         type="text"
                         class="form-control text-start"
@@ -256,21 +256,18 @@
                             feeValidation.bps.touched &&
                             feeValidation.bps.invalid,
                         }"
+                        :title="
+                          feeValidation.bps.touched && feeValidation.bps.invalid
+                            ? feeValidation.bps.message
+                            : ''
+                        "
                         v-model="feeValidation.bps.value"
                         @input="flatInputValidation"
                       />
                     </div>
-                    <div
-                      class="mt-2 text-danger"
-                      v-if="
-                        feeValidation.bps.touched && feeValidation.bps.invalid
-                      "
-                    >
-                      {{ feeValidation.bps.message }}
-                    </div>
                   </div>
                   <div class="mt-8 ms-6 me-6">+</div>
-                  <div>
+                  <div class="w-50">
                     <label for="Amount" class="form-label fw-bolder">
                       Amount
                     </label>
@@ -283,19 +280,15 @@
                             feeValidation.amount.touched &&
                             feeValidation.amount.invalid,
                         }"
+                        :title="
+                          feeValidation.amount.touched && feeValidation.amount.invalid
+                            ? feeValidation.amount.message
+                            : ''
+                        "
                         v-model="feeValidation.amount.value"
                         @input="flatInputValidation"
                         @blur="updateFlatAmount"
                       />
-                    </div>
-                    <div
-                      class="mt-2 text-danger"
-                      v-if="
-                        feeValidation.amount.touched &&
-                        feeValidation.amount.invalid
-                      "
-                    >
-                      {{ feeValidation.amount.message }}
                     </div>
                   </div>
                 </div>
@@ -688,12 +681,12 @@ export default class AddFeeSchedule extends Vue {
     this.feeValidation.bps.value = null;
     this.feeValidation.bps.invalid = true;
     this.feeValidation.bps.message =
-      "This rate or amount point cannot be blank!";
+      "This rate point cannot be blank!";
 
     this.feeValidation.amount.touched = false;
     this.feeValidation.amount.value = null;
     this.feeValidation.amount.invalid = true;
-    this.feeValidation.amount.message = null;
+    this.feeValidation.amount.message = "This amount point cannot be blank!";
   }
 
   public resetTiered() {
@@ -785,10 +778,10 @@ export default class AddFeeSchedule extends Vue {
 
       this.feeValidation.bps.invalid = true;
       this.feeValidation.bps.message =
-        "This rate or amount point cannot be blank!";
+        "This rate point cannot be blank!";
 
       this.feeValidation.amount.invalid = true;
-      this.feeValidation.amount.message = null;
+      this.feeValidation.amount.message = "This amount point cannot be blank!";
     }
   }
 

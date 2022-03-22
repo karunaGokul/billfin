@@ -7,6 +7,7 @@ import {
   TransactionCodeResponseModel,
   AddTransactionCodeRequestModel,
   AddTransactionCodeResponseModel,
+  AddKeysRequestModel,
 } from "@/model";
 
 export interface ICustodiansService
@@ -21,6 +22,7 @@ export interface ICustodiansService
   addTransactionCode(
     request: AddTransactionCodeRequestModel
   ): Promise<AddTransactionCodeResponseModel>;
+  addKeys(request: AddKeysRequestModel): Promise<any>;
 }
 
 export class CustodiansService extends BaseService<any, CustodiansResponseModel>
@@ -41,6 +43,14 @@ export class CustodiansService extends BaseService<any, CustodiansResponseModel>
     request: AddCustodianRequestModel
   ): Promise<AddCustodianResponseModel> {
     return this.httpPost("private/api/v1/firmCustodian", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  addKeys(request: AddKeysRequestModel): Promise<any> {
+    return this.httpPost("private/api/v1/firmCustodianKey", request).then(
       (response) => {
         return response.data;
       }

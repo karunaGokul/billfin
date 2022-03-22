@@ -10,7 +10,7 @@
             <span class="fw-bolder">AUM Billing: </span>
             <span class="fw-bold ms-2">{{ aumBilling.plan.planName }}</span>
             <span class="ms-4 fst-italic fw-light fs-5"
-              >({{ aumBilling.commitmentTerm }} Commitment)</span
+              >({{ aumBilling.plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly' }} Commitment)</span
             >
           </div>
         </div>
@@ -64,7 +64,7 @@
               subscriptionBilling.plan.planName
             }}</span>
             <span class="ms-4 fst-italic fw-light fs-5"
-              >({{ subscriptionBilling.commitmentTerm }} Commitment)</span
+              >({{ subscriptionBilling.plan.commitmentTerm == 'ANNUAL' ? 'Annual' : 'Monthly' }} Commitment)</span
             >
           </div>
         </div>

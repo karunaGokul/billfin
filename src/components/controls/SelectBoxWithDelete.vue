@@ -61,7 +61,6 @@ export default class SelectBoxWithDelete extends Vue {
   public item: Array<ListItem> = [];
 
   created() {
-    console.log(this.preSelected);
     if (this.preSelected) this.item = this.preSelected;
   }
 

@@ -146,12 +146,12 @@
               <div class="d-flex justify-content-around align-items-center">
                 <span data-tooltip="Edit Custodian">
                   <i
-                    class="fa fa-solid fa-pen fs-4 edit-row"
+                    class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
                     @click="addCustodian('Edit Custodian', item)"
                   ></i>
                 </span>
                 <button
-                  class="btn btn-sm btn-secondary p-2 rounded-circle edit-row"
+                  class="btn btn-sm btn-secondary btn-primary-hover p-2 rounded-circle edit-row"
                   data-tooltip="Transaction Codes"
                   v-if="item.enabled"
                   @click="redirectTC(item)"
@@ -159,12 +159,36 @@
                   TC
                 </button>
 
-                <span data-tooltip="Keys">
+                <span data-tooltip="Keys" class="card-container">
                   <i
                     class="fa fa-solid fa-key fs-4 edit-row"
                     v-if="item.enabled"
                     @click="addKeys(item)"
                   ></i>
+                  <div
+                    class="card shadow show-card position-absolute end-0 p-4"
+                    style="min-width: 230px; z-index: 999999"
+                  >
+                    <div class="fw-bolder mt-2">Keys</div>
+                    <div class="text-gray mb-2">
+                      {{ item.custodianKey }}
+                    </div>
+
+                    <div class="fw-bolder mt-2">Bill only settled trades</div>
+                    <div class="text-gray mb-2">
+                      {{ item.settledTradesFlag ? "Yes" : "No" }}
+                    </div>
+
+                    <div class="fw-bolder mt-2">Bill accrued interest</div>
+                    <div class="text-gray mb-2">
+                      {{ item.accruedInterestFlag ? "Yes" : "No" }}
+                    </div>
+
+                    <div class="fw-bolder mt-2">Account Display Format</div>
+                    <div class="text-gray mb-2">
+                      {{ item.accountDisplayFormat }}
+                    </div>
+                  </div>
                 </span>
               </div>
             </td>
@@ -180,7 +204,7 @@
       />
       <keys
         :custodian="selectedCustodian"
-        @keysAdded="updateKeys"
+        @keyAdded="updateKeys"
         @close="showKeysModel = false"
         v-if="showKeysModel"
       />

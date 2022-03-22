@@ -1,10 +1,16 @@
-export class CustodiansResponseModel {
+export class AddKeysRequestModel {
+  custodianKey: string;
+  settledTradesFlag: boolean;
+  accruedInterestFlag:boolean;
+  accountDisplayFormat: string;
+  firmCustodianId: number;
+}
+export class CustodiansResponseModel extends AddKeysRequestModel {
   custodianId: number;
   custodianIdentifier: string;
   custodianName: string;
   enabled: boolean = true;
   noOfAccountsLinked: number;
-  firmCustodianId: number;
 }
 export class AddCustodianRequestModel {
   custodianIdentifier: string;
@@ -33,10 +39,4 @@ export class AddTransactionCodeRequestModel {
   firmCustodianId: number;
 }
 export class AddTransactionCodeResponseModel {
-}
-export class AddKeysRequestModel {
-  keys: string;
-  settledTrades: boolean;
-  accuredInterest:boolean;
-  displayFormat: string;
 }

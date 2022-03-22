@@ -199,12 +199,10 @@ export default class AddUser extends BaseComponent {
 
   public v$: any = setup(() => this.validate());
   public request: AddUserRequestModel = new AddUserRequestModel();
-
   public profilePhoto: any = null;
-
   public store = useStore();
-
   public roles: Array<RolesResponseModel> = [];
+  public imageChanged: boolean = false;
 
   public validate() {
     return useVuelidate();
@@ -262,6 +260,7 @@ export default class AddUser extends BaseComponent {
     if (!file) return;
 
     this.profilePhoto = file;
+    this.imageChanged = true;
   }
 
   public removeProfile() {
@@ -277,7 +276,8 @@ export default class AddUser extends BaseComponent {
       this.service
         .addUser(this.request)
         .then((response) => {
-          this.processAvatar(response.uuid);
+          if (this.imageChanged) this.processAvatar(response.uuid);
+          else this.$emit("newUser");
         })
         .catch((err) => {
           if (err.response.status == 500)

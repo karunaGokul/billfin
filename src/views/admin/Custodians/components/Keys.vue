@@ -14,7 +14,7 @@
           <text-input
             formFieldType="inputBlock"
             label="Keys"
-            :controls="v$.request.keys"
+            :controls="v$.request.custodianKey"
             :validation="['required']"
           />
 
@@ -24,7 +24,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="v$.request.settledTrades.$model"
+                v-model="v$.request.settledTradesFlag.$model"
               />
             </div>
           </div>
@@ -35,7 +35,7 @@
               <input
                 class="form-check-input"
                 type="checkbox"
-                v-model="v$.request.accuredInterest.$model"
+                v-model="v$.request.accruedInterestFlag.$model"
               />
             </div>
           </div>
@@ -43,7 +43,7 @@
           <text-input
             formFieldType="inputBlock"
             label="Account Display Format"
-            :controls="v$.request.displayFormat"
+            :controls="v$.request.accountDisplayFormat"
             :validation="['required']"
           />
         </div>
@@ -54,7 +54,7 @@
           <button
             type="button"
             class="btn btn-primary ms-8"
-            @click="addCustodian"
+            @click="addKeyConfig"
           >
             Save
           </button>
@@ -85,10 +85,10 @@ import { useStore } from "vuex";
   },
   validations: {
     request: {
-      keys: { required },
-      settledTrades: {},
-      accuredInterest: {},
-      displayFormat: { required },
+      custodianKey: { required },
+      settledTradesFlag: {},
+      accruedInterestFlag: {},
+      accountDisplayFormat: { required },
     },
   },
 })
@@ -106,18 +106,23 @@ export default class Keys extends BaseComponent {
     return useVuelidate();
   }
 
-  created() {}
+  created() {
+    this.request.custodianKey = this.custodian.custodianKey;
+    this.request.settledTradesFlag = this.custodian.settledTradesFlag;
+    this.request.accruedInterestFlag = this.custodian.accruedInterestFlag;
+    this.request.accountDisplayFormat = this.custodian.accountDisplayFormat;
+    this.request.firmCustodianId = this.custodian.firmCustodianId;
+  }
 
   public addKeyConfig() {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-      console.log(this.request);
-      /*this.service
-        .addCustodian(this.request)
+      this.service
+        .addKeys(this.request)
         .then((response) => {
-          this.confirmation("", "New custodian added successfully");
-          this.$emit("custodianAdded");
+          this.confirmation("", "New keys added successfully");
+          this.$emit("keyAdded");
         })
         .catch((err) => {
           if (err.response.status == 500)
@@ -127,7 +132,7 @@ export default class Keys extends BaseComponent {
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
-        });*/
+        });
     }
   }
 

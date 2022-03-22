@@ -131,10 +131,12 @@
             <td class="border-bottom-2 border-dashed border-light p-6">
               <div class="d-flex justify-content-around align-items-center">
                 <i
-                  class="fa fa-solid fa-pen fs-4 edit-row"
+                  class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
                   @click="addTransactionCode('Edit Transaction Code', item)"
                 ></i>
-                <i class="fa fa-solid fa-trash fs-4 edit-row"></i>
+                <i
+                  class="fa fa-solid fa-trash fs-4 edit-row fa-danger-hover"
+                ></i>
               </div>
             </td>
           </tr>
@@ -145,7 +147,11 @@
                 {{ custodianCode }}
               </p>
 
-              <button type="button" class="btn btn-primary mt-4 mb-4">
+              <button
+                type="button"
+                class="btn btn-primary mt-4 mb-4"
+                @click="addTransactionCode('Add Transaction Code')"
+              >
                 Add Transaction Code
               </button>
             </td>

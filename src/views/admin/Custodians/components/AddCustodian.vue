@@ -108,7 +108,6 @@ export default class AddCustodian extends BaseComponent {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-      console.log(this.request);
       this.service
         .addCustodian(this.request)
         .then((response) => {

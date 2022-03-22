@@ -1,0 +1,26 @@
+.card-container {
+      position: relative;
+
+      .show-card {
+            display: none;
+      }
+
+      &:hover {
+            .show-card {
+                  display: block;
+            }
+      }
+}
+
+.btn-primary-hover:hover {
+      background-color: $primary !important;
+      color: $white !important;
+}
+
+.fa-primary-hover:hover {
+      color: $primary;
+}
+
+.fa-danger-hover:hover {
+      color: $danger-active;
+}

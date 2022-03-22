@@ -9,7 +9,6 @@
           </button>
         </div>
         <div class="modal-body ms-4 me-4 mt-4 mb-4 p-4">
-
           <div class="row">
             <div class="col-4">
               <text-input
@@ -32,8 +31,12 @@
 
           <div class="fw-bolder">Fee Schedules</div>
 
-          <multi-select-box-with-delete />
-
+          <multi-select-box-with-delete
+            feeType="Fee Type"
+            feeSchedule="Fee Schedule"
+            :feeTypeResponse="feeTypeResponse"
+            :feeScheduleResponse="feeScheduleResponse"
+          />
         </div>
         <div class="modal-footer justify-content-center border-0 p-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
@@ -53,7 +56,11 @@ import useVuelidate from "@vuelidate/core";
 
 import { required } from "@vuelidate/validators";
 
-import { ProductsResponseModel, AddProductRequestModel } from "@/model";
+import {
+  ProductsResponseModel,
+  AddProductRequestModel,
+  ListItem,
+} from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import MultiSelectBoxWithDelete from "@/components/controls/MultiSelectBoxWithDelete.vue";
@@ -80,10 +87,25 @@ export default class AddProduct extends Vue {
   public v$: any = setup(() => this.validate());
   public request: AddProductRequestModel = new AddProductRequestModel();
 
+  public feeTypeResponse: Array<ListItem> = [];
+  public feeScheduleResponse: Array<ListItem> = [];
+
   public validate() {
     return useVuelidate();
   }
 
-  mounted() {}
+  mounted() {
+    let item = new ListItem("Advisory Fee");
+    this.feeTypeResponse.push(item);
+
+    item = new ListItem("Strategy Fee");
+    this.feeTypeResponse.push(item);
+
+    let data = new ListItem("75 bps");
+    this.feeScheduleResponse.push(data);
+
+    data = new ListItem("726 bps");
+    this.feeScheduleResponse.push(data);
+  }
 }
 </script>
