@@ -2,11 +2,16 @@
   <div class="modal fade show d-block vh-100">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-lg">
       <div class="modal-content">
-        <div class="modal-header justify-content-start p-5">
-          <h5 class="modal-title">Welcome to BillFin</h5>
-          <h6 class="text-muted ms-10">
-            Let's get you onboarded quickly and easily!
-          </h6>
+        <div class="modal-header justify-content-between p-5">
+          <div class="d-flex">
+            <h5 class="modal-title">Welcome to BillFin</h5>
+            <h6 class="text-muted ms-10">
+              Let's get you onboarded quickly and easily!
+            </h6>
+          </div>
+          <button type="button" class="btn-close" @click="onClose">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
         <div class="modal-body p-0">
           <div class="tab-group">
@@ -88,12 +93,12 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import GeneralBoard from "./GeneralBoard.vue";
-import FeeTypesBoard from "./FeeTypesBoard/Index.vue";
-import FrequencyBoard from "./FrequencyBoard/Index.vue";
-import MethodologiesBoard from "./MethodologiesBoard/Index.vue";
-import AdjustmentsBoard from "./AdjustmentsBoard/Index.vue";
-import ConfirmBoard from "./Confirm/Index.vue";
+import GeneralBoard from "./components/GeneralBoard.vue";
+import FeeTypesBoard from "./components/FeeTypesBoard/Index.vue";
+import FrequencyBoard from "./components/FrequencyBoard/Index.vue";
+import MethodologiesBoard from "./components/MethodologiesBoard/Index.vue";
+import AdjustmentsBoard from "./components/AdjustmentsBoard/Index.vue";
+import ConfirmBoard from "./components/Confirm/Index.vue";
 
 @Options({
   components: {
@@ -105,7 +110,7 @@ import ConfirmBoard from "./Confirm/Index.vue";
     ConfirmBoard,
   },
 })
-export default class Welcome extends Vue {
+export default class OnBoardingStep extends Vue {
   @Prop() step: number | any;
 
   public activeTab: number = 0;
@@ -125,7 +130,7 @@ export default class Welcome extends Vue {
   }
 
   public onClose() {
-    this.$emit('closeOnBoard');
+    this.$emit("closeOnBoard");
   }
 }
 </script>

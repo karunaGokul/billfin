@@ -31,7 +31,6 @@
                 <TextInput
                   label="First name"
                   :controls="v$.request.firstName"
-                  inputType="text"
                   formFieldType="inputBlock"
                   :validation="['required']"
                 />
@@ -40,7 +39,6 @@
                 <TextInput
                   label="Last name"
                   :controls="v$.request.lastName"
-                  inputType="text"
                   formFieldType="inputBlock"
                   :validation="['required']"
                 />
@@ -50,7 +48,6 @@
             <TextInput
               label="Company"
               :controls="v$.request.companyName"
-              inputType="text"
               formFieldType="inputBlock"
               :validation="['required']"
             />

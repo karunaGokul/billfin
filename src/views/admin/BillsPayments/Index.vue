@@ -181,7 +181,7 @@
         <table class="w-100 fs-5">
           <thead>
             <tr>
-              <th class="p-5 text-dark-gray border-bottom border-light-gray">
+              <th class="p-5 text-dark-gray border-bottom border-light-gray" style="width: 35%">
                 Item
               </th>
               <th class="p-5 text-dark-gray border-bottom border-light-gray">
@@ -207,7 +207,7 @@
               v-for="(item, i) of invoice.planDetails"
               :key="'plan-details' + i"
             >
-              <td class="p-5 border-bottom border-light-gray">
+              <td class="p-5 border-bottom border-light-gray" style="width: 35%">
                 <div class="fw-bolder text-dark-gray">{{ item.planName }}</div>
                 <div
                   class="text-gray pt-2 pb-2"

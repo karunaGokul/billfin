@@ -10,3 +10,4 @@ export * from './branches.service';
 export * from './user-list.service';
 export * from './fee-schedules.service';
 export * from './custodians.service';
+export * from './products.service';

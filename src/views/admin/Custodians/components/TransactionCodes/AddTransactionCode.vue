@@ -55,7 +55,11 @@ import BaseComponent from "@/components/base/BaseComponent.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
-import { AddTransactionCodeRequestModel, TransactionCodeResponseModel, treatAs } from "@/model";
+import {
+  AddTransactionCodeRequestModel,
+  TransactionCodeResponseModel,
+  treatAs,
+} from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
@@ -72,7 +76,7 @@ import { useStore } from "vuex";
   validations: {
     request: {
       transactionType: { required },
-      transactionDescription: { },
+      transactionDescription: {},
       externalTransactionValue: { required },
     },
   },
@@ -84,7 +88,8 @@ export default class AddTransactionCode extends BaseComponent {
   @Prop() transaction: TransactionCodeResponseModel;
 
   public v$: any = setup(() => this.validate());
-  public request: AddTransactionCodeRequestModel = new AddTransactionCodeRequestModel();
+  public request: AddTransactionCodeRequestModel =
+    new AddTransactionCodeRequestModel();
 
   public store = useStore();
 
@@ -94,9 +99,10 @@ export default class AddTransactionCode extends BaseComponent {
 
   mounted() {
     if (this.modelType == "Edit Transaction Code") {
-      this.request = this.transaction;
-      let transactionType:any = this.transaction.transactionType;
-      this.request.transactionType = Object.keys(treatAs)[Object.values(treatAs).indexOf(transactionType)];
+      this.request = this.$vuehelper.clone(this.transaction);
+      let transactionType: any = this.transaction.transactionType;
+      this.request.transactionType =
+        Object.keys(treatAs)[Object.values(treatAs).indexOf(transactionType)];
     }
   }
 
@@ -104,8 +110,9 @@ export default class AddTransactionCode extends BaseComponent {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-          this.request.firmCustodianId = +this.$route.query.firmCustodianId;
-          this.request.transactionType = treatAs[this.request.transactionType as keyof typeof treatAs];
+      this.request.firmCustodianId = +this.$route.query.firmCustodianId;
+      this.request.transactionType =
+        treatAs[this.request.transactionType as keyof typeof treatAs];
       this.service
         .addTransactionCode(this.request)
         .then((response) => {

@@ -18,7 +18,7 @@
               :validation="['required']"
             />
           </div>
-          <div v-if="pageType != 'Branch'">
+          <div v-if="pageType != 'Edit Branches' && pageType != 'Add Branches'">
             <label for="Branch" class="form-label fw-bolder"> Branch </label>
             <select
               class="form-select form-select-solid mb-2"
@@ -137,7 +137,7 @@ export default class AddRepCode extends BaseComponent {
     this.getUnassignedAdvisors();
     this.getUnassignedBranch();
 
-    if(this.pageType == 'Branch') {
+    if (this.pageType == "Edit Branches") {
       this.request.branchName = this.selectedBranch.branchName;
       this.request.branchCode = this.selectedBranch.branchCode;
       this.request.branchId = this.selectedBranch.branchId;
@@ -152,6 +152,7 @@ export default class AddRepCode extends BaseComponent {
     this.advisorsService
       .unassignedAdvisors()
       .then((response) => {
+        this.advisors = [];
         response.forEach((item) => {
           let advisors = new ListItem(item.displayName);
           advisors.data = item.advisorId;

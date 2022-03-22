@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header p-4 pt-6 pb-6">
-          <h5 class="modal-title fs-4 fw-bolder">{{modelType}}</h5>
+          <h5 class="modal-title fs-4 fw-bolder">{{ modelType }}</h5>
           <button type="button" class="btn-close" @click="close">
             <i class="fas fa-times"></i>
           </button>
@@ -25,7 +25,10 @@
             :validation="['required']"
           />
 
-          <div class="form-check form-switch" v-if="modelType == 'Edit Custodian'">
+          <div
+            class="form-check form-switch"
+            v-if="modelType == 'Edit Custodian'"
+          >
             <input
               class="form-check-input"
               type="checkbox"
@@ -40,7 +43,11 @@
           <button type="button" class="btn btn-link text-gray" @click="close">
             Cancel
           </button>
-          <button type="button" class="btn btn-primary ms-8" @click="addCustodian">
+          <button
+            type="button"
+            class="btn btn-primary ms-8"
+            @click="addCustodian"
+          >
             Save
           </button>
         </div>
@@ -92,7 +99,7 @@ export default class AddCustodian extends BaseComponent {
   }
 
   created() {
-    if(this.modelType == 'Edit Custodian') {
+    if (this.modelType == "Edit Custodian") {
       this.request = this.$vuehelper.clone(this.custodian);
     } else this.request.enabled = true;
   }
@@ -110,12 +117,12 @@ export default class AddCustodian extends BaseComponent {
         })
         .catch((err) => {
           if (err.response.status == 500)
-          this.alert(
-            "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
-          );
-        else if (err.response.status == 400)
-          this.alert("Oops, sorry!", err.response.data.message);
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

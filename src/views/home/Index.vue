@@ -92,7 +92,11 @@
               />
             </button>
 
-            <div class="dropdown" v-click-outside="clickOutSideUser">
+            <div
+              class="dropdown"
+              v-click-outside="clickOutSideUser"
+              style="z-index: 99999999999"
+            >
               <div class="dropdown-toggle" @click="toggleUser = true">
                 <span class="me-3">Hi {{ user.firstName }}</span>
                 <img src="@/assets/User.png" alt="User Photo" />
@@ -199,7 +203,7 @@
         <router-view></router-view>
       </div>
     </div>
-    <Welcome
+    <on-boarding-step
       :step="lastOnboardingStep"
       @closeOnBoard="onCloseOnBoard"
       v-if="showOnBoard"
@@ -217,7 +221,7 @@ import moment from "moment";
 import SideBar from "@/components/controls/SideBar.vue";
 import AppAlert from "@/components/layout/AppAlert.vue";
 
-import Welcome from "./components/OnBoard.vue";
+import OnBoardingStep from "@/components/Models/OnBoardingStep/Index.vue";
 
 import { IFirmService } from "@/service";
 import { firmRequestModel, firmsResponseModel } from "@/model";
@@ -225,7 +229,7 @@ import { firmRequestModel, firmsResponseModel } from "@/model";
 @Options({
   components: {
     SideBar,
-    Welcome,
+    OnBoardingStep,
     AppAlert,
   },
 })

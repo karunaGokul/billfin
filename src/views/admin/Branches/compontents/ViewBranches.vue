@@ -197,7 +197,7 @@
           </div>
 
           <add-rep-code
-            pageType="Branch"
+            pageType="Edit Branches"
             :selectedBranch="branch"
             @repCodeAdded="onUpdateRepCode"
             @close="addRepCodeModel = false"

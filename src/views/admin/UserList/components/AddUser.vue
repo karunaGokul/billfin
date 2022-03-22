@@ -296,10 +296,12 @@ export default class AddUser extends BaseComponent {
       .uploadPhoto(this.profilePhoto, uuid)
       .then((response) => {
         this.$emit("newUser");
-        this.confirmation(
-          "",
-          `We've sent an invitation email to ${this.request.firstName} ${this.request.lastName}. ${this.request.firstName} will be asked to create a secure password before getting start.`
-        );
+        if (this.modelType == "Add User") {
+          this.confirmation(
+            "",
+            `We've sent an invitation email to ${this.request.firstName} ${this.request.lastName}. ${this.request.firstName} will be asked to create a secure password before getting start.`
+          );
+        }
       })
       .catch((err) => {
         if (err.response.status == 500)

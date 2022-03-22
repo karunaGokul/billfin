@@ -283,8 +283,7 @@ export default class AddAdvisor extends BaseComponent {
   created() {
     this.modelType = this.type;
 
-    if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")
-      this.request = this.selectedAdvisor;
+    if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")  this.request = this.selectedAdvisor;
 
     if (this.modelType == "Edit Advisors") this.editAdvisor();
     else if (this.modelType == "Add Advisor") this.unassignedRepCodes();
@@ -319,6 +318,7 @@ export default class AddAdvisor extends BaseComponent {
     this.repCodesService
       .unassignedRepCodes()
       .then((response) => {
+        this.repCodes = [];
         response.forEach((item) => {
           let repCode = new ListItem(item.repCode);
           repCode.data = item.repId;
@@ -359,6 +359,8 @@ export default class AddAdvisor extends BaseComponent {
     this.request.repCodes.forEach((rep) => {
       let item = new ListItem(rep.repCode);
       item.data = rep.repId;
+
+      item.selected = true;
 
       this.assignedRepCodes.push(item);
     });

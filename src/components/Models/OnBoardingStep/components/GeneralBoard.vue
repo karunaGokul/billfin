@@ -10,7 +10,6 @@
         <form @submit.prevent="saveGeneral">
           <TextInput
             label="Company"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.company"
             :validation="['required']"
@@ -21,11 +20,9 @@
             formFieldType="inputInline"
             :controls="v$.request.companyPhone"
             :validation="['required', 'phone', 'minLength', 'phoneLength']"
-            :readonly="false"
           />
           <TextInput
             label="Company Domain"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.companyDomain"
             :validation="['required']"
@@ -33,7 +30,6 @@
           />
           <TextInput
             label="Company Address"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.companyAddress1"
             :validation="['required']"
@@ -41,7 +37,6 @@
           />
           <TextInput
             label="City"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.city"
             :validation="['required']"
@@ -56,7 +51,6 @@
           />
           <TextInput
             label="Postal Code"
-            inputType="text"
             formFieldType="inputInline"
             :controls="v$.request.postalCode"
             :validation="['required', 'numeric']"

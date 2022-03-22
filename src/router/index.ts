@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/products",
         name: "Products",
-        component: () => import("@/views/client-info/Products.vue"),
+        component: () => import("@/views/client-info/ProductsPlans/Index.vue"),
       },
       {
         path: "/subscriptions",

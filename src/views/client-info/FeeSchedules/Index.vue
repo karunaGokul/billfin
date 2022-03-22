@@ -27,7 +27,7 @@
       >
         <li
           class="dropdown-item pt-2 pb-2"
-          @click="showAddFeeScheduleModel = true"
+          @click="addFeeSchedule('Add Fee Schedule')"
         >
           Single fee schedule
         </li>
@@ -99,13 +99,18 @@
             >
               STATUS
             </th>
+            <th
+              class="
+                fw-bold
+                text-gray-secondary
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+            ></th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(item, index) in response"
-            :key="'user-table' + index"
-          >
+          <tr v-for="(item, index) in response" :key="'user-table' + index">
             <td
               class="
                 fw-bold
@@ -124,7 +129,7 @@
                 p-6
               "
             >
-              {{ item.tierType }}
+              {{ item.tierType == "FLAT" ? "Flat" : "Tiered" }}
             </td>
             <td
               class="
@@ -164,10 +169,26 @@
                 {{ item.status == "ACTIVE" ? "Active" : "Inactive" }}
               </span>
             </td>
+            <td
+              class="
+                text-dark-gray
+                border-bottom-2 border-dashed border-light
+                p-6
+              "
+              style="width: 10%"
+            >
+              <i
+                class="fa fa-solid fa-pen fs-4 edit-row"
+                @click="addFeeSchedule('Edit Fee Schedule', item)"
+              ></i>
+            </td>
           </tr>
         </tbody>
       </table>
       <add-fee-schedule
+        :modelType="modelType"
+        :selectedFees="selectedFees"
+        @newFeeAdded="updateFees"
         @close="showAddFeeScheduleModel = false"
         v-if="showAddFeeScheduleModel"
       />
@@ -180,9 +201,7 @@ import { Inject } from "vue-property-decorator";
 
 import { IFeeSchedulesService } from "@/service";
 
-import {
-  FeeSchedulesResponseModel,
-} from "@/model";
+import { FeeSchedulesResponseModel } from "@/model";
 
 import AddFeeSchedule from "./components/AddFeeSchedule.vue";
 
@@ -195,10 +214,12 @@ export default class FeeSchedules extends Vue {
   @Inject("feeSchedulesService") service: IFeeSchedulesService;
 
   public response: Array<FeeSchedulesResponseModel> = [];
-
+  public selectedFees: FeeSchedulesResponseModel =
+    new FeeSchedulesResponseModel();
   public toggleAddFeeSchdule: boolean = false;
-
   public showAddFeeScheduleModel: boolean = false;
+
+  public modelType: string = "";
 
   created() {
     this.getFeeSchedules();
@@ -209,19 +230,24 @@ export default class FeeSchedules extends Vue {
       .getFeeSchedules()
       .then((response) => {
         this.response = response;
-        console.log(response);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  public controlWithPagination() {
-    console.log("pagination");
+  public addFeeSchedule(
+    modelType: string,
+    feeSchedules: FeeSchedulesResponseModel
+  ) {
+    this.modelType = modelType;
+    if (feeSchedules) this.selectedFees = feeSchedules;
+    this.showAddFeeScheduleModel = true;
   }
 
-  public feesStatus(status: string) {
-    return status == "active" ? "Active" : "In Active";
+  public updateFees() {
+    this.showAddFeeScheduleModel = false;
+    this.getFeeSchedules();
   }
 
   public clickOutSideFee() {

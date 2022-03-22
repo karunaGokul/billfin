@@ -120,7 +120,6 @@
           <TextInput
             label="CVV/CSC Code"
             :controls="v$.request.cvv"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="[
               'required',
@@ -137,7 +136,6 @@
         <TextInput
           label="Name on Credit Card"
           :controls="v$.request.cardHolderName"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
         />
@@ -146,7 +144,6 @@
         <TextInput
           label="Billing Address"
           :controls="v$.request.billingAddress"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
         />
@@ -156,7 +153,6 @@
           <TextInput
             label="Country"
             :controls="v$.request.country"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required']"
             :readonly="true"
@@ -177,7 +173,6 @@
           <TextInput
             label="City"
             :controls="v$.request.billingCity"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required']"
           />
@@ -186,7 +181,6 @@
           <TextInput
             label="Postal Code"
             :controls="v$.request.postalCode"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required', 'numeric']"
             @updateEvent="v$.request.postalCode.$model = v$.request.postalCode.$model.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"

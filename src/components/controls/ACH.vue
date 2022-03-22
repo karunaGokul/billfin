@@ -8,7 +8,6 @@
         <TextInput
           label="Bank Account Number"
           :controls="v$.request.accountNo"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
         />
@@ -17,7 +16,6 @@
         <TextInput
           label="Bank Routing Number"
           :controls="v$.request.routingNo"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required', 'numeric']"
         />
@@ -26,7 +24,6 @@
         <TextInput
           label="Account Holder"
           :controls="v$.request.accountHolder"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
         />
@@ -35,7 +32,6 @@
         <TextInput
           label="Account Holder Billing Address"
           :controls="v$.request.billingAddress"
-          inputType="text"
           formFieldType="inputBlock"
           :validation="['required']"
         />
@@ -45,7 +41,6 @@
           <TextInput
             label="Country"
             :controls="v$.request.country"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required']"
             :readonly="true"
@@ -66,7 +61,6 @@
           <TextInput
             label="City"
             :controls="v$.request.billingCity"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required']"
           />
@@ -75,7 +69,6 @@
           <TextInput
             label="Postal Code"
             :controls="v$.request.postalCode"
-            inputType="text"
             formFieldType="inputBlock"
             :validation="['required', 'numeric']"
             @updateEvent="v$.request.postalCode.$model = v$.request.postalCode.$model.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"

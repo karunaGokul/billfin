@@ -32,7 +32,7 @@
         </div>
 
         <add-rep-code
-          pageType="Branch"
+          pageType="Add Branches"
           @repCodeAdded="onUpdateRepCode"
           @close="addRepCodeModel = false"
           v-if="addRepCodeModel"
