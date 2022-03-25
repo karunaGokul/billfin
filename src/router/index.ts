@@ -59,6 +59,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: '/custodians/:custodianCode',
+        name: 'Transaction Codes',
         component: () => import ("@/views/admin/Custodians/components/TransactionCodes/Index.vue")
       },
       {

@@ -180,7 +180,7 @@
               style="width: 10%"
             >
               <i
-                class="fa fa-solid fa-pen fs-4 edit-row"
+                class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
                 @click="addUser('Edit User', item)"
               ></i>
             </td>

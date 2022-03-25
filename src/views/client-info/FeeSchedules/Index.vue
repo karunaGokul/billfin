@@ -1,14 +1,9 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb />
     <button
-      class="
-        btn btn-primary
-        position-absolute
-        translate-middle
-        dropdown dropdown-primary
-      "
+      class="btn btn-primary dropdown dropdown-primary"
       type="button"
-      style="top: -40px; right: -85px"
       v-click-outside="clickOutSideFee"
       @click="toggleAddFeeSchdule = !toggleAddFeeSchdule"
     >
@@ -34,6 +29,9 @@
         <li class="dropdown-item pt-2 pb-2">Bulk load fee schedules</li>
       </ul>
     </button>
+  </div>
+
+  <div class="card p-4 mt-4 position-relative">
     <div class="card-body pt-0">
       <table
         class="
@@ -178,7 +176,7 @@
               style="width: 10%"
             >
               <i
-                class="fa fa-solid fa-pen fs-4 edit-row"
+                class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
                 @click="addFeeSchedule('Edit Fee Schedule', item)"
               ></i>
             </td>
@@ -200,14 +198,16 @@ import { Vue, Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import { IFeeSchedulesService } from "@/service";
-
 import { FeeSchedulesResponseModel } from "@/model";
+
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import AddFeeSchedule from "./components/AddFeeSchedule.vue";
 
 @Options({
   components: {
     AddFeeSchedule,
+    BreadCrumb
   },
 })
 export default class FeeSchedules extends Vue {

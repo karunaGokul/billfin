@@ -316,13 +316,9 @@ export default class Custodians extends BaseComponent {
   public redirectTC(custodian: CustodiansResponseModel) {
     this.$router.push({
       path: `/custodians/${custodian.custodianIdentifier}`,
-      query: { firmCustodianId: custodian.firmCustodianId },
+      query: { firmCustodianId: custodian.firmCustodianId, custodianName: custodian.custodianName },
     });
   }
-
-  /*public greenKey(item: CustodiansResponseModel) {
-    if(item.custodianKey || item.accountDisplayFormat) 
-  }*/
 
   public applyFilter(searchValue: string) {
     this.response = this.dataResource.filter(

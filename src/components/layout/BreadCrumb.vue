@@ -1,6 +1,9 @@
 <template>
   <div>
-    <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
+    <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold" v-if="page == 'Transaction Codes'">
+      {{ additionalName }} - {{ page }} 
+    </p>
+    <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold" v-else>
       {{ page }} {{ additionalName }}
     </p>
     <div class="d-flex align-items-center ps-4 pt-2 pb-4">
@@ -49,9 +52,7 @@ export default class BreadCrumb extends Vue {
       this.page == "Payments" ||
       this.page == "Reports"
     ) {
-      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Bills & Payments</li> <li class="breadcrumb-item">${
-        this.page
-      }</li>`;
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Bills & Payments</li> <li class="breadcrumb-item">${this.page}</li>`;
     } else if (this.page == "User List") {
       value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page} ${this.additionalName}</li>`;
     } else if (
@@ -62,6 +63,8 @@ export default class BreadCrumb extends Vue {
       this.page == "Add Payment Method"
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
+    } else if (this.page == "Transaction Codes") {
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">Custodians</li> <li class="breadcrumb-item">${this.page}</li>`;
     } else {
       value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
     }

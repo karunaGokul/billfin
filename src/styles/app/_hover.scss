@@ -18,9 +18,9 @@
 }
 
 .fa-primary-hover:hover {
-      color: $primary;
+      color: $primary !important;
 }
 
 .fa-danger-hover:hover {
-      color: $danger-active;
+      color: $danger-active !important;
 }

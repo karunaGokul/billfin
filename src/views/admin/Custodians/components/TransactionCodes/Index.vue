@@ -1,15 +1,7 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
-    <div
-      class="
-        d-flex
-        align-items-center
-        justify-content-between
-        position-absolute
-        translate-middle
-      "
-      style="top: -38px; right: -137px"
-    >
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb :additionalName="custodianName"/>
+    <div class="d-flex align-items-center justify-content-between">
       <button
         class="btn border border-primary text-primary me-2"
         type="button"
@@ -25,7 +17,9 @@
         Add Transaction Code
       </button>
     </div>
+  </div>
 
+  <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
       <div class="fs-4 fw-bolder">{{ custodianCode }} - Transaction Code</div>
       <div>
@@ -169,13 +163,13 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import { TransactionCodeResponseModel } from "@/model";
-
 import { ICustodiansService } from "@/service";
 
 import AddTransactionCode from "./AddTransactionCode.vue";
@@ -183,6 +177,7 @@ import AddTransactionCode from "./AddTransactionCode.vue";
 @Options({
   components: {
     AddTransactionCode,
+    BreadCrumb
   },
 })
 export default class TransactionCodes extends BaseComponent {
@@ -257,6 +252,10 @@ export default class TransactionCodes extends BaseComponent {
             .toLowerCase()
             .includes(searchValue.toLowerCase()))
     );
+  }
+
+  get custodianName() {
+    return this.$route.query.custodianName;
   }
 }
 </script>

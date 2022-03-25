@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb/>
+    <bread-crumb />
     <button class="btn btn-primary" type="button" @click="addRepCode">
       Add Rep Code
     </button>
@@ -115,9 +115,12 @@
                 }}<span v-if="i + 1 < item.advisors.length">, </span>
               </span>
             </td>
-            <td class="border-bottom-2 border-dashed border-light p-6">
+            <td
+              class="border-bottom-2 border-dashed border-light p-6"
+              style="width: 15%"
+            >
               <i
-                class="fa fa-pen text-dark-gray edit-row"
+                class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
                 @click="viewRepCodes('Edit RepCodes', item)"
               ></i>
             </td>
@@ -161,7 +164,7 @@ import { repCodesResponseModel } from "@/model";
   components: {
     AddRepCode,
     RepCodePreview,
-    BreadCrumb
+    BreadCrumb,
   },
 })
 export default class RepCodes extends BaseComponent {

@@ -158,9 +158,10 @@
                   border-bottom-2 border-dashed border-light
                   p-6
                 "
+                style="width: 15%"
               >
                 <i
-                  class="fa fa-pen text-dark-gray edit-row"
+                  class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
                   @click="addAdvisor('Edit Advisors', item)"
                 ></i>
               </td>

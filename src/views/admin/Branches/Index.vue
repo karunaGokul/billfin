@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb/>
+    <bread-crumb />
     <button class="btn btn-primary" type="button" @click="addBranch">
       Add Branch
     </button>
@@ -111,13 +111,34 @@
               "
             >
               <span v-for="(code, i) of item.repCodes" :key="i">
-                {{ code.repCode
-                }}<span v-if="i + 1 < item.repCodes.length">, </span>
+                <span v-if="i < 2">
+                  {{ code.repCode
+                  }}<span v-if="i + 1 < item.repCodes.length">, </span>
+                </span>
               </span>
+
+              <span
+                class="
+                  w-25
+                  h-25
+                  p-4
+                  ps-5
+                  pe-5
+                  ms-4
+                  rounded-circle
+                  bg-primary
+                  text-white
+                "
+                v-if="item.repCodes.length > 2"
+                >{{ item.repCodes.length - 2 }}</span
+              >
             </td>
-            <td class="border-bottom-2 border-dashed border-light p-6">
+            <td
+              class="border-bottom-2 border-dashed border-light p-6"
+              style="width: 15%"
+            >
               <i
-                class="fa fa-pen text-dark-gray edit-row"
+                class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
                 @click="viewBranch('Edit Branchs', item)"
               ></i>
             </td>
@@ -159,7 +180,7 @@ import ViewBranches from "./compontents/ViewBranches.vue";
   components: {
     AddBranch,
     ViewBranches,
-    BreadCrumb
+    BreadCrumb,
   },
 })
 export default class Branches extends BaseComponent {
