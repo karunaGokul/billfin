@@ -1,13 +1,11 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
-    <button
-      class="btn btn-primary position-absolute translate-middle"
-      type="button"
-      style="top: -40px; right: -58px"
-      @click="addRepCode"
-    >
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb/>
+    <button class="btn btn-primary" type="button" @click="addRepCode">
       Add Rep Code
     </button>
+  </div>
+  <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
       <div class="fs-4 fw-bolder">Rep Codes</div>
       <div>
@@ -149,6 +147,8 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import AddRepCode from "@/components/Models/AddRepCode.vue";
@@ -161,6 +161,7 @@ import { repCodesResponseModel } from "@/model";
   components: {
     AddRepCode,
     RepCodePreview,
+    BreadCrumb
   },
 })
 export default class RepCodes extends BaseComponent {

@@ -281,7 +281,8 @@
                             feeValidation.amount.invalid,
                         }"
                         :title="
-                          feeValidation.amount.touched && feeValidation.amount.invalid
+                          feeValidation.amount.touched &&
+                          feeValidation.amount.invalid
                             ? feeValidation.amount.message
                             : ''
                         "
@@ -680,8 +681,7 @@ export default class AddFeeSchedule extends Vue {
     this.feeValidation.bps.touched = false;
     this.feeValidation.bps.value = null;
     this.feeValidation.bps.invalid = true;
-    this.feeValidation.bps.message =
-      "This rate point cannot be blank!";
+    this.feeValidation.bps.message = "This rate point cannot be blank!";
 
     this.feeValidation.amount.touched = false;
     this.feeValidation.amount.value = null;
@@ -777,8 +777,7 @@ export default class AddFeeSchedule extends Vue {
       this.feeValidation.formValid = false;
 
       this.feeValidation.bps.invalid = true;
-      this.feeValidation.bps.message =
-        "This rate point cannot be blank!";
+      this.feeValidation.bps.message = "This rate point cannot be blank!";
 
       this.feeValidation.amount.invalid = true;
       this.feeValidation.amount.message = "This amount point cannot be blank!";
@@ -840,8 +839,6 @@ export default class AddFeeSchedule extends Vue {
   }
 
   public addItem(item: TierFormModel, index: number) {
-    this.validation(item, index);
-
     let tier = new TierFormModel();
 
     tier.fromValue.value = this.$currencyToNumber(item.toValue.value);
@@ -854,9 +851,15 @@ export default class AddFeeSchedule extends Vue {
     tier.fromValue.invalid = true;
     tier.fromValue.message = "This break point cannot be blank!";
 
-    tier.toValue.touched = false;
-    tier.toValue.invalid = true;
-    tier.toValue.message = "This break point cannot be blank!";
+    if (tier.toValue.value) {
+      tier.toValue.touched = false;
+      tier.toValue.invalid = false;
+      tier.toValue.message = null;
+    } else {
+      tier.toValue.touched = false;
+      tier.toValue.invalid = true;
+      tier.toValue.message = "This break point cannot be blank!";
+    }
 
     tier.bps.touched = false;
     tier.bps.invalid = true;
@@ -872,6 +875,10 @@ export default class AddFeeSchedule extends Vue {
     this.tiers[index + 2].fromValue.value = this.$currencyToNumber(
       tier.toValue.value
     );
+
+    for (let i in this.tiers) {
+      this.validation(this.tiers[i], +i);
+    }
   }
 
   public convertDollar(item: any, type: string) {
@@ -896,6 +903,7 @@ export default class AddFeeSchedule extends Vue {
   public validation(item: TierFormModel, index: number) {
     item.fromValue.touched = true;
     item.toValue.touched = true;
+
     item.bps.touched = true;
     item.amount.touched = true;
 
@@ -972,8 +980,6 @@ export default class AddFeeSchedule extends Vue {
         this.feeValidation.amount.touched = true;
       } else this.validTiered();
     }
-
-    console.log(this.tiers);
   }
 
   public validTiered() {
@@ -1005,18 +1011,14 @@ export default class AddFeeSchedule extends Vue {
         tier.fromValue = +item.fromValue.value;
         tier.toValue = item.toValue.value
           ? this.$currencyToNumber(item.toValue.value)
-          : item.toValue.value;
-        tier.bps = +item.bps.value;
+          : null;
+        tier.bps = item.bps.value ? +item.bps.value : null;
         tier.amount = item.amount.value
           ? this.$currencyToNumber(item.amount.value)
-          : item.amount.value;
+          : null;
         this.request.tier.push(tier);
       });
-
-      console.log(this.request.tier);
     }
-
-    console.log(this.request);
 
     this.service
       .addFeeSchedule(this.request)

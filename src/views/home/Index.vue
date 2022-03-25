@@ -153,7 +153,7 @@
           class="d-flex align-items-center position-relative"
           v-if="!trailExpired"
         >
-          <div>
+          <!--<div>
             <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
               {{ page }}
             </p>
@@ -169,7 +169,7 @@
               </ol>
               <ol class="breadcrumb" v-html="currentPage"></ol>
             </div>
-          </div>
+          </div> -->
           <div
             class="
               alert alert-danger
@@ -342,50 +342,12 @@ export default class Home extends Vue {
     return days;
   }
 
-  public navigate(page: string) {
-    console.log(page);
-  }
-
   get user() {
     return this.store.getters.userInfo;
   }
 
   get dataEntitlements() {
     return this.store.getters.dataEntitlements;
-  }
-
-  get page() {
-    return this.$route.name;
-  }
-
-  get currentPage() {
-    let value: string = "";
-
-    if (
-      this.page == "Manage Subscription" ||
-      this.page == "Sign Up" ||
-      this.page == "Setup" ||
-      this.page == "Bills & Payments" ||
-      this.page == "Advisors" ||
-      this.page == "RepCodes" ||
-      this.page == "Branches"
-    ) {
-      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item">${
-        this.page == "Manage Subscription" ? "My Subscription" : this.page
-      }</li>`;
-    } else if (
-      this.page == "Sign Up For Add-Ons" ||
-      this.page == "Add Users" ||
-      this.page == "Add Connectors" ||
-      this.page == "Change Plan" ||
-      this.page == "Add Payment Method"
-    ) {
-      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
-    } else if (this.page == "Dashbdoard") {
-      value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
-    }
-
-    return value;
   }
 }
 </script>

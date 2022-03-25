@@ -1,5 +1,7 @@
 <template>
   <div class="signup-plan-container">
+    <bread-crumb />
+
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -70,8 +72,11 @@ import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 @Options({
   components: {
+    BreadCrumb,
     Addons,
     AddUserConnectors,
     Review,

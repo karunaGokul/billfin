@@ -1,4 +1,6 @@
 <template>
+  <bread-crumb />
+
   <div class="card">
     <div class="p-4 fw-bolder text-center mt-4 fs-4 text-dark-gray">
       Add New Payment Method
@@ -43,9 +45,15 @@ import { Inject } from "vue-property-decorator";
 
 import { useStore } from "vuex";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 declare let ChargeOver: any;
 
-import { paymentTokenRequestModel, PaymentMethod, CardPrimaryType } from "@/model";
+import {
+  paymentTokenRequestModel,
+  PaymentMethod,
+  CardPrimaryType,
+} from "@/model";
 import { ISubscripeService } from "@/service";
 
 import ACH from "@/components/controls/ACH.vue";
@@ -55,6 +63,7 @@ import CreditCard from "@/components/controls/creditCard.vue";
   components: {
     ACH,
     CreditCard,
+    BreadCrumb
   },
 })
 export default class Payment extends Vue {

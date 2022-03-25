@@ -1,10 +1,17 @@
 <template>
-  <div>
-    Timesheets
-  </div>
+  <bread-crumb/>
+  <p>Timesheets</p>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
+
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
+@Options({
+  components: {
+    BreadCrumb,
+  },
+})
 export default class Timesheets extends Vue {
   
 }

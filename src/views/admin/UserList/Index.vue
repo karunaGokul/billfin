@@ -1,15 +1,13 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb :additionalName="`(${response.length})`"/>
     <div
       class="
         d-flex
         align-items-center
         justify-content-end
-        position-absolute
-        translate-middle
         w-50
       "
-      style="top: -50px; right: -308px"
     >
       <button
         class="btn btn-primary me-4"
@@ -31,6 +29,9 @@
         />
       </div>
     </div>
+  </div>
+
+  <div class="card p-4 mt-4 position-relative">
     <div class="card-body pt-0">
       <table
         class="
@@ -205,12 +206,14 @@ import { UserResponseModel } from "@/model";
 import { IUserListService } from "@/service";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import AddUser from "./components/AddUser.vue";
 
 @Options({
   components: {
     AddUser,
+    BreadCrumb,
   },
 })
 export default class UserList extends BaseComponent {
@@ -263,9 +266,13 @@ export default class UserList extends BaseComponent {
     this.response = this.dataResource.filter(
       (item) =>
         (item.firstName &&
-        item.firstName.toLowerCase().includes(searchValue.toLowerCase())) || 
-        (item.roleName && item.roleName.toLocaleLowerCase().includes(searchValue.toLowerCase())) ||
-        (item.email && item.email.toLowerCase().includes(searchValue.toLowerCase()))
+          item.firstName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (item.roleName &&
+          item.roleName
+            .toLocaleLowerCase()
+            .includes(searchValue.toLowerCase())) ||
+        (item.email &&
+          item.email.toLowerCase().includes(searchValue.toLowerCase()))
     );
   }
 }

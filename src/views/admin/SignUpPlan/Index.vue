@@ -4,6 +4,7 @@
   </h3>
   <confirm v-if="firmStatus == 'SUBSCRIBED'" :pageType="pageType" />
   <div class="signup-plan-container" v-else>
+    <bread-crumb />
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -116,6 +117,8 @@
 import { Vue, Options } from "vue-class-component";
 import { useStore } from "vuex";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 import Products from "./components/Products.vue";
 import Plan from "./components/Plan.vue";
 import Addons from "./components/Addons.vue";
@@ -126,6 +129,7 @@ import Confirm from "./components/Confirm.vue";
 
 @Options({
   components: {
+    BreadCrumb,
     Products,
     Plan,
     Addons,

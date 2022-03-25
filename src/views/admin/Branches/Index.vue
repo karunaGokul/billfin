@@ -1,13 +1,11 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
-    <button
-      class="btn btn-primary position-absolute translate-middle"
-      type="button"
-      style="top: -40px; right: -58px"
-      @click="addBranch"
-    >
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb/>
+    <button class="btn btn-primary" type="button" @click="addBranch">
       Add Branch
     </button>
+  </div>
+  <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
       <div class="fs-4 fw-bolder">Branches</div>
       <div>
@@ -147,6 +145,7 @@ import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import { useStore } from "vuex";
 
@@ -160,6 +159,7 @@ import ViewBranches from "./compontents/ViewBranches.vue";
   components: {
     AddBranch,
     ViewBranches,
+    BreadCrumb
   },
 })
 export default class Branches extends BaseComponent {

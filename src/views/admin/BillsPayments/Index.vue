@@ -1,4 +1,6 @@
 <template>
+  <bread-crumb/>
+
   <div class="card">
     <div class="p-4 fw-bolder fs-4 text-dark-gray border-bottom">
       Payment Method
@@ -181,10 +183,16 @@
         <table class="w-100 fs-5">
           <thead>
             <tr>
-              <th class="p-5 text-dark-gray border-bottom border-light-gray" style="width: 35%">
+              <th
+                class="p-5 text-dark-gray border-bottom border-light-gray"
+                style="width: 35%"
+              >
                 Item
               </th>
-              <th class="p-5 text-dark-gray border-bottom border-light-gray">
+              <th
+                class="p-5 text-dark-gray border-bottom border-light-gray"
+                style="width: 30%"
+              >
                 Product
               </th>
               <th class="p-5 text-dark-gray border-bottom border-light-gray">
@@ -207,7 +215,10 @@
               v-for="(item, i) of invoice.planDetails"
               :key="'plan-details' + i"
             >
-              <td class="p-5 border-bottom border-light-gray" style="width: 35%">
+              <td
+                class="p-5 border-bottom border-light-gray"
+                style="width: 35%"
+              >
                 <div class="fw-bolder text-dark-gray">{{ item.planName }}</div>
                 <div
                   class="text-gray pt-2 pb-2"
@@ -238,6 +249,7 @@
                   text-dark-gray
                   border-bottom border-light-gray
                 "
+                style="width: 30%"
               >
                 {{ item.product == "AUM" ? "AUM" : "Subscription" }} Billing
                 {{ item.type == "Plan" ? "Plan" : "Add-on" }}
@@ -284,6 +296,7 @@ import { Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import AppDelete from "@/components/layout/AppDelete.vue";
 
@@ -306,6 +319,7 @@ import {
 @Options({
   components: {
     AppDelete,
+    BreadCrumb,
   },
 })
 export default class Index extends BaseComponent {
@@ -381,7 +395,10 @@ export default class Index extends BaseComponent {
     this.subscripeService
       .updatePaymentToken(request)
       .then((response) => {
-        this.confirmation("", `${details.cardHolderName} card changed to primary card`);
+        this.confirmation(
+          "",
+          `${details.cardHolderName} card changed to primary card`
+        );
         this.getCardDetails();
       })
       .catch((err) => {
@@ -424,7 +441,7 @@ export default class Index extends BaseComponent {
         this.response = response;
       })
       .catch((err) => {
-       if (err.response.status == 500)
+        if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
             "Somthing went wrong, Please contact administration"

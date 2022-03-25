@@ -9,7 +9,7 @@
               Let's get you onboarded quickly and easily!
             </h6>
           </div>
-          <button type="button" class="btn-close" @click="onClose">
+          <button type="button" class="btn-close" v-if="dataEntitlements.length > 1" @click="onClose">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -100,6 +100,8 @@ import MethodologiesBoard from "./components/MethodologiesBoard/Index.vue";
 import AdjustmentsBoard from "./components/AdjustmentsBoard/Index.vue";
 import ConfirmBoard from "./components/Confirm/Index.vue";
 
+import { useStore } from "vuex";
+
 @Options({
   components: {
     GeneralBoard,
@@ -117,6 +119,8 @@ export default class OnBoardingStep extends Vue {
   public tabs: Array<string> = [];
   public showAumTab: boolean = true;
 
+  public store = useStore();
+
   mounted() {
     this.activeTab = this.step;
   }
@@ -131,6 +135,10 @@ export default class OnBoardingStep extends Vue {
 
   public onClose() {
     this.$emit("closeOnBoard");
+  }
+
+  get dataEntitlements() {
+    return this.store.getters.dataEntitlements;
   }
 }
 </script>

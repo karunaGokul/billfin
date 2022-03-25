@@ -1,10 +1,16 @@
 <template>
-    <p>Dashboard</p>
+  <bread-crumb/>
+  <p>Dashboard</p>
 </template>
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, Options } from "vue-class-component";
 
-export default class Dashboard extends Vue {
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
-} 
+@Options({
+  components: {
+    BreadCrumb,
+  },
+})
+export default class Dashboard extends Vue {}
 </script>

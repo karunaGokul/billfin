@@ -1,10 +1,17 @@
 <template>
-  <div class="signup-plan-container">
-    Help
-  </div>
+  <bread-crumb/>
+  <p>Help</p>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
+
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
+@Options({
+  components: {
+    BreadCrumb,
+  },
+})
 export default class Help extends Vue {
   
 }

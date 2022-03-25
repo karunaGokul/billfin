@@ -1,13 +1,15 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb />
     <button
-      class="btn btn-primary position-absolute translate-middle"
+      class="btn btn-primary"
       type="button"
-      style="top: -40px; right: -58px"
       @click="addCustodian('Add Custodian')"
     >
       Add Custodian
     </button>
+  </div>
+  <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
       <div class="fs-4 fw-bolder">Custodians</div>
       <div>
@@ -151,7 +153,12 @@
                   ></i>
                 </span>
                 <button
-                  class="btn btn-sm btn-secondary btn-primary-hover p-2 rounded-circle edit-row"
+                  class="
+                    btn btn-sm btn-secondary btn-primary-hover
+                    p-2
+                    rounded-circle
+                    edit-row
+                  "
                   data-tooltip="Transaction Codes"
                   v-if="item.enabled"
                   @click="redirectTC(item)"
@@ -159,19 +166,31 @@
                   TC
                 </button>
 
-                <span data-tooltip="Keys" class="card-container">
+                <span
+                  :data-tooltip="
+                    !item.custodianKey && !item.accountDisplayFormat
+                      ? 'Keys'
+                      : ''
+                  "
+                  class="card-container"
+                >
                   <i
                     class="fa fa-solid fa-key fs-4 edit-row"
+                    :class="{
+                      'text-success':
+                        item.custodianKey || item.accountDisplayFormat,
+                    }"
                     v-if="item.enabled"
                     @click="addKeys(item)"
                   ></i>
                   <div
                     class="card shadow show-card position-absolute end-0 p-4"
+                    v-if="item.custodianKey || item.accountDisplayFormat"
                     style="min-width: 230px; z-index: 999999"
                   >
                     <div class="fw-bolder mt-2">Keys</div>
                     <div class="text-gray mb-2">
-                      {{ item.custodianKey }}
+                      {{ item.custodianKey ? item.custodianKey : "-" }}
                     </div>
 
                     <div class="fw-bolder mt-2">Bill only settled trades</div>
@@ -186,7 +205,11 @@
 
                     <div class="fw-bolder mt-2">Account Display Format</div>
                     <div class="text-gray mb-2">
-                      {{ item.accountDisplayFormat }}
+                      {{
+                        item.accountDisplayFormat
+                          ? item.accountDisplayFormat
+                          : "-"
+                      }}
                     </div>
                   </div>
                 </span>
@@ -212,10 +235,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import { CustodiansResponseModel } from "@/model";
 
@@ -228,6 +252,7 @@ import Keys from "./components/Keys.vue";
   components: {
     AddCustodian,
     Keys,
+    BreadCrumb
   },
 })
 export default class Custodians extends BaseComponent {
@@ -294,6 +319,10 @@ export default class Custodians extends BaseComponent {
       query: { firmCustodianId: custodian.firmCustodianId },
     });
   }
+
+  /*public greenKey(item: CustodiansResponseModel) {
+    if(item.custodianKey || item.accountDisplayFormat) 
+  }*/
 
   public applyFilter(searchValue: string) {
     this.response = this.dataResource.filter(

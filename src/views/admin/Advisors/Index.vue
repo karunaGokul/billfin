@@ -1,13 +1,15 @@
 <template>
-  <div class="card p-4 mt-4 position-relative">
+  <div class="d-flex align-items-center justify-content-between">
+    <bread-crumb/>
     <button
-      class="btn btn-primary position-absolute translate-middle"
+      class="btn btn-primary"
       type="button"
-      style="top: -40px; right: -58px"
       @click="addAdvisor('Add Advisor')"
     >
       Add Advisor
     </button>
+  </div>
+  <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
       <div class="fs-4 fw-bolder">Advisors</div>
       <div>
@@ -95,6 +97,7 @@
             <tr
               v-for="(item, index) in response"
               :key="'advisors-table' + index"
+              :class="{ test: create(item.createdTime) }"
             >
               <td
                 class="
@@ -189,6 +192,8 @@ import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 import { useStore } from "vuex";
 
 import AddAdvisor from "@/components/Models/AddAdvisor.vue";
@@ -201,6 +206,7 @@ import { advisorsResponseModel, assignRepCodesResponseModel } from "@/model";
   components: {
     AddAdvisor,
     RepCodePreview,
+    BreadCrumb,
   },
 })
 export default class Advisors extends BaseComponent {

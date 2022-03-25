@@ -62,3 +62,7 @@ export class ListItem {
     type: string;
     hidden: boolean = false;
 }
+export class TimeModel {
+    createdTime: string;
+    updatedTime: string;
+}

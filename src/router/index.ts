@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/repcodes",
-        name: "RepCodes",
+        name: "Rep Codes",
         component: () => import("@/views/admin/RepCodes/Index.vue"),
       },
       {

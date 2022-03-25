@@ -1,5 +1,7 @@
 <template>
   <div class="signup-plan-container">
+    <bread-crumb :additionalName="`${products} Billing`" />
+
     <div class="card m-6">
       <div class="tab-group">
         <div class="tab-header tab-header-icon pt-5 pb-5">
@@ -103,6 +105,9 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 import Plan from "./components/Plan.vue";
 import Addons from "./components/Addons.vue";
 import PickPayment from "@/components/controls/PickPayment/Index.vue";
@@ -111,8 +116,11 @@ import Review from "./components/Review.vue";
 import Subscribe from "./components/Subscribe.vue";
 import Confirm from "./components/Confirm.vue";
 
+import { useStore } from "vuex";
+
 @Options({
   components: {
+    BreadCrumb,
     Plan,
     Addons,
     PickPayment,
@@ -124,5 +132,12 @@ import Confirm from "./components/Confirm.vue";
 })
 export default class ChangePlan extends Vue {
   public step: number = 1;
+
+  public store = useStore();
+
+  get products() {
+    return this.store.getters.products.toString();
+  }
+
 }
 </script>

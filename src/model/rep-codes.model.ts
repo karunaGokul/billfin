@@ -39,7 +39,17 @@ export class viewRepCodesResponseModel {
   branchCode: number;
   advisors: Array<advisorsModel> = [];
 }
-export class advisorsModel extends advisorsResponseModel {
+export class advisorsModel {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  displayName: string;
+  emailAddress: string;
+  contactPhone: string;
+  repCodes: Array<repCodesResponseModel>;
+  branch: string;
+  advisorIdentifier: string;
+  advisorId: number;
   status: string;
   edit: boolean;
 }

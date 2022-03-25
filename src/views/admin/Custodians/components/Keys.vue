@@ -15,10 +15,12 @@
             formFieldType="inputBlock"
             label="Keys"
             :controls="v$.request.custodianKey"
-            :validation="['required']"
+            :validation="[]"
           />
 
-          <div class="d-flex align-items-center justify-content-between mt-4 mb-8">
+          <div
+            class="d-flex align-items-center justify-content-between mt-4 mb-8"
+          >
             <label class="fw-bolder fs-6">Bill only settled trades</label>
             <div class="form-check form-switch">
               <input
@@ -29,7 +31,9 @@
             </div>
           </div>
 
-          <div class="d-flex align-items-center justify-content-between mt-4 mb-8">
+          <div
+            class="d-flex align-items-center justify-content-between mt-4 mb-8"
+          >
             <label class="fw-bolder fs-6">Bill accrued interest</label>
             <div class="form-check form-switch">
               <input
@@ -44,7 +48,7 @@
             formFieldType="inputBlock"
             label="Account Display Format"
             :controls="v$.request.accountDisplayFormat"
-            :validation="['required']"
+            :validation="[]"
           />
         </div>
         <div class="modal-footer justify-content-end border-0 p-4">
@@ -70,7 +74,6 @@ import { Prop, Inject } from "vue-property-decorator";
 import BaseComponent from "@/components/base/BaseComponent.vue";
 
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
 
 import { AddKeysRequestModel, CustodiansResponseModel } from "@/model";
 
@@ -85,10 +88,10 @@ import { useStore } from "vuex";
   },
   validations: {
     request: {
-      custodianKey: { required },
+      custodianKey: {},
       settledTradesFlag: {},
       accruedInterestFlag: {},
-      accountDisplayFormat: { required },
+      accountDisplayFormat: {},
     },
   },
 })
@@ -116,24 +119,22 @@ export default class Keys extends BaseComponent {
 
   public addKeyConfig() {
     this.v$.$touch();
-
-    if (!this.v$.$invalid) {
-      this.service
-        .addKeys(this.request)
-        .then((response) => {
-          this.confirmation("", "New keys added successfully");
-          this.$emit("keyAdded");
-        })
-        .catch((err) => {
-          if (err.response.status == 500)
+    
+    this.service
+      .addKeys(this.request)
+      .then((response) => {
+        this.confirmation("", "New keys added successfully");
+        this.$emit("keyAdded");
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
             "Somthing went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
-        });
-    }
+      });
   }
 
   public close() {

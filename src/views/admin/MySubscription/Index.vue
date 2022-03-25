@@ -1,4 +1,5 @@
 <template>
+  <bread-crumb/>
   <div class="subscription-container">
     <div class="tab-group">
       <div class="tab-header pt-4 pb-4">
@@ -47,11 +48,14 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 
+import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+
 import AumSubscriptionBilling from "./components/AumSubscriptionBilling.vue";
 
 @Options({
   components: {
     AumSubscriptionBilling,
+    BreadCrumb
   },
 })
 export default class Index extends Vue {
