@@ -9,8 +9,15 @@ export class FeeScheduleModel {
   bps: string;
 }
 export class AddProductRequestModel {
+  productId: number;
   productCode: string;
   productName: string;
+  assignedFeeSchedule: AssignedFeeScheduleModel = new AssignedFeeScheduleModel();
+}
+export class AssignedFeeScheduleModel {
+  prorationMethod: string;
+  assetLevel: string;
+  feeTypes: Array<FeeSchedulesModel> = [];
 }
 export class FeeSchedulesModel {
   feeTypeCode: string;

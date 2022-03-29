@@ -29,6 +29,27 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-6">
+              <select-box
+                label="Proration Method"
+                :data="['Standard', 'Actual']"
+                :controls="v$.request.assignedFeeSchedule.prorationMethod"
+                :validation="[]"
+                formFieldType="inputBlock"
+              />
+            </div>
+            <div class="col-6">
+              <select-box
+                label="Asset Level"
+                :data="['Account', 'Household']"
+                :controls="v$.request.assignedFeeSchedule.assetLevel"
+                :validation="[]"
+                formFieldType="inputBlock"
+              />
+            </div>
+          </div>
+
           <div class="fw-bolder mb-8">Fee Schedules</div>
 
           <multi-select-box-with-delete
@@ -36,13 +57,20 @@
             feeSchedule="Fee Schedule"
             :feeTypeResponse="feeTypeResponse"
             :feeScheduleResponse="feeScheduleResponse"
+            @updateValue="updateFeeTypes"
           />
         </div>
         <div class="modal-footer justify-content-center border-0 p-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
             Cancel
           </button>
-          <button type="button" class="btn ms-8 btn-primary">Save</button>
+          <button
+            type="button"
+            class="btn ms-8 btn-primary"
+            @click="addProduct"
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>
@@ -60,9 +88,14 @@ import {
   ProductsResponseModel,
   AddProductRequestModel,
   ListItem,
+  ProrationMethod,
+  AssetLevel,
+  FeeSchedulesModel,
 } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
+import SelectBox from "@/components/controls/SelectBox.vue";
+
 import MultiSelectBoxWithDelete from "@/components/controls/MultiSelectBoxWithDelete.vue";
 
 import { IFeeSchedulesService, ProductsService } from "@/service";
@@ -70,12 +103,17 @@ import { IFeeSchedulesService, ProductsService } from "@/service";
 @Options({
   components: {
     TextInput,
+    SelectBox,
     MultiSelectBoxWithDelete,
   },
   validations: {
     request: {
       productCode: { required },
       productName: { required },
+      assignedFeeSchedule: {
+        prorationMethod: {},
+        assetLevel: {},
+      },
     },
   },
 })
@@ -129,6 +167,41 @@ export default class AddProduct extends Vue {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  public updateFeeTypes(feeTypes: Array<FeeSchedulesModel>) {
+    this.request.assignedFeeSchedule.feeTypes = feeTypes;
+
+    console.log(this.request.assignedFeeSchedule.feeTypes);
+  }
+
+  public addProduct() {
+    this.v$.$touch();
+
+    if (!this.v$.$invalid) {
+      this.request.assignedFeeSchedule.prorationMethod =
+        ProrationMethod[
+          this.request.assignedFeeSchedule
+            .prorationMethod as keyof typeof ProrationMethod
+        ];
+      this.request.assignedFeeSchedule.assetLevel =
+        AssetLevel[
+          this.request.assignedFeeSchedule.assetLevel as keyof typeof AssetLevel
+        ];
+
+      this.service
+        .addProduct(this.request)
+        .then((response) => {
+          this.$emit("newProduct");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
+
+  public close() {
+    this.$emit("close");
   }
 }
 </script>

@@ -11,6 +11,41 @@
       </label>
     </div>
   </div>
+  <div
+    class="row mt-6 mb-6"
+    v-for="(item, index) in getFeeSchedule"
+    :key="index"
+  >
+    <div class="col-4">
+      <div class="input-group input-group-solid">
+        <input
+          type="text"
+          class="form-control text-start"
+          :value="item.feeTypeName"
+          readonly
+        />
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="input-group input-group-solid">
+        <input
+          type="text"
+          class="form-control text-start"
+          :value="item.name"
+          readonly
+        />
+      </div>
+    </div>
+    <div class="col-2 d-flex align-items-center">
+      <button
+        type="button"
+        class="btn btn-secondary text-gray btn-sm p-2 ps-3 ms-4"
+        @click="removeItem(index, item)"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
   <div class="row">
     <div class="col-4">
       <select class="form-select form-select-solid" v-model="selectedFeeType">
@@ -31,7 +66,7 @@
         </option>
       </select>
     </div>
-    <div class="col-2 mt-6 d-flex align-items-center">
+    <div class="col-2 d-flex align-items-center">
       <button
         type="button"
         class="btn btn-primary btn-sm p-2 ps-3 ms-4"
@@ -80,41 +115,52 @@ export default class MultiSelectBoxWithDelete extends Vue {
     fees.selected = false;
 
     this.feeSchedules.push(fees);
+    this.updateItem();
+  }
+
+  public removeItem(index: number, item: FeeSchedulesModel) {
+    this.feeSchedules.splice(index, 1);
+
+    let feeType = new ListItem(item.feeTypeName, item.feeTypeCode);
+    feeType.data = item.feeTypeId;
+    this.feeTypeResponse.push(feeType);
+
+    let feeSchedules = new ListItem(item.name);
+    feeSchedules.data = item.feeScheduleId;
+    this.feeScheduleResponse.push(feeSchedules);
+
+    this.updateItem();
   }
 
   public nextItem() {
-    console.log("nextItem");
-    /*let i = this.feeTypeResponse.findIndex(
-      (item) => item == this.selectedFeeType
-    );
-    this.feeTypeResponse.splice(i, 1);
+    if (this.selectedFeeType && this.selectedFeeSchedule) {
+      let i = this.feeTypeResponse.findIndex(
+        (item) => item == this.selectedFeeType
+      );
+      this.feeTypeResponse.splice(i, 1);
 
-    let feeType = this.feeTypeItem.findIndex(
-      (item) => item == this.selectedFeeType
-    );
-    this.feeTypeItem[feeType].selected = true;
+      let feeType = this.feeSchedules.findIndex(
+        (item) => item.feeTypeName == this.selectedFeeType.text
+      );
+      this.feeSchedules[feeType].selected = true;
 
-    this.selectedFeeType = null;
+      this.selectedFeeType = null;
 
-    let index = this.feeScheduleResponse.findIndex(
-      (item) => item == this.selectedFeeSchedule
-    );
-    this.feeScheduleResponse.splice(index, 1);
+      let index = this.feeScheduleResponse.findIndex(
+        (item) => item == this.selectedFeeSchedule
+      );
+      this.feeScheduleResponse.splice(index, 1);
 
-    let feeSchedule = this.feeScheduleItem.findIndex(
-      (item) => item == this.selectedFeeSchedule
-    );
-    this.feeScheduleItem[feeSchedule].selected = true;
-
-    this.selectedFeeSchedule = null;*/
+      this.selectedFeeSchedule = null;
+    }
   }
 
-  /*get selectFeeType() {
-    return '';
+  private updateItem() {
+    this.$emit("updateValue", this.feeSchedules);
   }
 
-  get selectFeeSchedule() {
-    return this.feeScheduleResponse.filter((value) => value.selected);
-  }*/
+  get getFeeSchedule() {
+    return this.feeSchedules.filter((value) => value.selected);
+  }
 }
 </script>

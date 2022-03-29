@@ -87,5 +87,14 @@ export enum CurrencyCode {
 }
 export enum treatAs {
   Contribution = "CONTRIBUTION",
-  Withdrawal = "WITHDRAWAL"
+  Withdrawal = "WITHDRAWAL",
+}
+export enum ProrationMethod {
+  Standard = "STANDARD",
+  Actual = "ACTUAL,NONE",
+}
+
+export enum AssetLevel {
+  Account = "ACCOUNT",
+  Household = "HOUSEHOLD",
 }

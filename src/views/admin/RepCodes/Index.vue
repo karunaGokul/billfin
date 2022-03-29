@@ -88,7 +88,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
-              style="width: 25%"
+              style="width: 20%"
               @click="viewRepCodes('View RepCode', item)"
             >
               {{ item.repCode }}
@@ -100,7 +100,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
-              style="width: 15%"
+              style="width: 20%"
             >
               {{ item.branchName }} <span v-if="item.branchCode">({{item.branchCode}})</span>
             </td>

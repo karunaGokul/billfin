@@ -10,7 +10,6 @@
       :key="i"
     >
       <div class="input-group input-group-solid">
-        {{ i }} -
         <input
           type="text"
           class="form-control text-start"
@@ -85,9 +84,6 @@ export default class SelectBoxWithDelete extends Vue {
   }
 
   public removeItem(index: number, data: ListItem) {
-    console.log(index);
-    console.log(data);
-
     this.item.splice(index, 1);
     data.selected = false;
     this.response.push(data);

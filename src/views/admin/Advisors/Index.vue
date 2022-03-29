@@ -106,6 +106,7 @@
                   border-bottom-2 border-dashed border-light
                   p-6
                 "
+                style="width: 15%"
                 @click="addAdvisor('View Advisor', item)"
               >
                 {{ item.displayName }}
@@ -117,6 +118,7 @@
                   border-bottom-2 border-dashed border-light
                   p-6
                 "
+                style="width: 30%"
                 @click="addAdvisor('View Advisor', item)"
               >
                 {{ item.emailAddress }}
@@ -128,6 +130,7 @@
                   border-bottom-2 border-dashed border-light
                   p-6
                 "
+                style="width: 30%"
               >
                 <a
                   href="#"
@@ -147,6 +150,7 @@
                   border-bottom-2 border-dashed border-light
                   p-6
                 "
+                style="width: 10%"
                 @click="addAdvisor('View Advisor', item)"
               >
                 {{ item.branch }}
