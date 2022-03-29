@@ -46,7 +46,7 @@
 import { Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { ListItem } from "@/model";
+import { ListItem, FeeSchedulesModel } from "@/model";
 
 export default class MultiSelectBoxWithDelete extends Vue {
   @Prop() feeType: string;
@@ -59,16 +59,32 @@ export default class MultiSelectBoxWithDelete extends Vue {
   public selectedFeeType: ListItem = null;
   public selectedFeeSchedule: ListItem = null;
 
-  public feeTypeItem: Array<ListItem> = [];
-  public feeScheduleItem: Array<ListItem> = [];
+  //public feeTypeItem: Array<ListItem> = [];
+  public feeSchedules: Array<FeeSchedulesModel> = [];
 
   public addItem() {
-    this.feeTypeItem.push(this.selectedFeeType);
-    this.feeScheduleItem.push(this.selectedFeeSchedule);
+    if (this.feeSchedules.length > 0) {
+      for (let i = 0; i <= this.feeSchedules.length; i++) {
+        if (!this.feeSchedules[i].selected) this.feeSchedules.splice(i, 1);
+      }
+    }
+
+    let fees: FeeSchedulesModel = new FeeSchedulesModel();
+    fees.feeTypeName = this.selectedFeeType.text;
+    fees.feeTypeCode = this.selectedFeeType.value;
+    fees.feeTypeId = this.selectedFeeType.data;
+
+    fees.name = this.selectedFeeSchedule.text;
+    fees.feeScheduleId = this.selectedFeeSchedule.data;
+
+    fees.selected = false;
+
+    this.feeSchedules.push(fees);
   }
 
   public nextItem() {
-    let i = this.feeTypeResponse.findIndex(
+    console.log("nextItem");
+    /*let i = this.feeTypeResponse.findIndex(
       (item) => item == this.selectedFeeType
     );
     this.feeTypeResponse.splice(i, 1);
@@ -90,15 +106,15 @@ export default class MultiSelectBoxWithDelete extends Vue {
     );
     this.feeScheduleItem[feeSchedule].selected = true;
 
-    this.selectedFeeSchedule = null;
+    this.selectedFeeSchedule = null;*/
   }
 
-  get selectFeeType() {
-    return this.feeTypeItem.filter((value) => value.selected);
+  /*get selectFeeType() {
+    return '';
   }
 
   get selectFeeSchedule() {
     return this.feeScheduleResponse.filter((value) => value.selected);
-  }
+  }*/
 }
 </script>

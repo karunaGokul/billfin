@@ -88,6 +88,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 25%"
               @click="viewRepCodes('View RepCode', item)"
             >
               {{ item.repCode }}
@@ -99,8 +100,9 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 15%"
             >
-              {{ item.branchName }}
+              {{ item.branchName }} <span v-if="item.branchCode">({{item.branchCode}})</span>
             </td>
             <td
               class="
@@ -109,6 +111,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 45%"
             >
               <span v-for="(advisor, i) of item.advisors" :key="i">
                 {{ advisor.displayName
@@ -116,7 +119,7 @@
               </span>
             </td>
             <td
-              class="border-bottom-2 border-dashed border-light p-6"
+              class="border-bottom-2 border-dashed border-light p-6 text-center"
               style="width: 15%"
             >
               <i

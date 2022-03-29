@@ -29,7 +29,7 @@
             </div>
           </div>
 
-          <div class="fw-bolder">Fee Schedules</div>
+          <div class="fw-bolder mb-8">Fee Schedules</div>
 
           <multi-select-box-with-delete
             feeType="Fee Type"
@@ -65,7 +65,7 @@ import {
 import TextInput from "@/components/controls/TextInput.vue";
 import MultiSelectBoxWithDelete from "@/components/controls/MultiSelectBoxWithDelete.vue";
 
-import { IFeeSchedulesService } from "@/service";
+import { IFeeSchedulesService, ProductsService } from "@/service";
 
 @Options({
   components: {
@@ -80,7 +80,9 @@ import { IFeeSchedulesService } from "@/service";
   },
 })
 export default class AddProduct extends Vue {
-  @Inject("feeSchedulesService") service: IFeeSchedulesService;
+  @Inject("productsService") service: ProductsService;
+  @Inject("feeSchedulesService") feeSchedulesService: IFeeSchedulesService;
+
   @Prop() modelType: string;
   @Prop() selectedProduct?: ProductsResponseModel;
 
@@ -94,18 +96,39 @@ export default class AddProduct extends Vue {
     return useVuelidate();
   }
 
-  mounted() {
-    let item = new ListItem("Advisory Fee");
-    this.feeTypeResponse.push(item);
+  created() {
+    this.getFeeTypes();
+    this.getFeeSchedules();
+  }
 
-    item = new ListItem("Strategy Fee");
-    this.feeTypeResponse.push(item);
+  public getFeeTypes() {
+    this.feeSchedulesService
+      .getFeeTypes()
+      .then((response) => {
+        response.forEach((item) => {
+          let feeType = new ListItem(item.feeTypeName, item.feeTypeCode);
+          feeType.data = item.feeTypeId;
+          this.feeTypeResponse.push(feeType);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-    let data = new ListItem("75 bps");
-    this.feeScheduleResponse.push(data);
-
-    data = new ListItem("726 bps");
-    this.feeScheduleResponse.push(data);
+  public getFeeSchedules() {
+    this.feeSchedulesService
+      .getFeeSchedules()
+      .then((response) => {
+        response.forEach((item) => {
+          let fees = new ListItem(item.name);
+          fees.data = item.feeScheduleId;
+          this.feeScheduleResponse.push(fees);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 </script>

@@ -2,14 +2,14 @@
   <ul class="nav nav-tabs">
     <li
       class="nav-item p-4"
-      :class="{ 'border-bottom border-2 border-primary': page == 'Products' }"
+      :class="{ 'fw-bold border-bottom border-2 border-primary': page == 'Products' }"
       @click="page = 'Products'"
     >
       Products
     </li>
     <li
       class="nav-item p-4"
-      :class="{ 'border-bottom border-2 border-primary': page == 'Plans' }"
+      :class="{ 'fw-bold border-bottom border-2 border-primary': page == 'Plans' }"
       @click="page = 'Plans'"
     >
       Plans

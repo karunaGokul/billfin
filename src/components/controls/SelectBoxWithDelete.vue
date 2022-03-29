@@ -10,6 +10,7 @@
       :key="i"
     >
       <div class="input-group input-group-solid">
+        {{ i }} -
         <input
           type="text"
           class="form-control text-start"
@@ -65,6 +66,11 @@ export default class SelectBoxWithDelete extends Vue {
   }
 
   public addItem() {
+    if (this.item.length > 0) {
+      for (let i in this.item) {
+        if (!this.item[i].selected) this.item.splice(+i, 1);
+      }
+    }
     this.item.push(this.selectedItem);
     this.updateItem();
   }
@@ -79,6 +85,9 @@ export default class SelectBoxWithDelete extends Vue {
   }
 
   public removeItem(index: number, data: ListItem) {
+    console.log(index);
+    console.log(data);
+
     this.item.splice(index, 1);
     data.selected = false;
     this.response.push(data);

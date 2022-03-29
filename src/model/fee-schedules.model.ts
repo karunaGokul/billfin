@@ -46,3 +46,8 @@ export class TierFormModel {
   bps: FormValidation = new FormValidation();
   amount: FormValidation = new FormValidation();
 }
+export class FeeTypesResponseModel {
+  feeTypeCode: string;
+  feeTypeName: string;
+  feeTypeId: number;
+}

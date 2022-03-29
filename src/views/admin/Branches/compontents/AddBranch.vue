@@ -22,7 +22,7 @@
             label="Branch Name"
             :controls="v$.request.branchName"
             :maxLength="255"
-            :validation="['required']"
+            :validation="[]"
           />
           <select-box-with-delete
             label="Assign Rep Codes"
@@ -94,7 +94,7 @@ import SelectBoxWithDelete from "@/components/controls/SelectBoxWithDelete.vue";
   validations: {
     request: {
       branchCode: { required },
-      branchName: { required },
+      branchName: { },
     },
   },
 })

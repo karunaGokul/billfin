@@ -12,3 +12,11 @@ export class AddProductRequestModel {
   productCode: string;
   productName: string;
 }
+export class FeeSchedulesModel {
+  feeTypeCode: string;
+  feeTypeName: string;
+  feeTypeId: number;
+  name: string;
+  feeScheduleId: number;
+  selected: boolean = false;
+}

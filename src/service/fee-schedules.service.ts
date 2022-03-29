@@ -1,10 +1,15 @@
 import { IBaseService, BaseService } from "./base.service";
-import { FeeSchedulesResponseModel, AddFeeScheduleRequestModel } from "@/model";
+import {
+  FeeSchedulesResponseModel,
+  AddFeeScheduleRequestModel,
+  FeeTypesResponseModel,
+} from "@/model";
 
 export interface IFeeSchedulesService
   extends IBaseService<any, FeeSchedulesResponseModel> {
   getFeeSchedules(): Promise<Array<FeeSchedulesResponseModel>>;
   addFeeSchedule(request: AddFeeScheduleRequestModel): Promise<any>;
+  getFeeTypes(): Promise<Array<FeeTypesResponseModel>>;
 }
 
 export class FeeSchedulesService
@@ -24,6 +29,14 @@ export class FeeSchedulesService
 
   public addFeeSchedule(request: AddFeeScheduleRequestModel): Promise<any> {
     return this.httpPost("private/api/v1/feeSchedule", request).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public getFeeTypes(): Promise<Array<FeeTypesResponseModel>> {
+    return this.httpGet("private/api/v1/firmAUMFeeTypes", null).then(
       (response) => {
         return response.data;
       }

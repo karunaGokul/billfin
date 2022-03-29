@@ -22,7 +22,7 @@
             <span class="fs-7">$</span>
             {{
               $filters.currencyDisplayWithoutSymbol(
-                preAddedAddOns.paymentAmount
+                preAddedAddOns.paymentAmount / preAddedAddOns.quantity
               )
             }}
             <span class="fs-8 fw-light text-gray"

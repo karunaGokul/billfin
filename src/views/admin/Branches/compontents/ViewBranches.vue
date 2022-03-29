@@ -23,7 +23,7 @@
             class="modal-title fs-4 fw-bolder"
             v-if="modelType == 'View Branch'"
           >
-            {{ branch.branchCode }} - {{ branch.branchName }}
+            {{ branch.branchCode }} &nbsp;&nbsp; {{ branch.branchName }}
           </h5>
           <div
             class="d-flex align-items-center"
@@ -45,9 +45,9 @@
               />
             </div>
           </div>
-          <div class="d-flex justify-content-between p-4">
+          <div class="d-flex justify-content-between p-4 ps-0">
             <div class="fs-4 fw-bolder">
-              Rep Codes({{ request.repCodes.length }})
+              Rep Codes ({{ request.repCodes.length }})
 
               <button
                 type="button"
@@ -133,6 +133,7 @@
                       text-dark-gray
                       border-bottom border-dashed border-light
                       p-6
+                      w-25
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -164,8 +165,9 @@
                   >
                     <div v-if="item.status == 'view' && !item.edit">
                       <span v-for="(data, i) in item.advisors" :key="i"
-                        >{{ data.displayName }},</span
-                      >
+                        >{{ data.displayName
+                        }}<span v-if="i + 1 < item.advisors.length">, </span>
+                      </span>
                     </div>
                     <div v-else>
                       <div class="input-group input-group-solid mb-2">
