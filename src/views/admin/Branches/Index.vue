@@ -88,6 +88,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 20%"
               @click="viewBranch('View Branch', item)"
             >
               {{ item.branchCode }}
@@ -99,6 +100,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 20%"
             >
               {{ item.branchName }}
             </td>
@@ -109,6 +111,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              style="width: 45%"
             >
               <span v-for="(code, i) of item.repCodes" :key="i">
                 <span v-if="i < 2">
