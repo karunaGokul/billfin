@@ -27,24 +27,23 @@
             class="modal-title fs-4 fw-bolder"
             v-if="pageType == 'RepCodes' && modelType == 'View RepCode'"
           >
-            {{ selectedRepCode.repCode }}
-            <span v-if="selectedRepCode.branchName">-</span>
+            {{ selectedRepCode.repCode }} &nbsp;&nbsp;
             {{ selectedRepCode.branchName }}
           </h5>
-          <div
-            class="d-flex align-items-center"
-            v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
-          >
-            <text-input
-              formFieldType="inputBlock"
-              label=""
-              :controls="v$.request.repCode"
-              :validation="['required']"
-              readonly
-            />
-            <div class="ms-8">
+          <div class="row" v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'">
+            <div class="col-2">
+              <div class="input-group input-group-solid mb-2">
+                <input
+                  type="text"
+                  class="form-control text-start"
+                  v-model="request.repCode"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="col-10">
               <select
-                class="form-select form-select-solid mb-4 w-100"
+                class="form-select form-select-solid mb-4 w-50"
                 v-model="selectedBranch"
               >
                 <option v-for="(item, i) in branchs" :key="i" :value="item">
@@ -53,9 +52,9 @@
               </select>
             </div>
           </div>
-          <div class="d-flex justify-content-between p-4">
+          <div class="d-flex justify-content-between p-4 ps-0">
             <div class="fs-4 fw-bolder">
-              Advisors({{ totalAdvisors }})
+              Advisors ({{ totalAdvisors }})
 
               <button
                 type="button"
@@ -106,7 +105,7 @@
                       p-4
                     "
                   >
-                    DISPLAY AS
+                    DISPLAY NAME
                   </th>
 
                   <th
@@ -162,7 +161,7 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-6
+                      p-4 pt-6 pb-6
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -189,7 +188,7 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-6
+                      p-4 pt-6 pb-6
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -211,7 +210,7 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-6
+                      p-4 pt-6 pb-6
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -233,7 +232,7 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-6
+                      p-4 pt-6 pb-6
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -313,7 +312,7 @@
                 class="btn btn-secondary ms-4"
                 @click="close"
               >
-                Close
+                Cancel
               </button>
               <button
                 type="button"
@@ -330,13 +329,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject, Prop } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
-
-import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
 
 import AddAdvisor from "../Models/AddAdvisor.vue";
 
@@ -349,7 +345,7 @@ import {
   branchesResponseModel,
   repCodesResponseModel,
   viewRepCodesResponseModel,
-  addRepCodeRequestModel
+  addRepCodeRequestModel,
 } from "@/model";
 import {
   IAdvisorsService,
@@ -362,11 +358,6 @@ import {
     AddAdvisor,
     TextInput,
     SelectBox,
-  },
-  validations: {
-    request: {
-      repCode: { required },
-    },
   },
 })
 export default class RepCodePreview extends BaseComponent {
@@ -392,12 +383,6 @@ export default class RepCodePreview extends BaseComponent {
 
   public allowAddAdvisor: boolean = true;
   public selectedBranch: branchesResponseModel = new branchesResponseModel();
-
-  public v$: any = setup(() => this.validate());
-
-  private validate() {
-    return useVuelidate();
-  }
 
   created() {
     this.modelType = this.type;

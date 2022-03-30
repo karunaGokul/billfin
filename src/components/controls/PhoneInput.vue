@@ -53,10 +53,10 @@ import ErrorMessage from "./ErrorMessage.vue";
   },
 })
 export default class PhoneInput extends Vue {
-  @Prop() formFieldType: string | any;
-  @Prop() label: string | any;
+  @Prop() formFieldType: string;
+  @Prop() label: string;
   @Prop() controls: any;
-  @Prop() validation: Array<string> | any;
+  @Prop() validation: Array<string>;
 
   public acceptNumber() {
     const value = this.controls.$model

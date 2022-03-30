@@ -91,7 +91,7 @@ export enum treatAs {
 }
 export enum ProrationMethod {
   Standard = "STANDARD",
-  Actual = "ACTUAL,NONE",
+  Actual = "ACTUAL",
 }
 
 export enum AssetLevel {

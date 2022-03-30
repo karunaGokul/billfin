@@ -29,20 +29,26 @@
             class="d-flex align-items-center"
             v-if="modelType == 'Edit Branchs'"
           >
-            <text-input
-              formFieldType="inputBlock"
-              label=""
-              :controls="v$.request.branchCode"
-              :validation="['required']"
-              readonly
-            />
-            <div class="ms-8">
-              <text-input
-                formFieldType="inputBlock"
-                label=""
-                :controls="v$.request.branchName"
-                :validation="['required']"
-              />
+            <div class="row">
+              <div class="col-4">
+                <text-input
+                  formFieldType="inputBlock"
+                  label=""
+                  :controls="v$.request.branchCode"
+                  :validation="['required']"
+                  readonly
+                />
+              </div>
+              <div class="col-8">
+                <div class="w-75">
+                  <text-input
+                    formFieldType="inputBlock"
+                    label=""
+                    :controls="v$.request.branchName"
+                    :validation="['required']"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div class="d-flex justify-content-between p-4 ps-0">
@@ -132,7 +138,9 @@
                       fw-bold
                       text-dark-gray
                       border-bottom border-dashed border-light
-                      p-6
+                      p-4
+                      pt-6
+                      pb-6
                       w-25
                     "
                   >
@@ -160,7 +168,9 @@
                       fw-bold
                       text-dark-gray
                       border-bottom border-dashed border-light
-                      p-6
+                      p-4
+                      pt-6
+                      pb-6
                     "
                   >
                     <div v-if="item.status == 'view' && !item.edit">
@@ -182,7 +192,12 @@
                   </td>
 
                   <td
-                    class="border-bottom border-dashed border-light p-4"
+                    class="
+                      border-bottom border-dashed border-light
+                      p-4
+                      pt-6
+                      pb-6
+                    "
                     v-if="modelType == 'Edit Branchs'"
                   >
                     <button
@@ -238,7 +253,7 @@
                 class="btn btn-secondary ms-4"
                 @click="close"
               >
-                Close
+                Cancel
               </button>
               <button
                 type="button"

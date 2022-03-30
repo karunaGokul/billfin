@@ -69,7 +69,7 @@
                   label="Phone number"
                   :controls="v$.request.contactPhone"
                   formFieldType="inputBlock"
-                  :validation="['phone', 'minLength', 'phoneLength']"
+                  :validation="['minLength', 'phone', 'phoneLength']"
                 />
               </div>
             </div>
@@ -193,7 +193,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 import { useStore } from "vuex";
 
@@ -224,24 +224,24 @@ import { IAdvisorsService, IRepCodesService } from "@/service";
       lastName: { required, maxLength: maxLength(255) },
       displayName: { required, maxLength: maxLength(255) },
       contactPhone: {
+        minLength: minLength(10),
         phone: (value: any) => {
           let validation = false;
-          if (
-            value &&
-            value != "" &&
-            /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value)
-          )
+
+          if (!value) validation = true;
+          else if (/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(value))
             validation = true;
+
           return validation;
         },
-        minLength: minLength(10),
         phoneLength: (value: any) => {
           let validation = false;
-          if (
+          /*if (
             (value && value != "" && value.length == 10) ||
             value.length == 12
-          )
-            validation = true;
+          )*/
+          if (!value) validation = true;
+          else if (value.length == 10 || value.length == 12) validation = true;
           return validation;
         },
       },
@@ -283,7 +283,8 @@ export default class AddAdvisor extends BaseComponent {
   created() {
     this.modelType = this.type;
 
-    if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")  this.request = this.selectedAdvisor;
+    if (this.modelType == "View Advisor" || this.modelType == "Edit Advisors")
+      this.request = this.selectedAdvisor;
 
     if (this.modelType == "Edit Advisors") this.editAdvisor();
     else if (this.modelType == "Add Advisor") this.unassignedRepCodes();
@@ -368,6 +369,7 @@ export default class AddAdvisor extends BaseComponent {
 
   public addAdvisor() {
     this.v$.$touch();
+    console.log(this.v$.request.contactPhone);
     if (!this.v$.$invalid && !this.emailErrorMessage) {
       this.request.middleName = this.valueCheck(this.request.middleName);
       this.request.advisorIdentifier = this.valueCheck(

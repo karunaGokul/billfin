@@ -12,9 +12,9 @@ import { Prop } from "vue-property-decorator";
 import ValidationService from "@/components/validation/validation.service";
 
 export default class ErrorMessage extends Vue {
-  @Prop() label: string | any;
+  @Prop() label: string;
   @Prop() controls: any;
-  @Prop() validation: Array<string> | any;
+  @Prop() validation: Array<string>;
 
   get errorMessage() {
     if (this.controls.$dirty && this.controls.$invalid) {

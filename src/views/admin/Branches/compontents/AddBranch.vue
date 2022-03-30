@@ -122,6 +122,7 @@ export default class AddBranch extends BaseComponent {
   }
 
   private unassignedRepCodes() {
+    this.repCodes = [];
     this.repCodesService.unassignedRepCodes().then((response) => {
       response.forEach((item) => {
         let repCode = new ListItem(item.repCode);

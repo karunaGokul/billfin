@@ -179,16 +179,22 @@ export default class AddProduct extends Vue {
     this.v$.$touch();
 
     if (!this.v$.$invalid) {
-      this.request.assignedFeeSchedule.prorationMethod =
+      let request: AddProductRequestModel = new AddProductRequestModel();
+
+      request.productCode = this.request.productCode;
+      request.productId = this.request.productId;
+      request.productName = this.request.productName;
+      request.assignedFeeSchedule.prorationMethod =
         ProrationMethod[
           this.request.assignedFeeSchedule
             .prorationMethod as keyof typeof ProrationMethod
         ];
-      this.request.assignedFeeSchedule.assetLevel =
+      request.assignedFeeSchedule.assetLevel =
         AssetLevel[
           this.request.assignedFeeSchedule.assetLevel as keyof typeof AssetLevel
         ];
 
+      request.assignedFeeSchedule.feeTypes = this.request.assignedFeeSchedule.feeTypes;
       this.service
         .addProduct(this.request)
         .then((response) => {
