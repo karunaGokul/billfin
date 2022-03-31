@@ -157,7 +157,7 @@
                 v-for="(code, index) of request.repCodes"
                 :key="'advisor-rep-code' + index"
               >
-                {{ code.repCode }},
+                {{ code.repCode }}<span v-if="index + 1 < request.repCodes.length">, </span>
               </a>
             </div>
           </template>
@@ -183,6 +183,7 @@
           <button
             type="button"
             class="btn btn-primary ms-4"
+            @click="close('close')"
             v-if="modelType == 'View Advisor'"
           >
             Close

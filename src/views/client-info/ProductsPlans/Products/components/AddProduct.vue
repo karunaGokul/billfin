@@ -194,9 +194,11 @@ export default class AddProduct extends Vue {
           this.request.assignedFeeSchedule.assetLevel as keyof typeof AssetLevel
         ];
 
-      request.assignedFeeSchedule.feeTypes = this.request.assignedFeeSchedule.feeTypes;
+      request.assignedFeeSchedule.feeTypes =
+        this.request.assignedFeeSchedule.feeTypes;
+
       this.service
-        .addProduct(this.request)
+        .addProduct(request)
         .then((response) => {
           this.$emit("newProduct");
         })

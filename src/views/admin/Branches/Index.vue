@@ -101,6 +101,7 @@
                 p-6
               "
               style="width: 20%"
+              @click="viewBranch('View Branch', item)"
             >
               {{ item.branchName }}
             </td>
@@ -125,15 +126,15 @@
                   w-25
                   h-25
                   p-4
-                  ps-5
-                  pe-5
+                  ps-4
+                  pe-4
                   ms-4
                   rounded-circle
                   bg-primary
                   text-white
                 "
                 v-if="item.repCodes.length > 2"
-                >{{ item.repCodes.length - 2 }}</span
+                >+{{ item.repCodes.length - 2 }}</span
               >
             </td>
             <td
