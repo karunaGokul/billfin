@@ -1006,8 +1006,10 @@ export default class AddFeeSchedule extends Vue {
         this.feeValidation.amount.value
       );
     } else {
-      this.tiers.forEach((item) => {
+      this.tiers.forEach((item, index) => {
         let tier = new TierModel();
+        tier.index = index;
+        
         tier.fromValue = +item.fromValue.value;
         tier.toValue = item.toValue.value
           ? this.$currencyToNumber(item.toValue.value)

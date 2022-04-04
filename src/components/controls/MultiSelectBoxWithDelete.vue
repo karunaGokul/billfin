@@ -89,13 +89,16 @@ export default class MultiSelectBoxWithDelete extends Vue {
   @Prop() feeTypeResponse: Array<ListItem>;
   @Prop() feeScheduleResponse: Array<ListItem>;
 
-  //@Prop() preSelected: Array<ListItem>;
+  @Prop() preSelected?: Array<any>;
 
   public selectedFeeType: ListItem = null;
   public selectedFeeSchedule: ListItem = null;
 
-  //public feeTypeItem: Array<ListItem> = [];
   public feeSchedules: Array<FeeSchedulesModel> = [];
+
+  created() {
+    if(this.preSelected) this.feeSchedules = this.preSelected;
+  }
 
   public addItem() {
     if (this.feeSchedules.length > 0) {

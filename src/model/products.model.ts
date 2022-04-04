@@ -1,18 +1,15 @@
-export class ProductsResponseModel {
-  productCode: string;
-  productName: string;
-  feeSchedule: Array<FeeScheduleModel> = [];
-  noOfAccounts: number;
-}
-export class FeeScheduleModel {
-  name: string;
-  bps: string;
-}
 export class AddProductRequestModel {
   productId: number;
   productCode: string;
   productName: string;
   assignedFeeSchedule: AssignedFeeScheduleModel = new AssignedFeeScheduleModel();
+}
+export class ProductsResponseModel extends AddProductRequestModel {
+  noOfAccounts: number;
+}
+export class FeeScheduleModel {
+  name: string;
+  bps: string;
 }
 export class AssignedFeeScheduleModel {
   prorationMethod: string;
@@ -23,7 +20,8 @@ export class FeeSchedulesModel {
   feeTypeCode: string;
   feeTypeName: string;
   feeTypeId: number;
-  name: string;
   feeScheduleId: number;
+  feeScheduleName: string;
+  name: string;
   selected: boolean = false;
 }

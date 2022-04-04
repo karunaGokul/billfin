@@ -100,7 +100,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
-              style="width: 20%"
+              style="width: 25%"
               @click="viewBranch('View Branch', item)"
             >
               {{ item.branchName }}
@@ -112,7 +112,7 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
-              style="width: 45%"
+              style="width: 40%"
             >
               <span v-for="(code, i) of item.repCodes" :key="i">
                 <span v-if="i < 2">
@@ -122,29 +122,22 @@
               </span>
 
               <span
-                class="
-                  w-25
-                  h-25
-                  p-4
-                  ps-4
-                  pe-4
-                  ms-4
-                  rounded-circle
-                  bg-primary
-                  text-white
-                "
+                class="badge rounded-circle bg-primary text-white p-4 ms-4"
                 v-if="item.repCodes.length > 2"
-                >+{{ item.repCodes.length - 2 }}</span
               >
+                +{{ item.repCodes.length - 2 }}
+              </span>
             </td>
             <td
               class="border-bottom-2 border-dashed border-light p-6"
               style="width: 15%"
             >
-              <i
-                class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
-                @click="viewBranch('Edit Branchs', item)"
-              ></i>
+              <div class="d-flex align-items-center p-4">
+                <i
+                  class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
+                  @click="viewBranch('Edit Branchs', item)"
+                ></i>
+              </div>
             </td>
           </tr>
         </tbody>

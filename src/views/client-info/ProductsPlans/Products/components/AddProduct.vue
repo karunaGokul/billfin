@@ -55,6 +55,7 @@
           <multi-select-box-with-delete
             feeType="Fee Type"
             feeSchedule="Fee Schedule"
+            :preSelected="request.assignedFeeSchedule.feeTypes"
             :feeTypeResponse="feeTypeResponse"
             :feeScheduleResponse="feeScheduleResponse"
             @updateValue="updateFeeTypes"
@@ -99,6 +100,7 @@ import SelectBox from "@/components/controls/SelectBox.vue";
 import MultiSelectBoxWithDelete from "@/components/controls/MultiSelectBoxWithDelete.vue";
 
 import { IFeeSchedulesService, ProductsService } from "@/service";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 @Options({
   components: {
@@ -117,7 +119,7 @@ import { IFeeSchedulesService, ProductsService } from "@/service";
     },
   },
 })
-export default class AddProduct extends Vue {
+export default class AddProduct extends BaseComponent {
   @Inject("productsService") service: ProductsService;
   @Inject("feeSchedulesService") feeSchedulesService: IFeeSchedulesService;
 
@@ -134,7 +136,37 @@ export default class AddProduct extends Vue {
     return useVuelidate();
   }
 
-  created() {
+  mounted() {
+    if (this.modelType == "Edit Product") {
+      this.request.productId = this.selectedProduct.productId;
+      this.request.productCode = this.selectedProduct.productCode;
+      this.request.productName = this.selectedProduct.productName;
+
+      let prorationMethod: any =
+        this.selectedProduct.assignedFeeSchedule.prorationMethod;
+      this.request.assignedFeeSchedule.prorationMethod =
+        Object.keys(ProrationMethod)[
+          Object.values(ProrationMethod).indexOf(prorationMethod)
+        ];
+
+      let assetLevel: any = this.selectedProduct.assignedFeeSchedule.assetLevel;
+
+      this.request.assignedFeeSchedule.assetLevel =
+        Object.keys(AssetLevel)[Object.values(AssetLevel).indexOf(assetLevel)];
+
+      this.selectedProduct.assignedFeeSchedule.feeTypes.forEach((item) => {
+        let fees = new FeeSchedulesModel();
+        fees.feeScheduleId = item.feeScheduleId;
+        fees.name = item.feeScheduleName;
+        fees.feeTypeName = item.feeTypeName;
+        fees.feeTypeId = item.feeTypeId;
+
+        fees.selected = true;
+
+        this.request.assignedFeeSchedule.feeTypes.push(fees);
+      });
+    }
+
     this.getFeeTypes();
     this.getFeeSchedules();
   }
@@ -150,7 +182,13 @@ export default class AddProduct extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -165,14 +203,18 @@ export default class AddProduct extends Vue {
         });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
   public updateFeeTypes(feeTypes: Array<FeeSchedulesModel>) {
     this.request.assignedFeeSchedule.feeTypes = feeTypes;
-
-    console.log(this.request.assignedFeeSchedule.feeTypes);
   }
 
   public addProduct() {
@@ -203,7 +245,13 @@ export default class AddProduct extends Vue {
           this.$emit("newProduct");
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
         });
     }
   }

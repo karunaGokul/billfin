@@ -152,13 +152,14 @@ import { ProductsService } from "@/service";
 import { ProductsResponseModel } from "@/model";
 
 import AddProduct from "./components/AddProduct.vue";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 @Options({
   components: {
     AddProduct,
   },
 })
-export default class Products extends Vue {
+export default class Products extends BaseComponent {
   @Inject("productsService") service: ProductsService;
 
   public response: Array<ProductsResponseModel> = [];
@@ -178,7 +179,13 @@ export default class Products extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
