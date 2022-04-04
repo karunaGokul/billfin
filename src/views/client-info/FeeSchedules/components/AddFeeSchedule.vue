@@ -625,6 +625,7 @@ import TextInput from "@/components/controls/TextInput.vue";
 import SelectBox from "@/components/controls/SelectBox.vue";
 
 import { IFeeSchedulesService } from "@/service";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 @Options({
   components: {
@@ -639,7 +640,7 @@ import { IFeeSchedulesService } from "@/service";
     },
   },
 })
-export default class AddFeeSchedule extends Vue {
+export default class AddFeeSchedule extends BaseComponent {
   @Inject("feeSchedulesService") service: IFeeSchedulesService;
   @Prop() modelType: string;
   @Prop() selectedFees: FeeSchedulesResponseModel;
@@ -1028,7 +1029,13 @@ export default class AddFeeSchedule extends Vue {
         this.$emit("newFeeAdded");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+            this.alert(
+              "Oops, sorry!",
+              "Somthing went wrong, Please contact administration"
+            );
+          else if (err.response.status == 400)
+            this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

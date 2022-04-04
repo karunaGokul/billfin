@@ -7,10 +7,6 @@ export class AddProductRequestModel {
 export class ProductsResponseModel extends AddProductRequestModel {
   noOfAccounts: number;
 }
-export class FeeScheduleModel {
-  name: string;
-  bps: string;
-}
 export class AssignedFeeScheduleModel {
   prorationMethod: string;
   assetLevel: string;

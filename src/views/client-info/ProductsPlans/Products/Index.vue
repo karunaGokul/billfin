@@ -104,11 +104,11 @@
               "
             >
               <div
-                v-for="(fees, i) in item.feeSchedule"
+                v-for="(fees, i) in item.assignedFeeSchedule.feeTypes"
                 :key="'feeSchedule-table' + i"
               >
-                <span class="fw-bolder">{{ fees.name }}:</span>
-                <span class="ms-2 text-gray">{{ fees.bps }}</span>
+                <span class="fw-bolder">{{ fees.feeTypeName }}:</span>
+                <span class="ms-2 text-gray">{{ fees.feeScheduleName }}</span>
               </div>
             </td>
             <td
@@ -129,7 +129,7 @@
               "
               style="width: 10%"
             >
-              <i class="fa fa-solid fa-pen fs-4 edit-row" @click="addProduct('Edit Product', item)"></i>
+              <i class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover" @click="addProduct('Edit Product', item)"></i>
             </td>
           </tr>
         </tbody>
