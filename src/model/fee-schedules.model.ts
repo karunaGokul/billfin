@@ -39,7 +39,7 @@ export class TierModel {
   toValue: number;
   bps: number;
   amount: number;
-  index: number;
+  id: number;
 }
 export class TierFormModel {
   fromValue: FormValidation = new FormValidation();
