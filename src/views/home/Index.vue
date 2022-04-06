@@ -153,23 +153,6 @@
           class="d-flex align-items-center position-relative"
           v-if="!trailExpired"
         >
-          <!--<div>
-            <p class="fw-bolder m-0 p-4 pb-0 fs-5 text-dark fw-bold">
-              {{ page }}
-            </p>
-            <div class="d-flex align-items-center ps-4 pt-2 pb-4">
-              <ol class="breadcrumb">
-                <router-link
-                  to="/dashboard"
-                  tag="li"
-                  class="breadcrumb-item text-muted"
-                >
-                  Home
-                </router-link>
-              </ol>
-              <ol class="breadcrumb" v-html="currentPage"></ol>
-            </div>
-          </div> -->
           <div
             class="
               alert alert-danger

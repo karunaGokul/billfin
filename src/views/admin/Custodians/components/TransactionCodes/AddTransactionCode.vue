@@ -8,7 +8,7 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="modal-body ms-8 me-8 mt-4 mb-4 p-4">
+        <div class="modal-body ms-8 me-8 mt-4 p-4">
           <text-input
             formFieldType="inputBlock"
             label="Transaction Code"
@@ -20,6 +20,7 @@
             formFieldType="inputBlock"
             label="Transaction Description"
             :controls="v$.request.transactionDescription"
+            maxLength="1024"
             :validation="[]"
           />
           <select-box
@@ -30,7 +31,7 @@
             :validation="['required']"
           />
         </div>
-        <div class="modal-footer justify-content-end border-0 p-4">
+        <div class="modal-footer justify-content-center border-0 p-0 pb-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
             Cancel
           </button>

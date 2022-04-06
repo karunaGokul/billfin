@@ -78,7 +78,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
@@ -175,6 +175,14 @@ export default class AddProduct extends BaseComponent {
     this.feeSchedulesService
       .getFeeTypes()
       .then((response) => {
+        if (this.modelType == "Edit Product") {
+          this.request.assignedFeeSchedule.feeTypes.forEach((item) => {
+            response.forEach((feeType, index) => {
+              if (feeType.feeTypeName == item.feeTypeName)
+                response.splice(index, 1);
+            });
+          });
+        }
         response.forEach((item) => {
           let feeType = new ListItem(item.feeTypeName, item.feeTypeCode);
           feeType.data = item.feeTypeId;
@@ -196,6 +204,14 @@ export default class AddProduct extends BaseComponent {
     this.feeSchedulesService
       .getFeeSchedules()
       .then((response) => {
+        if (this.modelType == "Edit Product") {
+          this.request.assignedFeeSchedule.feeTypes.forEach((item) => {
+            response.forEach((feeType, index) => {
+              if (feeType.name == item.feeScheduleName)
+                response.splice(index, 1);
+            });
+          });
+        }
         response.forEach((item) => {
           let fees = new ListItem(item.name);
           fees.data = item.feeScheduleId;

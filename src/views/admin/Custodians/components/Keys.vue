@@ -10,7 +10,7 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="modal-body ms-8 me-8 mt-4 mb-4 p-4">
+        <div class="modal-body ms-8 me-8 mt-4 p-4">
           <text-input
             formFieldType="inputBlock"
             label="Keys"
@@ -40,6 +40,7 @@
                 class="form-check-input"
                 type="checkbox"
                 v-model="v$.request.accruedInterestFlag.$model"
+                maxLength="1024"
               />
             </div>
           </div>
@@ -51,7 +52,7 @@
             :validation="[]"
           />
         </div>
-        <div class="modal-footer justify-content-end border-0 p-4">
+        <div class="modal-footer justify-content-center border-0 p-0 pb-4">
           <button type="button" class="btn btn-link text-gray" @click="close">
             Cancel
           </button>
@@ -123,7 +124,7 @@ export default class Keys extends BaseComponent {
     this.service
       .addKeys(this.request)
       .then((response) => {
-        this.confirmation("", "New keys added successfully");
+        this.confirmation("", "Custodian updated successfully");
         this.$emit("keyAdded");
       })
       .catch((err) => {
