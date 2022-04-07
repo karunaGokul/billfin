@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb :additionalName="custodianName"/>
+    <bread-crumb :additionalName="custodianName" />
     <div class="d-flex align-items-center justify-content-between">
       <button
         class="btn border border-primary text-primary me-2"
@@ -21,7 +21,7 @@
 
   <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
-      <div class="fs-4 fw-bolder">{{ custodianCode }} - Transaction Code</div>
+      <div class="fs-4 fw-bolder">{{ custodianName }} - Transaction Code</div>
       <div>
         <div class="input-group input-group-solid">
           <span class="input-group-text">
@@ -177,14 +177,11 @@ import AddTransactionCode from "./AddTransactionCode.vue";
 @Options({
   components: {
     AddTransactionCode,
-    BreadCrumb
+    BreadCrumb,
   },
 })
 export default class TransactionCodes extends BaseComponent {
   @Inject("custodiansService") service: ICustodiansService;
-
-  public custodianCode: any = "";
-  public firmCustodianId: any = 0;
 
   public response: Array<TransactionCodeResponseModel> = [];
   public dataResource: Array<TransactionCodeResponseModel> = [];
@@ -195,14 +192,12 @@ export default class TransactionCodes extends BaseComponent {
   public modelType: string = "Add Transaction Code";
 
   mounted() {
-    this.custodianCode = this.$route.params.custodianCode;
-    this.firmCustodianId = this.$route.query.firmCustodianId;
     this.getTransactionCode();
   }
 
   public getTransactionCode() {
     this.service
-      .getTransactionCode(this.firmCustodianId)
+      .getTransactionCode(+this.firmCustodianId)
       .then((response) => {
         this.response = response;
         this.dataResource = response;
@@ -252,6 +247,14 @@ export default class TransactionCodes extends BaseComponent {
             .toLowerCase()
             .includes(searchValue.toLowerCase()))
     );
+  }
+
+  get custodianCode() {
+    return this.$route.params.custodianCode;
+  }
+
+  get firmCustodianId() {
+    return this.$route.query.firmCustodianId;
   }
 
   get custodianName() {

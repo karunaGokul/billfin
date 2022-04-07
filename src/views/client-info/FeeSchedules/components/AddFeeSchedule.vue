@@ -20,6 +20,7 @@
                 :controls="v$.request.name"
                 :validation="['required']"
                 :readonly="modelType == 'Edit Fee Schedule'"
+                @updateInput="validateFeeSchedule"
               />
             </div>
             <div class="col-6">
@@ -604,7 +605,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 import { Prop, Inject } from "vue-property-decorator";
 
 import useVuelidate from "@vuelidate/core";
@@ -619,6 +620,7 @@ import {
   FeeSchedulesResponseModel,
   AddFeeScheduleValidationModel,
   TierModel,
+  ValidateFeeScheduleRequestModel,
 } from "@/model";
 
 import TextInput from "@/components/controls/TextInput.vue";
@@ -667,6 +669,19 @@ export default class AddFeeSchedule extends BaseComponent {
         this.selectedFees.tierType == "FLAT" ? "Flat" : "Tiered";
 
     this.resetForm();
+  }
+
+  public validateFeeSchedule() {
+    let request = new ValidateFeeScheduleRequestModel();
+    request.feeScheduleName = this.request.name;
+    this.service
+      .validateFeeSchedule(request)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   public resetForm() {
@@ -1030,12 +1045,12 @@ export default class AddFeeSchedule extends BaseComponent {
       })
       .catch((err) => {
         if (err.response.status == 500)
-            this.alert(
-              "Oops, sorry!",
-              "Somthing went wrong, Please contact administration"
-            );
-          else if (err.response.status == 400)
-            this.alert("Oops, sorry!", err.response.data.message);
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

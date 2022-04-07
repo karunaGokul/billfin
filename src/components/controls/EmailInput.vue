@@ -14,6 +14,7 @@
         :id="label"
         v-model="controls.$model"
         :readonly="readonly"
+        :maxlength="maxLength"
         @blur="emitEvent()"
       />
     </div>
@@ -48,6 +49,7 @@ export default class EmailInput extends Vue {
   @Prop() validation: Array<string> | any;
   @Prop() customInputError?: boolean;
   @Prop() readonly?: boolean;
+  @Prop() maxLength?: number = 255;
 
   public emitEvent() {
     this.$emit("validateEmail");

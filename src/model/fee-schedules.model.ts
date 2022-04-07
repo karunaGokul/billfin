@@ -52,3 +52,6 @@ export class FeeTypesResponseModel {
   feeTypeName: string;
   feeTypeId: number;
 }
+export class ValidateFeeScheduleRequestModel {
+  feeScheduleName: string;
+}

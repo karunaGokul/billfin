@@ -24,7 +24,15 @@
             :maxLength="255"
             :validation="['required']"
           />
-
+          <text-input
+            formFieldType="inputBlock"
+            label="# Accounts"
+            :controls="v$.request.noOfAccountsLinked"
+            :maxLength="255"
+            :validation="[]"
+            readonly
+            v-if="modelType == 'Edit Custodian'"
+          />
           <div
             class="form-check form-switch"
             v-if="modelType == 'Edit Custodian'"
@@ -79,6 +87,7 @@ import { useStore } from "vuex";
     request: {
       custodianIdentifier: { required },
       custodianName: { required },
+      noOfAccountsLinked: {},
       enabled: {},
     },
   },

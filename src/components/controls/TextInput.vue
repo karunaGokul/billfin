@@ -37,6 +37,9 @@
           class="form-control"
           v-model="controls.$model"
           :readonly="readonly"
+          @blur="updateInput"
+          @input="updateEvent"
+          :maxlength="maxLength"
         />
       </div>
       <error-message

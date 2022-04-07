@@ -15,6 +15,7 @@ export class CustodiansResponseModel extends AddKeysRequestModel {
 export class AddCustodianRequestModel {
   custodianIdentifier: string;
   custodianName: string;
+  noOfAccountsLinked: string;
   enabled: boolean = false;
   firmCustodianId: number;
   custodianId: number;

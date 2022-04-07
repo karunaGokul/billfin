@@ -3,6 +3,7 @@ import {
   FeeSchedulesResponseModel,
   AddFeeScheduleRequestModel,
   FeeTypesResponseModel,
+  ValidateFeeScheduleRequestModel
 } from "@/model";
 
 export interface IFeeSchedulesService
@@ -10,6 +11,7 @@ export interface IFeeSchedulesService
   getFeeSchedules(): Promise<Array<FeeSchedulesResponseModel>>;
   addFeeSchedule(request: AddFeeScheduleRequestModel): Promise<any>;
   getFeeTypes(): Promise<Array<FeeTypesResponseModel>>;
+  validateFeeSchedule(request: ValidateFeeScheduleRequestModel): Promise<any>;
 }
 
 export class FeeSchedulesService
@@ -21,6 +23,14 @@ export class FeeSchedulesService
 
   public getFeeSchedules(): Promise<Array<FeeSchedulesResponseModel>> {
     return this.httpGet("private/api/v1/firmFeeSchedule", null).then(
+      (response) => {
+        return response.data;
+      }
+    );
+  }
+
+  public validateFeeSchedule(request: ValidateFeeScheduleRequestModel): Promise<any> {
+    return this.httpGet("private/api/v1/validateFeeSchedule", request).then(
       (response) => {
         return response.data;
       }

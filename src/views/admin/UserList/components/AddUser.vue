@@ -95,6 +95,7 @@
                 label="First Name"
                 :controls="v$.request.firstName"
                 :validation="['required']"
+                maxLength="255"
               />
             </div>
             <div class="col-6">
@@ -102,7 +103,8 @@
                 formFieldType="inputBlock"
                 label="Last Name"
                 :controls="v$.request.lastName"
-                :validation="['required']"
+                :validation="[]"
+                maxLength="255"
               />
             </div>
           </div>
@@ -111,6 +113,7 @@
             :controls="v$.request.email"
             :validation="['required', 'email']"
             :readonly="modelType == 'Edit User'"
+            maxLength="255"
           />
 
           <label for="Role" class="form-label fw-bolder"> Role </label>
@@ -272,11 +275,11 @@ export default class AddUser extends BaseComponent {
   public addUser() {
     this.v$.$touch();
 
-    if (!this.v$.$invalid && this.profilePhoto) {
+    if (!this.v$.$invalid) {
       this.service
         .addUser(this.request)
         .then((response) => {
-          if (this.imageChanged) this.processAvatar(response.uuid);
+          if (this.imageChanged && this.profilePhoto) this.processAvatar(response.uuid);
           else this.$emit("newUser");
         })
         .catch((err) => {

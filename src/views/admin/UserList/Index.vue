@@ -1,14 +1,7 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb :additionalName="`(${response.length})`"/>
-    <div
-      class="
-        d-flex
-        align-items-center
-        justify-content-end
-        w-50
-      "
-    >
+    <bread-crumb :additionalName="`(${response.length})`" />
+    <div class="d-flex align-items-center justify-content-end w-50">
       <button
         class="btn btn-primary me-4"
         type="button"
@@ -105,10 +98,10 @@
             <td
               class="
                 fw-bold
-                text-dark-gray
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
             >
               <img
                 :src="$vuehelper.getImageUrl(item.profilePhoto)"
@@ -137,33 +130,33 @@
             <td
               class="
                 fw-bold
-                text-dark-gray
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
             >
               {{ item.email }}
             </td>
             <td
               class="
                 fw-bold
-                text-dark-gray
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
             >
               {{ item.roleName }}
             </td>
             <td
               class="
                 fw-bold
-                text-dark-gray
                 border-bottom-2 border-dashed border-light
                 ps-2
                 pe-2
                 pt-6
                 pb-6
               "
+              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
             >
               <span
                 class="badge fs-7 ms-2"
@@ -177,6 +170,7 @@
             </td>
             <td
               class="border-bottom-2 border-dashed border-light p-6"
+              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
               style="width: 10%"
             >
               <i

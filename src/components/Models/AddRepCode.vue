@@ -18,7 +18,7 @@
               :validation="['required']"
             />
           </div>
-          <div v-if="pageType != 'Edit Branches' && pageType != 'Add Branches'">
+          <div v-if="pageType != 'Edit Branches' && pageType != 'Add Branches'" class="mb-10">
             <label for="Branch" class="form-label fw-bolder"> Branch </label>
             <select
               class="form-select form-select-solid mb-2"
