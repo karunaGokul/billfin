@@ -65,4 +65,5 @@ export class ListItem {
 export class TimeModel {
     createdTime: string;
     updatedTime: string;
+    recordStatus: string;
 }

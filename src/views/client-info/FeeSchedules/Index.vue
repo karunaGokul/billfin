@@ -194,7 +194,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import { IFeeSchedulesService } from "@/service";
@@ -203,14 +203,15 @@ import { FeeSchedulesResponseModel } from "@/model";
 import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import AddFeeSchedule from "./components/AddFeeSchedule.vue";
+import BaseComponent from "@/components/base/BaseComponent.vue";
 
 @Options({
   components: {
     AddFeeSchedule,
-    BreadCrumb
+    BreadCrumb,
   },
 })
-export default class FeeSchedules extends Vue {
+export default class FeeSchedules extends BaseComponent {
   @Inject("feeSchedulesService") service: IFeeSchedulesService;
 
   public response: Array<FeeSchedulesResponseModel> = [];
@@ -232,7 +233,13 @@ export default class FeeSchedules extends Vue {
         this.response = response;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 

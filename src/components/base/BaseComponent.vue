@@ -17,75 +17,41 @@ export default class BaseComponent extends Vue {
     return root.$alert(title, message);
   }
 
-  create(createdTime: string) {
-    //console.log(createdTime);
-
-    //let date = new Date(createdTime);
-
-    //console.log(date);
-    //console.log(date.getFullYear());
-
-    /*let UTCDate = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-
-    let UTC = new Date(UTCDate);*/
-
+  convertUTC(date: string) {
     let tzone = moment_timezone(new Date());
-    let utc = moment.tz(createdTime, "America/New_York");
-    let date = new Date(utc.format());
+    let utc = moment.tz(date, "America/New_York");
+    let convertedDate = new Date(utc.format());
+
+    return convertedDate;
+  }
+
+  create(createdTime: string, updatedTime: string) {
+    let fromDate = this.convertUTC(createdTime);
+    let toDate = this.convertUTC(updatedTime);
     let currentDate = new Date();
 
     if (
-      date.getDate() == currentDate.getDate() &&
-      date.getMonth() == currentDate.getMonth() &&
-      date.getFullYear() == currentDate.getFullYear() &&
-      date.getHours() == currentDate.getHours() &&
-      date.getMinutes() == currentDate.getMinutes()
+      fromDate.getDate() == currentDate.getDate() &&
+      fromDate.getMonth() == currentDate.getMonth() &&
+      fromDate.getFullYear() == currentDate.getFullYear() &&
+      fromDate.getHours() == currentDate.getHours() &&
+      fromDate.getMinutes() == currentDate.getMinutes()
     ) {
-      console.log(currentDate, date);
-      //console.log(currentDate.getSeconds(), date.getSeconds());
-      // console.log(currentDate.getSeconds() - date.getSeconds());
-    }
+      console.log('if');
+      let seconds = currentDate.getSeconds() - fromDate.getSeconds();
+      if (seconds <= 10) return "new";
+    } else if (
+      toDate.getDate() == currentDate.getDate() &&
+      toDate.getMonth() == currentDate.getMonth() &&
+      toDate.getFullYear() == currentDate.getFullYear() &&
+      toDate.getHours() == currentDate.getHours() &&
+      toDate.getMinutes() == currentDate.getMinutes()
+    ) {
+      console.log('else if');
+      let seconds = currentDate.getSeconds() - toDate.getSeconds();
+      if (seconds <= 10) return "update";
+    } else return 'old';
 
-    //console.log(c.toUTCString());
-
-    //console.log(moment(c).utc().format());
-
-    //console.log(moment.utc(createdTime).format("MM/DD/YYYY HH:mm:ssZ"));
-    //console.log('-===============-');
-    //console.log('current date', moment.utc(new Date()).format("MM/DD/YYYY HH:mm:ss") );
-    //let currentDate = new Date();
-
-    //console.log(moment(String(new Date(createdTime))).format("MM/DD/YYYY HH:MM:SS"));
-
-    /*let convertedDate = new Date(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      date.getDate(),
-      new Date().getHours(),
-      new Date().getMinutes(),
-      new Date().getSeconds(),
-      new Date().getMilliseconds()
-    );*/
-
-    //console.log(currentDate);
-    //console.log(convertedDate);
-
-    //console.log('====================');
-
-    /*console.log(currentDate.getDate() == convertedDate.getDate());
-    console.log(currentDate.getMonth() == convertedDate.getMonth());
-    console.log(currentDate.getFullYear() == convertedDate.getFullYear());
-    console.log(currentDate.getHours() == convertedDate.getHours());
-    console.log(currentDate.getMinutes() == convertedDate.getMinutes());
-    console.log(currentDate.getSeconds() == convertedDate.getSeconds());
-    console.log(currentDate.getMilliseconds() == convertedDate.getMilliseconds());
-    console.log(currentDate == convertedDate);*/
-
-    /*if (date.getDate() == currentDate.getDate() && date.getMonth() == currentDate.getMonth() && date.getFullYear() == currentDate.getFullYear()) {
-      console.log(currentDate, date);
-      //console.log(currentDate.getSeconds(), date.getSeconds());
-     // console.log(currentDate.getSeconds() - date.getSeconds());
-    }*/
   }
 }
 </script>

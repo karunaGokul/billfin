@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb/>
+    <bread-crumb />
     <button
       class="btn btn-primary"
       type="button"
@@ -97,7 +97,6 @@
             <tr
               v-for="(item, index) in response"
               :key="'advisors-table' + index"
-              :class="{ test: create(item.createdTime) }"
             >
               <td
                 class="
@@ -108,6 +107,7 @@
                 "
                 style="width: 15%"
                 @click="addAdvisor('View Advisor', item)"
+                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
               >
                 {{ item.displayName }}
               </td>
@@ -120,6 +120,7 @@
                 "
                 style="width: 30%"
                 @click="addAdvisor('View Advisor', item)"
+                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
               >
                 {{ item.emailAddress }}
               </td>
@@ -131,6 +132,7 @@
                   p-6
                 "
                 style="width: 30%"
+                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
               >
                 <a
                   href="#"
@@ -152,6 +154,7 @@
                 "
                 style="width: 10%"
                 @click="addAdvisor('View Advisor', item)"
+                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
               >
                 {{ item.branch }}
               </td>
@@ -163,6 +166,7 @@
                   p-6
                 "
                 style="width: 15%"
+                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
               >
                 <i
                   class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
@@ -241,6 +245,7 @@ export default class Advisors extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -293,7 +298,17 @@ export default class Advisors extends BaseComponent {
         )
     );
   }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    console.log(this.response);
+  }
+
 }
 </script>
-
-

@@ -20,7 +20,9 @@
                 :controls="v$.request.name"
                 :validation="['required']"
                 :readonly="modelType == 'Edit Fee Schedule'"
-                @updateInput="validateFeeSchedule"
+                @updateInput="
+                  modelType != 'Edit Fee Schedule' ? validateFeeSchedule() : ''
+                "
               />
             </div>
             <div class="col-6">
@@ -658,6 +660,8 @@ export default class AddFeeSchedule extends BaseComponent {
 
   public tiers: Array<TierFormModel> = [];
 
+  public isFeeScheduleExists: boolean = false;
+
   public validate() {
     return useVuelidate();
   }
@@ -677,10 +681,17 @@ export default class AddFeeSchedule extends BaseComponent {
     this.service
       .validateFeeSchedule(request)
       .then((response) => {
-        console.log(response);
+        this.isFeeScheduleExists = false;
       })
       .catch((err) => {
-        console.log(err);
+        this.isFeeScheduleExists = true;
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -690,7 +701,10 @@ export default class AddFeeSchedule extends BaseComponent {
     if (this.feeValidation.type == "Flat") this.resetFlat();
     else this.resetTiered();
 
-    if (this.modelType == "Edit Fee Schedule") this.updateForm();
+    if (this.modelType == "Edit Fee Schedule") {
+      this.isFeeScheduleExists = false;
+      this.updateForm();
+    }
   }
 
   public resetFlat() {
@@ -830,6 +844,7 @@ export default class AddFeeSchedule extends BaseComponent {
         tier.toValue.value = item.toValue;
         tier.bps.value = item.bps;
         tier.amount.value = item.amount;
+        tier.tierId = item.tierId;
 
         tier.fromValue.invalid = false;
         tier.fromValue.touched = false;
@@ -847,10 +862,14 @@ export default class AddFeeSchedule extends BaseComponent {
         tier.amount.touched = false;
         tier.amount.message = null;
 
-        this.validation(tier, index);
-
         this.tiers.push(tier);
       });
+
+      console.log(this.tiers);
+
+      for(let i in this.tiers) {
+        this.validation(this.tiers[i], +i);
+      }
     }
   }
 
@@ -988,7 +1007,11 @@ export default class AddFeeSchedule extends BaseComponent {
   public formValidation() {
     this.v$.request.$touch();
 
-    if (!this.v$.request.$invalid && this.feeValidation.formValid) {
+    if (
+      !this.v$.request.$invalid &&
+      this.feeValidation.formValid &&
+      !this.isFeeScheduleExists
+    ) {
       this.addFeeSchedule();
     } else {
       if (this.feeValidation.type == "Flat") {
@@ -1025,6 +1048,7 @@ export default class AddFeeSchedule extends BaseComponent {
       this.tiers.forEach((item, index) => {
         let tier = new TierModel();
         tier.id = index;
+        tier.tierId = item.tierId;
 
         tier.fromValue = +item.fromValue.value;
         tier.toValue = item.toValue.value

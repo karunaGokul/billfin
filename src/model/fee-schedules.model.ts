@@ -39,6 +39,7 @@ export class TierModel {
   toValue: number;
   bps: number;
   amount: number;
+  tierId: number;
   id: number;
 }
 export class TierFormModel {
@@ -46,6 +47,7 @@ export class TierFormModel {
   toValue: FormValidation = new FormValidation();
   bps: FormValidation = new FormValidation();
   amount: FormValidation = new FormValidation();
+  tierId: number;
 }
 export class FeeTypesResponseModel {
   feeTypeCode: string;

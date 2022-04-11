@@ -41,7 +41,7 @@ import { Prop } from "vue-property-decorator";
 
 export default class AppDelete extends Vue {
   @Prop() message: string;
-  @Prop() subMessage: string;
+  @Prop() subMessage?: string;
 
   public close(action: string) {
     this.$emit(action);

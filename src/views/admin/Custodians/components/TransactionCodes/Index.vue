@@ -130,6 +130,7 @@
                 ></i>
                 <i
                   class="fa fa-solid fa-trash fs-4 edit-row fa-danger-hover"
+                  @click="confirmationToDelete(item)"
                 ></i>
               </div>
             </td>
@@ -159,6 +160,12 @@
         @close="showTransactionModel = false"
         v-if="showTransactionModel"
       />
+      <app-delete
+        message="Are you sure you want to delete the transaction code?"
+        @delete="deteleTransaction"
+        @cancel="showDeleteModel = false"
+        v-if="showDeleteModel"
+      />
     </div>
   </div>
 </template>
@@ -168,8 +175,12 @@ import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
 import BreadCrumb from "@/components/layout/BreadCrumb.vue";
+import AppDelete from "@/components/layout/AppDelete.vue";
 
-import { TransactionCodeResponseModel } from "@/model";
+import {
+  DeleteTransactionCodeRequestModel,
+  TransactionCodeResponseModel,
+} from "@/model";
 import { ICustodiansService } from "@/service";
 
 import AddTransactionCode from "./AddTransactionCode.vue";
@@ -178,6 +189,7 @@ import AddTransactionCode from "./AddTransactionCode.vue";
   components: {
     AddTransactionCode,
     BreadCrumb,
+    AppDelete,
   },
 })
 export default class TransactionCodes extends BaseComponent {
@@ -189,6 +201,7 @@ export default class TransactionCodes extends BaseComponent {
     new TransactionCodeResponseModel();
 
   public showTransactionModel: boolean = false;
+  public showDeleteModel: boolean = false;
   public modelType: string = "Add Transaction Code";
 
   mounted() {
@@ -220,6 +233,33 @@ export default class TransactionCodes extends BaseComponent {
     this.modelType = modelType;
     if (transaction) this.selectedTransaction = transaction;
     this.showTransactionModel = true;
+  }
+
+  public confirmationToDelete(transaction: TransactionCodeResponseModel) {
+    this.selectedTransaction = transaction;
+    this.showDeleteModel = true;
+  }
+
+  public deteleTransaction() {
+    let request: DeleteTransactionCodeRequestModel =
+      new DeleteTransactionCodeRequestModel();
+    request.transactionTypeId = this.selectedTransaction.transactionTypeId;
+    this.service
+      .deleteTransactionCode(request)
+      .then((response) => {
+        this.showDeleteModel = false;
+        this.getTransactionCode();
+        this.confirmation("", "Transaction has been deleted successfully");
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
   }
 
   public updateTransaction() {

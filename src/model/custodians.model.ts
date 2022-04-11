@@ -41,3 +41,6 @@ export class AddTransactionCodeRequestModel {
 }
 export class AddTransactionCodeResponseModel {
 }
+export class DeleteTransactionCodeRequestModel {
+  transactionTypeId: number;
+}
