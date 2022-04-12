@@ -8,14 +8,14 @@ export class FeeSchedulesResponseModel {
   scheduleType: string;
   assignments: number;
   tier: Array<any>;
-  status: string;
+  active: boolean;
   feeScheduleId: number;
 }
 export class AddFeeScheduleRequestModel {
   name: string;
   currencyCode: string;
   tierType: string;
-  isActive: boolean;
+  active: boolean;
   flatRate: number;
   flatAmount: number;
   tier: Array<TierModel> = [];

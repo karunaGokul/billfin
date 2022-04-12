@@ -18,11 +18,14 @@
               :validation="['required']"
             />
           </div>
-          <div v-if="pageType != 'Edit Branches' && pageType != 'Add Branches'" class="mb-10">
+          <div
+            v-if="pageType != 'Edit Branches' && pageType != 'Add Branches'"
+            class="mb-10"
+          >
             <label for="Branch" class="form-label fw-bolder"> Branch </label>
             <select
               class="form-select form-select-solid mb-2"
-              v-model="v$.request.branchName"
+              v-model="selectedBranch"
             >
               <option v-for="(item, i) in branch" :key="i" :value="item">
                 {{ item.branchName }}
@@ -77,7 +80,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
+import { Options, setup } from "vue-class-component";
 
 import { Prop, Inject } from "vue-property-decorator";
 
@@ -118,13 +121,14 @@ export default class AddRepCode extends BaseComponent {
   @Inject("branchesService") branchesService: IBranchesService;
 
   @Prop() pageType: string;
-  @Prop() selectedBranch: branchesResponseModel;
+  @Prop() branches: branchesResponseModel;
 
   public v$: any = setup(() => this.validate());
   public request: addRepCodeRequestModel = new addRepCodeRequestModel();
 
   public advisors: Array<ListItem> = [];
   public branch: Array<branchesResponseModel> = [];
+  public selectedBranch: addRepCodeRequestModel = new addRepCodeRequestModel();
 
   public showAdvisorModel: boolean = false;
 
@@ -137,9 +141,9 @@ export default class AddRepCode extends BaseComponent {
     this.getBranch();
 
     if (this.pageType == "Edit Branches") {
-      this.request.branchName = this.selectedBranch.branchName;
-      this.request.branchCode = this.selectedBranch.branchCode;
-      this.request.branchId = this.selectedBranch.branchId;
+      this.selectedBranch.branchName = this.branches.branchName;
+      this.selectedBranch.branchCode = this.branches.branchCode;
+      this.selectedBranch.branchId = this.branches.branchId;
     }
   }
 
@@ -206,6 +210,10 @@ export default class AddRepCode extends BaseComponent {
     if (!this.v$.$invalid) {
       this.request.advisors.length == 0 ? null : this.request.advisors;
 
+      this.request.branchName = this.selectedBranch.branchName;
+      this.request.branchCode = this.selectedBranch.branchCode;
+      this.request.branchId = this.selectedBranch.branchId;
+
       this.service
         .addRepCode(this.request)
         .then((response) => {
@@ -221,10 +229,6 @@ export default class AddRepCode extends BaseComponent {
             this.alert("Oops, sorry!", err.response.data.message);
         });
     }
-  }
-
-  private valueCheck(value: any) {
-    return !value ? null : value;
   }
 }
 </script>

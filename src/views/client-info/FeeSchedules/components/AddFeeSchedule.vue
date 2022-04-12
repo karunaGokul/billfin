@@ -585,7 +585,7 @@
             <input
               class="form-check-input"
               type="checkbox"
-              v-model="v$.request.isActive.$model"
+              v-model="v$.request.active.$model"
             />
             <label class="form-check-label" for="Activate User">Activate</label>
           </div>
@@ -640,7 +640,7 @@ import BaseComponent from "@/components/base/BaseComponent.vue";
     request: {
       name: { required },
       currencyCode: { required },
-      isActive: {},
+      active: {},
     },
   },
 })
@@ -821,6 +821,7 @@ export default class AddFeeSchedule extends BaseComponent {
   private updateForm() {
     this.request.name = this.selectedFees.name;
     let currencyCode: any = this.selectedFees.currencyCode;
+    this.request.active = this.selectedFees.active;
     this.request.currencyCode =
       Object.keys(CurrencyCode)[
         Object.values(CurrencyCode).indexOf(currencyCode)

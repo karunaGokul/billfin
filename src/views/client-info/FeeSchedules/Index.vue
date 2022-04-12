@@ -160,11 +160,11 @@
               <span
                 class="badge fs-7 ms-2"
                 :class="{
-                  'bg-success-alpha text-success': item.status == 'ACTIVE',
-                  'bg-dander-alpha text-danger': item.status == 'INACTIVE',
+                  'bg-success-alpha text-success': item.active,
+                  'bg-dander-alpha text-danger': !item.active,
                 }"
               >
-                {{ item.status == "ACTIVE" ? "Active" : "Inactive" }}
+                {{ item.active ? "Active" : "Inactive" }}
               </span>
             </td>
             <td
