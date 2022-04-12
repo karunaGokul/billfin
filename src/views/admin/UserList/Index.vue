@@ -33,7 +33,7 @@
           border-top-0
           border-start-0
           border-end-0
-          border-bottom-2
+          border-bottom-1
           border-dashed
           border-light
         "
@@ -44,7 +44,7 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
             >
@@ -54,7 +54,7 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
             >
@@ -64,7 +64,7 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
             >
@@ -74,7 +74,7 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 ps-2
                 pe-2
                 pt-6
@@ -87,7 +87,7 @@
               class="
                 fw-bold
                 text-gray-secondary
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
             ></th>
@@ -98,7 +98,7 @@
             <td
               class="
                 fw-bold
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
               :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
@@ -130,7 +130,7 @@
             <td
               class="
                 fw-bold
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
               :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
@@ -140,7 +140,7 @@
             <td
               class="
                 fw-bold
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 p-6
               "
               :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
@@ -150,7 +150,7 @@
             <td
               class="
                 fw-bold
-                border-bottom-2 border-dashed border-light
+                border-bottom-1 border-dashed border-light
                 ps-2
                 pe-2
                 pt-6
@@ -169,7 +169,7 @@
               </span>
             </td>
             <td
-              class="border-bottom-2 border-dashed border-light p-6"
+              class="border-bottom-1 border-dashed border-light p-6"
               :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
               style="width: 10%"
             >

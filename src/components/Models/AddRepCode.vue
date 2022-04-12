@@ -92,7 +92,6 @@ import SelectBoxWithDelete from "../controls/SelectBoxWithDelete.vue";
 import {
   addRepCodeRequestModel,
   advisorsResponseModel,
-  unassignedBranchResponseModel,
   ListItem,
   branchesResponseModel,
 } from "@/model";
@@ -125,7 +124,7 @@ export default class AddRepCode extends BaseComponent {
   public request: addRepCodeRequestModel = new addRepCodeRequestModel();
 
   public advisors: Array<ListItem> = [];
-  public branch: Array<unassignedBranchResponseModel> = [];
+  public branch: Array<branchesResponseModel> = [];
 
   public showAdvisorModel: boolean = false;
 
@@ -135,7 +134,7 @@ export default class AddRepCode extends BaseComponent {
 
   created() {
     this.getUnassignedAdvisors();
-    this.getUnassignedBranch();
+    this.getBranch();
 
     if (this.pageType == "Edit Branches") {
       this.request.branchName = this.selectedBranch.branchName;
@@ -176,9 +175,9 @@ export default class AddRepCode extends BaseComponent {
     this.getUnassignedAdvisors();
   }
 
-  private getUnassignedBranch() {
+  private getBranch() {
     this.branchesService
-      .unassignedBranch()
+      .getBranches()
       .then((response) => {
         this.branch = response;
       })

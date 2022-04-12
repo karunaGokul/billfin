@@ -130,7 +130,7 @@
             <input
               class="form-check-input"
               type="checkbox"
-              v-model="v$.request.isActive.$model"
+              v-model="v$.request.active.$model"
             />
             <label class="form-check-label" for="Activate User"
               >Activate User</label
@@ -190,7 +190,7 @@ import { useStore } from "vuex";
         },
       },
       roleId: { required },
-      isActive: {},
+      active: {},
     },
   },
 })
@@ -218,7 +218,7 @@ export default class AddUser extends BaseComponent {
       this.request.lastName = this.response.lastName;
       this.request.email = this.response.email;
       this.request.roleId = this.response.roleId;
-      this.request.isActive = this.response.status == "ACTIVE" ? true : false;
+      this.request.active = this.response.status == "ACTIVE" ? true : false;
       this.request.uuid = this.response.uuid;
 
       if (this.response.profilePhoto) {
@@ -231,7 +231,7 @@ export default class AddUser extends BaseComponent {
           });
       }
     } else {
-      this.request.isActive = true;
+      this.request.active = true;
     }
   }
 

@@ -16,7 +16,7 @@ export class AddUserRequestModel {
   lastName: string;
   email: string;
   roleId: number;
-  isActive: boolean = false;
+  active: boolean = false;
   uuid: string;
 }
 export class AddUserResponseModel {
