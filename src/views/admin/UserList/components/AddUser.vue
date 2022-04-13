@@ -180,7 +180,7 @@ import { useStore } from "vuex";
   validations: {
     request: {
       firstName: { required },
-      lastName: { required },
+      lastName: {},
       email: {
         required,
         email: (value: string) => {
