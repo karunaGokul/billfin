@@ -101,6 +101,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.custodianIdentifier }}
             </td>
@@ -111,6 +115,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.custodianName }}
             </td>
@@ -121,6 +129,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.noOfAccountsLinked ? item.noOfAccountsLinked : "-" }}
             </td>
@@ -131,6 +143,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <div class="form-check">
                 <input
@@ -144,6 +160,10 @@
             <td
               class="border-bottom-2 border-dashed border-light p-6"
               style="width: 15%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <div class="d-flex justify-content-around align-items-center">
                 <span data-tooltip="Edit Custodian">
@@ -212,6 +232,21 @@
                       }}
                     </div>
                   </div>
+                  <span
+                    class="
+                      badge
+                      bg-white
+                      border border-dashed
+                      text-primary
+                      border-primary
+                      record-status
+                    "
+                    v-if="
+                      item.recordStatus == 'new' ||
+                      item.recordStatus == 'update'
+                    "
+                    >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                  >
                 </span>
               </div>
             </td>
@@ -252,7 +287,7 @@ import Keys from "./components/Keys.vue";
   components: {
     AddCustodian,
     Keys,
-    BreadCrumb
+    BreadCrumb,
   },
 })
 export default class Custodians extends BaseComponent {
@@ -278,6 +313,7 @@ export default class Custodians extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -316,7 +352,11 @@ export default class Custodians extends BaseComponent {
   public redirectTC(custodian: CustodiansResponseModel) {
     this.$router.push({
       path: `/custodians/${custodian.custodianIdentifier}`,
-      query: { firmCustodianId: custodian.firmCustodianId, custodianName: custodian.custodianName, custodianCode: custodian.custodianIdentifier },
+      query: {
+        firmCustodianId: custodian.firmCustodianId,
+        custodianName: custodian.custodianName,
+        custodianCode: custodian.custodianIdentifier,
+      },
     });
   }
 
@@ -332,6 +372,25 @@ export default class Custodians extends BaseComponent {
             .toLowerCase()
             .includes(searchValue.toLowerCase()))
     );
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 }
 </script> 

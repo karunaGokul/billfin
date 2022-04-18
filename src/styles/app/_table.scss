@@ -1,11 +1,13 @@
 .table-hover {
-      tr td .edit-row {
+    tr td .edit-row {
+        display: none;
+    }
+    &:hover>tbody>tr:hover {
+        .edit-row {
+            display: block
+        }
+        .record-status {
             display: none;
-      }
-
-      &:hover > tbody > tr:hover {
-            .edit-row {
-                  display: block
-            }
-      }
+        }
+    }
 }

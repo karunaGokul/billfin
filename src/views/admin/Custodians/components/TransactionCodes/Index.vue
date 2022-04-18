@@ -99,6 +99,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.externalTransactionValue }}
             </td>
@@ -109,6 +113,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.transactionType }}
             </td>
@@ -119,10 +127,20 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.transactionDescription }}
             </td>
-            <td class="border-bottom-2 border-dashed border-light p-6">
+            <td
+              class="border-bottom-2 border-dashed border-light p-6"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
+            >
               <div class="d-flex justify-content-around align-items-center">
                 <i
                   class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
@@ -132,6 +150,20 @@
                   class="fa fa-solid fa-trash fs-4 edit-row fa-danger-hover"
                   @click="confirmationToDelete(item)"
                 ></i>
+                <span
+                  class="
+                    badge
+                    bg-white
+                    border border-dashed
+                    text-primary
+                    border-primary
+                    record-status
+                  "
+                  v-if="
+                    item.recordStatus == 'new' || item.recordStatus == 'update'
+                  "
+                  >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                >
               </div>
             </td>
           </tr>
@@ -214,6 +246,7 @@ export default class TransactionCodes extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -287,6 +320,25 @@ export default class TransactionCodes extends BaseComponent {
             .toLowerCase()
             .includes(searchValue.toLowerCase()))
     );
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 
   get custodianCode() {

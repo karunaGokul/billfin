@@ -1,5 +1,7 @@
+import { TimeModel } from "./base.model";
+
 export class FeeSchedulesRequestModel {}
-export class FeeSchedulesResponseModel {
+export class FeeSchedulesResponseModel extends TimeModel {
   name: string;
   tierType: string;
   currencyCode: string;

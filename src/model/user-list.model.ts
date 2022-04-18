@@ -1,6 +1,6 @@
-import { BaseModel, DataRequest } from "./base.model";
+import { TimeModel } from "./base.model";
 
-export class UserResponseModel extends BaseModel {
+export class UserResponseModel  extends TimeModel {
   firstName: string;
   lastName: string;
   name: string;
@@ -18,6 +18,7 @@ export class AddUserRequestModel {
   roleId: number;
   active: boolean = false;
   uuid: string;
+  deleteFlag:boolean = false;
 }
 export class AddUserResponseModel {
   domain: string;

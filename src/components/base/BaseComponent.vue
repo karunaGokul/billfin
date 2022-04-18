@@ -1,6 +1,8 @@
 <script lang="ts">
 import { Vue } from "vue-class-component";
 
+import { Settings } from '@/config';
+
 import moment from "moment";
 import moment_timezone from "moment-timezone";
 
@@ -30,6 +32,8 @@ export default class BaseComponent extends Vue {
     let toDate = this.convertUTC(updatedTime);
     let currentDate = new Date();
 
+    let timeLimit = Settings.timeLimit;
+
     if (
       fromDate.getDate() == currentDate.getDate() &&
       fromDate.getMonth() == currentDate.getMonth() &&
@@ -37,9 +41,8 @@ export default class BaseComponent extends Vue {
       fromDate.getHours() == currentDate.getHours() &&
       fromDate.getMinutes() == currentDate.getMinutes()
     ) {
-      console.log('if');
       let seconds = currentDate.getSeconds() - fromDate.getSeconds();
-      if (seconds <= 10) return "new";
+      if (seconds <= timeLimit) return "new";
     } else if (
       toDate.getDate() == currentDate.getDate() &&
       toDate.getMonth() == currentDate.getMonth() &&
@@ -47,9 +50,8 @@ export default class BaseComponent extends Vue {
       toDate.getHours() == currentDate.getHours() &&
       toDate.getMinutes() == currentDate.getMinutes()
     ) {
-      console.log('else if');
       let seconds = currentDate.getSeconds() - toDate.getSeconds();
-      if (seconds <= 10) return "update";
+      if (seconds <= timeLimit) return "update";
     } else return 'old';
 
   }

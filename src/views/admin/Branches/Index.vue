@@ -88,6 +88,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
               style="width: 20%"
               @click="viewBranch('View Branch', item)"
             >
@@ -100,6 +104,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
               style="width: 25%"
               @click="viewBranch('View Branch', item)"
             >
@@ -112,6 +120,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
               style="width: 40%"
             >
               <span v-for="(code, i) of item.repCodes" :key="i">
@@ -131,6 +143,10 @@
             <td
               class="border-bottom-2 border-dashed border-light p-6"
               style="width: 15%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <div class="d-flex align-items-center p-4">
                 <i
@@ -203,6 +219,7 @@ export default class Branches extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -244,6 +261,25 @@ export default class Branches extends BaseComponent {
             code.repCode.toLowerCase().includes(searchValue.toLowerCase())
         )
     );
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000)
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    })
   }
 }
 </script>

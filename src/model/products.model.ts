@@ -1,4 +1,6 @@
-export class AddProductRequestModel {
+import { TimeModel } from "./base.model";
+
+export class AddProductRequestModel extends TimeModel {
   productId: number;
   productCode: string;
   productName: string;

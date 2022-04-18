@@ -1,10 +1,11 @@
+import { TimeModel } from "./base.model";
 import { assignRepCodesResponseModel } from "./advisors.model";
 import {
   addRepCodeRequestModel,
   repCodesResponseModel,
 } from "./rep-codes.model";
 
-export class branchesResponseModel {
+export class branchesResponseModel extends TimeModel {
   branchCode: string;
   branchId: number;
   branchName: string;

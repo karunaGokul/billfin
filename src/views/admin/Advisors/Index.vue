@@ -107,7 +107,10 @@
                 "
                 style="width: 15%"
                 @click="addAdvisor('View Advisor', item)"
-                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
+                :class="{
+                  'bg-warning-opacity':
+                    item.recordStatus == 'new' || item.recordStatus == 'update',
+                }"
               >
                 {{ item.displayName }}
               </td>
@@ -120,7 +123,10 @@
                 "
                 style="width: 30%"
                 @click="addAdvisor('View Advisor', item)"
-                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
+                :class="{
+                  'bg-warning-opacity':
+                    item.recordStatus == 'new' || item.recordStatus == 'update',
+                }"
               >
                 {{ item.emailAddress }}
               </td>
@@ -132,7 +138,10 @@
                   p-6
                 "
                 style="width: 30%"
-                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
+                :class="{
+                  'bg-warning-opacity':
+                    item.recordStatus == 'new' || item.recordStatus == 'update',
+                }"
               >
                 <a
                   href="#"
@@ -154,7 +163,10 @@
                 "
                 style="width: 10%"
                 @click="addAdvisor('View Advisor', item)"
-                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
+                :class="{
+                  'bg-warning-opacity':
+                    item.recordStatus == 'new' || item.recordStatus == 'update',
+                }"
               >
                 {{ item.branch }}
               </td>
@@ -166,12 +178,30 @@
                   p-6
                 "
                 style="width: 15%"
-                :class="{ 'bg-warning bg-opacity-25' : item.recordStatus == 'new' || item.recordStatus == 'update' }"
+                :class="{
+                  'bg-warning-opacity':
+                    item.recordStatus == 'new' || item.recordStatus == 'update',
+                }"
               >
                 <i
                   class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
                   @click="addAdvisor('Edit Advisors', item)"
                 ></i>
+
+                <span
+                  class="
+                    badge
+                    bg-white
+                    border border-dashed
+                    text-primary
+                    border-primary
+                    record-status
+                  "
+                  v-if="
+                    item.recordStatus == 'new' || item.recordStatus == 'update'
+                  "
+                  >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                >
               </td>
             </tr>
           </tbody>
@@ -196,7 +226,7 @@
   />
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
 import BaseComponent from "@/components/base/BaseComponent.vue";
@@ -307,8 +337,15 @@ export default class Advisors extends BaseComponent {
       );
     }
 
-    console.log(this.response);
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000)
   }
 
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    })
+  }
 }
 </script>

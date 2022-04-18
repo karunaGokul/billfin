@@ -1,7 +1,9 @@
-export class AddKeysRequestModel {
+import { TimeModel } from "./base.model";
+
+export class AddKeysRequestModel extends TimeModel {
   custodianKey: string;
   settledTradesFlag: boolean;
-  accruedInterestFlag:boolean;
+  accruedInterestFlag: boolean;
   accountDisplayFormat: string;
   firmCustodianId: number;
 }
@@ -25,7 +27,7 @@ export class AddCustodianResponseModel {
   custodianName: string;
   enabled: boolean;
 }
-export class TransactionCodeResponseModel {
+export class TransactionCodeResponseModel extends TimeModel {
   externalTransactionValue: string;
   firmCustodianId: number;
   firmId: number;
@@ -39,8 +41,7 @@ export class AddTransactionCodeRequestModel {
   externalTransactionValue: string;
   firmCustodianId: number;
 }
-export class AddTransactionCodeResponseModel {
-}
+export class AddTransactionCodeResponseModel {}
 export class DeleteTransactionCodeRequestModel {
   transactionTypeId: number;
 }

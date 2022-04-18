@@ -116,6 +116,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.name }}
             </td>
@@ -126,6 +130,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.tierType == "FLAT" ? "Flat" : "Tiered" }}
             </td>
@@ -136,6 +144,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.currencyCode }}
             </td>
@@ -146,6 +158,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.assignments }}
             </td>
@@ -156,6 +172,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <span
                 class="badge fs-7 ms-2"
@@ -174,11 +194,29 @@
                 p-6
               "
               style="width: 10%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <i
                 class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
                 @click="addFeeSchedule('Edit Fee Schedule', item)"
               ></i>
+              <span
+                class="
+                  badge
+                  bg-white
+                  border border-dashed
+                  text-primary
+                  border-primary
+                  record-status
+                "
+                v-if="
+                  item.recordStatus == 'new' || item.recordStatus == 'update'
+                "
+                >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+              >
             </td>
           </tr>
         </tbody>
@@ -231,6 +269,7 @@ export default class FeeSchedules extends BaseComponent {
       .getFeeSchedules()
       .then((response) => {
         this.response = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -259,6 +298,25 @@ export default class FeeSchedules extends BaseComponent {
 
   public clickOutSideFee() {
     this.toggleAddFeeSchdule = false;
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 }
 </script>

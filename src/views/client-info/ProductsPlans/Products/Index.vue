@@ -82,6 +82,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.productCode }}
             </td>
@@ -92,6 +96,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.productName }}
             </td>
@@ -102,6 +110,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <div
                 v-for="(fees, i) in item.assignedFeeSchedule.feeTypes"
@@ -118,6 +130,10 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               {{ item.noOfAccounts }}
             </td>
@@ -127,9 +143,30 @@
                 border-bottom-2 border-dashed border-light
                 p-6
               "
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
               style="width: 10%"
             >
-              <i class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover" @click="addProduct('Edit Product', item)"></i>
+              <i
+                class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
+                @click="addProduct('Edit Product', item)"
+              ></i>
+              <span
+                class="
+                  badge
+                  bg-white
+                  border border-dashed
+                  text-primary
+                  border-primary
+                  record-status
+                "
+                v-if="
+                  item.recordStatus == 'new' || item.recordStatus == 'update'
+                "
+                >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+              >
             </td>
           </tr>
         </tbody>
@@ -138,7 +175,7 @@
         :modelType="modelType"
         :selectedProduct="selectedProduct"
         @newProduct="updateProduct"
-        @close="showProduct = false;"
+        @close="showProduct = false"
         v-if="showProduct"
       />
     </div>
@@ -177,15 +214,16 @@ export default class Products extends BaseComponent {
       .getProducts()
       .then((response) => {
         this.response = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
-            this.alert(
-              "Oops, sorry!",
-              "Somthing went wrong, Please contact administration"
-            );
-          else if (err.response.status == 400)
-            this.alert("Oops, sorry!", err.response.data.message);
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
       });
   }
 
@@ -199,6 +237,25 @@ export default class Products extends BaseComponent {
     this.showProduct = false;
     this.getProducts();
     this.selectedProduct = new ProductsResponseModel();
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 }
 </script>

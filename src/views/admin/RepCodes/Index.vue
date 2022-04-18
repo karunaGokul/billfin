@@ -89,6 +89,10 @@
                 p-6
               "
               style="width: 20%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
               @click="viewRepCodes('View RepCode', item)"
             >
               {{ item.repCode }}
@@ -101,8 +105,13 @@
                 p-6
               "
               style="width: 20%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
-              {{ item.branchName }} <span v-if="item.branchCode">({{item.branchCode}})</span>
+              {{ item.branchName }}
+              <span v-if="item.branchCode">({{ item.branchCode }})</span>
             </td>
             <td
               class="
@@ -112,6 +121,10 @@
                 p-6
               "
               style="width: 45%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
               <span v-for="(advisor, i) of item.advisors" :key="i">
                 {{ advisor.displayName
@@ -119,13 +132,33 @@
               </span>
             </td>
             <td
-              class="border-bottom-2 border-dashed border-light p-6 text-center"
+              class="border-bottom-2 border-dashed border-light p-6"
               style="width: 15%"
+              :class="{
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
+              }"
             >
-              <i
-                class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
-                @click="viewRepCodes('Edit RepCodes', item)"
-              ></i>
+              <div class="d-flex align-items-center p-4">
+                <i
+                  class="fa fa-pen text-dark-gray edit-row fa-primary-hover"
+                  @click="viewRepCodes('Edit RepCodes', item)"
+                ></i>
+                <span
+                  class="
+                    badge
+                    bg-white
+                    border border-dashed
+                    text-primary
+                    border-primary
+                    record-status
+                  "
+                  v-if="
+                    item.recordStatus == 'new' || item.recordStatus == 'update'
+                  "
+                  >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                >
+              </div>
             </td>
           </tr>
         </tbody>
@@ -193,6 +226,7 @@ export default class RepCodes extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -236,6 +270,25 @@ export default class RepCodes extends BaseComponent {
               .includes(searchValue.toLowerCase())
         )
     );
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 }
 </script>

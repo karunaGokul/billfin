@@ -96,12 +96,11 @@
         <tbody>
           <tr v-for="(item, index) in response" :key="'user-table' + index">
             <td
-              class="
-                fw-bold
-                border-bottom-1 border-dashed border-light
-                p-6
-              "
-              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
+              class="fw-bold border-bottom-1 border-dashed border-light p-6"
+              :class="{
+                'text-gray-secondary': item.status == 'INACTIVE',
+                'text-dark-gray': item.status == 'ACTIVE',
+              }"
             >
               <img
                 :src="$vuehelper.getImageUrl(item.profilePhoto)"
@@ -128,22 +127,20 @@
               <span class="ms-4">{{ item.firstName }} {{ item.lastName }}</span>
             </td>
             <td
-              class="
-                fw-bold
-                border-bottom-1 border-dashed border-light
-                p-6
-              "
-              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
+              class="fw-bold border-bottom-1 border-dashed border-light p-6"
+              :class="{
+                'text-gray-secondary': item.status == 'INACTIVE',
+                'text-dark-gray': item.status == 'ACTIVE',
+              }"
             >
               {{ item.email }}
             </td>
             <td
-              class="
-                fw-bold
-                border-bottom-1 border-dashed border-light
-                p-6
-              "
-              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
+              class="fw-bold border-bottom-1 border-dashed border-light p-6"
+              :class="{
+                'text-gray-secondary': item.status == 'INACTIVE',
+                'text-dark-gray': item.status == 'ACTIVE',
+              }"
             >
               {{ item.roleName }}
             </td>
@@ -156,7 +153,10 @@
                 pt-6
                 pb-6
               "
-              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
+              :class="{
+                'text-gray-secondary': item.status == 'INACTIVE',
+                'text-dark-gray': item.status == 'ACTIVE',
+              }"
             >
               <span
                 class="badge fs-7 ms-2"
@@ -169,14 +169,23 @@
               </span>
             </td>
             <td
-              class="border-bottom-1 border-dashed border-light p-6"
-              :class="{ 'text-gray-secondary': item.status == 'INACTIVE', 'text-dark-gray': item.status == 'ACTIVE'  }"
+              class="border-bottom-1 border-dashed border-light"
+              :class="{
+                'text-gray-secondary': item.status == 'INACTIVE',
+                'text-dark-gray': item.status == 'ACTIVE',
+              }"
               style="width: 10%"
             >
-              <i
-                class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
-                @click="addUser('Edit User', item)"
-              ></i>
+              <div class="d-flex justify-content-around align-items-center p-6">
+                <i
+                  class="fa fa-solid fa-pen fs-4 edit-row fa-primary-hover"
+                  @click="addUser('Edit User', item)"
+                ></i>
+                <i
+                  class="fa fa-solid fa-trash fs-4 edit-row fa-danger-hover"
+                  @click="confirmationToDelete(item)"
+                ></i>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -188,14 +197,20 @@
         @close="showAddUserModel = false"
         v-if="showAddUserModel"
       />
+      <app-delete
+        message="Are you sure you want to delete this user?"
+        @delete="deteleUser"
+        @cancel="showDeleteModel = false"
+        v-if="showDeleteModel"
+      />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
-import { UserResponseModel } from "@/model";
+import { AddUserRequestModel, UserResponseModel } from "@/model";
 
 import { IUserListService } from "@/service";
 
@@ -203,10 +218,12 @@ import BaseComponent from "@/components/base/BaseComponent.vue";
 import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 
 import AddUser from "./components/AddUser.vue";
+import AppDelete from "@/components/layout/AppDelete.vue";
 
 @Options({
   components: {
     AddUser,
+    AppDelete,
     BreadCrumb,
   },
 })
@@ -218,6 +235,7 @@ export default class UserList extends BaseComponent {
   public selectedUser: UserResponseModel = new UserResponseModel();
   public modelType: string = "Add User";
   public showAddUserModel: boolean = false;
+  public showDeleteModel: boolean = false;
   public toggle: Array<boolean> = [];
 
   created() {
@@ -231,6 +249,7 @@ export default class UserList extends BaseComponent {
         this.response = response;
         this.dataResource = response;
         this.toggle = [];
+        //this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -256,6 +275,39 @@ export default class UserList extends BaseComponent {
     this.getUserList();
   }
 
+  public confirmationToDelete(response: UserResponseModel) {
+    this.selectedUser = response;
+    this.showDeleteModel = true;
+  }
+
+  public deteleUser() {
+    let request: AddUserRequestModel = new AddUserRequestModel();
+    request.firstName = this.selectedUser.firstName;
+    request.lastName = this.selectedUser.lastName;
+    request.email = this.selectedUser.email;
+    request.roleId = this.selectedUser.roleId;
+    request.active = this.selectedUser.status == "ACTIVE" ? true : false;
+    request.uuid = this.selectedUser.uuid;
+    request.deleteFlag = true;
+
+    this.service
+      .addUser(request)
+      .then((response) => {
+        this.showDeleteModel = false;
+        this.getUserList();
+        this.confirmation("", "User has been deleted successfully");
+      })
+      .catch((err) => {
+        if (err.response.status == 500)
+          this.alert(
+            "Oops, sorry!",
+            "Somthing went wrong, Please contact administration"
+          );
+        else if (err.response.status == 400)
+          this.alert("Oops, sorry!", err.response.data.message);
+      });
+  }
+
   public applyFilter(searchValue: string) {
     this.response = this.dataResource.filter(
       (item) =>
@@ -268,6 +320,25 @@ export default class UserList extends BaseComponent {
         (item.email &&
           item.email.toLowerCase().includes(searchValue.toLowerCase()))
     );
+  }
+
+  public applyStatus() {
+    for (let i in this.response) {
+      this.response[i].recordStatus = this.create(
+        this.response[i].createdTime,
+        this.response[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000)
+  }
+
+  public removeStatus() {
+    this.response.forEach((item) => {
+      item.recordStatus = null;
+    })
   }
 }
 </script> 
