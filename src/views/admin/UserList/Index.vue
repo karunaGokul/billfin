@@ -387,7 +387,7 @@ export default class UserList extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
-        this.dataTable.items = response;
+        
         this.toggle = [];
         this.applyStatus();
       })
@@ -395,7 +395,7 @@ export default class UserList extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
@@ -441,7 +441,7 @@ export default class UserList extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
@@ -449,7 +449,7 @@ export default class UserList extends BaseComponent {
   }
 
   public applyFilter(searchValue: string) {
-    this.response = this.dataResource.filter(
+    this.dataTable.items = this.response.filter(
       (item) =>
         (item.firstName &&
           item.firstName.toLowerCase().includes(searchValue.toLowerCase())) ||
@@ -469,6 +469,8 @@ export default class UserList extends BaseComponent {
         this.response[i].updatedTime
       );
     }
+
+    this.dataTable.items = this.response;
 
     setTimeout(() => {
       this.removeStatus();

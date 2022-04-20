@@ -6,7 +6,7 @@ export class FeeSchedulesResponseModel extends TimeModel {
   tierType: string;
   currencyCode: string;
   flatAmount: number;
-  flatRate: number;
+  bps: number;
   scheduleType: string;
   assignments: number;
   tier: Array<any>;
@@ -18,7 +18,7 @@ export class AddFeeScheduleRequestModel {
   currencyCode: string;
   tierType: string;
   active: boolean;
-  flatRate: number;
+  bps: number;
   flatAmount: number;
   tier: Array<TierModel> = [];
   feeScheduleId: number;

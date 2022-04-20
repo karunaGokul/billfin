@@ -193,7 +193,7 @@ export default class AddProduct extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
@@ -222,7 +222,7 @@ export default class AddProduct extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
@@ -265,7 +265,7 @@ export default class AddProduct extends BaseComponent {
           if (err.response.status == 500)
             this.alert(
               "Oops, sorry!",
-              "Somthing went wrong, Please contact administration"
+              "Something went wrong, Please contact administration"
             );
           else if (err.response.status == 400)
             this.alert("Oops, sorry!", err.response.data.message);

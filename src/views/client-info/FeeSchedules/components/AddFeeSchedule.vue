@@ -688,7 +688,7 @@ export default class AddFeeSchedule extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);
@@ -810,7 +810,7 @@ export default class AddFeeSchedule extends BaseComponent {
       this.feeValidation.bps.message = "This rate point cannot be blank!";
 
       this.feeValidation.amount.invalid = true;
-      this.feeValidation.amount.message = "This amount point cannot be blank!";
+      this.feeValidation.amount.message = "This amount field cannot be blank!";
     }
   }
 
@@ -828,7 +828,7 @@ export default class AddFeeSchedule extends BaseComponent {
       ];
 
     if (this.feeValidation.type == "Flat") {
-      this.feeValidation.bps.value = this.selectedFees.flatRate;
+      this.feeValidation.bps.value = this.selectedFees.bps;
       this.feeValidation.amount.value = this.selectedFees.flatAmount;
       this.updateFlatAmount();
       this.flatInputValidation();
@@ -865,8 +865,6 @@ export default class AddFeeSchedule extends BaseComponent {
 
         this.tiers.push(tier);
       });
-
-      console.log(this.tiers);
 
       for(let i in this.tiers) {
         this.validation(this.tiers[i], +i);
@@ -980,7 +978,7 @@ export default class AddFeeSchedule extends BaseComponent {
       item.bps.invalid = true;
       item.bps.message = "This rate point cannot be blank!";
       item.amount.invalid = true;
-      item.amount.message = "This amount point cannot be blank!";
+      item.amount.message = "This amount field cannot be blank!";
     }
 
     if (item.bps.value && isNaN(item.bps.value)) {
@@ -1041,7 +1039,7 @@ export default class AddFeeSchedule extends BaseComponent {
       this.request.feeScheduleId = this.selectedFees.feeScheduleId;
 
     if (this.feeValidation.type == "Flat") {
-      this.request.flatRate = +this.feeValidation.bps.value;
+      this.request.bps = +this.feeValidation.bps.value;
       this.request.flatAmount = this.$currencyToNumber(
         this.feeValidation.amount.value
       );
@@ -1073,7 +1071,7 @@ export default class AddFeeSchedule extends BaseComponent {
         if (err.response.status == 500)
           this.alert(
             "Oops, sorry!",
-            "Somthing went wrong, Please contact administration"
+            "Something went wrong, Please contact administration"
           );
         else if (err.response.status == 400)
           this.alert("Oops, sorry!", err.response.data.message);

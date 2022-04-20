@@ -40,7 +40,7 @@
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 import { DataTableModel, HeadersModel, ItemsModel, StylesModel } from "@/model";
 
 export default class DataTable extends Vue {
@@ -48,8 +48,9 @@ export default class DataTable extends Vue {
   @Prop() headers: Array<HeadersModel>;
   @Prop() items: Array<ItemsModel>;
 
-  addUser() {
-    console.log('its called');
-  }
+  /*@Watch('items')
+  update() {
+    console.log(this.items);
+  }*/
 }
 </script>
