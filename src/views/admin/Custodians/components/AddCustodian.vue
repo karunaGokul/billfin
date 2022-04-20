@@ -120,7 +120,7 @@ export default class AddCustodian extends BaseComponent {
       this.service
         .addCustodian(this.request)
         .then((response) => {
-          this.confirmation("", "New custodian added successfully");
+          this.confirmation("", this.modelType == "Add Custodian" ? "New custodian added successfully" : "Custodian updated successfully");
           this.$emit("custodianAdded");
         })
         .catch((err) => {

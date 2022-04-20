@@ -19,3 +19,4 @@ export * from "./user-list.model";
 export * from "./fee-schedules.model";
 export * from "./custodians.model";
 export * from "./products.model";
+export * from "./grid.model";

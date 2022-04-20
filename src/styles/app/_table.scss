@@ -1,10 +1,10 @@
 .table-hover {
     tr td .edit-row {
-        display: none;
+        opacity: 0;
     }
     &:hover>tbody>tr:hover {
         .edit-row {
-            display: block
+            opacity: 1;
         }
         .record-status {
             display: none;

@@ -30,7 +30,10 @@
             {{ selectedRepCode.repCode }} &nbsp;&nbsp;
             {{ selectedRepCode.branchName }}
           </h5>
-          <div class="row" v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'">
+          <div
+            class="row"
+            v-if="pageType == 'RepCodes' && modelType == 'Edit RepCodes'"
+          >
             <div class="col-2">
               <div class="input-group input-group-solid mb-2">
                 <input
@@ -145,9 +148,6 @@
                       border-bottom-2 border-dashed border-light
                       p-4
                     "
-                    v-if="
-                      pageType == 'RepCodes' && modelType == 'Edit RepCodes'
-                    "
                   ></th>
                 </tr>
               </thead>
@@ -161,8 +161,15 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-4 pt-6 pb-6
+                      p-4
+                      pt-6
+                      pb-6
                     "
+                    :class="{
+                      'bg-warning-opacity':
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update',
+                    }"
                   >
                     <div v-if="item.status == 'view' && !item.edit">
                       {{ item.displayName }}
@@ -188,8 +195,15 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-4 pt-6 pb-6
+                      p-4
+                      pt-6
+                      pb-6
                     "
+                    :class="{
+                      'bg-warning-opacity':
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update',
+                    }"
                   >
                     <div v-if="item.status == 'view' && !item.edit">
                       {{ item.lastName }}
@@ -210,8 +224,15 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-4 pt-6 pb-6
+                      p-4
+                      pt-6
+                      pb-6
                     "
+                    :class="{
+                      'bg-warning-opacity':
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update',
+                    }"
                   >
                     <div v-if="item.status == 'view' && !item.edit">
                       {{ item.firstName }}
@@ -232,8 +253,15 @@
                       fw-bold
                       text-dark-gray
                       border-bottom-2 border-dashed border-light
-                      p-4 pt-6 pb-6
+                      p-4
+                      pt-6
+                      pb-6
                     "
+                    :class="{
+                      'bg-warning-opacity':
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update',
+                    }"
                   >
                     <div v-if="item.status == 'view' && !item.edit">
                       {{ item.middleName }}
@@ -252,17 +280,37 @@
 
                   <td
                     class="border-bottom-2 border-dashed border-light p-4"
-                    v-if="
-                      pageType == 'RepCodes' && modelType == 'Edit RepCodes'
-                    "
+                    :class="{
+                      'bg-warning-opacity':
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update',
+                    }"
                   >
                     <button
                       type="button"
                       class="btn btn-secondary btn-sm p-2 ps-3"
                       @click="removeRow(index)"
+                      v-if="
+                        pageType == 'RepCodes' && modelType == 'Edit RepCodes'
+                      "
                     >
                       <i class="fa fa-trash text-dark-gray edit-row"></i>
                     </button>
+                    <span
+                      class="
+                        badge
+                        bg-white
+                        border border-dashed
+                        text-primary
+                        border-primary
+                        record-status
+                      "
+                      v-if="
+                        item.recordStatus == 'new' ||
+                        item.recordStatus == 'update'
+                      "
+                      >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                    >
                   </td>
                 </tr>
               </tbody>
@@ -408,7 +456,27 @@ export default class RepCodePreview extends BaseComponent {
           advisor.edit = false;
         });
         this.dataResource = this.request.advisors;
+        this.applyStatus();
       });
+  }
+
+  public applyStatus() {
+    for (let i in this.request.advisors) {
+      this.request.advisors[i].recordStatus = this.create(
+        this.request.advisors[i].createdTime,
+        this.request.advisors[i].updatedTime
+      );
+    }
+
+    setTimeout(() => {
+      this.removeStatus();
+    }, 10000);
+  }
+
+  public removeStatus() {
+    this.request.advisors.forEach((item) => {
+      item.recordStatus = null;
+    });
   }
 
   private getBranch() {
@@ -487,6 +555,9 @@ export default class RepCodePreview extends BaseComponent {
       branch: "",
       advisorIdentifier: "",
       advisorId: 0,
+      createdTime: "",
+      updatedTime: "",
+      recordStatus: "",
     });
 
     this.dataResource = this.request.advisors;
@@ -544,7 +615,9 @@ export default class RepCodePreview extends BaseComponent {
     this.repCodesService
       .addRepCode(request)
       .then((response) => {
-        this.$emit("repCodeUpdated");
+        //this.$emit("repCodeUpdated");
+        this.modelType = "View RepCode";
+        this.viewRepCode();
       })
       .catch((err) => {
         if (err.response.status == 500)

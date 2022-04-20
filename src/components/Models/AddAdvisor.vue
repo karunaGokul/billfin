@@ -370,7 +370,7 @@ export default class AddAdvisor extends BaseComponent {
 
   public addAdvisor() {
     this.v$.$touch();
-    console.log(this.v$.request.contactPhone);
+    
     if (!this.v$.$invalid && !this.emailErrorMessage) {
       this.request.middleName = this.valueCheck(this.request.middleName);
       this.request.advisorIdentifier = this.valueCheck(

@@ -40,7 +40,7 @@ export class viewRepCodesResponseModel {
   branchCode: number;
   advisors: Array<advisorsModel> = [];
 }
-export class advisorsModel {
+export class advisorsModel extends TimeModel {
   firstName: string;
   lastName: string;
   middleName: string;

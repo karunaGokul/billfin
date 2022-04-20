@@ -24,7 +24,86 @@
     </div>
   </div>
 
-  <div class="card p-4 mt-4 position-relative">
+  <data-table
+    :headers="dataTable.headers"
+    :items="dataTable.items"
+    :styles="dataTable.styles"
+  >
+    <template v-slot:name="slotProps">
+      <img
+        :src="$vuehelper.getImageUrl(slotProps.item.profilePhoto)"
+        alt="Profile image"
+        width="30"
+        height="30"
+        class="rounded-circle"
+        v-if="slotProps.item.profilePhoto"
+      />
+      <span
+        class="w-25 h-25 p-3 ps-5 pe-5 bg-primary rounded-circle text-white"
+        v-if="!slotProps.item.profilePhoto"
+        >{{ slotProps.item.firstName.charAt(0).toUpperCase() }}</span
+      >
+      <span class="ms-4"
+        >{{ slotProps.item.firstName }} {{ slotProps.item.lastName }}</span
+      >
+    </template>
+    <template v-slot:status="slotProps">
+      <span
+        class="badge fs-7 ms-2"
+        :class="{
+          'bg-success-alpha text-success': slotProps.item.status == 'ACTIVE',
+          'bg-dander-alpha text-danger': slotProps.item.status == 'INACTIVE',
+        }"
+      >
+        {{ slotProps.item.status == "ACTIVE" ? "Active" : "Inactive" }}
+      </span>
+    </template>
+    <template v-slot:action="slotProps">
+      <div
+        class="d-flex justify-content-around align-items-center p-6 edit-row"
+      >
+        <i
+          class="fa fa-solid fa-pen fs-4 fa-primary-hover"
+          @click="addUser('Edit User', slotProps.item)"
+        ></i>
+        <i
+          class="fa fa-solid fa-trash fs-4 fa-danger-hover"
+          @click="confirmationToDelete(slotProps.item)"
+        ></i>
+        <span
+          class="
+            badge
+            bg-white
+            border border-dashed
+            text-primary
+            border-primary
+            record-status
+          "
+          v-if="
+            slotProps.item.recordStatus == 'new' ||
+            slotProps.item.recordStatus == 'update'
+          "
+          >{{ slotProps.item.recordStatus == "new" ? "New" : "Edit" }}</span
+        >
+      </div>
+    </template>
+  </data-table>
+
+  <add-user
+    :modelType="modelType"
+    :response="selectedUser"
+    @newUser="updateUser"
+    @close="showAddUserModel = false"
+    v-if="showAddUserModel"
+  />
+  <app-delete
+    message="Are you sure you want to delete this user?"
+    @delete="deteleUser"
+    @cancel="showDeleteModel = false"
+    v-if="showDeleteModel"
+  />
+
+  <!--<div class="card p-4 mt-4 position-relative">
     <div class="card-body pt-0">
       <table
         class="
@@ -100,6 +179,8 @@
               :class="{
                 'text-gray-secondary': item.status == 'INACTIVE',
                 'text-dark-gray': item.status == 'ACTIVE',
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
               }"
             >
               <img
@@ -131,6 +212,8 @@
               :class="{
                 'text-gray-secondary': item.status == 'INACTIVE',
                 'text-dark-gray': item.status == 'ACTIVE',
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
               }"
             >
               {{ item.email }}
@@ -140,6 +223,8 @@
               :class="{
                 'text-gray-secondary': item.status == 'INACTIVE',
                 'text-dark-gray': item.status == 'ACTIVE',
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
               }"
             >
               {{ item.roleName }}
@@ -156,6 +241,8 @@
               :class="{
                 'text-gray-secondary': item.status == 'INACTIVE',
                 'text-dark-gray': item.status == 'ACTIVE',
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
               }"
             >
               <span
@@ -173,6 +260,8 @@
               :class="{
                 'text-gray-secondary': item.status == 'INACTIVE',
                 'text-dark-gray': item.status == 'ACTIVE',
+                'bg-warning-opacity':
+                  item.recordStatus == 'new' || item.recordStatus == 'update',
               }"
               style="width: 10%"
             >
@@ -185,32 +274,39 @@
                   class="fa fa-solid fa-trash fs-4 edit-row fa-danger-hover"
                   @click="confirmationToDelete(item)"
                 ></i>
+                <span
+                  class="
+                    badge
+                    bg-white
+                    border border-dashed
+                    text-primary
+                    border-primary
+                    record-status
+                  "
+                  v-if="
+                    item.recordStatus == 'new' || item.recordStatus == 'update'
+                  "
+                  >{{ item.recordStatus == "new" ? "New" : "Edit" }}</span
+                >
               </div>
             </td>
           </tr>
         </tbody>
       </table>
-      <add-user
-        :modelType="modelType"
-        :response="selectedUser"
-        @newUser="updateUser"
-        @close="showAddUserModel = false"
-        v-if="showAddUserModel"
-      />
-      <app-delete
-        message="Are you sure you want to delete this user?"
-        @delete="deteleUser"
-        @cancel="showDeleteModel = false"
-        v-if="showDeleteModel"
-      />
+      
     </div>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 import { Options } from "vue-class-component";
 import { Inject } from "vue-property-decorator";
 
-import { AddUserRequestModel, UserResponseModel } from "@/model";
+import {
+  AddUserRequestModel,
+  DataTableModel,
+  HeadersModel,
+  UserResponseModel,
+} from "@/model";
 
 import { IUserListService } from "@/service";
 
@@ -220,10 +316,13 @@ import BreadCrumb from "@/components/layout/BreadCrumb.vue";
 import AddUser from "./components/AddUser.vue";
 import AppDelete from "@/components/layout/AppDelete.vue";
 
+import DataTable from "@/components/controls/DataTable.vue";
+
 @Options({
   components: {
     AddUser,
     AppDelete,
+    DataTable,
     BreadCrumb,
   },
 })
@@ -238,8 +337,48 @@ export default class UserList extends BaseComponent {
   public showDeleteModel: boolean = false;
   public toggle: Array<boolean> = [];
 
+  public dataTable: DataTableModel = new DataTableModel();
+
   created() {
     this.getUserList();
+  }
+
+  mounted() {
+    let headers: Array<HeadersModel> = [];
+    headers.push({
+      text: "NAME",
+      value: "name",
+      class: "fw-bold border-bottom-1 border-dashed border-light p-6",
+    });
+    headers.push({
+      text: "EMAIL",
+      value: "email",
+      class: "fw-bold border-bottom-1 border-dashed border-light p-6",
+    });
+    headers.push({
+      text: "ROLE",
+      value: "roleName",
+      class: "fw-bold border-bottom-1 border-dashed border-light p-6",
+    });
+    headers.push({
+      text: "STATUS",
+      value: "status",
+      class: "fw-bold border-bottom-1 border-dashed border-light p-6",
+    });
+    headers.push({
+      text: "",
+      value: "action",
+      class: "fw-bold border-bottom-1 border-dashed border-light p-0",
+    });
+
+    this.dataTable.headers = headers;
+
+    this.dataTable.styles.tableClass =
+      "table table-hover fs-6 border-top-0 border-start-0 border-end-0 border-bottom-1 border-dashed border-light";
+    this.dataTable.styles.theadClass =
+      "fw-bold text-gray-secondary border-bottom-1 border-dashed border-light p-6";
+    this.dataTable.styles.tbodyClass =
+      "fw-bold border-bottom-1 border-dashed border-light p-6";
   }
 
   public getUserList() {
@@ -248,8 +387,9 @@ export default class UserList extends BaseComponent {
       .then((response) => {
         this.response = response;
         this.dataResource = response;
+        this.dataTable.items = response;
         this.toggle = [];
-        //this.applyStatus();
+        this.applyStatus();
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -332,13 +472,13 @@ export default class UserList extends BaseComponent {
 
     setTimeout(() => {
       this.removeStatus();
-    }, 10000)
+    }, 10000);
   }
 
   public removeStatus() {
     this.response.forEach((item) => {
       item.recordStatus = null;
-    })
+    });
   }
 }
 </script> 

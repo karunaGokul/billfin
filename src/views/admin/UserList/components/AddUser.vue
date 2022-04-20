@@ -279,8 +279,13 @@ export default class AddUser extends BaseComponent {
       this.service
         .addUser(this.request)
         .then((response) => {
-          if (this.imageChanged && this.profilePhoto) this.processAvatar(response.uuid);
-          else this.$emit("newUser");
+          if (this.imageChanged && this.profilePhoto)
+            this.processAvatar(response.uuid);
+          else {
+            this.$emit("newUser");
+            if (this.modelType == "Edit User")
+              this.confirmation("", "User updated successfully");
+          }
         })
         .catch((err) => {
           if (err.response.status == 500)
@@ -304,6 +309,8 @@ export default class AddUser extends BaseComponent {
             "",
             `We've sent an invitation email to ${this.request.firstName} ${this.request.lastName}. ${this.request.firstName} will be asked to create a secure password before getting start.`
           );
+        } else {
+          this.confirmation("", "User updated successfully");
         }
       })
       .catch((err) => {

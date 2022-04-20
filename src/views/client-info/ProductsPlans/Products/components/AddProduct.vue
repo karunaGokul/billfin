@@ -258,6 +258,7 @@ export default class AddProduct extends BaseComponent {
       this.service
         .addProduct(request)
         .then((response) => {
+          this.confirmation("", this.modelType == "Add Product" ? "Product added successfully" : "Product updated successfully");
           this.$emit("newProduct");
         })
         .catch((err) => {

@@ -1066,6 +1066,7 @@ export default class AddFeeSchedule extends BaseComponent {
     this.service
       .addFeeSchedule(this.request)
       .then((response) => {
+        this.confirmation("", this.modelType == "Add Fee Schedule" ? "Fee Schedule added successfully" : "Fee Schedule updated successfully");
         this.$emit("newFeeAdded");
       })
       .catch((err) => {
