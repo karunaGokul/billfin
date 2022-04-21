@@ -256,6 +256,15 @@
                   <i class="fas fa-circle fs-10"></i>
                   <span class="menu-link-title fs-7">Custodians</span>
                 </router-link>
+                <router-link
+                  to="/security-attributes"
+                  tag="li"
+                  class="d-flex align-items-center menu-link"
+                  active-class="menu-link-active"
+                >
+                  <i class="fas fa-circle fs-10"></i>
+                  <span class="menu-link-title fs-7">Security Attributes</span>
+                </router-link>
               </ul>
             </div>
           </div>
