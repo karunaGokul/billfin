@@ -41,6 +41,7 @@
               class="form-check-input"
               type="checkbox"
               v-model="v$.request.enabled.$model"
+              :disabled="request.noOfAccountsLinked >= 1"
             />
             <label class="form-check-label" for="Enable Custodian"
               >Enabled</label
@@ -120,7 +121,7 @@ export default class AddCustodian extends BaseComponent {
       this.service
         .addCustodian(this.request)
         .then((response) => {
-          this.confirmation("", this.modelType == "Add Custodian" ? "New custodian added successfully" : "Custodian updated successfully");
+          this.confirmation("", this.modelType == "Add Custodian" ? "Custodian added successfully" : "Custodian updated successfully");
           this.$emit("custodianAdded");
         })
         .catch((err) => {

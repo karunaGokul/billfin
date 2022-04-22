@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
-    <bread-crumb :additionalName="custodianName" />
+    <bread-crumb :additionalName="custodianName" :subName="custodianCode"/>
     <div class="d-flex align-items-center justify-content-between">
       <button
         class="btn border border-primary text-primary me-2"

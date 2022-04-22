@@ -117,7 +117,7 @@ export default class AddTransactionCode extends BaseComponent {
       this.service
         .addTransactionCode(this.request)
         .then((response) => {
-          this.confirmation("", this.modelType == "Add Transaction Code" ? "New transaction added successfully" : "Transaction updated successfully");
+          this.confirmation("", this.modelType == "Add Transaction Code" ? "Transaction added successfully" : "Transaction updated successfully");
           this.$emit("newTransaction");
         })
         .catch((err) => {

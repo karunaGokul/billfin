@@ -187,25 +187,27 @@
                 </button>
 
                 <span
-                  :data-tooltip="
-                    !item.custodianKey && !item.accountDisplayFormat
-                      ? 'Keys'
-                      : ''
-                  "
+                  v-if="!item.custodianKey && !item.accountDisplayFormat"
+                  data-tooltip="Keys"
                   class="card-container"
                 >
                   <i
                     class="fa fa-solid fa-key fs-4 edit-row"
-                    :class="{
-                      'text-success':
-                        item.custodianKey || item.accountDisplayFormat,
-                    }"
+                    v-if="item.enabled"
+                    @click="addKeys(item)"
+                  ></i>
+                </span>
+                <span
+                  v-if="item.custodianKey || item.accountDisplayFormat"
+                  class="card-container"
+                >
+                  <i
+                    class="fa fa-solid fa-key fs-4 edit-row text-success"
                     v-if="item.enabled"
                     @click="addKeys(item)"
                   ></i>
                   <div
                     class="card shadow show-card position-absolute end-0 p-4"
-                    v-if="item.custodianKey || item.accountDisplayFormat"
                     style="min-width: 230px; z-index: 999999"
                   >
                     <div class="fw-bolder mt-2">Keys</div>

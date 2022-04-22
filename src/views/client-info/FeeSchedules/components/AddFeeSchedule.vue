@@ -21,7 +21,11 @@
                 :validation="['required']"
                 :readonly="modelType == 'Edit Fee Schedule'"
                 @updateInput="
-                  modelType != 'Edit Fee Schedule' ? validateFeeSchedule() : ''
+                  modelType != 'Edit Fee Schedule'
+                    ? !v$.request.name.$invalid
+                      ? validateFeeSchedule()
+                      : ''
+                    : ''
                 "
               />
             </div>
@@ -812,6 +816,29 @@ export default class AddFeeSchedule extends BaseComponent {
       this.feeValidation.amount.invalid = true;
       this.feeValidation.amount.message = "This amount field cannot be blank!";
     }
+
+    if (this.feeValidation.amount.value) {
+      let amount: string = this.$currencyToNumber(
+        this.feeValidation.amount.value
+      ).toString();
+
+      let amountLength: number = amount.split(".")[0].length,
+        lastDigitLength: number = amount.split(".")[1]
+          ? amount.split(".")[1].length
+          : 0;
+
+      if (amountLength <= 13 && lastDigitLength <= 2) {
+        this.feeValidation.formValid = true;
+
+        this.feeValidation.amount.invalid = false;
+        this.feeValidation.amount.message = null;
+      } else {
+        this.feeValidation.formValid = false;
+
+        this.feeValidation.amount.invalid = true;
+        this.feeValidation.amount.message = "Amount length 13,2";
+      }
+    }
   }
 
   public clickOutSideBlended() {
@@ -866,7 +893,7 @@ export default class AddFeeSchedule extends BaseComponent {
         this.tiers.push(tier);
       });
 
-      for(let i in this.tiers) {
+      for (let i in this.tiers) {
         this.validation(this.tiers[i], +i);
       }
     }
@@ -1064,7 +1091,12 @@ export default class AddFeeSchedule extends BaseComponent {
     this.service
       .addFeeSchedule(this.request)
       .then((response) => {
-        this.confirmation("", this.modelType == "Add Fee Schedule" ? "Fee Schedule added successfully" : "Fee Schedule updated successfully");
+        this.confirmation(
+          "",
+          this.modelType == "Add Fee Schedule"
+            ? "Fee Schedule added successfully"
+            : "Fee Schedule updated successfully"
+        );
         this.$emit("newFeeAdded");
       })
       .catch((err) => {

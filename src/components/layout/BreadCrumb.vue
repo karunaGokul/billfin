@@ -26,6 +26,7 @@ import { Prop } from "vue-property-decorator";
 
 export default class BreadCrumb extends Vue {
   @Prop() additionalName?: string;
+  @Prop() subName: string;
 
   get page() {
     return this.$route.name.toString();
@@ -65,7 +66,7 @@ export default class BreadCrumb extends Vue {
     ) {
       value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">My Subscription</li> <li class="breadcrumb-item">${this.page}</li>`;
     } else if (this.page == "Transaction Codes") {
-      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">Custodians</li> <li class="breadcrumb-item">${this.page}</li>`;
+      value = `<li class="breadcrumb-item text-muted"></li> <li class="breadcrumb-item text-muted">Settings</li> <li class="breadcrumb-item text-muted">Custodians</li> <li class="breadcrumb-item">${this.subName} - ${this.page}</li>`;
     } else {
       value = `<li class="breadcrumb-item text-muted"></li><li class="breadcrumb-item">${this.page}</li>`;
     }
