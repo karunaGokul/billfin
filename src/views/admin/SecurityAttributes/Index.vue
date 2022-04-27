@@ -65,7 +65,7 @@
             </div>
           </div>
         </div>
-        <h4 class="ps-4 pb-4">Optional Attributes</h4>
+        <h4 class="ps-4 mt-5 pb-4">Optional Attributes</h4>
         <div class="row">
           <div class="col-6">
             <div class="row p-4">
@@ -137,12 +137,8 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end pt-4 pb-4">
-          <button type="button" class="btn btn-link text-gray">
-            Cancel
-          </button>
-          <button type="button" class="btn btn-primary ms-8">
-            Save
-          </button>
+          <button type="button" class="btn btn-link text-gray">Cancel</button>
+          <button type="button" class="btn btn-primary ms-8">Save</button>
         </div>
       </div>
     </div>
@@ -150,15 +146,77 @@
 </template>
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Inject } from "vue-property-decorator";
 
 import BreadCrumb from "@/components/layout/BreadCrumb.vue";
-import SimpleInput from "@/components/controls/SimpleInput.vue";
+
+import { ISecurityAttributesService } from "@/service";
+import { SecurityAttributesRequestModel } from "@/model";
 
 @Options({
   components: {
     BreadCrumb,
-    SimpleInput,
   },
 })
-export default class SecurityAttributes extends Vue {}
+export default class SecurityAttributes extends Vue {
+  @Inject("securityAttributesService") service: ISecurityAttributesService;
+
+  public standardAttributes: Array<SecurityAttributesRequestModel> = [
+    {
+      securityColumnName: "securityIdentifier",
+      securityAttributeName: "",
+      securityAttributeMapId: 0,
+    },
+    {
+      securityColumnName: "symbol",
+      securityAttributeName: "",
+      securityAttributeMapId: 0,
+    },
+    {
+      securityColumnName: "name",
+      securityAttributeName: "",
+      securityAttributeMapId: 0,
+    },
+    {
+      securityColumnName: "description",
+      securityAttributeName: "",
+      securityAttributeMapId: 0,
+    },
+    {
+      securityColumnName: "displayName",
+      securityAttributeName: "",
+      securityAttributeMapId: 0,
+    },
+  ];
+
+  created() {
+    this.getAttributes();
+  }
+
+  public getAttributes() {
+    this.service
+      .getResponse()
+      .then((response) => {
+        this.bindResponse(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private bindResponse(response: Array<SecurityAttributesRequestModel>) {
+    response.forEach((item) => {
+      this.standardAttributes.forEach((data) => {
+        if (item.securityColumnName == data.securityColumnName) {
+          data.securityAttributeName = item.securityAttributeName;
+          data.securityAttributeMapId = item.securityAttributeMapId;
+        }
+      });
+    });
+
+    console.log(this.standardAttributes);
+  }
+
+  public saveAttributes() {}
+}
 </script>

@@ -68,6 +68,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/admin/SecurityAttributes/Index.vue")
       },
       {
+        path: 'billing-assets-group',
+        name: 'Billing Assets Group',
+        component: () => import("@/views/admin/BillingAssetsGroup/Index.vue")
+      },
+      {
         path: "/help",
         name: "Help",
         component: () => import("@/views/admin/Help.vue"),

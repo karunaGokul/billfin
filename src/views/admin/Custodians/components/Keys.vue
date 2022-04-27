@@ -40,7 +40,6 @@
                 class="form-check-input"
                 type="checkbox"
                 v-model="v$.request.accruedInterestFlag.$model"
-                maxLength="1024"
               />
             </div>
           </div>
@@ -50,6 +49,7 @@
             label="Account Display Format"
             :controls="v$.request.accountDisplayFormat"
             :validation="[]"
+            maxLength="1024"
           />
         </div>
         <div class="modal-footer justify-content-center border-0 p-0 pb-4">

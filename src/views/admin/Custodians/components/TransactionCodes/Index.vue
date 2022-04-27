@@ -21,7 +21,7 @@
 
   <div class="card p-4 mt-4 position-relative">
     <div class="d-flex justify-content-between p-4">
-      <div class="fs-4 fw-bolder">{{ custodianName }} - Transaction Code</div>
+      <div class="fs-4 fw-bolder">{{ custodianCode }} - Transaction Code</div>
       <div>
         <div class="input-group input-group-solid">
           <span class="input-group-text">

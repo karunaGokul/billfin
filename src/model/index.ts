@@ -20,3 +20,5 @@ export * from "./fee-schedules.model";
 export * from "./custodians.model";
 export * from "./products.model";
 export * from "./grid.model";
+export * from "./security-attributes.model";
+export * from "./billing-asset-group.model";

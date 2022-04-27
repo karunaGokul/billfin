@@ -1,93 +1,84 @@
 <template>
   <div class="d-flex align-items-center justify-content-between">
     <bread-crumb :additionalName="`(${response.length})`" />
-    <div class="d-flex align-items-center justify-content-end w-50">
-      <button
-        class="btn btn-primary me-4"
-        type="button"
-        @click="addUser('Add User')"
-      >
-        Add User
-      </button>
-      <div class="input-group input-group-solid bg-white w-50 p-1">
-        <span class="input-group-text">
-          <img src="@/assets/search.svg" alt="Search Icon" />
-        </span>
-        <input
-          class="form-control"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-          @input="applyFilter($event.target.value)"
-        />
-      </div>
-    </div>
+    <button
+      class="btn btn-primary me-4"
+      type="button"
+      @click="addUser('Add User')"
+    >
+      Add User
+    </button>
   </div>
 
-  <data-table
-    :headers="dataTable.headers"
-    :items="dataTable.items"
-    :styles="dataTable.styles"
-  >
-    <template v-slot:name="slotProps">
-      <img
-        :src="$vuehelper.getImageUrl(slotProps.item.profilePhoto)"
-        alt="Profile image"
-        width="30"
-        height="30"
-        class="rounded-circle"
-        v-if="slotProps.item.profilePhoto"
-      />
-      <span
-        class="w-25 h-25 p-3 ps-5 pe-5 bg-primary rounded-circle text-white"
-        v-if="!slotProps.item.profilePhoto"
-        >{{ slotProps.item.firstName.charAt(0).toUpperCase() }}</span
-      >
-      <span class="ms-4"
-        >{{ slotProps.item.firstName }} {{ slotProps.item.lastName }}</span
-      >
-    </template>
-    <template v-slot:status="slotProps">
-      <span
-        class="badge fs-7 ms-2"
-        :class="{
-          'bg-success-alpha text-success': slotProps.item.status == 'ACTIVE',
-          'bg-dander-alpha text-danger': slotProps.item.status == 'INACTIVE',
-        }"
-      >
-        {{ slotProps.item.status == "ACTIVE" ? "Active" : "Inactive" }}
-      </span>
-    </template>
-    <template v-slot:action="slotProps">
-      <div
-        class="d-flex justify-content-around align-items-center p-6 edit-row"
-      >
-        <i
-          class="fa fa-solid fa-pen fs-4 fa-primary-hover"
-          @click="addUser('Edit User', slotProps.item)"
-        ></i>
-        <i
-          class="fa fa-solid fa-trash fs-4 fa-danger-hover"
-          @click="confirmationToDelete(slotProps.item)"
-        ></i>
+  <div class="card p-4 mt-4 position-relative">
+    <data-table
+      :headers="dataTable.headers"
+      :items="dataTable.items"
+      :styles="dataTable.styles"
+      :title="'User List (' + response.length + ')'"
+      defaultSearch="true"
+      @search="applyFilter"
+    >
+      <template v-slot:name="slotProps">
+        <img
+          :src="$vuehelper.getImageUrl(slotProps.item.profilePhoto)"
+          alt="Profile image"
+          width="30"
+          height="30"
+          class="rounded-circle"
+          v-if="slotProps.item.profilePhoto"
+        />
         <span
-          class="
-            badge
-            bg-white
-            border border-dashed
-            text-primary
-            border-primary
-            record-status
-          "
-          v-if="
-            slotProps.item.recordStatus == 'new' ||
-            slotProps.item.recordStatus == 'update'
-          "
-          >{{ slotProps.item.recordStatus == "new" ? "New" : "Edit" }}</span
+          class="w-25 h-25 p-3 ps-5 pe-5 bg-primary rounded-circle text-white"
+          v-if="!slotProps.item.profilePhoto"
+          >{{ slotProps.item.firstName.charAt(0).toUpperCase() }}</span
         >
-      </div>
-    </template>
-  </data-table>
+        <span class="ms-4"
+          >{{ slotProps.item.firstName }} {{ slotProps.item.lastName }}</span
+        >
+      </template>
+      <template v-slot:status="slotProps">
+        <span
+          class="badge fs-7 ms-2"
+          :class="{
+            'bg-success-alpha text-success': slotProps.item.status == 'ACTIVE',
+            'bg-dander-alpha text-danger': slotProps.item.status == 'INACTIVE',
+          }"
+        >
+          {{ slotProps.item.status == "ACTIVE" ? "Active" : "Inactive" }}
+        </span>
+      </template>
+      <template v-slot:action="slotProps">
+        <div
+          class="d-flex justify-content-around align-items-center p-6 edit-row"
+        >
+          <i
+            class="fa fa-solid fa-pen fs-4 fa-primary-hover"
+            @click="addUser('Edit User', slotProps.item)"
+          ></i>
+          <i
+            class="fa fa-solid fa-trash fs-4 fa-danger-hover"
+            @click="confirmationToDelete(slotProps.item)"
+          ></i>
+          <span
+            class="
+              badge
+              bg-white
+              border border-dashed
+              text-primary
+              border-primary
+              record-status
+            "
+            v-if="
+              slotProps.item.recordStatus == 'new' ||
+              slotProps.item.recordStatus == 'update'
+            "
+            >{{ slotProps.item.recordStatus == "new" ? "New" : "Edit" }}</span
+          >
+        </div>
+      </template>
+    </data-table>
+  </div>
 
   <add-user
     :modelType="modelType"
@@ -330,12 +321,10 @@ export default class UserList extends BaseComponent {
   @Inject("userService") service: IUserListService;
 
   public response: Array<UserResponseModel> = [];
-  public dataResource: Array<UserResponseModel> = [];
   public selectedUser: UserResponseModel = new UserResponseModel();
   public modelType: string = "Add User";
   public showAddUserModel: boolean = false;
   public showDeleteModel: boolean = false;
-  public toggle: Array<boolean> = [];
 
   public dataTable: DataTableModel = new DataTableModel();
 
@@ -386,10 +375,7 @@ export default class UserList extends BaseComponent {
       .getUserList()
       .then((response) => {
         this.response = response;
-        this.dataResource = response;
-        
-        this.toggle = [];
-        this.applyStatus();
+        this.dataTable.items = this.response;
       })
       .catch((err) => {
         if (err.response.status == 500)
@@ -460,27 +446,6 @@ export default class UserList extends BaseComponent {
         (item.email &&
           item.email.toLowerCase().includes(searchValue.toLowerCase()))
     );
-  }
-
-  public applyStatus() {
-    for (let i in this.response) {
-      this.response[i].recordStatus = this.create(
-        this.response[i].createdTime,
-        this.response[i].updatedTime
-      );
-    }
-
-    this.dataTable.items = this.response;
-
-    setTimeout(() => {
-      this.removeStatus();
-    }, 10000);
-  }
-
-  public removeStatus() {
-    this.response.forEach((item) => {
-      item.recordStatus = null;
-    });
   }
 }
 </script> 

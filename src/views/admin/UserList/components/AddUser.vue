@@ -285,6 +285,11 @@ export default class AddUser extends BaseComponent {
             this.$emit("newUser");
             if (this.modelType == "Edit User")
               this.confirmation("", "User updated successfully");
+            else
+              this.confirmation(
+                "",
+                `We've sent an invitation email to ${this.request.firstName} ${this.request.lastName}. ${this.request.firstName} will be asked to create a secure password before getting start.`
+              );
           }
         })
         .catch((err) => {

@@ -11,3 +11,4 @@ export * from './user-list.service';
 export * from './fee-schedules.service';
 export * from './custodians.service';
 export * from './products.service';
+export * from './security-attributes.service';
