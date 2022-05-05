@@ -707,6 +707,7 @@ export default class AddFeeSchedule extends BaseComponent {
 
     if (this.modelType == "Edit Fee Schedule") {
       this.isFeeScheduleExists = false;
+      this.request.scheduleType = this.selectedFees.scheduleType;
       this.updateForm();
     }
   }

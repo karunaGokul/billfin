@@ -15,6 +15,7 @@ export class FeeSchedulesResponseModel extends TimeModel {
 }
 export class AddFeeScheduleRequestModel {
   name: string;
+  scheduleType: string;
   currencyCode: string;
   tierType: string;
   active: boolean;

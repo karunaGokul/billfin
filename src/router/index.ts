@@ -191,6 +191,7 @@ router.beforeEach((to, from, next) => {
       store.dispatch("loadSettings");
       store.dispatch("loadEntitlements").then(() => {
         next();
+        store.dispatch("loadSecurityAttribute");
       });
       return;
     }

@@ -66,10 +66,7 @@ import DataTable from "@/components/controls/DataTable.vue";
 
 import {
   DataTableModel,
-  HeadersModel,
-  BillingAssetGroupsResponseModel,
-  AssetGroupResponseModel,
-  FidelityTypeModel,
+  HeadersModel
 } from "@/model";
 
 @Options({
@@ -81,7 +78,7 @@ import {
 })
 export default class BillingAssetsGroup extends BaseComponent {
   public dataTable: DataTableModel = new DataTableModel();
-  public response: Array<BillingAssetGroupsResponseModel> = [];
+  //public response: Array<BillingAssetGroupsResponseModel> = [];
 
   created() {
     this.getAssetsGroup();
@@ -125,7 +122,7 @@ export default class BillingAssetsGroup extends BaseComponent {
   }
 
   public getAssetsGroup() {
-    let gp = new BillingAssetGroupsResponseModel();
+    /*let gp = new BillingAssetGroupsResponseModel();
     gp.groupType = "default";
 
     let group: AssetGroupResponseModel = new AssetGroupResponseModel();
@@ -165,7 +162,7 @@ export default class BillingAssetsGroup extends BaseComponent {
 
     this.response.push(gp);
     
-    console.log(this.response);
+    console.log(this.response);*/
   }
 
   applyFilter() {}
