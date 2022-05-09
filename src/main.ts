@@ -76,7 +76,8 @@ app.config.globalProperties.$filters = {
   currencyDisplayWithoutSymbol(
     value: any,
     numberOfDigits: number = 0,
-    minDigits: number = 0
+    minDigits: number = 0,
+    allowNegative?: boolean 
   ) {
     if (!value) return `0`;
 
@@ -84,7 +85,7 @@ app.config.globalProperties.$filters = {
 
     value = parseFloat(value);
 
-    if (value >= 0)
+    if (value >= 0 || allowNegative)
       return `${value.toLocaleString("en-US", {
         minimumFractionDigits: minDigits,
         maximumFractionDigits: numberOfDigits,

@@ -277,7 +277,7 @@
                 "
               >
                 <span class="fs-7">$</span>
-                {{ $filters.currencyDisplayWithoutSymbol(item.termPlanAmount) }}
+                {{ $filters.currencyDisplayWithoutSymbol(item.invoiceAmount, 2, 2, true) }}
                 <span class="fs-8 fw-light"
                   >/{{ item.planTerm == "ANNUAL" ? "Yr" : "Mo" }}</span
                 >

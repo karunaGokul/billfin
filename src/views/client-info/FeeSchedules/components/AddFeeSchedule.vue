@@ -1019,6 +1019,22 @@ export default class AddFeeSchedule extends BaseComponent {
       item.amount.message = "Please enter value rate";
     }
 
+    if (item.amount.value) {
+      let amount: string = this.$currencyToNumber(item.amount.value).toString();
+
+      let amountLength: number = amount.split(".")[0].length,
+        lastDigitLength: number = amount.split(".")[1]
+          ? amount.split(".")[1].length
+          : 0;
+      if (amountLength <= 13 && lastDigitLength <= 2) {
+        item.amount.invalid = false;
+        item.amount.message = null;
+      } else {
+        item.amount.invalid = true;
+        item.amount.message = "Amount length 13,2";
+      }
+    }
+
     let formValid = this.tiers.filter(
       (tier) =>
         tier.fromValue.invalid ||
